@@ -174,6 +174,81 @@
           display: flex;
         }
       }
+      /* online lobby panel (host / join a friend) */
+      #online {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: min(520px, 90vw);
+        max-height: 92vh;
+        overflow: auto;
+        box-sizing: border-box;
+        z-index: 9;
+        font:
+          11px 'Press Start 2P',
+          monospace;
+        line-height: 1.8;
+        color: #fff;
+        background: rgba(20, 10, 32, 0.95);
+        border: 3px solid #3ff0ff;
+        border-radius: 12px;
+        padding: 14px 16px;
+        text-align: center;
+      }
+      #online h2 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        color: #ffe234;
+      }
+      #online button {
+        display: block;
+        width: 100%;
+        margin: 8px 0;
+        padding: 12px 8px;
+        font:
+          12px 'Press Start 2P',
+          monospace;
+        color: #fff;
+        background: #2a1d48;
+        border: 3px solid #ff4fa3;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      #online button.alt {
+        border-color: #6b6290;
+        font-size: 10px;
+        padding: 8px;
+      }
+      #online .code {
+        font-size: 38px;
+        letter-spacing: 10px;
+        color: #3ff0ff;
+        margin: 6px 0;
+      }
+      #online input {
+        width: 70%;
+        font:
+          30px 'Press Start 2P',
+          monospace;
+        letter-spacing: 8px;
+        text-align: center;
+        text-transform: uppercase;
+        padding: 8px;
+        border-radius: 8px;
+        border: 3px solid #ffe234;
+        background: #0b0614;
+        color: #ffe234;
+        touch-action: manipulation;
+      }
+      #online .small {
+        font-size: 8px;
+        color: #bbb;
+      }
+      #online .err {
+        color: #ff6b81;
+      }
       .tb.red {
         border-color: #ff4f6d;
       }
@@ -193,6 +268,7 @@
     <button id="mute" title="Sound on/off (M)">♪ ON</button>
     <button id="fullscreen" title="Full screen">⛶ FULL</button>
     <div id="fullscreen-tip"></div>
+    <div id="online"></div>
     <div id="touch">
       <div class="tb dir up" data-k="KeyW">▲</div>
       <div class="tb dir left" data-k="KeyA">◀</div>
@@ -1723,6 +1799,7 @@
       const CONFIRM_KEYS = ['Enter', 'Space', 'KeyF'];
 
       addEventListener('keydown', e => {
+        if (e.target && e.target.tagName === 'INPUT') return; // typing a room code: leave the keys alone
         Sound.init();
         if (e.code === 'KeyM' && !e.repeat) Sound.setMute(!Sound.muted);
         if (!keysDown[e.code]) keysPressed[e.code] = true;
@@ -2342,8 +2419,23 @@
       /** Two headband tails fluttering behind the head (t = animation time). */
       function drawHeadbandTails(c, spine, color, t) {
         const knot = sockPoint(spine, 0.05);
-        const x = knot.x - knot.nx * knot.w * 0.15;
-        const y = knot.y - knot.ny * knot.w * 0.15;
+        drawBandTailsAt(c, knot.x - knot.nx * knot.w * 0.15, knot.y - knot.ny * knot.w * 0.15, color, t);
+      }
+
+      /** Where a bandana wrapped round the ankle (top of the leg, just under the head) sits: back knot, front, curve. */
+      function ankleBand(spine) {
+        const p = sampleSpine(spine, 0, spine.fb, 0.8);
+        const half = p.w * 0.5;
+        const back = { x: p.x - p.nx * half, y: p.y - p.ny * half };
+        const front = { x: p.x + p.nx * half, y: p.y + p.ny * half };
+        // tangent up the leg is (ny, -nx); bow the band downward (the other way) so it looks wrapped round
+        const ctrl = { x: p.x - p.ny * 9, y: p.y + p.nx * 9 };
+        const mid = { x: p.x - p.ny * 4.5, y: p.y + p.nx * 4.5 };
+        return { back, front, ctrl, mid };
+      }
+
+      /** Two bandana tails fluttering out from a knot at (x, y). */
+      function drawBandTailsAt(c, x, y, color, t) {
         for (const [dx, dy, phase] of [
           [-40, 6, 0],
           [-34, 24, 1.3]
@@ -2546,15 +2638,27 @@
             }
           },
           behind(c, spine) {
-            if (this.pal.band) drawHeadbandTails(c, spine, this.pal.band, game.time);
+            if (this.pal.band) {
+              const k = ankleBand(spine);
+              drawBandTailsAt(c, k.back.x, k.back.y, this.pal.band, game.time);
+            }
           },
           mask(c, spine) {
             if (!this.pal.band) return;
-            strokeAlongSock(c, spine, 0.08, 0.82, 0.02, 10, this.pal.band);
-            const m = sockPoint(spine, 0.48);
+            // the bandana wraps round the ankle (just under the head), bowing down a little so it looks wrapped
+            const k = ankleBand(spine);
+            c.lineCap = 'round';
+            for (const [col, width] of [[INK, 15], [this.pal.band, 10]]) {
+              c.strokeStyle = col;
+              c.lineWidth = width;
+              c.beginPath();
+              c.moveTo(k.back.x, k.back.y);
+              c.quadraticCurveTo(k.ctrl.x, k.ctrl.y, k.front.x, k.front.y);
+              c.stroke();
+            }
             c.fillStyle = '#e8333a';
             c.beginPath();
-            c.arc(m.x - m.nx * m.w * 0.02, m.y - m.ny * m.w * 0.02, 4.5, 0, 7);
+            c.arc(k.mid.x, k.mid.y, 4.5, 0, 7);
             c.fill();
           }
         },
@@ -9015,6 +9119,12 @@
         controller1 = new HumanController(game.mode === 'cpu' ? [P1_KEYS, P2_KEYS] : [P1_KEYS]);
         controller2 =
           game.mode === 'cpu' ? new CpuController(game.arcade.tier, arcadeRamp()) : new HumanController([P2_KEYS]);
+        if (game.mode === 'online') {
+          // both fighters are driven by button presses exchanged over the network (see ONLINE)
+          controller1 = new NetController();
+          controller2 = new NetController();
+          beginLockstep();
+        }
         f1.dmgMul = 1;
         // CPU damage: the character's own multiplier (bosses) or the difficulty's, a little lower on early stages
         f2.dmgMul =
@@ -9085,7 +9195,7 @@
       }
 
       function updateFight() {
-        if (wasPressed('Escape')) {
+        if (game.mode !== 'online' && wasPressed('Escape')) {
           game.paused = !game.paused;
           SFX.select();
         }
@@ -9690,8 +9800,12 @@
       const MODE_MENU = [
         ['1 PLAYER', 'VS CPU'],
         ['2 PLAYERS', 'SAME KEYBOARD'],
+        ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE'],
         ['MOVE LIST', 'LEARN THE SOCK ARTS']
       ];
+
+      const MODE_ITEM_H = 46;
+      const modeItemY = i => 120 + i * 54;
 
       function updateModeMenu() {
         if (backWasPressed()) {
@@ -9717,18 +9831,18 @@
           return;
         }
         if (wasPressed('KeyW', 'ArrowUp')) {
-          game.menuIndex = (game.menuIndex + 2) % 3;
+          game.menuIndex = (game.menuIndex + MODE_MENU.length - 1) % MODE_MENU.length;
           SFX.select();
         }
         if (wasPressed('KeyS', 'ArrowDown')) {
-          game.menuIndex = (game.menuIndex + 1) % 3;
+          game.menuIndex = (game.menuIndex + 1) % MODE_MENU.length;
           SFX.select();
         }
         let go = wasPressed(...CONFIRM_KEYS, 'KeyK');
         if (game.click) {
-          for (let i = 0; i < 3; i++) {
-            const y = 128 + i * 66;
-            if (game.click.x > 280 && game.click.x < 680 && game.click.y > y && game.click.y < y + 56) {
+          for (let i = 0; i < MODE_MENU.length; i++) {
+            const y = modeItemY(i);
+            if (game.click.x > 280 && game.click.x < 680 && game.click.y > y && game.click.y < y + MODE_ITEM_H) {
               game.menuIndex = i;
               go = true;
             }
@@ -9737,6 +9851,10 @@
         if (go) {
           SFX.confirm();
           if (game.menuIndex === 2) {
+            openOnlineLobby();
+            return;
+          }
+          if (game.menuIndex === 3) {
             game.screen = 'moves';
             game.movesFrom = 'mode';
             return;
@@ -9779,16 +9897,16 @@
         drawText('SELECT MODE', W / 2, 64, 56, FONT_COMIC, '#ffe234', INK, 10);
         drawText('モード選択', W / 2, 102, 18, FONT_JAPANESE, '#fff', INK, 6);
         MODE_MENU.forEach(([a, b], i) => {
-          const y = 128 + i * 66,
+          const y = modeItemY(i),
             on = game.menuIndex === i;
-          roundRectPath(ctx, 280, y, 400, 56, 12);
+          roundRectPath(ctx, 280, y, 400, MODE_ITEM_H, 12);
           ctx.fillStyle = on ? '#ff4fa3' : '#2a1d48';
           ctx.fill();
           ctx.strokeStyle = on ? '#fff' : INK;
           ctx.lineWidth = 4;
           ctx.stroke();
-          drawText(a, 480, y + 22, 30, FONT_COMIC, '#fff', INK, 6);
-          drawText(b, 480, y + 45, 9, FONT_PIXEL, on ? '#fff' : '#bbb', INK, 0);
+          drawText(a, 480, y + 19, 28, FONT_COMIC, '#fff', INK, 6);
+          drawText(b, 480, y + 39, 8, FONT_PIXEL, on ? '#fff' : '#bbb', INK, 0);
           if (on) {
             const p = idleAnim(basePose(), game.time);
             drawSock(
@@ -9796,7 +9914,7 @@
               withSkin(CHARS[((game.time / 90) | 0) % NUM_CHARS], ((game.time / 360) | 0) % 4),
               p,
               232,
-              y + 54,
+              y + MODE_ITEM_H - 2,
               1,
               0.38,
               { x: 3, y: 0 }
@@ -10219,9 +10337,23 @@
       }
 
       /** Player `side` presses select on their highlighted card: lock it in, or start the roulette on "?". */
+      /** The sock the OTHER player has already locked in (2 players / online), or -1. Nobody may take it too. */
+      function takenSock(side) {
+        const s = game.selection;
+        if (game.mode === 'cpu') return -1;
+        if (side === 0) return s.done2 ? s.c2 : -1;
+        return s.done1 ? s.c1 : -1;
+      }
+
       function lockIn(side) {
         const s = game.selection;
-        if ((side === 0 ? s.c1 : s.c2) === RANDOM_SLOT) {
+        const choice = side === 0 ? s.c1 : s.c2;
+        if (choice !== RANDOM_SLOT && choice === takenSock(side)) {
+          SFX.block();
+          s.takenNote = { side, until: game.time + 100 };
+          return;
+        }
+        if (choice === RANDOM_SLOT) {
           s.roll = s.roll || [0, 0];
           s.roll[side] = 1;
           SFX.confirm();
@@ -10244,12 +10376,14 @@
           const every = n < 20 ? 3 : n < 32 ? 5 : 8;
           if (n === 1 || n % every === 0) {
             let next;
+            const taken = takenSock(side);
             do next = Math.floor(Math.random() * NUM_CHARS);
-            while (next === s[key] && NUM_CHARS > 1);
+            while ((next === s[key] || next === taken) && NUM_CHARS > 2);
             s[key] = next;
             SFX.select();
           }
           if (n >= ROULETTE_FRAMES) {
+            if (s[key] === takenSock(side)) continue; // the other player grabbed it meanwhile: keep spinning
             s.roll[side] = 0;
             if (side === 0) s.done1 = true;
             else s.done2 = true;
@@ -10278,17 +10412,21 @@
             cancelPick(1);
             s.wait = 0;
             SFX.select();
+          } else if (game.mode === 'online' && s.started) {
+            // the match is already starting: too late to change
           } else if (s.done1) {
             s.done1 = false;
             cancelPick(0);
-            if (!two) s.done2 = false;
+            if (!two && game.mode !== 'online') s.done2 = false;
             s.wait = 0;
             s.roul = 0;
             SFX.select();
-          } else goBack(game.mode === 'cpu' ? 'diff' : 'mode');
+          } else if (game.mode === 'online') netLeave();
+          else goBack(game.mode === 'cpu' ? 'diff' : 'mode');
           return;
         }
         updateRoulette();
+        if (game.mode === 'online') syncOnlinePicks();
         if (!s.done1 && !isRolling(0)) {
           if (wasPressed('KeyA') || (!two && wasPressed('ArrowLeft'))) {
             s.c1 = (s.c1 + SELECT_SLOTS - 1) % SELECT_SLOTS;
@@ -10359,7 +10497,7 @@
             }
           }
         }
-        if (!two && s.done1 && !s.done2) {
+        if (!two && game.mode !== 'online' && s.done1 && !s.done2) {
           s.done2 = true;
         }
         if (false) {
@@ -10377,7 +10515,9 @@
         if (s.done1 && s.done2) {
           s.wait++;
           if (s.wait >= 45 && game.time >= (s.holdUntil || 0)) {
-            if (two) goToVersus();
+            if (game.mode === 'online') {
+              if (Net.role === 'host' && !s.started) hostStartMatch();
+            } else if (two) goToVersus();
             else startArcade();
           }
         }
@@ -10417,6 +10557,32 @@
           ctx.restore();
           drawText(d.name, c.x + c.w / 2, c.y + c.h - 12, 13, FONT_COMIC, '#fff', INK, 4);
         }
+        // a sock one player has locked in is stamped TAKEN for the other (2 players / online)
+        if (game.mode !== 'cpu') {
+          for (const [done, c, otherDone] of [
+            [s.done1, s.c1, s.done2],
+            [s.done2, s.c2, s.done1]
+          ]) {
+            if (!done || otherDone || c >= NUM_CHARS) continue;
+            const r = selectCardRect(c);
+            ctx.save();
+            roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
+            ctx.fillStyle = 'rgba(10,4,22,0.45)';
+            ctx.fill();
+            ctx.translate(r.x + r.w / 2, r.y + r.h / 2 - 10);
+            ctx.rotate(-0.25);
+            roundRectPath(ctx, -44, -14, 88, 28, 6);
+            ctx.fillStyle = '#e8333a';
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            drawText('TAKEN', 0, 1, 13, FONT_PIXEL, '#fff', INK, 0);
+            ctx.restore();
+          }
+        }
+        if (s.takenNote && game.time < s.takenNote.until)
+          drawText('THAT SOCK IS TAKEN — PICK ANOTHER ONE!', W / 2, 280, 12, FONT_PIXEL, '#ff6b81', INK, 5);
         const cur = (i, col, tag, right, done) => {
           const c = selectCardRect(i),
             o = right ? 5 : 0;
@@ -10430,7 +10596,7 @@
           drawText(tag, right ? c.x + c.w - 18 : c.x + 18, c.y - 8, 9, FONT_PIXEL, '#fff', INK, 0);
         };
         cur(s.c1, '#ff4f6d', '1P', false, s.done1);
-        if (two) cur(s.c2, '#3fb8ff', '2P', true, s.done2);
+        if (two || (game.mode === 'online' && s.done2)) cur(s.c2, '#3fb8ff', '2P', true, s.done2);
         const panel = (i, k, x, face, col, tag, done, keysTxt) => {
           if (i === RANDOM_SLOT) return drawRandomPanel(x, face, col, tag, t);
           const d = withSkin(CHARS[i], k);
@@ -10473,12 +10639,15 @@
           110,
           1,
           '#ff6b81',
-          'PLAYER 1',
+          game.mode === 'online' ? 'YOU' : 'PLAYER 1',
           s.done1,
           two ? 'W/S change skin' : '↑/↓ or W/S change skin'
         );
         if (two) panel(s.c2, s.k2, 850, -1, '#6bd0ff', 'PLAYER 2', s.done2, '↑/↓ change skin');
-        else {
+        else if (game.mode === 'online') {
+          if (s.done2) panel(s.c2, s.k2, 850, -1, '#6bd0ff', 'YOUR FRIEND', true, '');
+          else drawOnlineWaitingPanel(t);
+        } else {
           const Ld = LADDERS[cpuDifficulty],
             D = DIFFICULTY[cpuDifficulty];
           drawText('OPPONENTS', 850, 306, 12, FONT_PIXEL, '#6bd0ff', INK, 0, 'right');
@@ -10520,7 +10689,7 @@
             );
           });
         }
-        if (!s.done1)
+        if (!s.done1 && !(s.takenNote && game.time < s.takenNote.until))
           drawText(
             two ? 'P1: A/D + SPACE    P2: ←/→ + K' : 'A/D choose  •  W/S skin  •  SPACE select',
             W / 2,
@@ -10777,6 +10946,11 @@
 
       function updateVersus() {
         game.versusTime++;
+        if (game.mode === 'online') {
+          wasPressed('Escape', 'Backspace');
+          if (game.versusTime >= ONLINE_VS_FRAMES) startMatch();
+          return;
+        }
         if (backWasPressed()) {
           if (game.mode === 'cpu' && game.arcade) {
             goBack('ladder');
@@ -10890,6 +11064,7 @@
       function updateResult() {
         const r = game.result;
         r.t++;
+        if (game.mode === 'online' && wasPressed('Escape', 'Backspace')) return netLeave();
         if (r.t < INPUT_GRACE_FRAMES) {
           readyToContinue(0);
           return;
@@ -10914,8 +11089,16 @@
             }
             return;
           }
+          if (game.mode === 'online' && wasPressed('Escape', 'Backspace')) {
+            netLeave();
+            return;
+          }
           if (game.mode !== 'cpu' && readyToContinue(r.t)) {
             SFX.confirm();
+            if (game.mode === 'online') {
+              onlineRematch();
+              return;
+            }
             const s = game.selection;
             s.done1 = s.done2 = false;
             s.roul = 0;
@@ -11006,7 +11189,9 @@
               ? r.p1won
                 ? 'PRESS SPACE: GO TO NEXT STAGE'
                 : 'PRESS SPACE: CONTINUE?'
-              : 'ENTER / TAP: REMATCH   •   ESC: TITLE',
+              : game.mode === 'online'
+                ? 'ENTER / TAP: REMATCH   •   ESC: LEAVE'
+                : 'ENTER / TAP: REMATCH   •   ESC: TITLE',
             W / 2,
             515,
             12,
@@ -11164,6 +11349,733 @@
           drawText('THANK YOU FOR PLAYING!  •  SPACE: TITLE', W / 2, 500, 12, FONT_PIXEL, '#fff', INK, 5);
       }
 
+      /* ---------------- ONLINE ---------------- */
+      // Two devices fight over the internet.
+      //  * Finding each other: PeerJS (a free public matchmaking server) introduces the two browsers using a
+      //    4-letter room code; after that they talk directly to each other (WebRTC).
+      //  * Fighting: both devices run the same fight. Every frame each device sends only its own button
+      //    presses, a few frames ahead ("input delay"), and a frame is played once both players' presses for
+      //    it have arrived ("lockstep"). The fight's randomness comes from a shared seed, sounds use their own
+      //    randomness, and positions are rounded each frame, so both devices stay identical. Every second they
+      //    compare a checksum to make sure.
+      //  * The host is player 1 (left), the friend who joins is player 2 (right).
+
+      const PEERJS_URL = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+      const ROOM_PREFIX = 'sockfighters-turbo-rinse-';
+      const ROOM_LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // no I or O (they look like 1 and 0)
+      const ONLINE_VS_FRAMES = 170; // the VS screen starts the fight by itself
+      const NET_BITS = {
+        left: 1,
+        right: 2,
+        up: 4,
+        down: 8,
+        punch: 16,
+        kick: 32,
+        special: 64,
+        super: 128,
+        throw: 256,
+        taunt: 512,
+        dashleft: 1024,
+        dashright: 2048
+      };
+
+      const Net = {
+        peer: null,
+        conn: null,
+        role: null, // 'host' or 'guest'
+        code: '',
+        match: 0, // counts rematches, so messages from an old match are ignored
+        remotePicks: {}, // match number -> the friend's { c, k }
+        remoteIn: new Map(), // frame -> the friend's button bits
+        remoteSums: new Map(), // frame -> the friend's checksum
+        rtt: 120, // round-trip time in ms (measured by pings)
+        ls: null, // lockstep state during a fight
+        startMsg: null,
+        quitAsk: 0,
+        desyncs: 0,
+        closing: false,
+        pingTimer: 0,
+        connectTimer: 0
+      };
+
+      /** A small seeded random-number generator (mulberry32): same seed, same numbers, on every device. */
+      function seededRng(seed) {
+        let a = seed | 0;
+        const next = () => {
+          a = (a + 0x6d2b79f5) | 0;
+          let t = Math.imul(a ^ (a >>> 15), 1 | a);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+        return next;
+      }
+
+      // Sounds, voices and the announcer pick their clips with the device's own randomness, so a muted phone
+      // and a loud one still roll the same dice for the fight itself.
+      const realRandom = Math.random;
+      for (const audioObject of [Sound, SFX, Music, Ambience, FighterVoice, Announcer, Crowd]) {
+        for (const key of Object.keys(audioObject)) {
+          const d = Object.getOwnPropertyDescriptor(audioObject, key);
+          if (!d || typeof d.value !== 'function') continue;
+          const original = d.value;
+          audioObject[key] = function () {
+            const fightRandom = Math.random;
+            Math.random = realRandom;
+            try {
+              return original.apply(this, arguments);
+            } finally {
+              Math.random = fightRandom;
+            }
+          };
+        }
+      }
+
+      /** Fighter controls fed from network button bits (same buffering rules as HumanController). */
+      class NetController {
+        constructor() {
+          this.buffer = {};
+          this.left = this.right = this.up = this.down = false;
+          this.held = 0;
+          this.presses = 0;
+        }
+        /** This frame's bits for this player. Presses wait until the fighter next reads its controls. */
+        feed(bits) {
+          this.held = bits;
+          this.presses |= bits;
+        }
+        step() {
+          for (const action in this.buffer) if (this.buffer[action] > 0) this.buffer[action]--;
+          const b = this.held;
+          this.left = !!(b & NET_BITS.left);
+          this.right = !!(b & NET_BITS.right);
+          this.up = !!(b & NET_BITS.up);
+          this.down = !!(b & NET_BITS.down);
+          for (const action of BUTTON_ACTIONS)
+            if (this.presses & NET_BITS[action]) this.buffer[action] = BUTTON_BUFFER_FRAMES;
+          for (const dash of ['dashleft', 'dashright']) if (this.presses & NET_BITS[dash]) this.buffer[dash] = 5;
+          this.presses = 0;
+        }
+        take(action) {
+          if (this.buffer[action] > 0) {
+            this.buffer[action] = 0;
+            return true;
+          }
+          return false;
+        }
+      }
+
+      /** Read this device's keys / touch buttons into one number (either key set works). */
+      function sampleLocalInput() {
+        const S = Net.ls.sampler;
+        S.frame++;
+        let bits = 0;
+        const held = dir => keysDown[P1_KEYS[dir]] || keysDown[P2_KEYS[dir]];
+        const pressed = action => {
+          const hit = keysPressed[P1_KEYS[action]] || keysPressed[P2_KEYS[action]];
+          delete keysPressed[P1_KEYS[action]];
+          delete keysPressed[P2_KEYS[action]];
+          return hit;
+        };
+        for (const dir of ['left', 'right', 'up', 'down']) if (held(dir)) bits |= NET_BITS[dir];
+        for (const action of BUTTON_ACTIONS) if (pressed(action)) bits |= NET_BITS[action];
+        for (const dir of ['left', 'right']) {
+          if (pressed(dir)) {
+            if (S.frame - S.lastTap[dir] < DOUBLE_TAP_FRAMES) {
+              bits |= NET_BITS['dash' + dir];
+              S.lastTap[dir] = -99;
+            } else S.lastTap[dir] = S.frame;
+          }
+        }
+        pressed('up');
+        pressed('down');
+        return bits;
+      }
+
+      /** Frames of input delay for the current connection speed. */
+      function netDelay() {
+        return clamp(Math.ceil(Net.rtt / 2 / (1000 / 60)) + 2, 3, 10);
+      }
+
+      function netSend(msg) {
+        if (window.__netOut) return window.__netOut(JSON.stringify(msg)); // automated tests link two pages directly
+        if (Net.conn && Net.conn.open) {
+          try {
+            Net.conn.send(msg);
+          } catch (e) {
+            /* connection closing */
+          }
+        }
+      }
+
+      /** Start the lockstep for a new fight (called from startMatch). */
+      function beginLockstep() {
+        const msg = Net.startMsg;
+        const delay = msg.delay;
+        const me = Net.role === 'host' ? 0 : 1;
+        const local = new Map();
+        for (let f = 0; f < delay; f++) {
+          local.set(f, 0);
+          if (!Net.remoteIn.has(f)) Net.remoteIn.set(f, 0);
+        }
+        const inputs = [];
+        inputs[me] = local;
+        inputs[1 - me] = Net.remoteIn;
+        Net.ls = {
+          frame: 0,
+          delay,
+          me,
+          inputs,
+          sent: delay - 1,
+          stall: 0,
+          sums: new Map(),
+          sampler: { frame: 0, lastTap: { left: -99, right: -99 } }
+        };
+        Net.rng = seededRng(msg.seed);
+        Net.quitAsk = 0;
+        game.time = 0;
+      }
+
+      /** Round positions a tiny bit each frame, so different phones' maths can't drift apart. */
+      function quantizeFight() {
+        const q = v => Math.round(v * 1024) / 1024;
+        for (const f of [f1, f2]) {
+          f.x = q(f.x);
+          f.y = q(f.y);
+          f.vx = q(f.vx);
+          f.vy = q(f.vy);
+          f.hp = q(f.hp);
+          f.meter = q(f.meter);
+        }
+        for (const p of game.projectiles) {
+          p.x = q(p.x);
+          p.y = q(p.y);
+          if (typeof p.vx === 'number') p.vx = q(p.vx);
+          if (typeof p.vy === 'number') p.vy = q(p.vy);
+        }
+      }
+
+      /** A fingerprint of the fight, compared between the two devices. */
+      function fightChecksum() {
+        let h = 7;
+        const add = v => {
+          const s = String(v);
+          for (let i = 0; i < s.length; i++) h = (Math.imul(h, 31) + s.charCodeAt(i)) | 0;
+        };
+        for (const f of [f1, f2]) [f.x, f.y, f.hp, f.meter, f.state, f.t, f.pips].forEach(add);
+        [game.timer, game.round, game.phase, game.projectiles.length].forEach(add);
+        return h;
+      }
+
+      function compareChecksums(frame) {
+        const mine = Net.ls && Net.ls.sums.get(frame),
+          theirs = Net.remoteSums.get(frame);
+        if (mine === undefined || theirs === undefined) return;
+        if (mine !== theirs) {
+          Net.desyncs++;
+          console.warn('online: the two games differ at frame', frame);
+        }
+        Net.ls.sums.delete(frame);
+        Net.remoteSums.delete(frame);
+      }
+
+      /** One step of an online fight: send my input for a few frames ahead, then play a frame if both inputs are in. */
+      function onlineTick() {
+        const L = Net.ls;
+        if (wasPressed('Escape')) {
+          // ESC / the II button twice = leave (an online fight can't pause: the other player is still playing)
+          if (Net.quitAsk > 0) return netLeave();
+          Net.quitAsk = 180;
+          SFX.select();
+        }
+        if (Net.quitAsk > 0) Net.quitAsk--;
+        const target = L.frame + L.delay;
+        if (L.sent < target) {
+          const bits = sampleLocalInput();
+          L.inputs[L.me].set(target, bits);
+          netSend({ t: 'in', m: Net.match, f: target, b: bits });
+          L.sent = target;
+        }
+        const a = L.inputs[0].get(L.frame),
+          b = L.inputs[1].get(L.frame);
+        if (a === undefined || b === undefined) {
+          L.stall++;
+          if (L.stall > 60 * 25) netLost('Lost touch with your friend.');
+          return;
+        }
+        L.stall = 0;
+        L.inputs[0].delete(L.frame);
+        L.inputs[1].delete(L.frame);
+        controller1.feed(a);
+        controller2.feed(b);
+        const fightRandom = Net.rng;
+        Math.random = fightRandom;
+        try {
+          updateGame();
+          if (f1 && f2) quantizeFight();
+        } finally {
+          Math.random = realRandom;
+        }
+        L.frame++;
+        if (L.frame % 60 === 0 && game.screen === 'fight') {
+          const h = fightChecksum();
+          L.sums.set(L.frame, h);
+          netSend({ t: 'sum', m: Net.match, f: L.frame, h });
+          compareChecksums(L.frame);
+        }
+      }
+
+      /** Messages from the friend's device. */
+      function onNetMessage(msg) {
+        if (!msg || typeof msg !== 'object') return;
+        switch (msg.t) {
+          case 'ping':
+            netSend({ t: 'pong', at: msg.at });
+            break;
+          case 'pong':
+            Net.rtt = Net.rtt * 0.7 + Math.max(10, performance.now() - msg.at) * 0.3;
+            break;
+          case 'hello':
+            if (Net.role === 'host' && game.screen === 'online') onConnected();
+            break;
+          case 'pick':
+            Net.remotePicks[msg.m] = { c: msg.c, k: msg.k };
+            break;
+          case 'unpick':
+            delete Net.remotePicks[msg.m];
+            break;
+          case 'start':
+            if (msg.m === Net.match) onlineStart(msg);
+            break;
+          case 'in':
+            if (msg.m === Net.match) Net.remoteIn.set(msg.f, msg.b);
+            break;
+          case 'sum':
+            if (msg.m === Net.match) {
+              Net.remoteSums.set(msg.f, msg.h);
+              compareChecksums(msg.f);
+            }
+            break;
+          case 'bye':
+            netLost('Your friend left the match.');
+            break;
+        }
+      }
+
+      /** Connected: both players go to character select. */
+      function onConnected() {
+        clearTimeout(Net.connectTimer);
+        hideOnlinePanel();
+        Net.match = 0;
+        Net.remotePicks = {};
+        game.mode = 'online';
+        const prev = game.selection;
+        game.selection = {
+          c1: prev ? prev.c1 : 0,
+          c2: 1,
+          k1: prev ? prev.k1 : 0,
+          k2: 0,
+          done1: false,
+          done2: false,
+          roul: 0,
+          wait: 0
+        };
+        game.screen = 'select';
+        SFX.confirm();
+        clearInterval(Net.pingTimer);
+        Net.pingTimer = setInterval(() => netSend({ t: 'ping', at: performance.now() }), 1000);
+        netSend({ t: 'ping', at: performance.now() });
+      }
+
+      /** On the select screen: send my pick when I lock in, and show my friend's when theirs arrives. */
+      function syncOnlinePicks() {
+        const s = game.selection;
+        if (s.done1 && !s.sentPick) {
+          netSend({ t: 'pick', m: Net.match, c: s.c1, k: s.k1 });
+          s.sentPick = true;
+        } else if (!s.done1 && s.sentPick) {
+          netSend({ t: 'unpick', m: Net.match });
+          s.sentPick = false;
+        }
+        let theirs = Net.remotePicks[Net.match];
+        if (theirs && !s.done2 && s.done1 && theirs.c === s.c1 && !s.started) {
+          // we both locked in the same sock at the same moment: the host keeps it, the friend picks again
+          if (Net.role === 'host') theirs = null;
+          else {
+            s.done1 = false;
+            cancelPick(0);
+            s.takenNote = { side: 0, until: game.time + 140 };
+            SFX.block();
+          }
+        }
+        if (theirs && !s.done2) {
+          s.c2 = theirs.c;
+          s.k2 = theirs.k;
+          s.done2 = true;
+          confirmPick(1);
+        } else if (!theirs && s.done2) {
+          s.done2 = false;
+          cancelPick(1);
+        }
+      }
+
+      /** The host decides the arena, the dice seed and the input delay, and tells the friend. */
+      function hostStartMatch() {
+        const s = game.selection;
+        s.started = true;
+        pickStage();
+        const msg = {
+          t: 'start',
+          m: Net.match,
+          seed: (realRandom() * 2147483647) | 0,
+          stage: game.stageId,
+          delay: netDelay(),
+          host: { c: s.c1, k: s.k1 },
+          guest: { c: s.c2, k: s.k2 }
+        };
+        netSend(msg);
+        onlineStart(msg);
+      }
+
+      /** Both devices: set up the fighters and arena from the host's start message, then show VS. */
+      function onlineStart(msg) {
+        const s = game.selection;
+        s.started = true;
+        s.done1 = s.done2 = true;
+        Net.startMsg = msg;
+        Net.remoteIn = new Map();
+        Net.remoteSums = new Map();
+        Net.ls = null;
+        game.p1Def = withSkin(CHARS[msg.host.c], msg.host.k);
+        // same sock and same skin: the friend gets the next skin so you can tell them apart
+        const guestSkin = msg.host.c === msg.guest.c && msg.host.k === msg.guest.k ? (msg.guest.k + 1) % 4 : msg.guest.k;
+        game.p2Def = withSkin(CHARS[msg.guest.c], guestSkin);
+        game.stageId = msg.stage;
+        game.screen = 'vs';
+        game.versusTime = 0;
+        Announcer.versus(game.p1Def, game.p2Def);
+      }
+
+      /** After a match: back to character select for the next one. */
+      function onlineRematch() {
+        Net.match++;
+        Net.ls = null;
+        const s = game.selection;
+        s.done1 = s.done2 = false;
+        s.sentPick = s.started = false;
+        s.roul = 0;
+        s.wait = 0;
+        s.roll = null;
+        if (s.c1 === RANDOM_SLOT || s.c1 >= NUM_CHARS) s.c1 = 0;
+        game.screen = 'select';
+      }
+
+      /** Close the connection and forget everything about it. */
+      function netClose() {
+        Net.closing = true;
+        clearInterval(Net.pingTimer);
+        clearTimeout(Net.connectTimer);
+        try {
+          if (Net.conn) Net.conn.close();
+        } catch (e) {}
+        try {
+          if (Net.peer) Net.peer.destroy();
+        } catch (e) {}
+        Net.peer = Net.conn = null;
+        Net.ls = null;
+        Net.remoteIn = new Map();
+        Net.remoteSums = new Map();
+        Net.remotePicks = {};
+        Net.closing = false;
+      }
+
+      /** I leave: tell my friend, then back to the main menu. */
+      function netLeave() {
+        netSend({ t: 'bye' });
+        setTimeout(netClose, 300);
+        Net.role = null;
+        game.mode = '2p';
+        game.paused = false;
+        game.screen = 'mode';
+        game.menuIndex = 2;
+        SFX.select();
+      }
+
+      /** The connection broke or my friend left: say so, then back to the main menu. */
+      function netLost(text) {
+        if (!Net.role) return;
+        netClose();
+        Net.role = null;
+        game.mode = '2p';
+        game.paused = false;
+        game.screen = 'online';
+        showOnlinePanel('lost', text);
+      }
+
+      function loadPeerJS() {
+        if (window.Peer) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = PEERJS_URL;
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('load'));
+          document.head.appendChild(script);
+        });
+      }
+
+      function friendlyNetError(err, code) {
+        const type = err && err.type;
+        if (type === 'peer-unavailable') return 'No game found with code ' + code + '. Check the code with your friend.';
+        if (type === 'network' || type === 'server-error' || type === 'socket-error' || (err && err.message === 'load'))
+          return 'Could not reach the internet. Check your connection and try again.';
+        if (type === 'browser-incompatible') return 'This browser cannot play online. Try Safari or Chrome.';
+        return 'Something went wrong (' + (type || 'error') + '). Try again.';
+      }
+
+      function attachConnection(conn) {
+        Net.conn = conn;
+        conn.on('open', () => {
+          if (Net.role === 'guest') {
+            netSend({ t: 'hello' });
+            onConnected();
+          }
+        });
+        conn.on('data', onNetMessage);
+        conn.on('close', () => {
+          if (!Net.closing && Net.conn === conn) netLost('Your friend disconnected.');
+        });
+        conn.on('error', () => {
+          if (!Net.closing && Net.conn === conn) netLost('The connection to your friend broke.');
+        });
+      }
+
+      /** Host a game: get a room code and wait for a friend. */
+      async function netHost() {
+        netClose();
+        Net.role = 'host';
+        showOnlinePanel('hosting');
+        try {
+          await loadPeerJS();
+        } catch (e) {
+          return showOnlinePanel('menu', friendlyNetError(e));
+        }
+        if (Net.role !== 'host') return;
+        let code = '';
+        for (let i = 0; i < 4; i++) code += ROOM_LETTERS[(realRandom() * ROOM_LETTERS.length) | 0];
+        const peer = new Peer(ROOM_PREFIX + code);
+        Net.peer = peer;
+        peer.on('open', () => {
+          Net.code = code;
+          showOnlinePanel('hosting');
+        });
+        peer.on('connection', conn => {
+          if (Net.conn) return conn.close(); // already playing someone
+          attachConnection(conn);
+        });
+        peer.on('error', err => {
+          if (err.type === 'unavailable-id') return netHost(); // code taken: roll another
+          if (Net.peer === peer && !Net.conn) showOnlinePanel('menu', friendlyNetError(err));
+        });
+      }
+
+      /** Join a friend's game by its room code. */
+      async function netJoin(code) {
+        code = String(code || '')
+          .toUpperCase()
+          .replace(/[^A-Z]/g, '');
+        if (code.length !== 4) return showOnlinePanel('join', 'The code has 4 letters.');
+        netClose();
+        Net.role = 'guest';
+        Net.code = code;
+        showOnlinePanel('connecting');
+        try {
+          await loadPeerJS();
+        } catch (e) {
+          return showOnlinePanel('join', friendlyNetError(e));
+        }
+        if (Net.role !== 'guest') return;
+        const peer = new Peer();
+        Net.peer = peer;
+        peer.on('open', () => attachConnection(peer.connect(ROOM_PREFIX + code, { reliable: true, serialization: 'json' })));
+        peer.on('error', err => {
+          if (Net.peer === peer && game.screen === 'online') {
+            netClose();
+            Net.role = null;
+            showOnlinePanel('join', friendlyNetError(err, code));
+          }
+        });
+        Net.connectTimer = setTimeout(() => {
+          if (Net.role === 'guest' && game.screen === 'online') {
+            netClose();
+            Net.role = null;
+            showOnlinePanel('join', 'Could not connect to ' + code + '. Check the code, or try again.');
+          }
+        }, 20000);
+      }
+
+      /* --- the lobby panel (HTML on top of the game, so phones can type the code) --- */
+      const onlinePanel = document.getElementById('online');
+      let onlinePanelState = 'menu';
+
+      function hideOnlinePanel() {
+        onlinePanel.style.display = 'none';
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+      }
+
+      /** Show the lobby in a state: menu, hosting, join, connecting, lost. `note` = an error or message. */
+      function showOnlinePanel(state, note) {
+        onlinePanelState = state;
+        const msg = note ? `<p class="${state === 'lost' ? '' : 'err'}">${escapeHtml(note)}</p>` : '';
+        let html = '<h2>ONLINE BATTLE</h2>';
+        if (state === 'menu') {
+          html +=
+            msg +
+            '<button data-on="host">HOST A GAME</button>' +
+            '<button data-on="join">JOIN A GAME</button>' +
+            '<p class="small">Play a friend on another phone or computer. One of you hosts and shares the 4-letter code; the other joins with it.</p>' +
+            '<button class="alt" data-on="back">◀ BACK</button>';
+        } else if (state === 'hosting') {
+          html += Net.code
+            ? '<p>YOUR ROOM CODE</p><div class="code">' +
+              Net.code +
+              '</div><button data-on="share">SEND INVITE LINK</button><p>Waiting for your friend…</p>'
+            : '<p>Getting a room code…</p>';
+          html += msg + '<button class="alt" data-on="cancel">CANCEL</button>';
+        } else if (state === 'join') {
+          html +=
+            "<p>ENTER YOUR FRIEND'S CODE</p>" +
+            `<input id="online-code" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${escapeHtml(Net.code || '')}">` +
+            msg +
+            '<button data-on="go">JOIN</button><button class="alt" data-on="cancel">◀ BACK</button>';
+        } else if (state === 'connecting') {
+          html += '<p>Connecting to ' + escapeHtml(Net.code) + '…</p><button class="alt" data-on="cancel">CANCEL</button>';
+        } else if (state === 'lost') {
+          html += msg + '<button data-on="ok">OK</button>';
+        }
+        onlinePanel.innerHTML = html;
+        onlinePanel.style.display = 'block';
+        const input = document.getElementById('online-code');
+        if (input) {
+          input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') netJoin(input.value);
+          });
+          if (!IS_TOUCH) input.focus();
+        }
+      }
+
+      onlinePanel.addEventListener('click', e => {
+        const button = e.target.closest('button');
+        if (!button) return;
+        Sound.init();
+        SFX.select();
+        const action = button.dataset.on;
+        if (action === 'host') netHost();
+        else if (action === 'join') {
+          Net.code = '';
+          showOnlinePanel('join');
+        } else if (action === 'go') netJoin(document.getElementById('online-code').value);
+        else if (action === 'share') shareInvite();
+        else if (action === 'cancel') {
+          netClose();
+          Net.role = null;
+          showOnlinePanel('menu');
+        } else if (action === 'back' || action === 'ok') closeOnlineLobby();
+      });
+
+      function inviteLink() {
+        return location.origin + location.pathname + '?room=' + Net.code;
+      }
+
+      async function shareInvite() {
+        const url = inviteLink();
+        const text = 'Fight me in Sock Fighters! Room code ' + Net.code;
+        try {
+          if (navigator.share) return await navigator.share({ title: 'Sock Fighters', text, url });
+          await navigator.clipboard.writeText(url);
+          showOnlinePanel('hosting', 'Invite link copied! Paste it to your friend.');
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+          showOnlinePanel('hosting', 'Send your friend this link: ' + url);
+        }
+      }
+
+      function openOnlineLobby() {
+        game.screen = 'online';
+        showOnlinePanel('menu');
+      }
+
+      function closeOnlineLobby() {
+        netClose();
+        Net.role = null;
+        hideOnlinePanel();
+        game.screen = 'mode';
+        game.menuIndex = 2;
+      }
+
+      function updateOnlineLobby() {
+        if (wasPressed('Escape')) {
+          if (onlinePanelState === 'menu' || onlinePanelState === 'lost') closeOnlineLobby();
+          else {
+            netClose();
+            Net.role = null;
+            showOnlinePanel('menu');
+          }
+        }
+        game.click = null;
+      }
+
+      function drawOnlineLobby() {
+        drawStage(0.7);
+        drawText('ONLINE', W / 2, 52, 52, FONT_COMIC, '#3ff0ff', INK, 10);
+        drawText('オンライン対戦', W / 2, 88, 16, FONT_JAPANESE, '#fff', INK, 5);
+      }
+
+      /** Right-hand panel on the select screen while the friend is still choosing. */
+      function drawOnlineWaitingPanel(t) {
+        drawText('YOUR FRIEND', 850, 306, 12, FONT_PIXEL, '#6bd0ff', INK, 0, 'right');
+        drawText('CHOOSING' + '...'.slice(0, ((t / 20) | 0) % 4), 850, 338, 28, FONT_COMIC, '#fff', INK, 7, 'right');
+        drawText('相手が選択中', 850, 368, 14, FONT_JAPANESE, '#fff', INK, 5, 'right');
+        drawText('?', 700, 470 + Math.sin(t * 0.1) * 5, 110, FONT_COMIC, '#6bd0ff', INK, 10);
+        drawText('PING ' + Math.round(Net.rtt) + ' ms', 850, 500, 9, FONT_PIXEL, '#aaa', INK, 0, 'right');
+      }
+
+      /** During an online fight: "YOU" marker, waiting / leave messages, ping. */
+      function drawOnlineFightOverlay() {
+        const L = Net.ls;
+        const mine = Net.role === 'host' ? f1 : f2;
+        if (mine && (game.phase === 'intro' || game.time < 240)) {
+          const bob = Math.sin(game.time * 0.2) * 4;
+          drawText('▼ YOU', mine.x, mine.y - 230 + bob, 14, FONT_PIXEL, '#ffe234', INK, 5);
+        }
+        drawText('ONLINE ' + Math.round(Net.rtt) + 'ms', W / 2, 112, 7, FONT_PIXEL, 'rgba(255,255,255,0.7)', INK, 0);
+        if (L && L.stall > 30) drawText('WAITING FOR YOUR FRIEND…', W / 2, 200, 16, FONT_PIXEL, '#ffe234', INK, 6);
+        if (Net.quitAsk > 0)
+          drawText(
+            IS_TOUCH ? 'TAP II AGAIN TO LEAVE THE MATCH' : 'PRESS ESC AGAIN TO LEAVE THE MATCH',
+            W / 2,
+            240,
+            13,
+            FONT_PIXEL,
+            '#ff6b81',
+            INK,
+            6
+          );
+      }
+
+      // An invite link (…/?room=ABCD) opens straight into joining that room.
+      (function joinFromInviteLink() {
+        const room = new URLSearchParams(location.search).get('room');
+        if (!room) return;
+        try {
+          history.replaceState(null, '', location.pathname);
+        } catch (e) {}
+        game.screen = 'online';
+        Net.code = room.toUpperCase().slice(0, 4);
+        showOnlinePanel('join');
+      })();
+
       /* ---------------- MAIN LOOP ---------------- */
       // Each screen has an update (logic, 60 times a second) and a draw function.
       const SCREENS = {
@@ -11177,7 +12089,8 @@
         diff: { update: updateDifficulty, draw: drawDifficulty },
         ladder: { update: updateLadder, draw: drawLadderScreen },
         cont: { update: updateContinue, draw: drawContinue },
-        ending: { update: updateEnding, draw: drawEnding }
+        ending: { update: updateEnding, draw: drawEnding },
+        online: { update: updateOnlineLobby, draw: drawOnlineLobby }
       };
 
       function updateGame() {
@@ -11229,6 +12142,7 @@
         if (game.superCutin) drawSuperCutin();
         drawHUD();
         drawBanner();
+        if (game.mode === 'online') drawOnlineFightOverlay();
         if (game.paused) {
           ctx.fillStyle = 'rgba(8,2,18,0.7)';
           ctx.fillRect(0, 0, W, H);
@@ -11270,7 +12184,8 @@
         frameTimeAccumulator += dt * (game.slowMotion > 0 ? 0.32 : 1);
         let updates = 0;
         while (frameTimeAccumulator >= STEP && updates < 5) {
-          updateGame();
+          if (game.mode === 'online' && game.screen === 'fight' && Net.ls) onlineTick();
+          else updateGame();
           frameTimeAccumulator -= STEP;
           updates++;
         }
@@ -11326,6 +12241,13 @@
         startMatch,
         pressed: keysPressed,
         keys: keysDown,
+        Net,
+        /** tests: pretend a connection opened, as 'host' or 'guest' (messages go through window.__netOut/__netIn) */
+        netTestConnect(role) {
+          Net.role = role;
+          window.__netIn = s => onNetMessage(JSON.parse(s));
+          onConnected();
+        },
         /** make the CPU stand still */
         dummy() {
           controller2 = { step() {}, take: () => false, left: false, right: false, up: false, down: false };

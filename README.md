@@ -26,6 +26,8 @@ Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N p
 ## Modes
 - **Arcade:** pick Easy, Medium, Hard or **Nightmare**. Each ladder starts gentler and builds up to its final boss.
 - **2 Players:** two players on one keyboard.
+- **Online:** fight a friend on another phone or computer. One player picks **Host** and shares the 4-letter room code (or taps **Send invite link**); the other picks **Join** and types the code, or just opens the link. The two players can't choose the same sock.
+  It uses [PeerJS](https://peerjs.com) (MIT) to find each other. After that, the two devices connect directly and exchange only button presses. Both devices run the same fight in lockstep and check every second that they still match.
 
 ![Fight](itch/screenshot-3-fight.png)
 
