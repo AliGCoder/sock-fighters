@@ -1,0 +1,21 @@
+# Installed tools and caches (recreated by the setup steps; several GB)
+tools/announcer/.venv/
+tools/announcer/.venv-qwen/
+tools/announcer/.py/
+tools/announcer/.uvcache/
+node_modules/
+
+# Generated audio: audition samples and per-clip WAV copies (the clips themselves live in index.html)
+tools/announcer/samples/
+tools/announcer/baked_wav/
+tools/announcer/baked_wav_qwen/
+
+# Logs
+*.log
+
+# Old manual backups (git history replaces these)
+index.backup-*.html
+tools/announcer/clips_kokoro_sparkle.json
+tools/announcer/clips_before_*.json
+tools/announcer/fighter_clips_first.json
+tools/announcer/fighter_clips_before_*.json

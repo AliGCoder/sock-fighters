@@ -1,0 +1,17 @@
+{
+  "name": "announcer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "extract_lines.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright": "^1.49.1",
+    "prettier": "^3.3.3"
+  }
+}
