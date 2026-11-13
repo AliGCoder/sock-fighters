@@ -1,7 +1,7 @@
 # Sock Fighters: Turbo Rinse
 
 A cartoon sock fighting game in the style of 90s Japanese arcade fighters, in a single HTML file.
-It has 17 fully voiced socks, a Japanese arcade announcer, four difficulty ladders, and touch controls for phones.
+It has 17 fully voiced socks, a Japanese arcade announcer, four difficulty ladders, five arenas picked at random (Coin Laundry, Midnight Rooftop, Sunset Beach, Sakura Dojo, Inside the Dryer), a "?" Random pick on the select screen, and touch controls for phones.
 
 **▶ Play it here: https://aligcoder.github.io/sock-fighters/**
 
@@ -18,6 +18,8 @@ To get an app icon, tap **Share → Add to Home Screen**. The icon then opens th
 | Attack · Kick | Space · E | K · L |
 | Special · Down + Special | F · S+F | ; · ↓+; |
 | Super · Throw · Taunt | R · Q · T | ' · O · P |
+
+**Kick combo:** land a kick, then tap Kick twice more for kick → spinning heel → SOCK-NADO! (hold down on any of them to finish with a sweep).
 
 Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N plays a voice test.
 

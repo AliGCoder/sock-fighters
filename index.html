@@ -4808,6 +4808,38 @@
           knock: 8,
           hit: 'mid'
         },
+        // kick chain: KICK, KICK, KICK on hit = kick -> spinning heel -> rising "Sock-nado" finisher
+        kick2: {
+          start: 6,
+          active: 6,
+          rec: 16,
+          dmg: 65,
+          reach: 130,
+          from: 10,
+          y1: -130,
+          y2: -40,
+          stun: 20,
+          knock: 6,
+          hit: 'mid',
+          lunge: 3
+        },
+        kick3: {
+          start: 7,
+          active: 6,
+          rec: 24,
+          dmg: 75,
+          reach: 124,
+          from: 10,
+          y1: -175,
+          y2: -40,
+          stun: 0,
+          knock: 6,
+          hit: 'mid',
+          kd: true,
+          launch: -13,
+          lunge: 4,
+          word: 'SOCK-NADO!'
+        },
         sweep: {
           start: 7,
           active: 6,
@@ -6028,12 +6060,10 @@
           if (this.hasHit && !air && baseMove !== 'flop' && baseMove !== 'upper') {
             if (this.meter >= 100 && input.take('super')) return this.startSuper(opponent);
             if (this.cool <= 0 && input.take('special')) return this.startSpecial(opponent, input.down);
-            if (
-              (baseMove === 'punch' || baseMove === 'cpunch') &&
-              this.t >= m.start + m.active - 2 &&
-              input.take('kick')
-            )
-              return this.attack(input.down ? 'sweep' : 'kick');
+            // chains: punch -> kick, and the 3-hit kick string kick -> kick2 -> kick3 (↓ ends any of them in a sweep)
+            const KICK_CHAIN = { punch: 'kick', cpunch: 'kick', kick: 'kick2', kick2: 'kick3' };
+            if (KICK_CHAIN[baseMove] && this.t >= m.start + m.active - 2 && input.take('kick'))
+              return this.attack(input.down ? 'sweep' : KICK_CHAIN[baseMove]);
           }
           if (this.move === 'jpunch' && this.t >= m.start + m.active) {
             this.setState('jump');
@@ -6818,8 +6848,9 @@
         }
         /** Pose for a normal attack, from wind-up to recovery. */
         atkPose(p, a) {
-          const mv = CANE_POSES[this.move] || this.move, // stick attacks use the punch poses
-            m = MOVES[mv],
+          const chainKick = this.move === 'kick2' ? 2 : this.move === 'kick3' ? 3 : 0;
+          const mv = CANE_POSES[this.move] || (chainKick ? 'kick' : this.move), // stick attacks use the punch poses
+            m = MOVES[this.move],
             s = m.start,
             e = m.start + m.active;
           if (mv === 'punch' || mv === 'cpunch') {
@@ -6844,18 +6875,25 @@
             }
           } else if (mv === 'kick') {
             p.pivot = 105;
+            const peak = chainKick === 3 ? -1.35 : chainKick === 2 ? -1.15 : -0.95;
             if (a < s) {
               p.rot = (0.25 * a) / s;
               p.mouth = 'grit';
+              if (chainKick === 2) p.sx = Math.cos((Math.PI * 2 * a) / s); // spins round for the heel kick
+              if (chainKick === 3) p.yOff = (-12 * a) / s;
             } else if (a < e) {
-              p.rot = -0.95;
-              p.yOff = -10;
+              p.rot = peak;
+              p.yOff = chainKick === 3 ? -38 : -10;
               p.mouth = 'yell';
               p.eyes = 'angry';
               p.front = { x: 20, y: -60 };
               p.back = { x: -20, y: -50 };
               p.bodyH = 128;
-            } else p.rot = -0.95 * (1 - (a - e) / m.rec);
+            } else {
+              const k = 1 - (a - e) / m.rec;
+              p.rot = peak * k;
+              if (chainKick === 3) p.yOff = -38 * k;
+            }
           } else if (mv === 'sweep') {
             p.bodyH = 96;
             p.pivot = 80;
@@ -8066,16 +8104,73 @@
       }
 
       /* ---------------- STAGE ---------------- */
-      // The laundromat arena. The static parts are painted once into an off-screen canvas (stageCanvas) at the
-      // screen's real resolution; drawStage() copies it each frame and adds the animated bits on top.
+      // Five arenas (see STAGES). Each has a build(b) that paints the static parts once into an off-screen canvas
+      // (stageCanvas) at the screen's real resolution, and a draw(t) that adds the animated bits on top every frame.
+      // Every match picks a random arena (never the same twice in a row); menus always show the laundromat.
 
-      /** Paint the static background (walls, poster, machines, floor) into stageCanvas. */
+      let stageBuiltFor = ''; // which stage + canvas size stageCanvas currently holds
+
+      /** Forget the painted stage (screen resized or fonts loaded); it's repainted the next time it's drawn. */
       function buildStage() {
+        stageBuiltFor = '';
+      }
+
+      /** Make sure stageCanvas holds stage `id` at the current resolution. */
+      function ensureStage(id) {
+        const key = id + ':' + canvas.width + 'x' + canvas.height;
+        if (key === stageBuiltFor) return;
         stageCanvas = document.createElement('canvas');
         stageCanvas.width = canvas.width;
         stageCanvas.height = canvas.height;
         const b = stageCanvas.getContext('2d');
         b.scale(canvas.width / W, canvas.height / H);
+        STAGES[id].build(b);
+        stageBuiltFor = key;
+      }
+
+      /** A tiny repeatable random-number generator, so painted details (stars, windows) look the same every time. */
+      function seededRandom(seed) {
+        let s = seed;
+        return () => (s = (s * 16807) % 2147483647) / 2147483647;
+      }
+
+      /** Checkerboard floor in perspective from y=400 down to the bottom of the screen. */
+      function perspectiveFloor(b, base, colA, colB) {
+        b.fillStyle = base;
+        b.fillRect(0, 400, W, 140);
+        const vx = 480,
+          vy = 170,
+          rows = [400, 410, 424, 444, 472, 510, 560];
+        const X = (xb, y) => vx + ((xb - vx) * (y - vy)) / (H - vy);
+        for (let r = 0; r < rows.length - 1; r++) {
+          const y0 = rows[r],
+            y1 = rows[r + 1];
+          for (let k = -6; k < 14; k++) {
+            const x0 = k * 110 - 120,
+              x1 = x0 + 110;
+            b.beginPath();
+            b.moveTo(X(x0, y0), y0);
+            b.lineTo(X(x1, y0), y0);
+            b.lineTo(X(x1, y1), y1);
+            b.lineTo(X(x0, y1), y1);
+            b.closePath();
+            b.fillStyle = (r + k) % 2 ? colA : colB;
+            b.fill();
+          }
+        }
+      }
+
+      /** Darker band along the front edge of the floor so the fighters stand out. */
+      function floorShade(b) {
+        const g = b.createLinearGradient(0, 470, 0, 540);
+        g.addColorStop(0, 'rgba(0,0,0,0)');
+        g.addColorStop(1, 'rgba(0,0,0,0.45)');
+        b.fillStyle = g;
+        b.fillRect(0, 470, W, 70);
+      }
+
+      /** Paint the laundromat's static parts (walls, poster, machines, floor). */
+      function buildLaundry(b) {
         let g = b.createLinearGradient(0, 0, 0, 400);
         g.addColorStop(0, '#160827');
         g.addColorStop(1, '#3d1b5e');
@@ -8169,28 +8264,7 @@
           b.fillRect(mx + 86, my + 134, 16, 8);
         }
         // floor
-        b.fillStyle = '#24173c';
-        b.fillRect(0, 400, W, 140);
-        const vx = 480,
-          vy = 170,
-          rows = [400, 410, 424, 444, 472, 510, 560];
-        for (let r = 0; r < rows.length - 1; r++) {
-          const y0 = rows[r],
-            y1 = rows[r + 1];
-          for (let k = -6; k < 14; k++) {
-            const x0 = k * 110 - 120,
-              x1 = x0 + 110;
-            const X = (xb, y) => vx + ((xb - vx) * (y - vy)) / (H - vy);
-            b.beginPath();
-            b.moveTo(X(x0, y0), y0);
-            b.lineTo(X(x1, y0), y0);
-            b.lineTo(X(x1, y1), y1);
-            b.lineTo(X(x0, y1), y1);
-            b.closePath();
-            b.fillStyle = (r + k) % 2 ? '#2c1d48' : '#3b2963';
-            b.fill();
-          }
-        }
+        perspectiveFloor(b, '#24173c', '#2c1d48', '#3b2963');
         g = b.createLinearGradient(0, 400, 0, 480);
         g.addColorStop(0, 'rgba(255,79,163,0.16)');
         g.addColorStop(1, 'rgba(255,79,163,0)');
@@ -8198,11 +8272,7 @@
         b.fillRect(0, 400, W, 80);
         b.fillStyle = '#120a1e';
         b.fillRect(0, 396, W, 6);
-        g = b.createLinearGradient(0, 470, 0, 540);
-        g.addColorStop(0, 'rgba(0,0,0,0)');
-        g.addColorStop(1, 'rgba(0,0,0,0.45)');
-        b.fillStyle = g;
-        b.fillRect(0, 470, W, 70);
+        floorShade(b);
       }
       /** Flickering neon sign text (seed varies the flicker). */
       function drawNeonSign(s, x, y, col, size, font, seed) {
@@ -8217,30 +8287,18 @@
         drawText(s, x, y, size, font, '#fff', INK, 0);
         ctx.restore();
       }
-      /** Draw the stage; dim (0..1) darkens it for menu screens. */
-      function drawStage(dim) {
-        ctx.drawImage(stageCanvas, 0, 0, W, H);
-        const t = game.time;
-        // laundry line
-        ctx.strokeStyle = '#8d84a8';
+      /** A sagging washing line from (0, y) to (W, y) with socks pegged on it, swaying by `wind`. */
+      function drawWashingLine(t, y, sag, items, lineCol, wind) {
+        ctx.strokeStyle = lineCol;
         ctx.lineWidth = 2;
         ctx.beginPath();
-        for (let x = 0; x <= W; x += 20) ctx.lineTo(x, 36 + Math.sin((Math.PI * x) / W) * 26);
+        for (let x = 0; x <= W; x += 20) ctx.lineTo(x, y + Math.sin((Math.PI * x) / W) * sag);
         ctx.stroke();
-        const items = [
-          [70, '#e8333a'],
-          [150, '#3fd0ff'],
-          [300, '#ffe234'],
-          [380, '#a6ff3a'],
-          [620, '#ff8fab'],
-          [700, '#fff'],
-          [840, '#7b5cff']
-        ];
         items.forEach(([x, col], i) => {
-          const y = 36 + Math.sin((Math.PI * x) / W) * 26;
+          const ly = y + Math.sin((Math.PI * x) / W) * sag;
           ctx.save();
-          ctx.translate(x, y);
-          ctx.rotate(Math.sin(t * 0.03 + i) * 0.1);
+          ctx.translate(x, ly);
+          ctx.rotate(Math.sin(t * 0.03 * wind + i) * 0.1 * wind);
           ctx.lineCap = 'round';
           ctx.lineJoin = 'round';
           ctx.beginPath();
@@ -8257,6 +8315,21 @@
           ctx.fillRect(-3, -5, 6, 11);
           ctx.restore();
         });
+      }
+
+      const LAUNDRY_LINE = [
+        [70, '#e8333a'],
+        [150, '#3fd0ff'],
+        [300, '#ffe234'],
+        [380, '#a6ff3a'],
+        [620, '#ff8fab'],
+        [700, '#fff'],
+        [840, '#7b5cff']
+      ];
+
+      /** The laundromat's animated parts: washing line, neon signs, spinning machine doors, lint-bunny crowd. */
+      function drawLaundry(t) {
+        drawWashingLine(t, 36, 26, LAUNDRY_LINE, '#8d84a8', 1);
         drawNeonSign('コインランドリー', 200, 150, '#ff4fa3', 32, FONT_JAPANESE, 0);
         ctx.save();
         ctx.shadowColor = '#ffe234';
@@ -8310,12 +8383,16 @@
           ctx.arc(cx, cy, 34, 0, 7);
           ctx.stroke();
         }
-        // lint-bunny crowd
+        drawLintCrowd(t, [56, 316, 486, 656, 876], 236, '#b4acc8');
+      }
+
+      /** Little lint-bunny spectators at the given x positions; they jump and cheer on big moments. */
+      function drawLintCrowd(t, xs, baseY, col) {
         const ch = game.cheer > 0;
-        [56, 316, 486, 656, 876].forEach((x, i) => {
+        xs.forEach((x, i) => {
           const b = Math.abs(Math.sin(t * (ch ? 0.3 : 0.06) + i * 1.7)) * (ch ? 16 : 3);
-          const y = 236 - b;
-          ctx.fillStyle = '#b4acc8';
+          const y = baseY - b;
+          ctx.fillStyle = col;
           ctx.strokeStyle = INK;
           ctx.lineWidth = 2.5;
           if (ch) {
@@ -8351,6 +8428,517 @@
             ctx.fill();
           }
         });
+      }
+
+      /* --- Midnight Rooftop: city skyline under a big moon, socks drying in the night breeze --- */
+      function buildRooftop(b) {
+        let g = b.createLinearGradient(0, 0, 0, 400);
+        g.addColorStop(0, '#060a24');
+        g.addColorStop(0.7, '#1b2a63');
+        g.addColorStop(1, '#3a3f8f');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // moon with glow
+        g = b.createRadialGradient(760, 100, 30, 760, 100, 150);
+        g.addColorStop(0, 'rgba(255,248,214,0.45)');
+        g.addColorStop(1, 'rgba(255,248,214,0)');
+        b.fillStyle = g;
+        b.fillRect(600, 0, 320, 260);
+        b.fillStyle = '#fff6d8';
+        b.beginPath();
+        b.arc(760, 100, 48, 0, 7);
+        b.fill();
+        b.fillStyle = 'rgba(210,200,170,0.6)';
+        [[745, 88, 9], [775, 115, 7], [768, 82, 5]].forEach(([x, y, r]) => {
+          b.beginPath();
+          b.arc(x, y, r, 0, 7);
+          b.fill();
+        });
+        // two rows of skyline: far (dim) and near (dark, with lit windows)
+        const rnd = seededRandom(7);
+        for (const [top, col, win] of [[200, '#24306a', 0.25], [250, '#121735', 0.6]]) {
+          let x = -10;
+          while (x < W) {
+            const w = 40 + rnd() * 70,
+              h = 60 + rnd() * 120,
+              y = top + 110 - h;
+            b.fillStyle = col;
+            b.fillRect(x, y, w, 400 - y);
+            b.fillStyle = `rgba(255,214,102,${win})`;
+            for (let wy = y + 10; wy < 380; wy += 16)
+              for (let wx = x + 6; wx < x + w - 8; wx += 12) if (rnd() < 0.35) b.fillRect(wx, wy, 6, 8);
+            x += w + 4;
+          }
+        }
+        // water tank on stilts
+        b.fillStyle = '#3b2a2a';
+        b.strokeStyle = INK;
+        b.lineWidth = 3;
+        for (const lx of [92, 150]) b.fillRect(lx, 250, 8, 120);
+        roundRectPath(b, 70, 170, 110, 90, 10);
+        b.fillStyle = '#6b4a3a';
+        b.fill();
+        b.stroke();
+        b.fillStyle = '#4e3528';
+        for (let i = 0; i < 4; i++) b.fillRect(70, 186 + i * 20, 110, 4);
+        drawText('靴下', 125, 216, 22, FONT_JAPANESE, '#ffe9c2', INK, 3, 'center', b);
+        // roof edge wall
+        b.fillStyle = '#5b5f78';
+        b.fillRect(0, 360, W, 40);
+        b.fillStyle = '#7a7f9a';
+        b.fillRect(0, 356, W, 8);
+        b.strokeStyle = INK;
+        b.lineWidth = 3;
+        b.strokeRect(-4, 356, W + 8, 44);
+        for (let x = 0; x < W; x += 60) {
+          b.beginPath();
+          b.moveTo(x, 364);
+          b.lineTo(x, 400);
+          b.stroke();
+        }
+        // concrete roof tiles
+        perspectiveFloor(b, '#4a4d63', '#555970', '#62667f');
+        b.fillStyle = '#20223a';
+        b.fillRect(0, 396, W, 6);
+        floorShade(b);
+      }
+      const ROOFTOP_LINE = [
+        [110, '#ff4fa3'],
+        [260, '#3fd0ff'],
+        [430, '#ffe234'],
+        [560, '#fff'],
+        [700, '#a6ff3a'],
+        [880, '#ff8a3d']
+      ];
+      function drawRooftop(t) {
+        // twinkling stars
+        const rnd = seededRandom(3);
+        for (let i = 0; i < 46; i++) {
+          const x = rnd() * W,
+            y = rnd() * 190,
+            tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.05 + i));
+          ctx.fillStyle = `rgba(255,255,255,${tw})`;
+          ctx.fillRect(x, y, 2.5, 2.5);
+        }
+        // antenna with a blinking red light
+        ctx.strokeStyle = '#0c0f24';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(612, 196);
+        ctx.lineTo(612, 120);
+        ctx.stroke();
+        if (t % 70 < 35) {
+          ctx.save();
+          ctx.shadowColor = '#ff3d3d';
+          ctx.shadowBlur = 16;
+          ctx.fillStyle = '#ff3d3d';
+          ctx.beginPath();
+          ctx.arc(612, 118, 5, 0, 7);
+          ctx.fill();
+          ctx.restore();
+        }
+        drawNeonSign('屋上', 470, 150, '#3ff0ff', 44, FONT_JAPANESE, 30);
+        drawWashingLine(t, 30, 22, ROOFTOP_LINE, '#c6c9e0', 1.8);
+        drawLintCrowd(t, [260, 420, 690, 840], 342, '#cfd2e6');
+      }
+
+      /* --- Sunset Beach: sun sinking into the sea, palm trees, a sock sandcastle --- */
+      function buildBeach(b) {
+        let g = b.createLinearGradient(0, 0, 0, 300);
+        g.addColorStop(0, '#3b1d6e');
+        g.addColorStop(0.5, '#e8507a');
+        g.addColorStop(1, '#ffb347');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 300);
+        // sun, cut by the horizon
+        b.save();
+        b.beginPath();
+        b.rect(0, 0, W, 300);
+        b.clip();
+        g = b.createRadialGradient(480, 290, 40, 480, 290, 220);
+        g.addColorStop(0, 'rgba(255,240,150,0.7)');
+        g.addColorStop(1, 'rgba(255,240,150,0)');
+        b.fillStyle = g;
+        b.fillRect(200, 60, 560, 240);
+        b.fillStyle = '#ffe36b';
+        b.beginPath();
+        b.arc(480, 300, 80, 0, 7);
+        b.fill();
+        b.fillStyle = '#ff9a3d';
+        for (let i = 0; i < 4; i++) b.fillRect(380, 248 + i * 14, 200, 4 + i);
+        b.restore();
+        // sea
+        g = b.createLinearGradient(0, 300, 0, 380);
+        g.addColorStop(0, '#5a3a8f');
+        g.addColorStop(1, '#2b6fa8');
+        b.fillStyle = g;
+        b.fillRect(0, 300, W, 80);
+        // sand
+        g = b.createLinearGradient(0, 372, 0, 400);
+        g.addColorStop(0, '#f6d9a0');
+        g.addColorStop(1, '#e8bd7a');
+        b.fillStyle = g;
+        b.beginPath();
+        b.moveTo(0, 386);
+        for (let x = 0; x <= W; x += 40) b.lineTo(x, 378 + Math.sin(x * 0.02) * 5);
+        b.lineTo(W, 400);
+        b.lineTo(0, 400);
+        b.fill();
+        perspectiveFloor(b, '#e3b16e', '#e8bb7c', '#f0c98d');
+        // sandcastle with a sock flag
+        b.fillStyle = '#d9a55e';
+        b.strokeStyle = INK;
+        b.lineWidth = 3;
+        b.fillRect(800, 330, 90, 56);
+        b.strokeRect(800, 330, 90, 56);
+        b.fillRect(826, 300, 38, 32);
+        b.strokeRect(826, 300, 38, 32);
+        for (let i = 0; i < 4; i++) b.strokeRect(802 + i * 22, 322, 12, 10);
+        b.beginPath();
+        b.moveTo(845, 300);
+        b.lineTo(845, 262);
+        b.stroke();
+        b.lineCap = 'round';
+        b.lineJoin = 'round';
+        b.beginPath();
+        b.moveTo(848, 266);
+        b.lineTo(866, 266);
+        b.lineTo(870, 280);
+        b.strokeStyle = INK;
+        b.lineWidth = 11;
+        b.stroke();
+        b.strokeStyle = '#e8333a';
+        b.lineWidth = 7;
+        b.stroke();
+        // beach umbrella
+        b.lineWidth = 4;
+        b.strokeStyle = INK;
+        b.beginPath();
+        b.moveTo(120, 395);
+        b.lineTo(140, 280);
+        b.stroke();
+        for (let i = 0; i < 6; i++) {
+          b.beginPath();
+          b.moveTo(140, 270);
+          b.arc(140, 300, 80, Math.PI + (i * Math.PI) / 6, Math.PI + ((i + 1) * Math.PI) / 6);
+          b.closePath();
+          b.fillStyle = i % 2 ? '#fff' : '#ff4fa3';
+          b.fill();
+          b.lineWidth = 2.5;
+          b.stroke();
+        }
+        floorShade(b);
+      }
+      /** A palm tree silhouette leaning by `lean`, swaying with the breeze. */
+      function drawPalm(x, y, h, lean, t, seed) {
+        const sway = Math.sin(t * 0.025 + seed) * 6;
+        const topX = x + lean + sway,
+          topY = y - h;
+        ctx.strokeStyle = '#2a1238';
+        ctx.lineWidth = 12;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.quadraticCurveTo(x + lean * 0.2, y - h * 0.5, topX, topY);
+        ctx.stroke();
+        ctx.fillStyle = '#2a1238';
+        for (let i = 0; i < 6; i++) {
+          const a = -Math.PI / 2 + (i - 2.5) * 0.55 + Math.sin(t * 0.04 + i + seed) * 0.06;
+          ctx.beginPath();
+          ctx.moveTo(topX, topY);
+          ctx.quadraticCurveTo(
+            topX + Math.cos(a - 0.3) * 60,
+            topY + Math.sin(a - 0.3) * 60 - 10,
+            topX + Math.cos(a) * 95,
+            topY + Math.sin(a) * 95 + 30
+          );
+          ctx.quadraticCurveTo(topX + Math.cos(a + 0.2) * 50, topY + Math.sin(a + 0.2) * 50, topX, topY);
+          ctx.fill();
+        }
+      }
+      function drawBeach(t) {
+        // shimmering light on the water
+        ctx.strokeStyle = 'rgba(255,230,150,0.55)';
+        ctx.lineWidth = 3;
+        for (let i = 0; i < 9; i++) {
+          const y = 310 + i * 8,
+            half = 70 - i * 4 + Math.sin(t * 0.08 + i) * 14;
+          ctx.beginPath();
+          ctx.moveTo(480 - half, y);
+          ctx.lineTo(480 + half, y);
+          ctx.stroke();
+        }
+        // waves rolling in
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 3;
+        const wave = (t * 0.6) % 120;
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 20) ctx.lineTo(x, 372 + Math.sin(x * 0.03 + t * 0.05) * 3 - (wave < 60 ? wave / 12 : 0));
+        ctx.stroke();
+        // seagulls
+        ctx.strokeStyle = '#2a1238';
+        ctx.lineWidth = 3;
+        for (let i = 0; i < 3; i++) {
+          const x = ((t * (0.7 + i * 0.25) + i * 330) % (W + 100)) - 50,
+            y = 70 + i * 40 + Math.sin(t * 0.05 + i) * 8,
+            f = Math.sin(t * 0.25 + i) * 6;
+          ctx.beginPath();
+          ctx.moveTo(x - 14, y - f);
+          ctx.quadraticCurveTo(x - 6, y - 8, x, y);
+          ctx.quadraticCurveTo(x + 6, y - 8, x + 14, y - f);
+          ctx.stroke();
+        }
+        drawPalm(40, 400, 260, 40, t, 0);
+        drawPalm(930, 400, 230, -50, t, 2);
+        drawNeonSign('ビーチ', 300, 170, '#ffe234', 30, FONT_JAPANESE, 60);
+        drawLintCrowd(t, [300, 420, 600, 730], 384, '#fff3dc');
+      }
+
+      /* --- Sakura Dojo: wooden hall, paper screens, a scroll, cherry petals drifting in --- */
+      function buildDojo(b) {
+        b.fillStyle = '#5a3420';
+        b.fillRect(0, 0, W, 400);
+        // ceiling beam
+        b.fillStyle = '#3a1f12';
+        b.fillRect(0, 0, W, 46);
+        b.fillStyle = '#2a150b';
+        b.fillRect(0, 40, W, 8);
+        // shoji screens with a sakura tree glowing behind them
+        for (let i = 0; i < 6; i++) {
+          if (i === 2 || i === 3) continue; // the scroll hangs in the middle
+          const x = 20 + i * 155,
+            y = 70,
+            w = 145,
+            h = 290;
+          b.fillStyle = '#f6ecd6';
+          b.fillRect(x, y, w, h);
+          b.fillStyle = 'rgba(255,150,190,0.35)';
+          const rnd = seededRandom(11 + i);
+          for (let k = 0; k < 12; k++) {
+            b.beginPath();
+            b.arc(x + rnd() * w, y + rnd() * h * 0.6, 14 + rnd() * 22, 0, 7);
+            b.fill();
+          }
+          b.strokeStyle = '#3a1f12';
+          b.lineWidth = 3;
+          for (let gx = 1; gx < 3; gx++) {
+            b.beginPath();
+            b.moveTo(x + (gx * w) / 3, y);
+            b.lineTo(x + (gx * w) / 3, y + h);
+            b.stroke();
+          }
+          for (let gy = 1; gy < 5; gy++) {
+            b.beginPath();
+            b.moveTo(x, y + (gy * h) / 5);
+            b.lineTo(x + w, y + (gy * h) / 5);
+            b.stroke();
+          }
+          b.lineWidth = 6;
+          b.strokeRect(x, y, w, h);
+        }
+        // hanging scroll
+        b.fillStyle = '#e9dcc0';
+        b.strokeStyle = INK;
+        b.lineWidth = 3;
+        b.fillRect(400, 80, 160, 250);
+        b.strokeRect(400, 80, 160, 250);
+        b.fillStyle = '#7a1f2a';
+        b.fillRect(392, 72, 176, 12);
+        b.fillRect(392, 326, 176, 12);
+        for (const [ch, y] of [['靴', 140], ['下', 205], ['道', 270]])
+          drawText(ch, 480, y, 54, FONT_JAPANESE, INK, INK, 0, 'center', b);
+        b.fillStyle = '#c8202f';
+        b.fillRect(530, 290, 18, 18);
+        // wooden floor boards in perspective
+        b.fillStyle = '#9b6a3e';
+        b.fillRect(0, 400, W, 140);
+        const vx = 480,
+          vy = 170;
+        const X = (xb, y) => vx + ((xb - vx) * (y - vy)) / (H - vy);
+        b.strokeStyle = 'rgba(60,30,10,0.5)';
+        b.lineWidth = 2;
+        for (let k = -8; k < 18; k++) {
+          const x0 = k * 70 - 120;
+          b.beginPath();
+          b.moveTo(X(x0, 400), 400);
+          b.lineTo(X(x0, H), H);
+          b.stroke();
+        }
+        for (const y of [418, 446, 486]) {
+          b.fillStyle = 'rgba(255,220,170,0.12)';
+          b.fillRect(0, y, W, 6);
+        }
+        b.fillStyle = '#2a150b';
+        b.fillRect(0, 394, W, 8);
+        floorShade(b);
+      }
+      function drawDojo(t) {
+        // paper lanterns swinging from the beam
+        for (const [x, ph] of [[330, 0], [630, 1.4]]) {
+          const swing = Math.sin(t * 0.03 + ph) * 0.12;
+          ctx.save();
+          ctx.translate(x, 46);
+          ctx.rotate(swing);
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(0, 30);
+          ctx.stroke();
+          ctx.shadowColor = '#ff5a3d';
+          ctx.shadowBlur = 20;
+          ctx.fillStyle = '#e8333a';
+          ctx.beginPath();
+          ctx.ellipse(0, 62, 26, 34, 0, 0, 7);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = INK;
+          ctx.fillRect(-14, 26, 28, 6);
+          ctx.fillRect(-14, 92, 28, 6);
+          drawText('祭', 0, 64, 20, FONT_JAPANESE, '#ffe9c2', INK, 0);
+          ctx.restore();
+        }
+        // falling cherry petals
+        for (let i = 0; i < 26; i++) {
+          const speed = 0.6 + (i % 5) * 0.15;
+          const y = ((t * speed + i * 53) % 600) - 30;
+          const x = ((i * 137 + Math.sin(t * 0.02 + i) * 40 + t * 0.4) % (W + 40)) - 20;
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(t * 0.04 + i);
+          ctx.fillStyle = i % 3 ? '#ffb7d0' : '#ff8fb8';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 6, 3.5, 0, 0, 7);
+          ctx.fill();
+          ctx.restore();
+        }
+        drawLintCrowd(t, [90, 250, 710, 870], 384, '#f6ecd6');
+      }
+
+      /* --- Inside the Dryer: a hot spinning drum full of lint (the Dryer Demon's home turf) --- */
+      function buildDryer(b) {
+        let g = b.createRadialGradient(480, 220, 40, 480, 220, 520);
+        g.addColorStop(0, '#ffb347');
+        g.addColorStop(0.35, '#d1452a');
+        g.addColorStop(1, '#2a0606');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // metal floor of the drum, curving up at the edges
+        g = b.createLinearGradient(0, 380, 0, 540);
+        g.addColorStop(0, '#8a8f9e');
+        g.addColorStop(1, '#3a3d48');
+        b.fillStyle = g;
+        b.beginPath();
+        b.moveTo(0, 330);
+        b.quadraticCurveTo(480, 430, W, 330);
+        b.lineTo(W, H);
+        b.lineTo(0, H);
+        b.fill();
+        b.strokeStyle = INK;
+        b.lineWidth = 4;
+        b.beginPath();
+        b.moveTo(0, 330);
+        b.quadraticCurveTo(480, 430, W, 330);
+        b.stroke();
+        // perforation holes in the floor
+        b.fillStyle = 'rgba(20,10,10,0.55)';
+        for (let row = 0; row < 6; row++) {
+          const y = 420 + row * 20,
+            gap = 30 + row * 6;
+          for (let x = (row % 2) * gap * 0.5; x < W; x += gap) {
+            b.beginPath();
+            b.ellipse(x, y, 4 + row * 0.8, 2 + row * 0.5, 0, 0, 7);
+            b.fill();
+          }
+        }
+        floorShade(b);
+      }
+      function drawDryer(t) {
+        const spin = t * (game.superCutin ? 0.03 : 0.006);
+        // the drum's ribs turning in the background
+        ctx.save();
+        ctx.translate(480, 220);
+        ctx.rotate(spin);
+        for (let i = 0; i < 3; i++) {
+          ctx.rotate((Math.PI * 2) / 3);
+          ctx.fillStyle = 'rgba(40,8,8,0.55)';
+          ctx.beginPath();
+          ctx.moveTo(-30, 330);
+          ctx.lineTo(30, 330);
+          ctx.lineTo(14, 160);
+          ctx.lineTo(-14, 160);
+          ctx.fill();
+        }
+        ctx.strokeStyle = 'rgba(255,200,120,0.25)';
+        ctx.lineWidth = 3;
+        for (const r of [170, 260, 350]) {
+          ctx.setLineDash([18, 22]);
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, 7);
+          ctx.stroke();
+        }
+        ctx.setLineDash([]);
+        ctx.restore();
+        // glowing heat vent in the middle
+        const pulse = 0.6 + 0.4 * Math.sin(t * 0.08);
+        ctx.save();
+        ctx.shadowColor = '#ffde6b';
+        ctx.shadowBlur = 30 * pulse;
+        ctx.fillStyle = `rgba(255,222,107,${0.5 + 0.3 * pulse})`;
+        ctx.beginPath();
+        ctx.arc(480, 220, 52, 0, 7);
+        ctx.fill();
+        ctx.restore();
+        ctx.strokeStyle = '#3a0b0b';
+        ctx.lineWidth = 5;
+        for (let i = -2; i <= 2; i++) {
+          ctx.beginPath();
+          ctx.moveTo(480 + i * 18, 178);
+          ctx.lineTo(480 + i * 18, 262);
+          ctx.stroke();
+        }
+        // lint flakes tumbling around
+        for (let i = 0; i < 20; i++) {
+          const a = spin * 3 + i * 1.9,
+            r = 120 + ((i * 47) % 260);
+          const x = 480 + Math.cos(a) * r,
+            y = 220 + Math.sin(a) * r * 0.7;
+          if (y > 380) continue;
+          ctx.fillStyle = i % 2 ? 'rgba(230,220,240,0.7)' : 'rgba(255,180,120,0.6)';
+          ctx.beginPath();
+          ctx.arc(x, y, 4 + (i % 3), 0, 7);
+          ctx.fill();
+        }
+        drawNeonSign('乾燥中', 150, 175, '#ffde6b', 34, FONT_JAPANESE, 15);
+        drawNeonSign('HOT!', 815, 175, '#ff3d5a', 26, FONT_PIXEL, 70);
+        drawLintCrowd(t, [70, 200, 760, 890], 360, '#d8cfe2');
+      }
+
+      // All arenas: name and Japanese name (shown on the VS screen), painter and animator.
+      const STAGES = {
+        laundry: { name: 'COIN LAUNDRY', jp: 'コインランドリー', build: buildLaundry, draw: drawLaundry },
+        rooftop: { name: 'MIDNIGHT ROOFTOP', jp: '真夜中の屋上', build: buildRooftop, draw: drawRooftop },
+        beach: { name: 'SUNSET BEACH', jp: '夕焼けビーチ', build: buildBeach, draw: drawBeach },
+        dojo: { name: 'SAKURA DOJO', jp: '桜の道場', build: buildDojo, draw: drawDojo },
+        dryer: { name: 'INSIDE THE DRYER', jp: '乾燥機の中', build: buildDryer, draw: drawDryer }
+      };
+      const STAGE_IDS = Object.keys(STAGES);
+      const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder'];
+
+      /** Pick the arena for the next match: random, but never the same one twice in a row. */
+      function pickStage() {
+        const choices = STAGE_IDS.filter(id => id !== game.stageId);
+        game.stageId = choices[Math.floor(Math.random() * choices.length)];
+      }
+
+      /** Draw the current arena; dim (0..1) darkens it for menu screens. */
+      function drawStage(dim) {
+        const id = MENU_SCREENS.includes(game.screen) ? 'laundry' : game.stageId || 'laundry';
+        ensureStage(id);
+        ctx.drawImage(stageCanvas, 0, 0, W, H);
+        STAGES[id].draw(game.time);
         if (dim) {
           ctx.fillStyle = `rgba(10,4,22,${dim})`;
           ctx.fillRect(0, 0, W, H);
@@ -9273,7 +9861,7 @@
         [['W', 'A', 'S', 'D'], 'Move / Jump / Crouch', ''],
         [['hold', 'BACK'], 'Block', 'hold AWAY from your opponent'],
         [['SPACE'], 'Attack', 'quick jab'],
-        [['E'], 'Kick', 'strong donkey kick'],
+        [['E', 'E', 'E'], 'Kick Combo', 'kick, spin heel, SOCK-NADO!'],
         [['FWD', '+', 'SPACE'], 'Noodle Uppercut', 'launches them sky-high'],
         [['BACK', '+', 'SPACE'], 'Slap-Slap Frenzy', '4 wet-sock slaps'],
         [['FWD', '+', 'E'], 'Sock-Hop Headbutt', 'lunging CLONK'],
@@ -9581,7 +10169,11 @@
       // Character select, arcade ladder, versus, result, continue and ending.
 
       /** Position of character card i on the select screen. */
-      const selectCardRect = i => ({ x: 52 + i * 108, y: 100, w: 100, h: 150 });
+      const selectCardRect = i => ({ x: 30 + i * 100, y: 100, w: 94, h: 150 });
+      // The last card on the select screen is "?" RANDOM: picking it spins a roulette and lands on a random sock.
+      const RANDOM_SLOT = NUM_CHARS;
+      const SELECT_SLOTS = NUM_CHARS + 1;
+      const ROULETTE_FRAMES = 42;
 
       /** Pick characters and skins (P1, then P2 or random-roulette CPU). */
       // Each playable character's signature catchphrase, said when they're picked: [japanese, english subtitle].
@@ -9619,11 +10211,62 @@
         s.holdUntil = 0;
       }
 
+      /** Player `side` presses select on their highlighted card: lock it in, or start the roulette on "?". */
+      function lockIn(side) {
+        const s = game.selection;
+        if ((side === 0 ? s.c1 : s.c2) === RANDOM_SLOT) {
+          s.roll = s.roll || [0, 0];
+          s.roll[side] = 1;
+          SFX.confirm();
+          return;
+        }
+        if (side === 0) s.done1 = true;
+        else s.done2 = true;
+        confirmPick(side);
+      }
+
+      /** Spin the random roulette for any side that's rolling; it lands on a real sock and locks in. */
+      function updateRoulette() {
+        const s = game.selection;
+        if (!s.roll) return;
+        for (const side of [0, 1]) {
+          if (!s.roll[side]) continue;
+          const n = s.roll[side]++;
+          const key = side === 0 ? 'c1' : 'c2';
+          // slows down as it goes: changes every 3 frames, then every 5, then every 8
+          const every = n < 20 ? 3 : n < 32 ? 5 : 8;
+          if (n === 1 || n % every === 0) {
+            let next;
+            do next = Math.floor(Math.random() * NUM_CHARS);
+            while (next === s[key] && NUM_CHARS > 1);
+            s[key] = next;
+            SFX.select();
+          }
+          if (n >= ROULETTE_FRAMES) {
+            s.roll[side] = 0;
+            if (side === 0) s.done1 = true;
+            else s.done2 = true;
+            confirmPick(side);
+          }
+        }
+      }
+
+      const isRolling = side => !!(game.selection.roll && game.selection.roll[side]);
+
       function updateSelect() {
         const s = game.selection,
           two = game.mode === '2p';
         if (backWasPressed()) {
-          if (two && s.done2) {
+          if (isRolling(0) || isRolling(1)) {
+            // stop the roulette and go back to the "?" card
+            for (const side of [0, 1])
+              if (isRolling(side)) {
+                s.roll[side] = 0;
+                if (side === 0) s.c1 = RANDOM_SLOT;
+                else s.c2 = RANDOM_SLOT;
+              }
+            SFX.select();
+          } else if (two && s.done2) {
             s.done2 = false;
             cancelPick(1);
             s.wait = 0;
@@ -9638,13 +10281,14 @@
           } else goBack(game.mode === 'cpu' ? 'diff' : 'mode');
           return;
         }
-        if (!s.done1) {
+        updateRoulette();
+        if (!s.done1 && !isRolling(0)) {
           if (wasPressed('KeyA') || (!two && wasPressed('ArrowLeft'))) {
-            s.c1 = (s.c1 + NUM_CHARS - 1) % NUM_CHARS;
+            s.c1 = (s.c1 + SELECT_SLOTS - 1) % SELECT_SLOTS;
             SFX.select();
           }
           if (wasPressed('KeyD') || (!two && wasPressed('ArrowRight'))) {
-            s.c1 = (s.c1 + 1) % NUM_CHARS;
+            s.c1 = (s.c1 + 1) % SELECT_SLOTS;
             SFX.select();
           }
           if (wasPressed('KeyW') || (!two && wasPressed('ArrowUp'))) {
@@ -9655,18 +10299,15 @@
             s.k1 = (s.k1 + 1) % 4;
             SFX.select();
           }
-          if (wasPressed('Space', 'KeyF', 'Enter') || (!two && wasPressed('KeyK'))) {
-            s.done1 = true;
-            confirmPick(0);
-          }
+          if (wasPressed('Space', 'KeyF', 'Enter') || (!two && wasPressed('KeyK'))) lockIn(0);
         }
-        if (two && !s.done2) {
+        if (two && !s.done2 && !isRolling(1)) {
           if (wasPressed('ArrowLeft')) {
-            s.c2 = (s.c2 + NUM_CHARS - 1) % NUM_CHARS;
+            s.c2 = (s.c2 + SELECT_SLOTS - 1) % SELECT_SLOTS;
             SFX.select();
           }
           if (wasPressed('ArrowRight')) {
-            s.c2 = (s.c2 + 1) % NUM_CHARS;
+            s.c2 = (s.c2 + 1) % SELECT_SLOTS;
             SFX.select();
           }
           if (wasPressed('ArrowUp')) {
@@ -9677,31 +10318,24 @@
             s.k2 = (s.k2 + 1) % 4;
             SFX.select();
           }
-          if (wasPressed('KeyK') || (s.done1 && wasPressed('Enter'))) {
-            s.done2 = true;
-            confirmPick(1);
-          }
+          if (wasPressed('KeyK') || (s.done1 && wasPressed('Enter'))) lockIn(1);
         }
-        if (game.click) {
+        if (game.click && !isRolling(0) && !isRolling(1)) {
           const c0 = game.click;
           let used = false;
-          for (let i = 0; i < NUM_CHARS; i++) {
+          for (let i = 0; i < SELECT_SLOTS; i++) {
             const c = selectCardRect(i);
             if (c0.x > c.x && c0.x < c.x + c.w && c0.y > c.y && c0.y < c.y + c.h) {
               used = true;
               if (!s.done1) {
-                if (s.c1 === i) {
-                  s.done1 = true;
-                  confirmPick(0);
-                } else {
+                if (s.c1 === i) lockIn(0);
+                else {
                   s.c1 = i;
                   SFX.select();
                 }
               } else if (two && !s.done2) {
-                if (s.c2 === i) {
-                  s.done2 = true;
-                  confirmPick(1);
-                } else {
+                if (s.c2 === i) lockIn(1);
+                else {
                   s.c2 = i;
                   SFX.select();
                 }
@@ -9750,6 +10384,7 @@
         drawText('CHOOSE YOUR SOCK', W / 2, 48, 52, FONT_COMIC, '#ffe234', INK, 10);
         drawBackButton(s.done1 || s.done2 ? 'UNDO' : 'BACK');
         drawText('靴下を選べ!', W / 2, 84, 16, FONT_JAPANESE, '#fff', INK, 5);
+        drawRandomCard(t);
         for (let i = 0; i < NUM_CHARS; i++) {
           const c = selectCardRect(i),
             d = withSkin(CHARS[i], s.c1 === i ? s.k1 : s.c2 === i ? s.k2 : 0);
@@ -9790,6 +10425,7 @@
         cur(s.c1, '#ff4f6d', '1P', false, s.done1);
         if (two) cur(s.c2, '#3fb8ff', '2P', true, s.done2);
         const panel = (i, k, x, face, col, tag, done, keysTxt) => {
+          if (i === RANDOM_SLOT) return drawRandomPanel(x, face, col, tag, t);
           const d = withSkin(CHARS[i], k);
           const p = idleAnim(basePose(), t);
           if (done) {
@@ -9889,6 +10525,40 @@
             4
           );
         for (const side of [0, 1]) if (s.catchphrase && s.catchphrase[side]) drawCatchphraseBubble(s.catchphrase[side], side);
+      }
+
+      /** The "?" RANDOM card at the end of the row. */
+      function drawRandomCard(t) {
+        const c = selectCardRect(RANDOM_SLOT);
+        roundRectPath(ctx, c.x, c.y, c.w, c.h, 10);
+        const g = ctx.createLinearGradient(0, c.y, 0, c.y + c.h);
+        g.addColorStop(0, `hsl(${(t * 3) % 360}, 70%, 38%)`);
+        g.addColorStop(1, '#1a1030');
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        const bob = Math.sin(t * 0.12) * 4;
+        drawText('?', c.x + c.w / 2, c.y + 62 + bob, 72, FONT_COMIC, '#ffe234', INK, 8);
+        drawText('ランダム', c.x + c.w / 2, c.y + 112, 11, FONT_JAPANESE, '#fff', INK, 3);
+        drawText('RANDOM', c.x + c.w / 2, c.y + c.h - 12, 13, FONT_COMIC, '#fff', INK, 4);
+      }
+
+      /** Big preview panel while a player hovers the "?" card. */
+      function drawRandomPanel(x, face, col, tag, t) {
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.beginPath();
+        ctx.ellipse(x, 502, 52, 9, 0, 0, 7);
+        ctx.fill();
+        drawText('?', x, 430 + Math.sin(t * 0.1) * 6, 150, FONT_COMIC, `hsl(${(t * 4) % 360}, 90%, 65%)`, INK, 12);
+        const tx = face === 1 ? x + 110 : x - 110,
+          al = face === 1 ? 'left' : 'right';
+        drawText(tag, tx, 306, 12, FONT_PIXEL, col, INK, 0, al);
+        drawText('RANDOM!', tx, 336, 32, FONT_COMIC, '#ffe234', INK, 7, al);
+        drawText('おまかせ', tx, 368, 15, FONT_JAPANESE, '#fff', INK, 5, al);
+        drawText('Let fate pick your sock!', tx, 420, 9, FONT_PIXEL, '#fff', INK, 0, al);
+        drawText('Press select to spin the roulette', tx, 440, 8, FONT_PIXEL, '#aaa', INK, 0, al);
       }
 
       /** Speech bubble over a player's portrait while their catchphrase plays: Japanese line + English subtitle. */
@@ -10094,6 +10764,7 @@
             : (s.c1 === s.c2 && s.k1 === s.k2 && (s.k2 = (s.k2 + 1) % 4), withSkin(CHARS[s.c2], s.k2));
         game.screen = 'vs';
         game.versusTime = 0;
+        pickStage();
         Announcer.versus(game.p1Def, game.p2Def);
       }
 
@@ -10189,6 +10860,9 @@
           drawText('VS', 0, 0, 170, FONT_COMIC, g, INK, 14);
           drawText('対戦', 0, 96, 26, FONT_JAPANESE, '#fff', INK, 7);
           ctx.restore();
+          const arena = STAGES[game.stageId || 'laundry'];
+          drawText('ARENA: ' + arena.name, W / 2, 158, 12, FONT_PIXEL, '#3ff0ff', INK, 5);
+          drawText(arena.jp, W / 2, 180, 14, FONT_JAPANESE, '#fff', INK, 4);
         }
         if (game.mode === 'cpu' && game.arcade) {
           const A = game.arcade;
