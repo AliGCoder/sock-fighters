@@ -27,6 +27,8 @@
         background: #0b0614;
         overflow: hidden;
         touch-action: none;
+        -webkit-text-size-adjust: 100%; /* stop iPhones enlarging text on their own */
+        overscroll-behavior: none;
         -webkit-user-select: none;
         user-select: none;
         -webkit-tap-highlight-color: transparent;
@@ -44,6 +46,12 @@
         height: min(56.25vw, 100vh);
         background: #000;
         outline: none;
+      }
+      canvas,
+      button,
+      #touch,
+      .tb {
+        touch-action: none; /* no browser gestures (zoom, scroll) on the game or its buttons */
       }
       #mute {
         position: fixed;
@@ -1805,6 +1813,29 @@
       // on-screen buttons for touch devices act exactly like keys
       // phones and tablets get on-screen buttons automatically, and touch-friendly hints on screen
       const IS_TOUCH = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+      // iPhones ignore the page's "no zooming" setting, so quick taps on the touch buttons (or a pinch) zoomed the
+      // whole page in and pushed the buttons off screen. Block double-tap zoom and pinch zoom by hand.
+      document.addEventListener('gesturestart', e => e.preventDefault());
+      document.addEventListener('gesturechange', e => e.preventDefault());
+      document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
+      document.addEventListener(
+        'touchmove',
+        e => {
+          if (e.touches.length > 1) e.preventDefault(); // pinch
+        },
+        { passive: false }
+      );
+      let lastTouchEnd = 0;
+      document.addEventListener(
+        'touchend',
+        e => {
+          const now = Date.now();
+          if (now - lastTouchEnd < 400) e.preventDefault(); // second tap of a double-tap: don't zoom
+          lastTouchEnd = now;
+        },
+        { passive: false }
+      );
 
       // iPhones (Safari, and Chrome on iPhone) only allow sound to start when a finger LIFTS off the screen
       // (touchend / click), not when it touches down. So start or resume the sound on those too, and play a
