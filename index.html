@@ -9796,13 +9796,21 @@
         );
       }
 
-      /** Main menu entries: arcade, 2 players, move list. */
-      const MODE_MENU = [
-        ['1 PLAYER', 'VS CPU'],
-        ['2 PLAYERS', 'SAME KEYBOARD'],
-        ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE'],
-        ['MOVE LIST', 'LEARN THE SOCK ARTS']
-      ];
+      /** Main menu entries: [title, subtitle, action]. A phone has one set of touch buttons, so two players can't
+       *  share it: there, 2 PLAYERS means each player on their own phone (the online lobby). */
+      const MODE_MENU = IS_TOUCH
+        ? [
+            ['1 PLAYER', 'VS CPU', 'cpu'],
+            ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
+            ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
+          ]
+        : [
+            ['1 PLAYER', 'VS CPU', 'cpu'],
+            ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
+            ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
+            ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
+          ];
+      const ONLINE_MENU_INDEX = MODE_MENU.findIndex(item => item[2] === 'online');
 
       const MODE_ITEM_H = 46;
       const modeItemY = i => 120 + i * 54;
@@ -9850,16 +9858,17 @@
         }
         if (go) {
           SFX.confirm();
-          if (game.menuIndex === 2) {
+          const action = MODE_MENU[game.menuIndex][2];
+          if (action === 'online') {
             openOnlineLobby();
             return;
           }
-          if (game.menuIndex === 3) {
+          if (action === 'moves') {
             game.screen = 'moves';
             game.movesFrom = 'mode';
             return;
           }
-          game.mode = game.menuIndex === 0 ? 'cpu' : '2p';
+          game.mode = action;
           const prev = game.selection;
           game.selection = {
             c1: prev ? prev.c1 : 0,
@@ -9927,14 +9936,19 @@
         ctx.strokeStyle = '#3ff0ff';
         ctx.lineWidth = 3;
         ctx.stroke();
-        const controlRows = [
-          ['P1', 'W A S D move • SPACE attack • E kick • F special • R super • Q throw • T taunt', '#ff6b81'],
-          [
-            'P2',
-            "← → move • ↑ jump • ↓ crouch • K punch • L kick • ; special • ' super • O throw • P taunt",
-            '#6bd0ff'
-          ]
-        ];
+        const controlRows = IS_TOUCH
+          ? [
+              ['◀▶', 'move  •  ▲ jump  •  ▼ crouch  •  hold AWAY from your opponent to block', '#ff6b81'],
+              ['2P', 'your friend plays on THEIR OWN phone: pick 2 PLAYERS, HOST, send the code', '#6bd0ff']
+            ]
+          : [
+              ['P1', 'W A S D move • SPACE attack • E kick • F special • R super • Q throw • T taunt', '#ff6b81'],
+              [
+                'P2',
+                "← → move • ↑ jump • ↓ crouch • K punch • L kick • ; special • ' super • O throw • P taunt",
+                '#6bd0ff'
+              ]
+            ];
         controlRows.forEach(([a, b, c], i) => {
           drawText(a, 90, 366 + i * 28, 11, FONT_PIXEL, c, INK, 0, 'left');
           drawText(b, 126, 366 + i * 28, 9, FONT_PIXEL, '#fff', INK, 0, 'left');
@@ -9970,7 +9984,9 @@
           0
         );
         drawText(
-          '(In 1P mode you can use either key set.  → means toward your opponent.)',
+          IS_TOUCH
+            ? '(→ means toward your opponent.  Tap II during a fight to pause.)'
+            : '(In 1P mode you can use either key set.  → means toward your opponent.)',
           W / 2,
           500,
           8,
@@ -11796,7 +11812,7 @@
         game.mode = '2p';
         game.paused = false;
         game.screen = 'mode';
-        game.menuIndex = 2;
+        game.menuIndex = ONLINE_MENU_INDEX;
         SFX.select();
       }
 
@@ -12011,7 +12027,7 @@
         Net.role = null;
         hideOnlinePanel();
         game.screen = 'mode';
-        game.menuIndex = 2;
+        game.menuIndex = ONLINE_MENU_INDEX;
       }
 
       function updateOnlineLobby() {
@@ -12101,7 +12117,24 @@
         game.click = null;
       }
 
+      // phones: the fight buttons only appear during a fight (menus are worked by tapping the screen)
+      const touchLayer = document.getElementById('touch');
+      let touchLayerShown = null;
+      function updateTouchLayer() {
+        if (!IS_TOUCH) return;
+        const show = game.screen === 'fight';
+        if (show === touchLayerShown) return;
+        touchLayerShown = show;
+        touchLayer.style.display = show ? 'block' : 'none';
+        if (!show)
+          touchLayer.querySelectorAll('.tb').forEach(button => {
+            keysDown[button.dataset.k] = false; // let go of anything still held
+            button.classList.remove('on');
+          });
+      }
+
       function renderGame() {
+        updateTouchLayer();
         ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
         ctx.clearRect(0, 0, W, H);
         const screen = SCREENS[game.screen];
