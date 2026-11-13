@@ -8119,10 +8119,13 @@
       function ensureStage(id) {
         const key = id + ':' + canvas.width + 'x' + canvas.height;
         if (key === stageBuiltFor) return;
-        stageCanvas = document.createElement('canvas');
-        stageCanvas.width = canvas.width;
+        // reuse ONE off-screen canvas: iPhones cap total canvas memory, and making a new one per stage/rotation
+        // can hit the cap, after which Safari refuses to draw at all
+        if (!stageCanvas) stageCanvas = document.createElement('canvas');
+        stageCanvas.width = canvas.width; // resizing also clears it and resets its transform
         stageCanvas.height = canvas.height;
         const b = stageCanvas.getContext('2d');
+        if (!b) return; // out of canvas memory: skip the background this frame rather than crash
         b.scale(canvas.width / W, canvas.height / H);
         STAGES[id].build(b);
         stageBuiltFor = key;
@@ -8937,7 +8940,11 @@
       function drawStage(dim) {
         const id = MENU_SCREENS.includes(game.screen) ? 'laundry' : game.stageId || 'laundry';
         ensureStage(id);
-        ctx.drawImage(stageCanvas, 0, 0, W, H);
+        if (stageBuiltFor) ctx.drawImage(stageCanvas, 0, 0, W, H);
+        else {
+          ctx.fillStyle = '#160827';
+          ctx.fillRect(0, 0, W, H);
+        }
         STAGES[id].draw(game.time);
         if (dim) {
           ctx.fillStyle = `rgba(10,4,22,${dim})`;
@@ -11248,6 +11255,16 @@
       let frameTimeAccumulator = 0;
 
       function onAnimationFrame(now) {
+        // book the next frame first, so one unexpected error can never freeze the game for good
+        requestAnimationFrame(onAnimationFrame);
+        try {
+          runFrame(now);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function runFrame(now) {
         const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
         lastFrameTime = now;
         frameTimeAccumulator += dt * (game.slowMotion > 0 ? 0.32 : 1);
@@ -11263,18 +11280,25 @@
           for (const code in keysPressed)
             if (game.screen !== 'fight' || !FIGHT_KEYS.has(code)) delete keysPressed[code];
         }
-        requestAnimationFrame(onAnimationFrame);
       }
 
       function resizeCanvas() {
         const rect = canvas.getBoundingClientRect();
         const pixelRatio = Math.min(2, window.devicePixelRatio || 1);
-        canvas.width = Math.max(320, Math.round(rect.width * pixelRatio));
-        canvas.height = Math.max(180, Math.round(rect.height * pixelRatio));
+        const w = Math.max(320, Math.round(rect.width * pixelRatio)),
+          h = Math.max(180, Math.round(rect.height * pixelRatio));
+        if (w === canvas.width && h === canvas.height) return;
+        canvas.width = w;
+        canvas.height = h;
         buildStage();
       }
 
       addEventListener('resize', resizeCanvas);
+      // iPhones report the new size late after turning the phone: measure again a moment later
+      addEventListener('orientationchange', () => {
+        for (const ms of [100, 350, 800]) setTimeout(resizeCanvas, ms);
+      });
+      if (window.visualViewport) visualViewport.addEventListener('resize', resizeCanvas);
       resizeCanvas();
       // rebuild the stage once the web fonts have loaded (its signs use them)
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => buildStage());
