@@ -19,3 +19,7 @@ tools/announcer/clips_kokoro_sparkle.json
 tools/announcer/clips_before_*.json
 tools/announcer/fighter_clips_first.json
 tools/announcer/fighter_clips_before_*.json
+
+# itch.io upload pack: the zip and its index.html copy are rebuilt from index.html
+itch/*.zip
+itch/index.html
