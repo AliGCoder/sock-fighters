@@ -60,6 +60,41 @@
         padding: 7px 8px;
         cursor: pointer;
       }
+      /* full-screen button, left of the sound button; and the tip shown on iPhones */
+      #fullscreen {
+        position: fixed;
+        top: 8px;
+        right: 96px;
+        z-index: 5;
+        font:
+          10px 'Press Start 2P',
+          monospace;
+        color: #fff;
+        background: rgba(20, 10, 32, 0.7);
+        border: 2px solid #3ff0ff;
+        border-radius: 6px;
+        padding: 7px 8px;
+        cursor: pointer;
+      }
+      #fullscreen-tip {
+        display: none;
+        position: fixed;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(560px, 86vw);
+        z-index: 11;
+        font:
+          11px 'Press Start 2P',
+          monospace;
+        line-height: 1.8;
+        color: #fff;
+        background: rgba(20, 10, 32, 0.95);
+        border: 3px solid #ffe234;
+        border-radius: 10px;
+        padding: 12px 14px;
+        text-align: center;
+      }
       #touch {
         position: fixed;
         inset: 0;
@@ -148,6 +183,8 @@
   <body>
     <div id="wrap"><canvas id="c" tabindex="0"></canvas></div>
     <button id="mute" title="Sound on/off (M)">♪ ON</button>
+    <button id="fullscreen" title="Full screen">⛶ FULL</button>
+    <div id="fullscreen-tip"></div>
     <div id="touch">
       <div class="tb dir up" data-k="KeyW">▲</div>
       <div class="tb dir left" data-k="KeyA">◀</div>
@@ -1713,6 +1750,57 @@
         Sound.setMute(!Sound.muted);
         e.target.blur();
       });
+
+      // Full-screen button. PCs, Android and iPads use the browser's full-screen mode. iPhones don't allow web
+      // pages to go full screen, so there the button explains "Add to Home Screen" (the home-screen icon opens
+      // full screen). When the game is already running from a home-screen icon, the button isn't needed.
+      (function setUpFullscreenButton() {
+        const button = document.getElementById('fullscreen');
+        const tip = document.getElementById('fullscreen-tip');
+        const page = document.documentElement;
+        const canFullscreen = !!(page.requestFullscreen || page.webkitRequestFullscreen);
+        const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+        const fromHomeScreen =
+          navigator.standalone === true ||
+          matchMedia('(display-mode: standalone)').matches ||
+          matchMedia('(display-mode: fullscreen)').matches;
+        if (fromHomeScreen) {
+          button.style.display = 'none';
+          return;
+        }
+        let tipTimer = null;
+        const showTip = text => {
+          tip.textContent = text;
+          tip.style.display = 'block';
+          clearTimeout(tipTimer);
+          tipTimer = setTimeout(() => (tip.style.display = 'none'), 6000);
+        };
+        const updateLabel = () => (button.textContent = isFullscreen() ? '⛶ EXIT' : '⛶ FULL');
+        button.addEventListener('click', e => {
+          e.target.blur();
+          canvas.focus();
+          if (!canFullscreen) {
+            showTip('On iPhone: tap Share  ⬆  then "Add to Home Screen". Open the game from the new icon to play full screen.');
+            return;
+          }
+          if (isFullscreen()) {
+            (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+            return;
+          }
+          const request = page.requestFullscreen || page.webkitRequestFullscreen;
+          const result = request.call(page);
+          const lockSideways = () => {
+            try {
+              if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
+            } catch (err) {}
+          };
+          if (result && result.then) result.then(lockSideways).catch(() => showTip('This browser blocked full screen. Try your browser\'s own full-screen option (F11 on a PC).'));
+          else lockSideways();
+        });
+        document.addEventListener('fullscreenchange', updateLabel);
+        document.addEventListener('webkitfullscreenchange', updateLabel);
+        tip.addEventListener('click', () => (tip.style.display = 'none'));
+      })();
 
       // on-screen buttons for touch devices act exactly like keys
       // phones and tablets get on-screen buttons automatically, and touch-friendly hints on screen
