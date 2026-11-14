@@ -13348,7 +13348,7 @@
         lacetop: { name: 'LACETOP LADY', jp: 'レースの貴婦人', color: '#2b2f4a', band: '#1b1e30', lace: true, lashes: true, gloves: '#ffffff' },
         glitter: { name: 'GLITTER TIGHTS', jp: 'キラキラタイツ', color: '#ff4fa3', band: '#c4207a', glitter: true, gloves: '#ff9dd0' },
         footless: { name: 'FOOTLESS LEGGINGS', jp: 'レギンス伝令', color: '#262626', band: '#111', footless: true, gloves: '#262626' },
-        seamed: { name: 'SEAMED GUARD', jp: 'シーム衛兵', color: '#d9b48c', band: '#9a7550', seam: true, plume: true, gloves: '#ffffff' }
+        seamed: { name: 'SEAMED GUARD', jp: 'シーム衛兵', color: '#d9b48c', band: '#9a7550', seam: true, plume: true, gloves: '#ffffff', armed: true }
       };
 
       /**
@@ -13591,6 +13591,57 @@
         }
         // floating gloves
         const arm = Math.sin(t * 0.09) * 3;
+        const arms = H.armed ? o.arms || { spear: true, sword: true, shield: true } : {};
+        if (arms.sword || arms.spear) {
+          // a palace guard's sword in its scabbard at the hip
+          if (arms.sword) {
+          c.save();
+          c.translate(-bodyW / 2 + 6, hip - 18);
+          c.rotate(0.35);
+          roundRectPath(c, -5, 0, 10, 58, 4);
+          c.fillStyle = '#7a1f2a';
+          c.fill();
+          c.stroke();
+          c.fillStyle = '#d4a017';
+          c.fillRect(-11, -4, 22, 6);
+          c.strokeRect(-11, -4, 22, 6);
+          roundRectPath(c, -3, -20, 6, 16, 2);
+          c.fill();
+          c.stroke();
+          c.restore();
+          }
+          // the spear, held upright in the back glove (drawn before the glove so the glove grips it)
+          const sx = -bodyW / 2 - 12;
+          if (arms.spear) {
+          c.strokeStyle = INK;
+          c.lineWidth = 7;
+          c.beginPath();
+          c.moveTo(sx, 4);
+          c.lineTo(sx, top - 70);
+          c.stroke();
+          c.strokeStyle = '#8a5a2a';
+          c.lineWidth = 4;
+          c.stroke();
+          c.fillStyle = '#e8e8f4';
+          c.lineWidth = 3;
+          c.strokeStyle = INK;
+          c.beginPath();
+          c.moveTo(sx, top - 102);
+          c.lineTo(sx + 8, top - 78);
+          c.lineTo(sx, top - 68);
+          c.lineTo(sx - 8, top - 78);
+          c.closePath();
+          c.fill();
+          c.stroke();
+          c.fillStyle = '#c8202f';
+          c.beginPath();
+          c.moveTo(sx - 1, top - 68);
+          c.quadraticCurveTo(sx - 10 + Math.sin(t * 0.1) * 2, top - 56, sx - 6, top - 46);
+          c.lineTo(sx + 2, top - 64);
+          c.closePath();
+          c.fill();
+          }
+        }
         for (const [gx, gy] of [
           [-bodyW / 2 - 12, top + 58 + arm],
           [bodyW / 2 + 14, top + 52 - arm]
@@ -13602,6 +13653,44 @@
           c.arc(gx, gy, 9, 0, 7);
           c.fill();
           c.stroke();
+        }
+        if (arms.shield) {
+          // the shield on the front glove: gold rim, royal purple, the Queen's crest
+          const gx = bodyW / 2 + 16,
+            gy = top + 64 - arm;
+          c.beginPath();
+          c.moveTo(gx - 18, gy - 22);
+          c.lineTo(gx + 18, gy - 22);
+          c.lineTo(gx + 18, gy + 2);
+          c.quadraticCurveTo(gx + 16, gy + 20, gx, gy + 30);
+          c.quadraticCurveTo(gx - 16, gy + 20, gx - 18, gy + 2);
+          c.closePath();
+          c.fillStyle = '#5a1f8a';
+          c.fill();
+          c.strokeStyle = '#ffd23f';
+          c.lineWidth = 5;
+          c.stroke();
+          c.strokeStyle = INK;
+          c.lineWidth = 2;
+          c.stroke();
+          // the crest: a little gold crown over a pink heart
+          c.fillStyle = '#ff9dd0';
+          c.beginPath();
+          c.moveTo(gx, gy + 14);
+          c.bezierCurveTo(gx - 12, gy + 4, gx - 8, gy - 6, gx, gy - 1);
+          c.bezierCurveTo(gx + 8, gy - 6, gx + 12, gy + 4, gx, gy + 14);
+          c.fill();
+          c.fillStyle = '#ffd23f';
+          c.beginPath();
+          c.moveTo(gx - 7, gy - 6);
+          c.lineTo(gx - 7, gy - 14);
+          c.lineTo(gx - 3, gy - 10);
+          c.lineTo(gx, gy - 16);
+          c.lineTo(gx + 3, gy - 10);
+          c.lineTo(gx + 7, gy - 14);
+          c.lineTo(gx + 7, gy - 6);
+          c.closePath();
+          c.fill();
         }
         if (H.sceptre) {
           // a sceptre shaped like a darning needle, held in the front glove
@@ -14419,6 +14508,22 @@
       ];
       const PALACE_AFTER = { 1: PALACE_AFTER_CH1, 2: PALACE_AFTER_CH2 };
 
+      // what a palace guard can carry; each visit, each guard gets a different random set
+      const GUARD_WEAPONS = [
+        { spear: true, shield: true },
+        { sword: true, shield: true },
+        { spear: true },
+        { sword: true },
+        { spear: true, sword: true },
+        { spear: true, sword: true, shield: true }
+      ];
+      function pickGuardWeapons() {
+        const a = Math.floor(Math.random() * GUARD_WEAPONS.length);
+        let b = Math.floor(Math.random() * (GUARD_WEAPONS.length - 1));
+        if (b >= a) b++;
+        return [GUARD_WEAPONS[a], GUARD_WEAPONS[b]];
+      }
+
       function toModeMenu() {
         game.adv = null;
         game.screen = 'mode';
@@ -14427,7 +14532,7 @@
 
       function openHub(arriving) {
         const A = advData();
-        game.adv = Object.assign(game.adv || {}, { scene: null, hub: { t: 0, scout: A.prologue ? 1 : 0, sel: 0 } });
+        game.adv = Object.assign(game.adv || {}, { scene: null, hub: { t: 0, scout: A.prologue ? 1 : 0, sel: 0, guards: pickGuardWeapons() } });
         game.screen = 'advHub';
         if (arriving || !A.prologue) {
           A.prologue = true;
@@ -14671,8 +14776,9 @@
           ctx.fill();
         }
         // the palace guards: all sizes (the short one stands a little further back)
-        drawHosiery(ctx, 'seamed', 452, 458, 0.7, 1, t + 25, {});
-        drawHosiery(ctx, 'seamed', 398, 472, 0.9, 1, t, {});
+        const guards = (game.adv && game.adv.hub && game.adv.hub.guards) || [GUARD_WEAPONS[0], GUARD_WEAPONS[1]];
+        drawHosiery(ctx, 'seamed', 452, 458, 0.7, 1, t + 25, { arms: guards[1] });
+        drawHosiery(ctx, 'seamed', 398, 472, 0.9, 1, t, { arms: guards[0] });
       }
 
       /** The Queen's throne on a raised dais: a tall crown-topped back with velvet inside. */
