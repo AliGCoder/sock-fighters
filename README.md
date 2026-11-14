@@ -23,6 +23,11 @@ To get an app icon, tap **Share → Add to Home Screen**. The icon then opens th
 
 Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N plays a voice test.
 
+## Trophies, skins and unlockable heroes
+- **16 trophies** (main menu → TROPHIES). Some give rewards: clearing **Easy** unlocks the Lint Gang as playable heroes, **Hard** unlocks Steel Toe, King Knee-Sock and the Dryer Demon, and **Nightmare** unlocks Bleach Baron, Cling Queen and Iron Shogun. Others unlock the effect skins **FROST, NEON, CANDY, GOLD and SHADOW**, which work on every sock.
+- **The Dryer:** on the character select screen, tap **DRYER: STYLE IT** (or press **C**). Your sock hops into the dryer, where you pick a base skin and an effect, then tune the colour, vividness and brightness. Save it as **MY STYLE**.
+- Progress is saved on your device. Online, your friend sees your custom style too.
+
 ## Modes
 - **Arcade:** pick Easy, Medium, Hard or **Nightmare**. Each ladder starts gentler and builds up to its final boss.
 - **2 Players:** two players on one keyboard.

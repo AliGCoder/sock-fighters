@@ -311,7 +311,8 @@
       const FONT_PIXEL = "'Press Start 2P', monospace";
       const FONT_JAPANESE = "'Dela Gothic One', 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif";
 
-      let stageCanvas = null; // pre-rendered stage background (see buildStage)
+      // pre-rendered stage backgrounds (see ensureStage): at most two off-screen canvases, reused
+      const stageSlots = [];
 
       const rand = (min, max) => min + Math.random() * (max - min);
       const clamp = (v, min, max) => (v < min ? min : v > max ? max : v);
@@ -3319,7 +3320,10 @@
       const NUM_CHARS = CHARS.length;
 
       /** A copy of a character wearing skin number "skinIndex" (wraps around). The copy inherits everything else. */
+      /** A character in a skin. `skinIndex` is a number (one of its hand-made skins) or a style object
+       *  { base, fx, hue, sat, light, name } (an unlocked effect skin or a "MY STYLE" from the dryer). */
       function withSkin(def, skinIndex) {
+        if (skinIndex && typeof skinIndex === 'object') return styledSkin(def, skinIndex);
         const count = def.skins.length;
         const skin = def.skins[(((skinIndex || 0) % count) + count) % count];
         return Object.assign(Object.create(def), {
@@ -3927,7 +3931,7 @@
           build: playerIndex => {
             // 3 random rivals that aren't you, in random skins
             const ids = CHARS.map(c => c.id)
-              .filter(i => i !== CHARS[playerIndex].id)
+              .filter(i => i !== ROSTER[playerIndex].id)
               .sort(() => Math.random() - 0.5)
               .slice(0, 3);
             return ids.map(id => ({ id, k: (Math.random() * 4) | 0 }));
@@ -3946,6 +3950,251 @@
           rank: 'BOSS',
           title: 'NIGHTMARE SLAYER',
           build: () => ['bleach', 'cling', 'iron', 'demon'].map(id => ({ id, k: 0 }))
+        }
+      };
+
+      /* ---------------- SKINS, HEROES & ACHIEVEMENTS ---------------- */
+      // Effect skins recolour any sock (every colour in its palette goes through the effect), the dryer
+      // customizer adds hue / vividness / brightness on top, achievements unlock effects and villain heroes.
+      // Progress is saved on this device (localStorage).
+
+      function hexToHsl(hex) {
+        let h = hex.slice(1);
+        if (h.length === 3) h = h.replace(/./g, ch => ch + ch);
+        const r = parseInt(h.slice(0, 2), 16) / 255,
+          g = parseInt(h.slice(2, 4), 16) / 255,
+          b = parseInt(h.slice(4, 6), 16) / 255;
+        const max = Math.max(r, g, b),
+          min = Math.min(r, g, b),
+          l = (max + min) / 2;
+        if (max === min) return [0, 0, l];
+        const d = max - min;
+        const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        let hue = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+        return [hue * 60, s, l];
+      }
+      function hslToHex(h, s, l) {
+        const f = n => {
+          const k = (n + h / 30) % 12;
+          const a = s * Math.min(l, 1 - l);
+          const v = l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+          return Math.round(v * 255)
+            .toString(16)
+            .padStart(2, '0');
+        };
+        return '#' + f(0) + f(8) + f(4);
+      }
+
+      // effect skins: each turns a colour (hue 0..360, saturation 0..1, lightness 0..1) into a new one
+      const SKIN_FX = {
+        frost: { name: 'FROST', color: '#9fe8ff', fn: (h, s, l) => [195 + 20 * s, 0.6, 0.45 + 0.5 * l] },
+        neon: { name: 'NEON', color: '#3fff9a', fn: (h, s, l) => [(h + 140) % 360, 1, 0.4 + 0.2 * l] },
+        candy: { name: 'CANDY', color: '#ff8fd0', fn: (h, s, l) => [(315 + h * 0.12) % 360, 0.78, 0.6 + 0.32 * l] },
+        gold: { name: 'GOLD', color: '#ffd23f', fn: (h, s, l) => [40 + 14 * l, 0.88, 0.18 + 0.64 * l] },
+        shadow: { name: 'SHADOW', color: '#8a5cff', fn: (h, s, l) => [262, 0.32 + 0.25 * s, 0.07 + 0.36 * l] }
+      };
+      const SKIN_FX_IDS = Object.keys(SKIN_FX);
+
+      /** Recolour one palette colour by a style. Colours that aren't plain #hex are left alone. */
+      function recolor(color, style) {
+        if (typeof color !== 'string' || !/^#([0-9a-f]{3}){1,2}$/i.test(color)) return color;
+        let [h, s, l] = hexToHsl(color);
+        if (style.fx && SKIN_FX[style.fx]) [h, s, l] = SKIN_FX[style.fx].fn(h, s, l);
+        h = (((h + (style.hue || 0)) % 360) + 360) % 360;
+        s = clamp(s * (style.sat === undefined ? 1 : style.sat), 0, 1);
+        l = clamp(l + (style.light || 0), 0.03, 0.97);
+        return hslToHex(h, s, l);
+      }
+
+      const styledCache = new Map();
+      /** withSkin for a style object: the base skin with every colour recoloured (cached). */
+      function styledSkin(def, style) {
+        const key = def.id + (def.villainHero ? '*' : '') + JSON.stringify(style);
+        let out = styledCache.get(key);
+        if (out) return out;
+        const base = withSkin(def, style.base || 0);
+        const pal = {};
+        for (const k in base.pal) pal[k] = recolor(base.pal[k], style);
+        out = Object.assign(Object.create(def), {
+          pal,
+          glove: recolor(base.glove, style),
+          arm: recolor(base.arm, style),
+          color: recolor(base.color, style),
+          hat: base.hat,
+          stache: base.stache,
+          shades: base.shades,
+          skin: style,
+          skinName: style.name || (style.fx ? SKIN_FX[style.fx].name : 'MY STYLE')
+        });
+        if (styledCache.size > 300) styledCache.clear();
+        styledCache.set(key, out);
+        return out;
+      }
+
+      /** Clean up a style that came from storage or from the other player's phone. */
+      function sanitizeStyle(st) {
+        if (typeof st === 'number') return clamp(st | 0, 0, 9);
+        if (!st || typeof st !== 'object') return 0;
+        const num = (v, lo, hi, d) => (typeof v === 'number' && isFinite(v) ? clamp(v, lo, hi) : d);
+        return {
+          base: num(st.base, 0, 9, 0) | 0,
+          fx: SKIN_FX[st.fx] ? st.fx : null,
+          hue: num(st.hue, -180, 180, 0),
+          sat: num(st.sat, 0, 2, 1),
+          light: num(st.light, -0.35, 0.35, 0),
+          name: typeof st.name === 'string' ? st.name.slice(0, 16) : undefined
+        };
+      }
+
+      // Villains you can unlock and play. As heroes they get normal health and no boss armour, so it's fair.
+      const HERO_UNLOCKS = {
+        lint: 'easy',
+        socklet: 'easy',
+        holey: 'easy',
+        steel: 'hard',
+        king: 'hard',
+        demon: 'hard',
+        bleach: 'nightmare',
+        cling: 'nightmare',
+        iron: 'nightmare'
+      };
+      const VILLAIN_HEROES = ENEMIES.map(e =>
+        Object.assign(Object.create(e), {
+          hp: 1000,
+          armor: false,
+          dmgMul: undefined,
+          rank: 'HERO',
+          speed: clamp(e.speed || 1, 0.92, 1.08),
+          villainHero: true
+        })
+      );
+      // everyone on the select screen: the 8 heroes, then the 9 villains
+      const ROSTER = [...CHARS, ...VILLAIN_HEROES];
+
+      // 16 achievements. reward: { skin: effect id } and/or { heroes: [ids] }. goal + stat = counted ones.
+      const ACHIEVEMENTS = [
+        { id: 'firstwin', name: 'FIRST WASH', desc: 'Win your first fight', reward: { skin: 'frost' } },
+        { id: 'socknado', name: 'SOCK-NADO!', desc: 'Land the 3-kick combo (E E E)', reward: { skin: 'neon' } },
+        { id: 'combo5', name: 'COMBO KING', desc: 'Land a 5-hit combo' },
+        { id: 'perfect', name: 'FLAWLESS FOLD', desc: 'Win a round without getting hit', reward: { skin: 'candy' } },
+        { id: 'superko', name: 'SUPER SOCKER', desc: 'K.O. someone with a super move' },
+        { id: 'easy', name: 'LINT BUSTER', desc: 'Clear the EASY ladder', reward: { heroes: ['lint', 'socklet', 'holey'] } },
+        { id: 'medium', name: 'DRAWER CHAMP', desc: 'Clear the MEDIUM ladder' },
+        { id: 'hard', name: 'DRYER DESTROYER', desc: 'Clear the HARD ladder', reward: { heroes: ['steel', 'king', 'demon'] } },
+        {
+          id: 'nightmare',
+          name: 'NIGHTMARE SLAYER',
+          desc: 'Clear the NIGHTMARE ladder',
+          reward: { heroes: ['bleach', 'cling', 'iron'], skin: 'shadow' }
+        },
+        { id: 'wins25', name: 'VETERAN SOCK', desc: 'Win 25 fights', goal: 25, stat: 'wins', reward: { skin: 'gold' } },
+        { id: 'arenas', name: 'WORLD TOUR', desc: 'Fight in all 5 arenas', goal: 5, stat: 'arenas' },
+        { id: 'lucky', name: 'LUCKY SOCK', desc: 'Win with a RANDOM pick' },
+        { id: 'online1', name: 'BEST FRIENDS', desc: 'Win an online match' },
+        { id: 'online5', name: 'GOOD SPORT', desc: 'Play 5 online matches', goal: 5, stat: 'online' },
+        { id: 'stylist', name: 'FASHION SOCK', desc: 'Save your own style in the dryer' },
+        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins' }
+      ];
+      const ACHIEVEMENT_BY_ID = Object.fromEntries(ACHIEVEMENTS.map(a => [a.id, a]));
+
+      /** What an achievement gives, in words ("NEW SKIN: GOLD", "NEW HEROES: ..."). */
+      function rewardText(a) {
+        const r = a.reward;
+        if (!r) return '';
+        const parts = [];
+        if (r.heroes) parts.push('NEW HEROES: ' + r.heroes.map(id => findCharacter(id).name).join(', '));
+        if (r.skin) parts.push('NEW SKIN: ' + SKIN_FX[r.skin].name);
+        return parts.join('  +  ');
+      }
+
+      const Progress = {
+        KEY: 'sockfighters.progress.v1',
+        data: null,
+        load() {
+          let saved = null;
+          try {
+            saved = JSON.parse(localStorage.getItem(this.KEY));
+          } catch (e) {}
+          const d = saved && typeof saved === 'object' ? saved : {};
+          this.data = {
+            ach: d.ach || {},
+            skins: d.skins || {},
+            heroes: d.heroes || {},
+            looks: {},
+            stats: Object.assign({ wins: 0, online: 0, arenas: {}, heroWins: {} }, d.stats || {})
+          };
+          for (const id in d.looks || {}) this.data.looks[id] = sanitizeStyle(d.looks[id]);
+        },
+        save() {
+          try {
+            localStorage.setItem(this.KEY, JSON.stringify(this.data));
+          } catch (e) {}
+        },
+        hasSkin: fx => !!Progress.data.skins[fx],
+        heroUnlocked: id => !HERO_UNLOCKS[id] || !!Progress.data.heroes[id],
+        statValue(a) {
+          const st = this.data.stats;
+          if (a.stat === 'arenas' || a.stat === 'heroWins') return Object.keys(st[a.stat]).length;
+          return st[a.stat] || 0;
+        },
+        /** Unlock an achievement (once) and hand out its reward, with a pop-up. */
+        award(id) {
+          const a = ACHIEVEMENT_BY_ID[id];
+          if (!a || this.data.ach[id]) return;
+          this.data.ach[id] = Date.now();
+          const r = a.reward || {};
+          if (r.skin) this.data.skins[r.skin] = true;
+          for (const h of r.heroes || []) this.data.heroes[h] = true;
+          this.save();
+          Toasts.push(a);
+        },
+        /** Award any counted achievements whose goal has been reached. */
+        check() {
+          for (const a of ACHIEVEMENTS) if (a.goal && this.statValue(a) >= a.goal) this.award(a.id);
+          this.save();
+        }
+      };
+      Progress.load();
+
+      /** Achievement pop-ups at the top of the screen (one at a time, ~3.5 s each). */
+      const Toasts = {
+        queue: [],
+        push(a) {
+          this.queue.push({ a, start: 0 });
+          try {
+            SFX.fanfare();
+          } catch (e) {}
+        },
+        draw() {
+          const toast = this.queue[0];
+          if (!toast) return;
+          const now = performance.now();
+          if (!toast.start) toast.start = now;
+          const age = (now - toast.start) / 1000;
+          if (age > 3.6) {
+            this.queue.shift();
+            return;
+          }
+          const slide = age < 0.3 ? age / 0.3 : age > 3.2 ? 1 - (age - 3.2) / 0.4 : 1;
+          const y = -70 + 82 * slide;
+          const reward = rewardText(toast.a);
+          ctx.save();
+          roundRectPath(ctx, W / 2 - 250, y, 500, reward ? 74 : 58, 14);
+          ctx.fillStyle = 'rgba(20,10,36,0.95)';
+          ctx.fill();
+          ctx.strokeStyle = '#ffd23f';
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          starPath(ctx, W / 2 - 212, y + 30, 18, -Math.PI / 2);
+          ctx.fillStyle = '#ffd23f';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          drawText('ACHIEVEMENT UNLOCKED!', W / 2 + 18, y + 16, 9, FONT_PIXEL, '#ffd23f', INK, 0);
+          drawText(toast.a.name, W / 2 + 18, y + 40, 24, FONT_COMIC, '#fff', INK, 5);
+          if (reward) drawText(reward, W / 2 + 18, y + 62, 7, FONT_PIXEL, '#3ff0ff', INK, 0);
+          ctx.restore();
         }
       };
 
@@ -6375,6 +6624,7 @@
             v.vy = -4;
           }
           this.combo++;
+          trackHitAchievements(a, this, m);
           const sc = m.noScale ? 1 : Math.max(0.45, 1 - 0.12 * (this.combo - 1));
           const dmg = Math.round(m.dmg * sc * (a.dmgMul || 1));
           this.hp -= dmg;
@@ -6541,6 +6791,7 @@
         }
         /** Spend a full meter on the super move (with the cut-in). */
         startSuper(opponent) {
+          this.superAt = game.time; // for the SUPER SOCKER achievement (a K.O. soon after)
           Announcer.superMove(this.def);
           FighterVoice.play(this, 'superv', true);
           this.meter = 0;
@@ -8241,27 +8492,30 @@
       // (stageCanvas) at the screen's real resolution, and a draw(t) that adds the animated bits on top every frame.
       // Every match picks a random arena (never the same twice in a row); menus always show the laundromat.
 
-      let stageBuiltFor = ''; // which stage + canvas size stageCanvas currently holds
-
-      /** Forget the painted stage (screen resized or fonts loaded); it's repainted the next time it's drawn. */
+      /** Forget the painted stages (screen resized or fonts loaded); they're repainted the next time they're drawn. */
       function buildStage() {
-        stageBuiltFor = '';
+        for (const slot of stageSlots) slot.key = '';
       }
 
-      /** Make sure stageCanvas holds stage `id` at the current resolution. */
+      /** The off-screen canvas holding stage `id` at the current resolution (painting it if needed), or null.
+       *  Only TWO canvases are ever made and then reused: iPhones cap total canvas memory, and going over the cap
+       *  makes Safari refuse to draw at all. Two lets the dryer zoom show the laundromat and the drum together. */
       function ensureStage(id) {
         const key = id + ':' + canvas.width + 'x' + canvas.height;
-        if (key === stageBuiltFor) return;
-        // reuse ONE off-screen canvas: iPhones cap total canvas memory, and making a new one per stage/rotation
-        // can hit the cap, after which Safari refuses to draw at all
-        if (!stageCanvas) stageCanvas = document.createElement('canvas');
-        stageCanvas.width = canvas.width; // resizing also clears it and resets its transform
-        stageCanvas.height = canvas.height;
-        const b = stageCanvas.getContext('2d');
-        if (!b) return; // out of canvas memory: skip the background this frame rather than crash
-        b.scale(canvas.width / W, canvas.height / H);
-        STAGES[id].build(b);
-        stageBuiltFor = key;
+        let slot = stageSlots.find(sl => sl.key === key);
+        if (!slot) {
+          if (stageSlots.length < 2) stageSlots.push((slot = { canvas: document.createElement('canvas'), key: '', used: 0 }));
+          else slot = stageSlots[0].used < stageSlots[1].used ? stageSlots[0] : stageSlots[1]; // least recently used
+          slot.canvas.width = canvas.width; // resizing also clears it and resets its transform
+          slot.canvas.height = canvas.height;
+          const b = slot.canvas.getContext('2d');
+          if (!b) return null; // out of canvas memory: skip the background this frame rather than crash
+          b.scale(canvas.width / W, canvas.height / H);
+          STAGES[id].build(b);
+          slot.key = key;
+        }
+        slot.used = performance.now();
+        return slot.canvas;
       }
 
       /** A tiny repeatable random-number generator, so painted details (stars, windows) look the same every time. */
@@ -9061,7 +9315,7 @@
         dryer: { name: 'INSIDE THE DRYER', jp: '乾燥機の中', build: buildDryer, draw: drawDryer }
       };
       const STAGE_IDS = Object.keys(STAGES);
-      const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder'];
+      const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder', 'awards'];
 
       /** Pick the arena for the next match: random, but never the same one twice in a row. */
       function pickStage() {
@@ -9069,11 +9323,11 @@
         game.stageId = choices[Math.floor(Math.random() * choices.length)];
       }
 
-      /** Draw the current arena; dim (0..1) darkens it for menu screens. */
-      function drawStage(dim) {
-        const id = MENU_SCREENS.includes(game.screen) ? 'laundry' : game.stageId || 'laundry';
-        ensureStage(id);
-        if (stageBuiltFor) ctx.drawImage(stageCanvas, 0, 0, W, H);
+      /** Draw the current arena (or arena `forceId`); dim (0..1) darkens it for menu screens. */
+      function drawStage(dim, forceId) {
+        const id = forceId || (MENU_SCREENS.includes(game.screen) ? 'laundry' : game.stageId || 'laundry');
+        const painted = ensureStage(id);
+        if (painted) ctx.drawImage(painted, 0, 0, W, H);
         else {
           ctx.fillStyle = '#160827';
           ctx.fillRect(0, 0, W, H);
@@ -9134,6 +9388,36 @@
         game.time = 0;
       }
 
+      /** Does fighter side 0/1 belong to the player(s) on THIS device? (vs CPU: player 1; online: my side.) */
+      function isMine(side) {
+        if (game.mode === 'cpu') return side === 0;
+        if (game.mode === 'online') return side === (Net.role === 'host' ? 0 : 1);
+        return true; // 2 players on one keyboard: both are here
+      }
+
+      /** On every landed hit: the 3-kick SOCK-NADO and 5-hit combos. */
+      function trackHitAchievements(attacker, victim, move) {
+        if (!isMine(attacker.side)) return;
+        if (move === MOVES.kick3) Progress.award('socknado');
+        if (victim.combo >= 5) Progress.award('combo5');
+      }
+
+      /** At the end of a match: wins, online games, lucky random picks, wins per hero. */
+      function trackMatchAchievements(winner) {
+        const st = Progress.data.stats;
+        if (game.mode === 'online') st.online++;
+        const counts = game.mode === 'cpu' || game.mode === 'online';
+        if (winner && counts && isMine(winner.side)) {
+          st.wins++;
+          Progress.award('firstwin');
+          if (CHARS.some(c => c.id === winner.def.id)) st.heroWins[winner.def.id] = 1;
+          if (game.mode === 'online') Progress.award('online1');
+          const s = game.selection;
+          if (s && s.randomPick && s.randomPick[0]) Progress.award('lucky');
+        }
+        Progress.check();
+      }
+
       /** How far through the arcade ladder we are: 0 on the first stage, 1 on the last (and outside arcade). */
       function arcadeRamp() {
         const A = game.arcade;
@@ -9162,6 +9446,8 @@
             : 1;
         game.round = 1;
         game.screen = 'fight';
+        Progress.data.stats.arenas[game.stageId || 'laundry'] = 1;
+        Progress.check();
         startRound();
       }
 
@@ -9189,6 +9475,8 @@
         game.phase = 'ko';
         game.phaseTime = 0;
         game.winner = loser === f1 ? f2 : f1;
+        const w = game.winner;
+        if (w.superAt !== undefined && game.time - w.superAt < 240 && isMine(w.side)) Progress.award('superko');
         game.slowMotion = 55;
         showBanner('K.O.!', 'ノックアウト!', '#ff3d5a', 150, 150);
         SFX.ko();
@@ -9219,6 +9507,7 @@
           wSide: winner ? winner.side : -1
         };
         game.screen = 'result';
+        trackMatchAchievements(winner);
         if (winner) Announcer.champion(winner.def);
         else Announcer.drawGame();
       }
@@ -9316,6 +9605,7 @@
               FighterVoice.play(winner, winner.def.id === 'demon' ? 'laugh' : 'win', true);
             }
             const perfect = winner.hp >= winner.hpMax;
+            if (perfect && isMine(winner.side)) Progress.award('perfect');
             showBanner(
               winner.def.name + ' WINS',
               perfect ? 'PERFECT!! パーフェクト' : '勝利!',
@@ -9838,18 +10128,20 @@
         ? [
             ['1 PLAYER', 'VS CPU', 'cpu'],
             ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
+            ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
           ]
         : [
             ['1 PLAYER', 'VS CPU', 'cpu'],
             ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
             ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
+            ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
           ];
       const ONLINE_MENU_INDEX = MODE_MENU.findIndex(item => item[2] === 'online');
 
-      const MODE_ITEM_H = 46;
-      const modeItemY = i => 120 + i * 54;
+      const MODE_ITEM_H = 40;
+      const modeItemY = i => 114 + i * 45;
 
       function updateModeMenu() {
         if (backWasPressed()) {
@@ -9897,6 +10189,10 @@
           const action = MODE_MENU[game.menuIndex][2];
           if (action === 'online') {
             openOnlineLobby();
+            return;
+          }
+          if (action === 'awards') {
+            game.screen = 'awards';
             return;
           }
           if (action === 'moves') {
@@ -9950,8 +10246,8 @@
           ctx.strokeStyle = on ? '#fff' : INK;
           ctx.lineWidth = 4;
           ctx.stroke();
-          drawText(a, 480, y + 19, 28, FONT_COMIC, '#fff', INK, 6);
-          drawText(b, 480, y + 39, 8, FONT_PIXEL, on ? '#fff' : '#bbb', INK, 0);
+          drawText(a, 480, y + 16, 25, FONT_COMIC, '#fff', INK, 6);
+          drawText(b, 480, y + 33, 7, FONT_PIXEL, on ? '#fff' : '#bbb', INK, 0);
           if (on) {
             const p = idleAnim(basePose(), game.time);
             drawSock(
@@ -10346,11 +10642,52 @@
       // Character select, arcade ladder, versus, result, continue and ending.
 
       /** Position of character card i on the select screen. */
-      const selectCardRect = i => ({ x: 30 + i * 100, y: 100, w: 94, h: 150 });
-      // The last card on the select screen is "?" RANDOM: picking it spins a roulette and lands on a random sock.
-      const RANDOM_SLOT = NUM_CHARS;
-      const SELECT_SLOTS = NUM_CHARS + 1;
+      // Select screen: two rows of cards. Top: the 8 heroes + "?" RANDOM. Bottom: the 9 villain heroes (locked until
+      // their achievement). Card numbers are ROSTER indexes; RANDOM_SLOT is the "?" card.
+      const RANDOM_SLOT = ROSTER.length;
+      const SELECT_SLOTS = ROSTER.length + 1;
+      const SLOT_ORDER = [...CHARS.map((_, i) => i), RANDOM_SLOT, ...VILLAIN_HEROES.map((_, i) => CHARS.length + i)];
       const ROULETTE_FRAMES = 42;
+      function selectCardRect(i) {
+        const pos = SLOT_ORDER.indexOf(i);
+        const row = pos < 9 ? 0 : 1,
+          col = pos % 9;
+        return { x: 30 + col * 100, y: 96 + row * 96, w: 94, h: 90 };
+      }
+      /** The next card left (-1) or right (+1) in screen order. */
+      const nextSlot = (slot, dir) => SLOT_ORDER[(SLOT_ORDER.indexOf(slot) + dir + SELECT_SLOTS) % SELECT_SLOTS];
+      const slotUnlocked = slot => slot === RANDOM_SLOT || Progress.heroUnlocked(ROSTER[slot].id);
+
+      /** The skins a character can wear: hand-made ones, unlocked effect skins, and MY STYLE from the dryer. */
+      function skinOptions(def) {
+        const out = def.skins.map((_, i) => i);
+        for (const fx of SKIN_FX_IDS) if (Progress.hasSkin(fx)) out.push({ base: 0, fx });
+        const mine = Progress.data.looks[def.id];
+        if (mine) out.push(Object.assign({}, mine, { name: 'MY STYLE' }));
+        return out;
+      }
+      const wrapIndex = (k, n) => ((k % n) + n) % n;
+      /** Player `side`'s chosen skin (a number or a style object). Online, the friend's comes from their phone. */
+      function sideLook(side) {
+        const s = game.selection;
+        if (side === 1 && game.mode === 'online') return s.look2 || 0;
+        const c = side === 0 ? s.c1 : s.c2;
+        if (c >= ROSTER.length) return 0;
+        const options = skinOptions(ROSTER[c]);
+        return options[wrapIndex(side === 0 ? s.k1 : s.k2, options.length)];
+      }
+      /** Change player `side`'s skin by dir (+1 / -1). */
+      function cycleSkin(side, dir) {
+        const s = game.selection;
+        const c = side === 0 ? s.c1 : s.c2;
+        if (c >= ROSTER.length) return;
+        const n = skinOptions(ROSTER[c]).length;
+        if (side === 0) s.k1 = wrapIndex(s.k1 + dir, n);
+        else s.k2 = wrapIndex(s.k2 + dir, n);
+        SFX.select();
+      }
+      // where the "DRYER" (customize) button sits under player 1's panel
+      const STYLE_BUTTON = { x: 222, y: 470, w: 176, h: 30 };
 
       /** Pick characters and skins (P1, then P2 or random-roulette CPU). */
       // Each playable character's signature catchphrase, said when they're picked: [japanese, english subtitle].
@@ -10363,14 +10700,24 @@
         baby: ['ちっちゃくても、つよいもん!', 'Tiny, but STRONG!'],
         kneehi: ['伸びる相撲、見せてやる!', 'Behold — stretchy sumo!'],
         robo: ['圧縮率、百パーセント!', 'Compression: one hundred percent!'],
-        ghost: ['乾燥機の向こうから…来たの…', 'From beyond the dryer… I came…']
+        ghost: ['乾燥機の向こうから…来たの…', 'From beyond the dryer… I came…'],
+        // unlockable villains (text only)
+        lint: ['ふわふわを、なめるなよ!', "Don't underestimate the fluff!"],
+        socklet: ['ちっちゃいけど、はやいよ!', 'Tiny ankles, big speed!'],
+        holey: ['穴だらけでも、負けない!', 'Full of holes, never beaten!'],
+        steel: ['安全第一…お前以外はな!', 'Safety first... except for you!'],
+        king: ['ひざまずけ、靴下の民よ!', 'Kneel, people of the sock drawer!'],
+        demon: ['乾燥機の炎で、焼き尽くす!', 'The dryer flames will tumble you dry!'],
+        bleach: ['シミひとつ、許さない!', 'Not a single stain shall remain!'],
+        cling: ['離れられないわよ、坊や。', "You can't let go of me, darling."],
+        iron: ['シワは、すべて伸ばす!', 'Every wrinkle shall be pressed!']
       };
       const CATCHPHRASE_DELAY = 60; // frames: the announcer calls the name first
 
       /** Player `side` (0 or 1) locks in their character: name call, then the catchphrase with a speech bubble. */
       function confirmPick(side) {
         const s = game.selection;
-        const def = CHARS[side === 0 ? s.c1 : s.c2];
+        const def = ROSTER[side === 0 ? s.c1 : s.c2];
         SFX.confirm();
         Announcer.characterPicked(def);
         const seconds = FighterVoice.catchphrase(def, side, CATCHPHRASE_DELAY / 60);
@@ -10400,11 +10747,18 @@
       function lockIn(side) {
         const s = game.selection;
         const choice = side === 0 ? s.c1 : s.c2;
+        if (choice !== RANDOM_SLOT && !slotUnlocked(choice)) {
+          SFX.block();
+          s.takenNote = { side, until: game.time + 120, text: 'LOCKED: ' + unlockHint(ROSTER[choice].id) };
+          return;
+        }
         if (choice !== RANDOM_SLOT && choice === takenSock(side)) {
           SFX.block();
           s.takenNote = { side, until: game.time + 100 };
           return;
         }
+        s.randomPick = s.randomPick || [];
+        s.randomPick[side] = false;
         if (choice === RANDOM_SLOT) {
           s.roll = s.roll || [0, 0];
           s.roll[side] = 1;
@@ -10427,16 +10781,19 @@
           // slows down as it goes: changes every 3 frames, then every 5, then every 8
           const every = n < 20 ? 3 : n < 32 ? 5 : 8;
           if (n === 1 || n % every === 0) {
-            let next;
+            // only socks you have unlocked, not the one the other player took, and not the same twice in a row
             const taken = takenSock(side);
-            do next = Math.floor(Math.random() * NUM_CHARS);
-            while ((next === s[key] || next === taken) && NUM_CHARS > 2);
-            s[key] = next;
+            const pool = ROSTER.map((d, i) => i).filter(i => Progress.heroUnlocked(ROSTER[i].id) && i !== taken);
+            const fresh = pool.filter(i => i !== s[key]);
+            const from = fresh.length ? fresh : pool;
+            s[key] = from[Math.floor(Math.random() * from.length)];
             SFX.select();
           }
           if (n >= ROULETTE_FRAMES) {
             if (s[key] === takenSock(side)) continue; // the other player grabbed it meanwhile: keep spinning
             s.roll[side] = 0;
+            s.randomPick = s.randomPick || [];
+            s.randomPick[side] = true;
             if (side === 0) s.done1 = true;
             else s.done2 = true;
             confirmPick(side);
@@ -10479,90 +10836,63 @@
         }
         updateRoulette();
         if (game.mode === 'online') syncOnlinePicks();
+        const canStyle = () => !s.done1 && !isRolling(0) && s.c1 !== RANDOM_SLOT && slotUnlocked(s.c1);
         if (!s.done1 && !isRolling(0)) {
           if (wasPressed('KeyA') || (!two && wasPressed('ArrowLeft'))) {
-            s.c1 = (s.c1 + SELECT_SLOTS - 1) % SELECT_SLOTS;
+            s.c1 = nextSlot(s.c1, -1);
             SFX.select();
           }
           if (wasPressed('KeyD') || (!two && wasPressed('ArrowRight'))) {
-            s.c1 = (s.c1 + 1) % SELECT_SLOTS;
+            s.c1 = nextSlot(s.c1, 1);
             SFX.select();
           }
-          if (wasPressed('KeyW') || (!two && wasPressed('ArrowUp'))) {
-            s.k1 = (s.k1 + 3) % 4;
-            SFX.select();
-          }
-          if (wasPressed('KeyS') || (!two && wasPressed('ArrowDown'))) {
-            s.k1 = (s.k1 + 1) % 4;
-            SFX.select();
-          }
+          if (wasPressed('KeyW') || (!two && wasPressed('ArrowUp'))) cycleSkin(0, -1);
+          if (wasPressed('KeyS') || (!two && wasPressed('ArrowDown'))) cycleSkin(0, 1);
+          if (wasPressed('KeyC') && canStyle()) return openDryer();
           if (wasPressed('Space', 'KeyF', 'Enter') || (!two && wasPressed('KeyK'))) lockIn(0);
         }
         if (two && !s.done2 && !isRolling(1)) {
           if (wasPressed('ArrowLeft')) {
-            s.c2 = (s.c2 + SELECT_SLOTS - 1) % SELECT_SLOTS;
+            s.c2 = nextSlot(s.c2, -1);
             SFX.select();
           }
           if (wasPressed('ArrowRight')) {
-            s.c2 = (s.c2 + 1) % SELECT_SLOTS;
+            s.c2 = nextSlot(s.c2, 1);
             SFX.select();
           }
-          if (wasPressed('ArrowUp')) {
-            s.k2 = (s.k2 + 3) % 4;
-            SFX.select();
-          }
-          if (wasPressed('ArrowDown')) {
-            s.k2 = (s.k2 + 1) % 4;
-            SFX.select();
-          }
+          if (wasPressed('ArrowUp')) cycleSkin(1, -1);
+          if (wasPressed('ArrowDown')) cycleSkin(1, 1);
           if (wasPressed('KeyK') || (s.done1 && wasPressed('Enter'))) lockIn(1);
         }
         if (game.click && !isRolling(0) && !isRolling(1)) {
           const c0 = game.click;
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
           let used = false;
+          if (canStyle() && inside(STYLE_BUTTON)) return openDryer();
           for (let i = 0; i < SELECT_SLOTS; i++) {
-            const c = selectCardRect(i);
-            if (c0.x > c.x && c0.x < c.x + c.w && c0.y > c.y && c0.y < c.y + c.h) {
-              used = true;
-              if (!s.done1) {
-                if (s.c1 === i) lockIn(0);
-                else {
-                  s.c1 = i;
-                  SFX.select();
-                }
-              } else if (two && !s.done2) {
-                if (s.c2 === i) lockIn(1);
-                else {
-                  s.c2 = i;
-                  SFX.select();
-                }
+            if (!inside(selectCardRect(i))) continue;
+            used = true;
+            if (!s.done1) {
+              if (s.c1 === i) lockIn(0);
+              else {
+                s.c1 = i;
+                SFX.select();
+              }
+            } else if (two && !s.done2) {
+              if (s.c2 === i) lockIn(1);
+              else {
+                s.c2 = i;
+                SFX.select();
               }
             }
           }
           if (!used && c0.y > 300) {
-            if (c0.x < W / 2 && !s.done1) {
-              s.k1 = (s.k1 + 1) % 4;
-              SFX.select();
-            } else if (c0.x >= W / 2 && two && !s.done2) {
-              s.k2 = (s.k2 + 1) % 4;
-              SFX.select();
-            }
+            if (c0.x < W / 2 && !s.done1) cycleSkin(0, 1);
+            else if (c0.x >= W / 2 && two && !s.done2) cycleSkin(1, 1);
           }
         }
         if (!two && game.mode !== 'online' && s.done1 && !s.done2) {
           s.done2 = true;
-        }
-        if (false) {
-          s.roul++;
-          if (s.roul % 4 === 0) {
-            s.c2 = (s.c2 + 1 + ((Math.random() * (NUM_CHARS - 1)) | 0)) % NUM_CHARS;
-            s.k2 = (Math.random() * 4) | 0;
-            SFX.select();
-          }
-          if (s.roul >= 40) {
-            s.done2 = true;
-            SFX.confirm();
-          }
         }
         if (s.done1 && s.done2) {
           s.wait++;
@@ -10575,39 +10905,80 @@
         }
       }
 
+      /** A small padlock (locked villain cards). */
+      function drawPadlock(x, y, size) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(size, size);
+        ctx.strokeStyle = '#ffe234';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(0, -8, 8, Math.PI, 0);
+        ctx.stroke();
+        roundRectPath(ctx, -12, -8, 24, 20, 4);
+        ctx.fillStyle = '#ffe234';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = INK;
+        ctx.fillRect(-2, -1, 4, 7);
+        ctx.restore();
+      }
+
+      /** How to unlock a locked villain, in words. */
+      const unlockHint = id => 'CLEAR ' + (HERO_UNLOCKS[id] || '').toUpperCase() + ' TO UNLOCK';
+
       function drawSelect() {
         drawStage(0.62);
         const s = game.selection,
           two = game.mode === '2p',
           t = game.time;
-        drawText('CHOOSE YOUR SOCK', W / 2, 48, 52, FONT_COMIC, '#ffe234', INK, 10);
+        drawText('CHOOSE YOUR SOCK', W / 2, 44, 48, FONT_COMIC, '#ffe234', INK, 10);
         drawBackButton(s.done1 || s.done2 ? 'UNDO' : 'BACK');
-        drawText('靴下を選べ!', W / 2, 84, 16, FONT_JAPANESE, '#fff', INK, 5);
+        drawText('靴下を選べ!', W / 2, 78, 14, FONT_JAPANESE, '#fff', INK, 5);
         drawRandomCard(t);
-        for (let i = 0; i < NUM_CHARS; i++) {
+        for (let i = 0; i < ROSTER.length; i++) {
           const c = selectCardRect(i),
-            d = withSkin(CHARS[i], s.c1 === i ? s.k1 : s.c2 === i ? s.k2 : 0);
+            base = ROSTER[i],
+            locked = !Progress.heroUnlocked(base.id),
+            d = withSkin(base, s.c1 === i ? sideLook(0) : s.c2 === i ? sideLook(1) : 0);
           roundRectPath(ctx, c.x, c.y, c.w, c.h, 10);
           const g = ctx.createLinearGradient(0, c.y, 0, c.y + c.h);
-          g.addColorStop(0, shadeColor(d.color, -0.35));
+          g.addColorStop(0, locked ? '#2a2238' : shadeColor(d.color, -0.35));
           g.addColorStop(1, '#1a1030');
           ctx.fillStyle = g;
           ctx.fill();
           ctx.strokeStyle = INK;
           ctx.lineWidth = 4;
           ctx.stroke();
-          const hov = s.c1 === i || s.c2 === i;
           const p = idleAnim(basePose(), t + i * 13);
-          if (hov) {
+          if (s.c1 === i || s.c2 === i) {
             p.eyes = 'angry';
             p.mouth = 'grin';
           }
           ctx.save();
           roundRectPath(ctx, c.x, c.y, c.w, c.h, 10);
           ctx.clip();
-          drawSock(ctx, d, p, c.x + 32, c.y + c.h - 26, 1, 0.52, { x: 3, y: 0 });
+          if (locked) ctx.globalAlpha = 0.35;
+          drawSock(ctx, d, p, c.x + 34, c.y + c.h - 16, 1, fitScale(d, 0.34), { x: 3, y: 0 });
           ctx.restore();
-          drawText(d.name, c.x + c.w / 2, c.y + c.h - 12, 13, FONT_COMIC, '#fff', INK, 4);
+          if (locked) {
+            roundRectPath(ctx, c.x, c.y, c.w, c.h, 10);
+            ctx.fillStyle = 'rgba(8,4,18,0.55)';
+            ctx.fill();
+            drawPadlock(c.x + c.w / 2, c.y + 38, 1.1);
+          }
+          drawText(
+            locked ? 'LOCKED' : d.name,
+            c.x + c.w / 2,
+            c.y + c.h - 10,
+            d.name.length > 12 ? 9 : 11,
+            FONT_COMIC,
+            locked ? '#aaa' : '#fff',
+            INK,
+            4
+          );
         }
         // a sock one player has locked in is stamped TAKEN for the other (2 players / online)
         if (game.mode !== 'cpu') {
@@ -10615,26 +10986,27 @@
             [s.done1, s.c1, s.done2],
             [s.done2, s.c2, s.done1]
           ]) {
-            if (!done || otherDone || c >= NUM_CHARS) continue;
+            if (!done || otherDone || c >= ROSTER.length) continue;
             const r = selectCardRect(c);
             ctx.save();
             roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
             ctx.fillStyle = 'rgba(10,4,22,0.45)';
             ctx.fill();
-            ctx.translate(r.x + r.w / 2, r.y + r.h / 2 - 10);
+            ctx.translate(r.x + r.w / 2, r.y + r.h / 2 - 8);
             ctx.rotate(-0.25);
-            roundRectPath(ctx, -44, -14, 88, 28, 6);
+            roundRectPath(ctx, -40, -12, 80, 24, 6);
             ctx.fillStyle = '#e8333a';
             ctx.fill();
             ctx.strokeStyle = '#fff';
             ctx.lineWidth = 3;
             ctx.stroke();
-            drawText('TAKEN', 0, 1, 13, FONT_PIXEL, '#fff', INK, 0);
+            drawText('TAKEN', 0, 1, 11, FONT_PIXEL, '#fff', INK, 0);
             ctx.restore();
           }
         }
-        if (s.takenNote && game.time < s.takenNote.until)
-          drawText('THAT SOCK IS TAKEN — PICK ANOTHER ONE!', W / 2, 280, 12, FONT_PIXEL, '#ff6b81', INK, 5);
+        const note = s.takenNote && game.time < s.takenNote.until ? s.takenNote : null;
+        if (note)
+          drawText(note.text || 'THAT SOCK IS TAKEN — PICK ANOTHER ONE!', W / 2, 296, 11, FONT_PIXEL, '#ff6b81', INK, 5);
         const cur = (i, col, tag, right, done) => {
           const c = selectCardRect(i),
             o = right ? 5 : 0;
@@ -10642,74 +11014,94 @@
           ctx.lineWidth = done ? 6 : t % 20 < 12 ? 5 : 3;
           roundRectPath(ctx, c.x - 4 - o, c.y - 4 - o, c.w + 8 + o * 2, c.h + 8 + o * 2, 12);
           ctx.stroke();
-          roundRectPath(ctx, right ? c.x + c.w - 40 : c.x - 4, c.y - 18, 44, 20, 5);
+          roundRectPath(ctx, right ? c.x + c.w - 40 : c.x - 4, c.y - 16, 44, 18, 5);
           ctx.fillStyle = col;
           ctx.fill();
-          drawText(tag, right ? c.x + c.w - 18 : c.x + 18, c.y - 8, 9, FONT_PIXEL, '#fff', INK, 0);
+          drawText(tag, right ? c.x + c.w - 18 : c.x + 18, c.y - 7, 8, FONT_PIXEL, '#fff', INK, 0);
         };
         cur(s.c1, '#ff4f6d', '1P', false, s.done1);
         if (two || (game.mode === 'online' && s.done2)) cur(s.c2, '#3fb8ff', '2P', true, s.done2);
-        const panel = (i, k, x, face, col, tag, done, keysTxt) => {
+        const panel = (side, i, x, face, col, tag, done, keysTxt) => {
           if (i === RANDOM_SLOT) return drawRandomPanel(x, face, col, tag, t);
-          const d = withSkin(CHARS[i], k);
-          const p = idleAnim(basePose(), t);
-          if (done) {
-            winAnim(p, t, d.id);
+          const base = ROSTER[i];
+          const tx = face === 1 ? x + 110 : x - 110,
+            al = face === 1 ? 'left' : 'right';
+          if (!Progress.heroUnlocked(base.id)) {
+            ctx.save();
+            ctx.globalAlpha = 0.3;
+            drawSock(ctx, withSkin(base, 0), idleAnim(basePose(), t), x, 498, face, fitScale(base, 1.28), { x: 4, y: 0 });
+            ctx.restore();
+            drawPadlock(x, 400, 2.2);
+            drawText(tag, tx, 316, 12, FONT_PIXEL, col, INK, 0, al);
+            drawText('???', tx, 346, 32, FONT_COMIC, '#aaa', INK, 7, al);
+            drawText('LOCKED VILLAIN', tx, 380, 11, FONT_PIXEL, '#ffe234', INK, 0, al);
+            drawText(unlockHint(base.id), tx, 404, 9, FONT_PIXEL, '#fff', INK, 0, al);
+            drawText('(see TROPHIES on the main menu)', tx, 424, 7, FONT_PIXEL, '#aaa', INK, 0, al);
+            return;
           }
+          const look = sideLook(side);
+          const d = withSkin(base, look);
+          const p = idleAnim(basePose(), t);
+          if (done) winAnim(p, t, d.id);
           ctx.fillStyle = 'rgba(0,0,0,0.35)';
           ctx.beginPath();
           ctx.ellipse(x, 502, 52, 9, 0, 0, 7);
           ctx.fill();
-          drawSock(ctx, d, p, x, 498, face, 1.28, { x: 4, y: 0 });
-          const tx = face === 1 ? x + 110 : x - 110,
-            al = face === 1 ? 'left' : 'right';
-          drawText(tag, tx, 306, 12, FONT_PIXEL, col, INK, 0, al);
-          drawText(d.name, tx, 336, 32, FONT_COMIC, d.color, INK, 7, al);
-          drawText(d.jp, tx, 368, 15, FONT_JAPANESE, '#fff', INK, 5, al);
+          drawSock(ctx, d, p, x, 498, face, fitScale(d, 1.28), { x: 4, y: 0 });
+          drawText(tag, tx, 316, 12, FONT_PIXEL, col, INK, 0, al);
+          drawText(d.name, tx, 344, d.name.length > 12 ? 26 : 32, FONT_COMIC, d.color, INK, 7, al);
+          drawText(d.jp, tx, 372, 14, FONT_JAPANESE, '#fff', INK, 5, al);
           roundRectPath(ctx, face === 1 ? tx : tx - 196, 384, 196, 24, 6);
           ctx.fillStyle = 'rgba(255,255,255,0.1)';
           ctx.fill();
-          drawText(
-            'SKIN: ' + d.skinName + '  ' + ((k % 4) + 1) + '/4',
-            face === 1 ? tx + 8 : tx - 8,
-            397,
-            9,
-            FONT_PIXEL,
-            '#ffe234',
-            INK,
-            0,
-            al
-          );
+          let skinTxt = 'SKIN: ' + d.skinName;
+          if (!(side === 1 && game.mode === 'online')) {
+            const options = skinOptions(base);
+            skinTxt += '  ' + (wrapIndex(side === 0 ? s.k1 : s.k2, options.length) + 1) + '/' + options.length;
+          }
+          drawText(skinTxt, face === 1 ? tx + 8 : tx - 8, 397, 8, FONT_PIXEL, '#ffe234', INK, 0, al);
           if (!done && keysTxt) drawText(keysTxt, tx, 420, 7, FONT_PIXEL, '#aaa', INK, 0, al);
-          drawText('SPECIAL: ' + d.special, tx, 440, 9, FONT_PIXEL, '#fff', INK, 0, al);
-          drawText('↓+SPECIAL: ' + d.special2, tx, 458, 9, FONT_PIXEL, '#fff', INK, 0, al);
+          drawText('SPECIAL: ' + d.special, tx, 438, 8, FONT_PIXEL, '#fff', INK, 0, al);
+          drawText('↓+SPECIAL: ' + d.special2, tx, 455, 8, FONT_PIXEL, '#fff', INK, 0, al);
           if (done) drawText('READY!', tx, 490, 22, FONT_PIXEL, col, INK, 6, al);
+          else if (side === 0) {
+            // the button into the dryer (skin customizer)
+            const r = STYLE_BUTTON,
+              pulse = 0.6 + 0.4 * Math.sin(t * 0.12);
+            roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+            ctx.fillStyle = '#2a1d48';
+            ctx.fill();
+            ctx.strokeStyle = `rgba(255,79,163,${pulse})`;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            drawText(IS_TOUCH ? 'DRYER: STYLE IT' : 'DRYER: STYLE IT [C]', r.x + r.w / 2, r.y + r.h / 2 + 1, 8, FONT_PIXEL, '#fff', INK, 0);
+          }
         };
         panel(
+          0,
           s.c1,
-          s.k1,
           110,
           1,
           '#ff6b81',
           game.mode === 'online' ? 'YOU' : 'PLAYER 1',
           s.done1,
-          two ? 'W/S change skin' : '↑/↓ or W/S change skin'
+          two ? 'W/S change skin' : IS_TOUCH ? 'tap here to change skin' : '↑/↓ or W/S change skin'
         );
-        if (two) panel(s.c2, s.k2, 850, -1, '#6bd0ff', 'PLAYER 2', s.done2, '↑/↓ change skin');
+        if (two) panel(1, s.c2, 850, -1, '#6bd0ff', 'PLAYER 2', s.done2, '↑/↓ change skin');
         else if (game.mode === 'online') {
-          if (s.done2) panel(s.c2, s.k2, 850, -1, '#6bd0ff', 'YOUR FRIEND', true, '');
+          if (s.done2) panel(1, s.c2, 850, -1, '#6bd0ff', 'YOUR FRIEND', true, '');
           else drawOnlineWaitingPanel(t);
         } else {
           const Ld = LADDERS[cpuDifficulty],
             D = DIFFICULTY[cpuDifficulty];
-          drawText('OPPONENTS', 850, 306, 12, FONT_PIXEL, '#6bd0ff', INK, 0, 'right');
-          drawText(Ld.label, 850, 338, 32, FONT_COMIC, D.color, INK, 7, 'right');
-          drawText(Ld.jp + '  •  ' + D.name, 850, 368, 14, FONT_JAPANESE, '#fff', INK, 5, 'right');
+          drawText('OPPONENTS', 850, 316, 12, FONT_PIXEL, '#6bd0ff', INK, 0, 'right');
+          drawText(Ld.label, 850, 346, 32, FONT_COMIC, D.color, INK, 7, 'right');
+          drawText(Ld.jp + '  •  ' + D.name, 850, 374, 14, FONT_JAPANESE, '#fff', INK, 5, 'right');
           const ids = cpuDifficulty === 'medium' ? ['?', '?', '?'] : Ld.build(0).map(e => e.id);
           ids.forEach((id, i) => {
-            const x = 600 + i * 92,
+            const x = 850 - (ids.length - 1 - i) * 84,
               y = 470;
-            roundRectPath(ctx, x - 38, y - 62, 76, 86, 10);
+            roundRectPath(ctx, x - 36, y - 62, 72, 86, 10);
             ctx.fillStyle = 'rgba(255,255,255,0.08)';
             ctx.fill();
             ctx.strokeStyle = D.color;
@@ -10721,7 +11113,7 @@
               const d = findCharacter(id),
                 p = idleAnim(basePose(), game.time + i * 15);
               ctx.save();
-              roundRectPath(ctx, x - 38, y - 62, 76, 86, 10);
+              roundRectPath(ctx, x - 36, y - 62, 72, 86, 10);
               ctx.clip();
               drawSock(ctx, withSkin(d, 0), p, x - 10, y + 14, -1, 0.4 / Math.max(1, (d.tall || 1) * 0.8), {
                 x: -3,
@@ -10730,7 +11122,7 @@
               ctx.restore();
             }
             drawText(
-              ['1', '2', cpuDifficulty === 'hard' ? 'FINAL' : '3'][i],
+              i === ids.length - 1 && cpuDifficulty !== 'easy' ? 'FINAL' : String(i + 1),
               x,
               y + 38,
               8,
@@ -10741,12 +11133,16 @@
             );
           });
         }
-        if (!s.done1 && !(s.takenNote && game.time < s.takenNote.until))
+        if (!s.done1 && !note)
           drawText(
-            two ? 'P1: A/D + SPACE    P2: ←/→ + K' : 'A/D choose  •  W/S skin  •  SPACE select',
+            two
+              ? 'P1: A/D + SPACE    P2: ←/→ + K'
+              : IS_TOUCH
+                ? 'tap a sock, tap it again to pick'
+                : 'A/D choose  •  W/S skin  •  C style  •  SPACE select',
             W / 2,
-            280,
-            10,
+            296,
+            9,
             FONT_PIXEL,
             '#fff',
             INK,
@@ -10755,7 +11151,7 @@
         for (const side of [0, 1]) if (s.catchphrase && s.catchphrase[side]) drawCatchphraseBubble(s.catchphrase[side], side);
       }
 
-      /** The "?" RANDOM card at the end of the row. */
+      /** The "?" RANDOM card at the end of the hero row. */
       function drawRandomCard(t) {
         const c = selectCardRect(RANDOM_SLOT);
         roundRectPath(ctx, c.x, c.y, c.w, c.h, 10);
@@ -10767,10 +11163,10 @@
         ctx.strokeStyle = INK;
         ctx.lineWidth = 4;
         ctx.stroke();
-        const bob = Math.sin(t * 0.12) * 4;
-        drawText('?', c.x + c.w / 2, c.y + 62 + bob, 72, FONT_COMIC, '#ffe234', INK, 8);
-        drawText('ランダム', c.x + c.w / 2, c.y + 112, 11, FONT_JAPANESE, '#fff', INK, 3);
-        drawText('RANDOM', c.x + c.w / 2, c.y + c.h - 12, 13, FONT_COMIC, '#fff', INK, 4);
+        const bob = Math.sin(t * 0.12) * 3;
+        drawText('?', c.x + c.w / 2, c.y + 36 + bob, 50, FONT_COMIC, '#ffe234', INK, 7);
+        drawText('ランダム', c.x + c.w / 2, c.y + 64, 9, FONT_JAPANESE, '#fff', INK, 3);
+        drawText('RANDOM', c.x + c.w / 2, c.y + c.h - 10, 11, FONT_COMIC, '#fff', INK, 4);
       }
 
       /** Big preview panel while a player hovers the "?" card. */
@@ -10797,7 +11193,7 @@
         const w = 430;
         const h = 46;
         const x = side === 0 ? 24 : W - 24 - w;
-        const y = 254; // just below the character cards
+        const y = 286; // just below the character cards
         const tailX = side === 0 ? 120 : W - 120; // points down at the portrait
         const pop = age < 6 ? 0.6 + (age / 6) * 0.4 : 1; // pops in
         const fade = age > bubble.frames + 20 ? 1 - (age - bubble.frames - 20) / 20 : 1;
@@ -10959,7 +11355,7 @@
             0
           );
         });
-        const me = withSkin(CHARS[game.selection.c1], game.selection.k1),
+        const me = withSkin(ROSTER[game.selection.c1], sideLook(0)),
           pm = idleAnim(basePose(), t);
         pm.eyes = 'angry';
         pm.mouth = 'grin';
@@ -10985,11 +11381,11 @@
       /** Set up the next match and show the VS screen. */
       function goToVersus() {
         const s = game.selection;
-        game.p1Def = withSkin(CHARS[s.c1], s.k1);
+        game.p1Def = withSkin(ROSTER[s.c1], sideLook(0));
         game.p2Def =
           game.mode === 'cpu'
             ? arcadeOpponent()
-            : (s.c1 === s.c2 && s.k1 === s.k2 && (s.k2 = (s.k2 + 1) % 4), withSkin(CHARS[s.c2], s.k2));
+            : withSkin(ROSTER[s.c2], sideLook(1));
         game.screen = 'vs';
         game.versusTime = 0;
         pickStage();
@@ -11129,6 +11525,7 @@
               A.stage++;
               if (A.stage >= A.list.length) {
                 game.screen = 'ending';
+                Progress.award(A.tier); // ladder cleared: easy / medium / hard / nightmare
                 game.endingTime = 0;
               } else {
                 game.screen = 'ladder';
@@ -11281,7 +11678,7 @@
 
       function drawContinue() {
         const n = 9 - Math.floor(game.continueTime / 60),
-          me = withSkin(CHARS[game.selection.c1], game.selection.k1),
+          me = withSkin(ROSTER[game.selection.c1], sideLook(0)),
           t = game.continueTime;
         drawStage(0.8);
         const pl = basePose();
@@ -11332,7 +11729,7 @@
       function drawEnding() {
         const A = game.arcade,
           t = game.endingTime,
-          me = withSkin(CHARS[game.selection.c1], game.selection.k1),
+          me = withSkin(ROSTER[game.selection.c1], sideLook(0)),
           Ld = LADDERS[A.tier];
         drawStage(0.55);
         for (let i = 0; i < 70; i++) {
@@ -11399,6 +11796,428 @@
         );
         if (t > 90 && t % 60 < 40)
           drawText('THANK YOU FOR PLAYING!  •  SPACE: TITLE', W / 2, 500, 12, FONT_PIXEL, '#fff', INK, 5);
+      }
+
+      /* ---------------- THE DRYER (skin customizer) ---------------- */
+      // From the select screen your sock hops into a dryer, the door slams, and we zoom inside the tumbling drum.
+      // There you pick a base skin, an effect skin you've unlocked, and tweak colour / vividness / brightness:
+      // every change gives the sock a tumble. SAVE pops it out as "MY STYLE" (one per character).
+
+      const DRYER_ROWS = ['SKIN', 'EFFECT', 'COLOUR', 'VIVID', 'BRIGHT', 'SAVE', 'RESET'];
+      const DRYER_ENTER = 100; // frames of the hop-in + zoom
+      const DRYER_EXIT = 80; // frames of the pop-out
+      const dryerRowY = i => 132 + i * 48;
+      const DRYER_SAVE = { x: 540, y: 372, w: 380, h: 44 };
+      const DRYER_RESET = { x: 540, y: 424, w: 380, h: 34 };
+      const dryerArrow = (i, dir) => ({ x: dir < 0 ? 700 : 886, y: dryerRowY(i) - 19, w: 40, h: 38 });
+
+      function openDryer() {
+        const s = game.selection;
+        const def = ROSTER[s.c1];
+        const current = sideLook(0);
+        const look =
+          typeof current === 'object'
+            ? { base: current.base || 0, fx: current.fx || null, hue: current.hue || 0, sat: current.sat === undefined ? 1 : current.sat, light: current.light || 0 }
+            : { base: current, fx: null, hue: 0, sat: 1, light: 0 };
+        game.dryer = { c: s.c1, def, look, row: 0, phase: 'enter', t: 0, tumble: 0 };
+        game.screen = 'dryer';
+        SFX.select();
+      }
+
+      /** The effect choices you have: none, plus every effect skin unlocked so far. */
+      const dryerFxOptions = () => [null, ...SKIN_FX_IDS.filter(fx => Progress.hasSkin(fx))];
+
+      function dryerChange(row, dir) {
+        const D = game.dryer,
+          L = D.look;
+        if (row === 0) L.base = wrapIndex(L.base + dir, D.def.skins.length);
+        else if (row === 1) {
+          const opts = dryerFxOptions();
+          L.fx = opts[wrapIndex(opts.indexOf(L.fx) + dir, opts.length)];
+          if (opts.length === 1) {
+            D.note = { text: 'WIN ACHIEVEMENTS TO UNLOCK EFFECT SKINS!', until: game.time + 120 };
+            SFX.block();
+            return;
+          }
+        } else if (row === 2) L.hue = clamp(L.hue + dir * 20, -180, 180);
+        else if (row === 3) L.sat = clamp(Math.round((L.sat + dir * 0.1) * 10) / 10, 0, 2);
+        else if (row === 4) L.light = clamp(Math.round((L.light + dir * 0.05) * 100) / 100, -0.3, 0.3);
+        D.tumble = 30; // the sock does a flip in the drum
+        SFX.spin();
+      }
+
+      function dryerSave() {
+        const D = game.dryer;
+        Progress.data.looks[D.def.id] = sanitizeStyle(D.look);
+        Progress.save();
+        Progress.award('stylist');
+        D.phase = 'exit';
+        D.t = 0;
+        SFX.confirm();
+      }
+
+      function leaveDryer(saved) {
+        const s = game.selection;
+        if (saved) {
+          // wear the new style straight away: it's the last skin option
+          s.k1 = skinOptions(ROSTER[s.c1]).length - 1;
+        }
+        game.screen = 'select';
+      }
+
+      function updateDryerScreen() {
+        const D = game.dryer;
+        D.t++;
+        if (D.tumble > 0) D.tumble--;
+        if (D.phase === 'enter') {
+          if (D.t === 4) SFX.jump();
+          if (D.t === 50) SFX.clonk();
+          const skip = wasPressed(...CONFIRM_KEYS, 'Escape') || game.click;
+          game.click = null;
+          if (D.t >= DRYER_ENTER || (skip && D.t > 8)) {
+            D.phase = 'edit';
+            D.t = 0;
+          }
+          return;
+        }
+        if (D.phase === 'exit') {
+          if (D.t === 40) SFX.boing();
+          if (D.t >= DRYER_EXIT) leaveDryer(true);
+          return;
+        }
+        if (backWasPressed()) return leaveDryer(false);
+        if (wasPressed('KeyW', 'ArrowUp')) {
+          D.row = wrapIndex(D.row - 1, DRYER_ROWS.length);
+          SFX.select();
+        }
+        if (wasPressed('KeyS', 'ArrowDown')) {
+          D.row = wrapIndex(D.row + 1, DRYER_ROWS.length);
+          SFX.select();
+        }
+        if (D.row < 5) {
+          if (wasPressed('KeyA', 'ArrowLeft')) dryerChange(D.row, -1);
+          if (wasPressed('KeyD', 'ArrowRight', ...CONFIRM_KEYS)) dryerChange(D.row, 1);
+        } else if (wasPressed(...CONFIRM_KEYS)) {
+          if (D.row === 5) return dryerSave();
+          D.look = { base: 0, fx: null, hue: 0, sat: 1, light: 0 };
+          D.tumble = 30;
+          SFX.spin();
+        }
+        const c0 = game.click;
+        if (c0) {
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          for (let i = 0; i < 5; i++)
+            for (const dir of [-1, 1])
+              if (inside(dryerArrow(i, dir))) {
+                D.row = i;
+                dryerChange(i, dir);
+              }
+          if (inside(DRYER_SAVE)) return dryerSave();
+          if (inside(DRYER_RESET)) {
+            D.look = { base: 0, fx: null, hue: 0, sat: 1, light: 0 };
+            D.tumble = 30;
+            SFX.spin();
+          }
+          game.click = null;
+        }
+      }
+
+      /** The big dryer in the laundromat that the sock jumps into (cx, cy = centre of its round door). */
+      function drawDryerMachine(cx, cy, doorOpen, shake) {
+        ctx.save();
+        ctx.translate(cx + shake, cy);
+        roundRectPath(ctx, -150, -190, 300, 370, 22);
+        ctx.fillStyle = '#ece7f5';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        roundRectPath(ctx, -134, -176, 268, 48, 10);
+        ctx.fillStyle = '#c9bfe0';
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#1d1430';
+        ctx.fillRect(40, -164, 80, 24);
+        drawText('DRYER', 80, -152, 10, FONT_PIXEL, '#ffe234', INK, 0);
+        ctx.fillStyle = '#ff4fa3';
+        ctx.beginPath();
+        ctx.arc(-100, -152, 9, 0, 7);
+        ctx.fill();
+        // the drum behind the door: dark with a warm glow
+        const g = ctx.createRadialGradient(0, 0, 10, 0, 0, 105);
+        g.addColorStop(0, '#ffb347');
+        g.addColorStop(1, '#3a0b0b');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(0, 0, 100, 0, 7);
+        ctx.fill();
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        // the door: a glass circle that swings open to the left
+        ctx.save();
+        ctx.translate(-100, 0);
+        ctx.scale(1 - doorOpen * 0.75, 1);
+        ctx.translate(100 - doorOpen * 120, 0);
+        ctx.fillStyle = `rgba(160,210,255,${0.35 - doorOpen * 0.15})`;
+        ctx.beginPath();
+        ctx.arc(0, 0, 104, 0, 7);
+        ctx.fill();
+        ctx.strokeStyle = '#8d84a8';
+        ctx.lineWidth = 14;
+        ctx.stroke();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, 111, 0, 7);
+        ctx.stroke();
+        ctx.restore();
+        ctx.restore();
+      }
+
+      /** The sock in the drum, turned by `angle`, centred at (x, y). */
+      function drawTumblingSock(def, x, y, size, angle, t) {
+        const p = idleAnim(basePose(), t);
+        p.eyes = 'happy';
+        p.mouth = 'grin';
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        drawSock(ctx, def, p, -10, 70 * size, 1, fitScale(def, size), { x: 4, y: 0 });
+        ctx.restore();
+      }
+
+      function drawSparkles(x, y, radius, t, n, col) {
+        for (let i = 0; i < n; i++) {
+          const a = i * 2.4 + t * 0.05,
+            r = radius * (0.6 + 0.4 * Math.sin(t * 0.1 + i));
+          starPath(ctx, x + Math.cos(a) * r, y + Math.sin(a) * r, 5 + (i % 3) * 2, t * 0.1 + i);
+          ctx.fillStyle = col || '#fff';
+          ctx.fill();
+        }
+      }
+
+      function drawDryerScreen() {
+        const D = game.dryer,
+          t = D.t;
+        const def = withSkin(D.def, D.look);
+        if (D.phase === 'enter') {
+          // 1) hop into the dryer, 2) door slams, 3) zoom in through the door
+          const door = { x: 480, y: 300 };
+          const zoom = t > 60 ? ease((t - 60) / 40) : 0;
+          if (zoom < 1) {
+            drawStage(0.35, 'laundry');
+            const shake = t > 50 && t < 62 ? Math.sin(t * 2.5) * 5 : 0;
+            const doorOpen = t < 48 ? 1 : Math.max(0, 1 - (t - 48) / 5);
+            drawDryerMachine(door.x, door.y, doorOpen, shake);
+            if (t < 50) {
+              const k = Math.min(1, t / 44);
+              const x = lerp(820, door.x, k),
+                y = lerp(470, door.y + 40, k) - Math.sin(k * Math.PI) * 230,
+                size = lerp(1.1, 0.35, Math.max(0, (k - 0.55) / 0.45));
+              const p = idleAnim(basePose(), game.time);
+              p.eyes = 'happy';
+              p.mouth = 'yell';
+              drawSock(ctx, def, p, x, y, -1, fitScale(def, size), { x: -4, y: 0 });
+            }
+            if (t > 50) drawText('TUMBLE TIME!', 480, 70, 46, FONT_COMIC, '#ffe234', INK, 9);
+            drawText('乾燥機へ!', 480, 108, 16, FONT_JAPANESE, '#fff', INK, 5);
+          }
+          if (zoom > 0) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(door.x, door.y, 100 + zoom * 620, 0, 7);
+            ctx.clip();
+            drawStage(0.15, 'dryer');
+            drawTumblingSock(def, 250, 300, 1.5, t * 0.15, game.time);
+            ctx.restore();
+          }
+          if (t > 10) drawText('TAP TO SKIP', W - 80, H - 16, 7, FONT_PIXEL, '#aaa', INK, 0);
+          return;
+        }
+        drawStage(0.15, 'dryer');
+        // the sock tumbling in the drum (a full flip on every change, a gentle sway otherwise)
+        let angle = Math.sin(game.time * 0.04) * 0.18,
+          y = 270 + Math.sin(game.time * 0.06) * 8,
+          size = 1.15;
+        if (D.tumble > 0) angle += (1 - D.tumble / 30) * Math.PI * 2;
+        if (D.phase === 'exit') {
+          angle = t * 0.35;
+          if (t > 40) {
+            y -= (t - 40) * (t - 40) * 0.35;
+            size = 1.15 - (t - 40) * 0.015;
+          }
+          drawSparkles(250, y, 120, game.time, 10, '#ffe234');
+        }
+        if (D.tumble > 0) drawSparkles(250, 270, 110, game.time, 6, '#fff');
+        drawTumblingSock(def, 250, y, size, angle, game.time);
+        drawText(def.name, 250, 470, 30, FONT_COMIC, def.color, INK, 7);
+        drawText(def.skinName === 'MY STYLE' || D.look.hue || D.look.light || D.look.sat !== 1 ? 'MY STYLE' : def.skinName, 250, 500, 10, FONT_PIXEL, '#ffe234', INK, 0);
+        if (D.phase === 'exit') {
+          if (t > 20) drawText('FRESH LOOK!', W / 2, 90, 54, FONT_COMIC, '#ffe234', INK, 10);
+          if (t > 60) {
+            ctx.fillStyle = `rgba(255,255,255,${(t - 60) / 20})`;
+            ctx.fillRect(0, 0, W, H);
+          }
+          return;
+        }
+        // the controls
+        drawBackButton('BACK');
+        drawText('THE DRYER', 730, 52, 44, FONT_COMIC, '#ffe234', INK, 9);
+        drawText('乾燥機で着替え', 730, 88, 14, FONT_JAPANESE, '#fff', INK, 5);
+        roundRectPath(ctx, 520, 106, 420, 366, 14);
+        ctx.fillStyle = 'rgba(20,10,36,0.82)';
+        ctx.fill();
+        ctx.strokeStyle = '#ff9d2e';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        const L = D.look;
+        const values = [
+          D.def.skins[wrapIndex(L.base, D.def.skins.length)].name,
+          L.fx ? SKIN_FX[L.fx].name : 'NONE',
+          null,
+          null,
+          null
+        ];
+        const sliders = [null, null, [L.hue, -180, 180], [L.sat, 0, 2], [L.light, -0.3, 0.3]];
+        for (let i = 0; i < 5; i++) {
+          const y0 = dryerRowY(i),
+            on = D.row === i;
+          if (on) {
+            roundRectPath(ctx, 530, y0 - 22, 400, 44, 10);
+            ctx.fillStyle = 'rgba(255,79,163,0.25)';
+            ctx.fill();
+          }
+          drawText(DRYER_ROWS[i], 548, y0, 11, FONT_PIXEL, on ? '#fff' : '#ccc', INK, 0, 'left');
+          for (const dir of [-1, 1]) {
+            const r = dryerArrow(i, dir);
+            roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+            ctx.fillStyle = '#2a1d48';
+            ctx.fill();
+            ctx.strokeStyle = on ? '#ff4fa3' : '#6b6290';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            drawText(dir < 0 ? '◀' : '▶', r.x + r.w / 2, r.y + r.h / 2 + 1, 14, FONT_PIXEL, '#fff', INK, 0);
+          }
+          if (values[i] !== null) {
+            const fxCol = i === 1 && L.fx ? SKIN_FX[L.fx].color : '#ffe234';
+            drawText(values[i], 813, y0, values[i].length > 10 ? 8 : 10, FONT_PIXEL, fxCol, INK, 0);
+          } else {
+            const [v, lo, hi] = sliders[i];
+            const x0 = 752,
+              x1 = 874,
+              k = (v - lo) / (hi - lo);
+            if (i === 2) {
+              // a rainbow bar for colour
+              const g = ctx.createLinearGradient(x0, 0, x1, 0);
+              for (let s = 0; s <= 6; s++) g.addColorStop(s / 6, `hsl(${s * 60 - 180}, 85%, 55%)`);
+              ctx.fillStyle = g;
+            } else ctx.fillStyle = '#4a3d6e';
+            roundRectPath(ctx, x0, y0 - 5, x1 - x0, 10, 5);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(lerp(x0, x1, k), y0, 9, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+          }
+        }
+        for (const [r, label, row, col] of [
+          [DRYER_SAVE, 'SAVE AS MY STYLE', 5, '#ff4fa3'],
+          [DRYER_RESET, 'RESET', 6, '#6b6290']
+        ]) {
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
+          ctx.fillStyle = D.row === row ? shadeColor(col, -0.2) : '#2a1d48';
+          ctx.fill();
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          drawText(label, r.x + r.w / 2, r.y + r.h / 2 + 1, row === 5 ? 13 : 10, FONT_PIXEL, '#fff', INK, 0);
+        }
+        const note = D.note && game.time < D.note.until ? D.note.text : null;
+        drawText(
+          note || (IS_TOUCH ? 'tap ◀ ▶ to change  •  SAVE when you like it' : 'W/S row  •  A/D change  •  SPACE save  •  ESC back'),
+          730,
+          492,
+          note ? 8 : 7,
+          FONT_PIXEL,
+          note ? '#ff6b81' : '#aaa',
+          INK,
+          0
+        );
+      }
+
+      /* ---------------- TROPHIES ---------------- */
+      // Every achievement with its reward, progress bars for the counted ones, and totals.
+
+      function updateAwards() {
+        if (backWasPressed() || wasPressed(...CONFIRM_KEYS) || game.click) {
+          game.click = null;
+          goBack('mode');
+        }
+      }
+
+      function drawAwards() {
+        drawStage(0.72);
+        const t = game.time;
+        const got = ACHIEVEMENTS.filter(a => Progress.data.ach[a.id]).length;
+        drawText('TROPHIES', W / 2, 40, 46, FONT_COMIC, '#ffd23f', INK, 9);
+        drawText('実績  ' + got + ' / ' + ACHIEVEMENTS.length, W / 2, 72, 13, FONT_JAPANESE, '#fff', INK, 4);
+        drawBackButton('BACK');
+        ACHIEVEMENTS.forEach((a, i) => {
+          const col = i % 4,
+            row = (i / 4) | 0;
+          const x = 22 + col * 232,
+            y = 90 + row * 100,
+            w = 222,
+            h = 92;
+          const done = !!Progress.data.ach[a.id];
+          roundRectPath(ctx, x, y, w, h, 12);
+          ctx.fillStyle = done ? 'rgba(80,60,10,0.85)' : 'rgba(20,12,36,0.85)';
+          ctx.fill();
+          ctx.strokeStyle = done ? '#ffd23f' : '#4a3d6e';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          starPath(ctx, x + 24, y + 26, 14, -Math.PI / 2 + (done ? Math.sin(t * 0.05 + i) * 0.15 : 0));
+          ctx.fillStyle = done ? '#ffd23f' : '#3a2d58';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+          drawText(a.name, x + 44, y + 20, a.name.length > 14 ? 15 : 18, FONT_COMIC, done ? '#fff' : '#aaa', INK, 4, 'left');
+          wrapText(a.desc, 196, `7px ${FONT_PIXEL}`)
+            .slice(0, 2)
+            .forEach((line, j) => drawText(line, x + 12, y + 46 + j * 12, 7, FONT_PIXEL, done ? '#fff' : '#bbb', INK, 0, 'left'));
+          const reward = rewardText(a);
+          if (reward)
+            wrapText(reward, 200, `6px ${FONT_PIXEL}`)
+              .slice(0, 3)
+              .forEach((line, j) =>
+                drawText(line, x + 12, y + 68 + j * 8, 6, FONT_PIXEL, done ? '#3ff0ff' : '#5f8a99', INK, 0, 'left')
+              );
+          if (a.goal && !done) {
+            const v = Math.min(a.goal, Progress.statValue(a));
+            ctx.fillStyle = '#3a2d58';
+            ctx.fillRect(x + w - 66, y + 80, 54, 6);
+            ctx.fillStyle = '#ffd23f';
+            ctx.fillRect(x + w - 66, y + 80, (54 * v) / a.goal, 6);
+            drawText(v + '/' + a.goal, x + w - 72, y + 83, 6, FONT_PIXEL, '#ddd', INK, 0, 'right');
+          }
+        });
+        const heroes = ROSTER.filter(d => Progress.heroUnlocked(d.id)).length;
+        const skins = SKIN_FX_IDS.filter(fx => Progress.hasSkin(fx)).length;
+        drawText(
+          'HEROES ' + heroes + '/' + ROSTER.length + '   •   EFFECT SKINS ' + skins + '/' + SKIN_FX_IDS.length + '   •   WINS ' + Progress.data.stats.wins,
+          W / 2,
+          508,
+          10,
+          FONT_PIXEL,
+          '#ffe234',
+          INK,
+          4
+        );
+        drawText('Style your sock in THE DRYER on the character select screen', W / 2, 528, 7, FONT_PIXEL, '#aaa', INK, 0);
       }
 
       /* ---------------- ONLINE ---------------- */
@@ -11690,7 +12509,8 @@
             if (Net.role === 'host' && game.screen === 'online') onConnected();
             break;
           case 'pick':
-            Net.remotePicks[msg.m] = { c: msg.c, k: msg.k };
+            if (typeof msg.c === 'number' && msg.c >= 0 && msg.c < ROSTER.length)
+              Net.remotePicks[msg.m] = { c: msg.c, look: sanitizeStyle(msg.look) };
             break;
           case 'unpick':
             delete Net.remotePicks[msg.m];
@@ -11748,7 +12568,7 @@
       function syncOnlinePicks() {
         const s = game.selection;
         if (s.done1 && !s.sentPick) {
-          netSend({ t: 'pick', m: Net.match, c: s.c1, k: s.k1 });
+          netSend({ t: 'pick', m: Net.match, c: s.c1, look: sideLook(0) }); // the look itself, so custom styles show
           s.sentPick = true;
         } else if (!s.done1 && s.sentPick) {
           netSend({ t: 'unpick', m: Net.match });
@@ -11767,7 +12587,7 @@
         }
         if (theirs && !s.done2) {
           s.c2 = theirs.c;
-          s.k2 = theirs.k;
+          s.look2 = theirs.look;
           s.done2 = true;
           confirmPick(1);
         } else if (!theirs && s.done2) {
@@ -11787,8 +12607,8 @@
           seed: (realRandom() * 2147483647) | 0,
           stage: game.stageId,
           delay: netDelay(),
-          host: { c: s.c1, k: s.k1 },
-          guest: { c: s.c2, k: s.k2 }
+          host: { c: s.c1, look: sideLook(0) },
+          guest: { c: s.c2, look: s.look2 || 0 }
         };
         netSend(msg);
         onlineStart(msg);
@@ -11803,10 +12623,9 @@
         Net.remoteIn = new Map();
         Net.remoteSums = new Map();
         Net.ls = null;
-        game.p1Def = withSkin(CHARS[msg.host.c], msg.host.k);
-        // same sock and same skin: the friend gets the next skin so you can tell them apart
-        const guestSkin = msg.host.c === msg.guest.c && msg.host.k === msg.guest.k ? (msg.guest.k + 1) % 4 : msg.guest.k;
-        game.p2Def = withSkin(CHARS[msg.guest.c], guestSkin);
+        const pickOf = p => ROSTER[clamp(p.c | 0, 0, ROSTER.length - 1)];
+        game.p1Def = withSkin(pickOf(msg.host), sanitizeStyle(msg.host.look));
+        game.p2Def = withSkin(pickOf(msg.guest), sanitizeStyle(msg.guest.look));
         game.stageId = msg.stage;
         game.screen = 'vs';
         game.versusTime = 0;
@@ -11823,7 +12642,7 @@
         s.roul = 0;
         s.wait = 0;
         s.roll = null;
-        if (s.c1 === RANDOM_SLOT || s.c1 >= NUM_CHARS) s.c1 = 0;
+        if (s.c1 >= ROSTER.length) s.c1 = 0;
         game.screen = 'select';
       }
 
@@ -12181,7 +13000,9 @@
         ladder: { update: updateLadder, draw: drawLadderScreen },
         cont: { update: updateContinue, draw: drawContinue },
         ending: { update: updateEnding, draw: drawEnding },
-        online: { update: updateOnlineLobby, draw: drawOnlineLobby }
+        online: { update: updateOnlineLobby, draw: drawOnlineLobby },
+        dryer: { update: updateDryerScreen, draw: drawDryerScreen },
+        awards: { update: updateAwards, draw: drawAwards }
       };
 
       function updateGame() {
@@ -12221,6 +13042,7 @@
         // CRT scanlines for arcade vibe
         ctx.fillStyle = 'rgba(0,0,0,0.07)';
         for (let y = 0; y < H; y += 3) ctx.fillRect(0, y, W, 1);
+        Toasts.draw(); // achievement pop-ups on top of everything
       }
 
       function drawVersusScreen() {
@@ -12351,6 +13173,13 @@
         pressed: keysPressed,
         keys: keysDown,
         Net,
+        Progress,
+        ROSTER,
+        /** tests: forget all progress */
+        resetProgress() {
+          localStorage.removeItem(Progress.KEY);
+          Progress.load();
+        },
         /** tests: pretend a connection opened, as 'host' or 'guest' (messages go through window.__netOut/__netIn) */
         netTestConnect(role) {
           Net.role = role;
