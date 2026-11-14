@@ -33,6 +33,24 @@
         user-select: none;
         -webkit-tap-highlight-color: transparent;
       }
+      /* --W / --H = the width and height the game lays out in. Normally the window; when a phone is held upright
+         the whole #app is turned sideways (class 'sideways' on <html>) and the two swap. Set by layoutForOrientation(). */
+      :root {
+        --W: 100vw;
+        --H: 100vh;
+      }
+      #app {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--W);
+        height: var(--H);
+        overflow: hidden;
+      }
+      html.sideways #app {
+        transform-origin: 0 0;
+        transform: translateX(var(--H)) rotate(90deg);
+      }
       #wrap {
         position: fixed;
         inset: 0;
@@ -42,8 +60,8 @@
       }
       canvas {
         display: block;
-        width: min(100vw, 177.78vh);
-        height: min(56.25vw, 100vh);
+        width: min(var(--W), calc(var(--H) * 1.7778));
+        height: min(calc(var(--W) * 0.5625), var(--H));
         background: #000;
         outline: none;
       }
@@ -90,7 +108,7 @@
         top: 50px;
         left: 50%;
         transform: translateX(-50%);
-        width: min(560px, 86vw);
+        width: min(560px, calc(var(--W) * 0.86));
         z-index: 11;
         font:
           11px 'Press Start 2P',
@@ -113,8 +131,11 @@
       /* touch controls (shown automatically on phones/tablets): sized to the screen, D-pad bottom-left,
          action buttons bottom-right. --b = button size, --m = margin from the screen edge. */
       #touch {
-        --b: clamp(46px, 15vh, 80px);
+        --b: clamp(46px, calc(var(--H) * 0.15), 80px);
         --m: max(8px, env(safe-area-inset-left));
+      }
+      html.sideways #touch {
+        --m: max(10px, env(safe-area-inset-top), env(safe-area-inset-bottom));
       }
       .tb {
         position: absolute;
@@ -152,28 +173,6 @@
       .tb.super { right: var(--m); bottom: calc(var(--m) + var(--b)); }
       .tb.throw { right: var(--m); bottom: calc(var(--m) + 2.15 * var(--b)); width: calc(var(--b) * 0.85); height: calc(var(--b) * 0.85); }
       .tb.pause { right: var(--m); top: 52px; width: calc(var(--b) * 0.7); height: calc(var(--b) * 0.7); }
-      /* holding a phone upright: ask to turn it sideways */
-      #rotate {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 10;
-        background: #0b0614;
-        color: #ffe234;
-        font:
-          14px 'Press Start 2P',
-          monospace;
-        line-height: 2;
-        text-align: center;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-      }
-      @media (orientation: portrait) and (pointer: coarse) {
-        #rotate {
-          display: flex;
-        }
-      }
       /* online lobby panel (host / join a friend) */
       #online {
         display: none;
@@ -181,8 +180,8 @@
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: min(520px, 90vw);
-        max-height: 92vh;
+        width: min(520px, calc(var(--W) * 0.9));
+        max-height: calc(var(--H) * 0.92);
         overflow: auto;
         box-sizing: border-box;
         z-index: 9;
@@ -264,6 +263,7 @@
     </style>
   </head>
   <body>
+    <div id="app">
     <div id="wrap"><canvas id="c" tabindex="0"></canvas></div>
     <button id="mute" title="Sound on/off (M)">♪ ON</button>
     <button id="fullscreen" title="Full screen">⛶ FULL</button>
@@ -281,7 +281,7 @@
       <div class="tb throw" data-k="KeyQ">THROW</div>
       <div class="tb pause" data-k="Escape">II</div>
     </div>
-    <div id="rotate">↻<br />TURN YOUR PHONE SIDEWAYS<br />TO PLAY</div>
+    </div>
     <script>
       'use strict';
       /* =====================================================================
@@ -388,9 +388,15 @@
 
         init() {
           if (this.context) {
-            if (this.context.state === 'suspended') this.context.resume();
+            // 'interrupted' = an iPhone phone / FaceTime call (or Siri) took the speaker; wake it on the next tap
+            if (this.context.state === 'suspended' || this.context.state === 'interrupted') this.context.resume();
             return;
           }
+          // iPhone (Safari 16.4+): game sound MIXES with other audio, so it never stops or pauses a Discord /
+          // video call or music. (Like most game sound, it then follows the phone's silent switch.)
+          try {
+            if (navigator.audioSession) navigator.audioSession.type = 'ambient';
+          } catch (e) {}
           try {
             const AudioContextClass = window.AudioContext || window.webkitAudioContext;
             this.context = new AudioContextClass();
@@ -1824,11 +1830,34 @@
         return false;
       }
 
+      /** A phone held upright shows the game turned sideways, filling the screen (works with rotation lock on). */
+      function layoutForOrientation() {
+        const sideways = IS_TOUCH && innerHeight > innerWidth;
+        const root = document.documentElement;
+        root.classList.toggle('sideways', sideways);
+        root.style.setProperty('--W', (sideways ? innerHeight : innerWidth) + 'px');
+        root.style.setProperty('--H', (sideways ? innerWidth : innerHeight) + 'px');
+      }
+
+      /** Screen (finger / mouse) position -> game coordinates (0..W, 0..H), undoing the sideways turn if any. */
+      function screenToGame(clientX, clientY) {
+        let x = clientX,
+          y = clientY;
+        if (document.documentElement.classList.contains('sideways')) {
+          x = clientY;
+          y = innerWidth - clientX;
+        }
+        return {
+          x: ((x - canvas.offsetLeft) / canvas.clientWidth) * W,
+          y: ((y - canvas.offsetTop) / canvas.clientHeight) * H
+        };
+      }
+
       // clicks/taps are converted to game coordinates and handled by the current screen
       canvas.addEventListener('pointerdown', e => {
         Sound.init();
-        const r = canvas.getBoundingClientRect();
-        game.click = { x: ((e.clientX - r.left) / r.width) * W, y: ((e.clientY - r.top) / r.height) * H };
+        const p = screenToGame(e.clientX, e.clientY);
+        game.click = { x: p.x, y: p.y };
       });
       document.getElementById('mute').addEventListener('click', e => {
         Sound.init();
@@ -1921,7 +1950,7 @@
         Sound.init();
         const ac = Sound.context;
         if (!ac) return;
-        if (ac.state === 'suspended') ac.resume();
+        if (ac.state === 'suspended' || ac.state === 'interrupted') ac.resume();
         try {
           const silence = ac.createBufferSource();
           silence.buffer = ac.createBuffer(1, 1, ac.sampleRate);
@@ -9540,7 +9569,14 @@
           ctx.restore();
         }
         if (game.phase === 'fight' && game.phaseTime < 240) {
-          drawText(IS_TOUCH ? 'II = pause' : 'ESC pause  •  M mute', W / 2, 528, 8, FONT_PIXEL, 'rgba(255,255,255,0.6)', INK, 0);
+          drawText(
+            game.mode === 'online'
+              ? IS_TOUCH
+                ? 'II twice = leave'
+                : 'ESC twice = leave  •  M mute'
+              : IS_TOUCH
+                ? 'II = pause'
+                : 'ESC pause  •  M mute', W / 2, 528, 8, FONT_PIXEL, 'rgba(255,255,255,0.6)', INK, 0);
         }
       }
 
@@ -11615,7 +11651,7 @@
           b = L.inputs[1].get(L.frame);
         if (a === undefined || b === undefined) {
           L.stall++;
-          if (L.stall > 60 * 25) netLost('Lost touch with your friend.');
+          if (L.stall > 60 * 120) netLost('Lost touch with your friend.'); // 2 minutes: room to answer a call / switch apps
           return;
         }
         L.stall = 0;
@@ -11670,6 +11706,12 @@
               Net.remoteSums.set(msg.f, msg.h);
               compareChecksums(msg.f);
             }
+            break;
+          case 'away': // the friend switched to another app (e.g. Discord) or locked the phone
+            Net.friendAway = true;
+            break;
+          case 'back':
+            Net.friendAway = false;
             break;
           case 'bye':
             netLost('Your friend left the match.');
@@ -11801,6 +11843,7 @@
         Net.remoteIn = new Map();
         Net.remoteSums = new Map();
         Net.remotePicks = {};
+        Net.friendAway = false;
         Net.closing = false;
       }
 
@@ -11882,6 +11925,10 @@
         peer.on('open', () => {
           Net.code = code;
           showOnlinePanel('hosting');
+        });
+        // while you're off in another app sending the code, the phone may drop the matchmaking link: get it back
+        peer.on('disconnected', () => {
+          if (Net.peer === peer && !peer.destroyed && !Net.closing) peer.reconnect();
         });
         peer.on('connection', conn => {
           if (Net.conn) return conn.close(); // already playing someone
@@ -12051,7 +12098,17 @@
       /** Right-hand panel on the select screen while the friend is still choosing. */
       function drawOnlineWaitingPanel(t) {
         drawText('YOUR FRIEND', 850, 306, 12, FONT_PIXEL, '#6bd0ff', INK, 0, 'right');
-        drawText('CHOOSING' + '...'.slice(0, ((t / 20) | 0) % 4), 850, 338, 28, FONT_COMIC, '#fff', INK, 7, 'right');
+        drawText(
+          (Net.friendAway ? 'IN ANOTHER APP' : 'CHOOSING') + '...'.slice(0, ((t / 20) | 0) % 4),
+          850,
+          338,
+          Net.friendAway ? 24 : 28,
+          FONT_COMIC,
+          '#fff',
+          INK,
+          7,
+          'right'
+        );
         drawText('相手が選択中', 850, 368, 14, FONT_JAPANESE, '#fff', INK, 5, 'right');
         drawText('?', 700, 470 + Math.sin(t * 0.1) * 5, 110, FONT_COMIC, '#6bd0ff', INK, 10);
         drawText('PING ' + Math.round(Net.rtt) + ' ms', 850, 500, 9, FONT_PIXEL, '#aaa', INK, 0, 'right');
@@ -12066,7 +12123,17 @@
           drawText('▼ YOU', mine.x, mine.y - 230 + bob, 14, FONT_PIXEL, '#ffe234', INK, 5);
         }
         drawText('ONLINE ' + Math.round(Net.rtt) + 'ms', W / 2, 112, 7, FONT_PIXEL, 'rgba(255,255,255,0.7)', INK, 0);
-        if (L && L.stall > 30) drawText('WAITING FOR YOUR FRIEND…', W / 2, 200, 16, FONT_PIXEL, '#ffe234', INK, 6);
+        if (L && L.stall > 30)
+          drawText(
+            Net.friendAway ? 'YOUR FRIEND SWITCHED APPS — WAITING…' : 'WAITING FOR YOUR FRIEND…',
+            W / 2,
+            200,
+            Net.friendAway ? 13 : 16,
+            FONT_PIXEL,
+            '#ffe234',
+            INK,
+            6
+          );
         if (Net.quitAsk > 0)
           drawText(
             IS_TOUCH ? 'TAP II AGAIN TO LEAVE THE MATCH' : 'PRESS ESC AGAIN TO LEAVE THE MATCH',
@@ -12079,6 +12146,14 @@
             6
           );
       }
+
+      // Switching to another app (Discord, a video call) or locking the phone: tell the friend, and when coming
+      // back make sure the matchmaking link is still up (the host may still be waiting for the friend to join).
+      document.addEventListener('visibilitychange', () => {
+        if (!Net.role) return;
+        netSend({ t: document.hidden ? 'away' : 'back' });
+        if (!document.hidden && Net.peer && Net.peer.disconnected && !Net.peer.destroyed) Net.peer.reconnect();
+      });
 
       // An invite link (…/?room=ABCD) opens straight into joining that room.
       (function joinFromInviteLink() {
@@ -12231,10 +12306,11 @@
       }
 
       function resizeCanvas() {
-        const rect = canvas.getBoundingClientRect();
+        layoutForOrientation();
+        // the canvas's own layout size (not its on-screen box, which is turned sideways on an upright phone)
         const pixelRatio = Math.min(2, window.devicePixelRatio || 1);
-        const w = Math.max(320, Math.round(rect.width * pixelRatio)),
-          h = Math.max(180, Math.round(rect.height * pixelRatio));
+        const w = Math.max(320, Math.round(canvas.clientWidth * pixelRatio)),
+          h = Math.max(180, Math.round(canvas.clientHeight * pixelRatio));
         if (w === canvas.width && h === canvas.height) return;
         canvas.width = w;
         canvas.height = h;
