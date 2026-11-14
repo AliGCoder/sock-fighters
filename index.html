@@ -2375,7 +2375,7 @@
               plan({ fwd: true }, 3);
               this.press('kick');
             } else if (r < 0.55) {
-              if ((id === 'gran' || id === 'kneehi') && Math.random() < 0.4) plan({ down: true }, 3);
+              if ((id === 'gran' || id === 'kneehi' || id === 'demon') && Math.random() < 0.4) plan({ down: true }, 3);
               if (me.def.ai !== 'close' || dist < 260) this.press('special');
             } else if (r < 0.66) plan({ up: true, fwd: true }, 30);
             else if (r < 0.74) this.dash(me, true);
@@ -3688,7 +3688,7 @@
           proj: 'fire',
           ai: 'proj',
           special: 'HOT CYCLE FIREBALL',
-          special2: 'LINT PORTAL',
+          special2: 'HYPNO SPIRAL',
           superName: 'ETERNAL TUMBLE DRY',
           intro: 'It ate every missing sock you ever lost. You are next.',
           taunts: ['MWAHAHA!', '*breathes lint smoke*', 'YOUR PAIR IS MINE.'],
@@ -6243,7 +6243,8 @@
         // Nightmare villains' projectiles: in the same damage band as the existing ones
         bleach: { dmg: 85, stun: 18, knock: 6, hit: 'mid' },
         static: { dmg: 60, stun: 24, knock: 4, hit: 'mid' },
-        steam: { dmg: 90, stun: 0, knock: 9, hit: 'mid', kd: true, launch: -8 }
+        steam: { dmg: 90, stun: 0, knock: 9, hit: 'mid', kd: true, launch: -8 },
+        hypno: { dmg: 40, stun: 20, knock: 2, hit: 'mid' } // light damage, but it leaves you hypnotised (dizzy)
       };
 
       // Which two special-move behaviours each character uses: [special, down + special]
@@ -6253,7 +6254,7 @@
         holey: ['shoot', 'vanish'],
         steel: ['snap', 'rocketfire'],
         king: ['sumo', 'snap'],
-        demon: ['shoot', 'portal'],
+        demon: ['shoot', 'hypno'], // hot cycle fireball / hypno spiral
         bleach: ['shoot', 'snap'], // bleach splash / fade lunge
         cling: ['shoot', 'zap'], // static orb / cling field
         iron: ['shoot', 'sumo'], // steam blast / pressing slam
@@ -6278,7 +6279,8 @@
         rocket: { m: 'rocket', w: ['KABOOM!', 'KA-BLOOEY!'], c: '#ff9d2e' },
         bleach: { m: 'bleach', w: ['SPLOOSH!', 'FADED!'], c: '#bfe9ff' },
         static: { m: 'static', w: ['ZZZAP!', 'BZZT!'], c: '#ffe234' },
-        steam: { m: 'steam', w: ['HISSS!', 'SCALDED!'], c: '#ffffff' }
+        steam: { m: 'steam', w: ['HISSS!', 'SCALDED!'], c: '#ffffff' },
+        hypno: { m: 'hypno', w: ['YOU ARE GETTING SLEEPY...', 'SWIIIRL!'], c: '#d9a6ff' }
       };
 
       // states in which a fighter is on the floor (and can't be hit)
@@ -6941,6 +6943,18 @@
           if (this.t >= 34) this.setState('idle');
         }
 
+        /** hypno special move (the Dryer Demon): a slow spinning spiral; whoever it touches is hypnotised */
+        updateHypno(opponent, input) {
+          this.vx = 0;
+          if (this.t < 12 && this.t % 3 === 0)
+            addParticle({ type: 'ring', x: this.x + this.face * 60, y: this.y - 110, life: 14, size: 30, color: '#c86bff' });
+          if (this.t === 12) {
+            game.projectiles.push({ type: 'hypno', x: this.x + this.face * 65, y: this.y - 95, vx: this.face * 4.6, owner: this, t: 0, y0: this.y - 95 });
+            SFX.zap();
+          }
+          if (this.t >= 34) this.setState('idle');
+        }
+
         /** cry special move */
         updateCry(opponent, input) {
           this.vx = 0;
@@ -7582,7 +7596,7 @@
         /** Start this character's special move (down held = the second special). See SPECIAL_SLOTS. */
         startSpecial(opponent, down) {
           const st = SPECIAL_SLOTS[this.def.id][down ? 1 : 0];
-          const pj = { stink: 'stink', cry: 'cry', rocketfire: 'rocket', shoot: this.def.proj }[st];
+          const pj = { stink: 'stink', cry: 'cry', rocketfire: 'rocket', shoot: this.def.proj, hypno: 'hypno' }[st];
           if (pj && game.projectiles.some(p => p.owner === this && p.type === pj)) return;
           this.cool = down ? 85 : 75;
           this.vx = 0;
@@ -7635,6 +7649,7 @@
           const poseState = FIGHTER_STATE_POSES[this.state];
           if (poseState) poseState.call(this, p, this.t, clock);
           if (this.dazed > 0 && (this.state === 'atk' || this.state === 'idle')) p.eyes = 'spiral';
+          if (this.def.hypnotised && ['idle', 'walk', 'intro', 'atk', 'block'].includes(this.state)) p.eyes = 'spiral';
           if (this.def.ghost && ['idle', 'walk', 'intro', 'win'].includes(this.state))
             p.yOff -= 8 + Math.sin(clock * 0.08) * 6;
           p.sx *= 1 + this.sq;
@@ -8522,6 +8537,7 @@
         shuriken: Fighter.prototype.updateShuriken,
         roll: Fighter.prototype.updateRoll,
         shoot: Fighter.prototype.updateShoot,
+        hypno: Fighter.prototype.updateHypno,
         cry: Fighter.prototype.updateCry,
         tantrum: Fighter.prototype.updateTantrum,
         snap: Fighter.prototype.updateSnap,
@@ -8567,6 +8583,7 @@
         shuriken: Fighter.prototype.poseShuriken,
         roll: Fighter.prototype.poseRoll,
         shoot: Fighter.prototype.poseShoot,
+        hypno: Fighter.prototype.poseShoot,
         cry: Fighter.prototype.poseCry,
         tantrum: Fighter.prototype.poseTantrum,
         snap: Fighter.prototype.poseSnap,
@@ -9038,6 +9055,33 @@
         ctx.restore();
       }
 
+      /** A hypnotic purple-and-white spiral disc (the Dryer Demon's HYPNO SPIRAL, and over hypnotised heads). */
+      function drawHypnoSpiral(c, x, y, r, spin) {
+        c.save();
+        c.translate(x, y);
+        c.rotate(spin);
+        c.shadowColor = '#c86bff';
+        c.shadowBlur = 14;
+        c.fillStyle = '#fff';
+        c.strokeStyle = INK;
+        c.lineWidth = 3;
+        c.beginPath();
+        c.arc(0, 0, r, 0, 7);
+        c.fill();
+        c.stroke();
+        c.shadowBlur = 0;
+        c.strokeStyle = '#8a2be2';
+        c.lineWidth = r * 0.16;
+        c.lineCap = 'round';
+        c.beginPath();
+        for (let a = 0; a < Math.PI * 6; a += 0.2) {
+          const rr = (a / (Math.PI * 6)) * r * 0.9;
+          c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+        }
+        c.stroke();
+        c.restore();
+      }
+
       function drawProjectile(p) {
         if (p.type === 'shuriken') {
           drawShuriken(p);
@@ -9057,6 +9101,10 @@
         }
         if (p.type === 'bleach' || p.type === 'static' || p.type === 'steam') {
           drawVillainProjectile(p);
+          return;
+        }
+        if (p.type === 'hypno') {
+          drawHypnoSpiral(ctx, p.x, p.y, 26, p.t * 0.25 * Math.sign(p.vx));
           return;
         }
         // stink cloud: a wobbling cluster of green blobs with an angry face, circled by flies
@@ -10896,6 +10944,7 @@
           }
           if (p.type === 'moth') p.y = p.y0 + Math.sin(p.t * 0.25) * 14; // flutters
           if (p.type === 'static') p.y = p.y0 + Math.sin(p.t * 0.5) * 10; // crackles up and down
+          if (p.type === 'hypno') p.y = p.y0 + Math.sin(p.t * 0.12) * 16; // drifts dreamily
           if (p.type === 'steam' && p.t % 2 === 0) {
             addParticle({ type: 'puff', x: p.x - p.vx * 2, y: p.y + rand(-8, 8), vx: 0, vy: -0.8, life: 18, size: rand(8, 13), color: '#f0f0fa' });
           }
@@ -10923,6 +10972,13 @@
           if (target.inv <= 0 && target.alpha > 0.5 && !GROUNDED_STATES.includes(target.state) && touching) {
             p.dead = true;
             const outcome = target.takeHit(p.owner, SPECIALS[info.m], p.x, p.y);
+            if (p.type === 'hypno' && outcome !== 'block' && target.hp > 0 && game.phase === 'fight' && !(target.hypnoUntil > game.time)) {
+              target.setState('dizzy');
+              target.t = 45; // a shorter daze than a real dizzy
+              target.hypnoUntil = game.time + 420;
+              addText(target.x, target.y - 215, 'HYPNOTISED!', '#d9a6ff', 40);
+              SFX.boing();
+            }
             if (outcome !== 'block')
               addText(p.x, p.y - 60, pick(info.w), info.c, p.type === 'shuriken' ? 28 : 40);
             if (p.type === 'rocket') {
@@ -14028,6 +14084,10 @@
           const d = advHeroLook();
           return { name: d.name, color: d.color, sock: d };
         }
+        if (who === 'fake') {
+          const b = findCharacter('baby');
+          return { name: 'PRINCESS BABY BOOTIE?', color: '#ff8fc8', sock: Object.assign(withSkin(b, 0), { tiara: true }) };
+        }
         if (HOSIERY[who]) return { name: HOSIERY[who].name, color: HOSIERY[who].color, hosiery: who };
         const d = findCharacter(who);
         return { name: d.name, color: d.color, sock: withSkin(d, 0) };
@@ -14041,7 +14101,7 @@
       }
 
       // The Queen and the Fishnet Scout have no recorded voice of their own: they borrow one, pitched to suit them.
-      const BORROWED_VOICES = { queen: { id: 'cling', rate: 1.12 }, fishnet: { id: 'socklet', rate: 0.9 } };
+      const BORROWED_VOICES = { queen: { id: 'cling', rate: 1.12 }, fishnet: { id: 'socklet', rate: 0.9 }, fake: { id: 'baby', rate: 0.72 } }; // the Demon doing a baby voice: a bit too deep
 
       /** Say a story line in the speaker's voice: their catchphrase the first time they talk in a scene, then a clip
        *  that fits the line (a laugh for jokes, a dazed sound for '...', a shout for '!'). */
@@ -14737,12 +14797,15 @@
         { who: 'queen', text: 'Go when you are ready, Knight. And for goodness’ sake... have a WASH first.' }
       ];
       const PALACE_AFTER_CH2 = [
-        { who: 'queen', text: 'We hear Cling Queen said something about Our sheen.' },
-        { who: 'hero', text: 'She said it was... last season.' },
+        { who: 'queen', text: 'We hear the Demon has been going about disguised as... a PRINCESS?' },
+        { who: 'hero', text: 'Princess Baby Bootie. With a tiara. And a spinning rattle.' },
+        { who: 'queen', text: 'A PRINCESS?! Without Our royal permission?! We have not even APPROVED that tiara!' },
+        { who: 'queen', text: '...We also hear Cling Queen said something about Our sheen.' },
+        { who: 'hero', text: "She said it was... last season. That part wasn't the hypnosis." },
         { who: 'queen', text: '...' },
         { who: 'queen', text: 'We are going to need a moment.' },
         { who: 'narr', text: '*The Queen stares out of the window for a very long, very dramatic moment.*' },
-        { who: 'fishnet', text: "Should we... say something?" },
+        { who: 'fishnet', text: 'Should we... say something?' },
         { who: 'queen', text: 'The BLEACH BADLANDS are next. Go, Knight. We shall be over here. Being TIMELESS.' }
       ];
       const PALACE_AFTER_CH3 = [
@@ -14771,6 +14834,8 @@
         { who: 'demon', text: 'Welcome to the cloakroom. Lost socks are returned within one thousand years. ...We are working on that.' },
         { who: 'cling', text: 'Love the ball, Nylonia. Shame about the sheen.' },
         { who: 'queen', text: '...GUARDS.' },
+        { who: 'king', text: 'Lovely party! Everybody KNEEL! ...Sorry. The hypnosis wore off. The bossiness did not.' },
+        { who: 'demon', text: 'And no more disguises. I promise. *briefly turns into a coat rack* ...Old habits.' },
         { who: 'gran', text: "Now can somebody help me down from this chandelier? I don't know how I got up here either." },
         { who: 'fishnet', text: 'Best. Mission. EVER.' }
       ];
@@ -15204,18 +15269,40 @@
       ];
       const CH2_BOSS = [
         { who: 'cling', text: 'So. NYLONIA sent a little errand sock. How sweet.' },
-        { who: 'hero', text: 'You know the Queen?' },
-        { who: 'cling', text: 'Know her? Darling, we were the two most fabulous royals in the Rinse Sea. Then she got an ISLAND and I got... *gestures at the swamp* ...THIS.' },
+        { who: 'fishnet', text: 'Sir Knight... why are her eyes doing that swirly thing?' },
+        { who: 'cling', text: 'Swirly? Darling, these are my FABULOUS eyes. I serve the Demon. I serve the Demon. I serve the... *twitch* ...the Demon.' },
+        { who: 'hero', text: 'She said that three times. That is NOT normal.' },
         { who: 'cling', text: "There's only room for ONE queen, sweetie. And she's wearing last season's sheen." },
-        { who: 'hero', text: 'You seem... upset.' },
-        { who: 'cling', text: "I'm not upset, darling. I'm just a little... STATIC." },
-        { who: 'fishnet', text: "Ooh. I'm telling her you said that." }
+        { who: 'fishnet', text: 'Okay. THAT part sounded exactly like her.' },
+        { who: 'cling', text: 'Now hold still, darling. The Demon wants you... STUCK!' }
       ];
       const CH2_END = [
-        { who: 'cling', text: 'Ugh. FINE. The Demon pays me to stick the stolen socks together and float them to his throne.' },
-        { who: 'cling', text: "Don't look at me like that. A girl's gotta get her dry cleaning paid for." },
-        { who: 'hero', text: 'Where do the socks go after that?' },
-        { who: 'cling', text: 'Past the Bleach Badlands. *looks you up and down* You won\'t make it, sweetie. Your colours will FADE.' },
+        { who: 'narr', text: '*Cling Queen wobbles. Her swirly eyes spin... slower... and slower...*' },
+        { who: 'narr', text: "*POP! The swirls fade from Cling Queen's eyes.*", fx: s => { s.hypno = []; s.flash = 12; } },
+        { who: 'cling', text: '*blinks* ...Why am I in a fight? Why is my lily crown on BACKWARDS?' },
+        { who: 'hero', text: "You've been working for the Dryer Demon!" },
+        { who: 'cling', text: 'ME? WORK? Darling, I have never worked a day in my life.' },
+        { who: 'cling', text: 'The last thing I remember... it was a month ago...' }
+      ];
+      const CH2_FLASHBACK = [
+        { who: 'narr', text: '*FLASHBACK. The Static Swamp, one month ago...*' },
+        { who: 'cling', text: 'Another day of being FABULOUS in a swamp. Alone. As usual. *sigh*' },
+        { who: 'narr', text: '*A tiny figure in a tiara toddles out of the purple fog.*' },
+        { who: 'fake', text: '*sniff* Auntie Cling... I\'m LOST...' },
+        { who: 'cling', text: 'PRINCESS BABY BOOTIE?! Oh, sweetie, come here! Who let a princess wander about a SWAMP?' },
+        { who: 'fake', text: 'Look at my pwetty spinning rattle, Auntie Cling...' },
+        { who: 'cling', text: 'Ooh, it IS pretty. It goes round... and round... and round...', fx: s => { s.hypno = ['cling']; } },
+        { who: 'fake', text: '*in a deep, smoky voice* You serve... the DEMON now.' },
+        { who: 'cling', text: 'I serve... the Demon. I serve the Demon. I serve the...' },
+        { who: 'narr', text: '*Under the tiara: two little horns. In the air: a smell of burning lint.*' },
+        { who: 'narr', text: '*END OF FLASHBACK.*' }
+      ];
+      const CH2_AFTER = [
+        { who: 'fishnet', text: "Princess? Baby Bootie isn't a princess. He's a BABY. He doesn't even have a kingdom. He has a COT." },
+        { who: 'cling', text: '...Then it was never him. It was the Dryer Demon. In a TIARA. And I said "sweetie" to it.' },
+        { who: 'hero', text: 'The Demon can change shape?!' },
+        { who: 'cling', text: 'And hypnotise, sweetie. He is turning the royals into his puppets. Then he marches on Nylonia and drags the whole kingdom to its DOOM.' },
+        { who: 'cling', text: 'Next stop, the Bleach Badlands. *looks you up and down* Your colours will FADE out there, sweetie.' },
         { who: 'fishnet', text: 'Rude. Accurate, maybe. But rude.' }
       ];
       const CH3_INTRO = [
@@ -15232,6 +15319,8 @@
       ];
       const CH3_MID = [
         { who: 'baby', text: '*hiccup* ...I feel better now. I still look like a boiled egg, though.' },
+        { who: 'baby', text: 'Also, why does everyone keep calling me PRINCESS? And telling me to stop spinning my rattle at them? I don\'t even HAVE a rattle!' },
+        { who: 'fishnet', text: '...Suspicious.' },
         { who: 'kneehi', text: 'HALT! Nobody crosses this dune without bowing to the sumo master!' },
         { who: 'hero', text: "Knee-Hi? You're... completely white." },
         { who: 'kneehi', text: 'The Baron bleached me! Now I think I am a BEGINNER! A WHITE BELT! I must challenge EVERYONE!' },
@@ -15272,12 +15361,41 @@
       ];
       const CH4_MID = [
         { who: 'king', text: 'KNEEL! KNEEL before KING KNEE-SOCK, ruler of the sock drawer AND the top shelf!' },
+        { who: 'fishnet', text: "His eyes are swirly too! He's been hypnotised, just like Cling Queen!" },
         { who: 'gran', text: "Young man, if I kneel, I'm not getting back up. You'll have to rule around me." },
-        { who: 'king', text: '...Fine. The REST of you, kneel!' },
+        { who: 'king', text: 'KNEEL... for the... DEMON... *twitch* ...and also for ME. Mostly the Demon.' },
         { who: 'hero', text: "We're socks. We don't HAVE knees." },
         { who: 'king', text: 'EXACTLY! That is why I, with my MAGNIFICENT knees, am KING!' },
-        { who: 'fishnet', text: "I've got two knees and I'm still not kneeling." },
+        { who: 'gran', text: 'Knock the swirl out of him, dear. Gently. He was a lovely boy once.' },
         { who: 'king', text: 'GUARDS! ...Oh. I sent the guards out for snacks. ...Then I shall fight you MYSELF!' }
+      ];
+      const CH4_KING_WAKE = [
+        { who: 'narr', text: '*King Knee-Sock wobbles. His swirly eyes spin... slower... and slower...*' },
+        { who: 'narr', text: "*POP! The swirls fade from King Knee-Sock's eyes.*", fx: s => { s.hypno = []; s.flash = 12; } },
+        { who: 'king', text: '*blinks* ...Why am I in a FORTRESS? And why is everybody glaring at me?' },
+        { who: 'gran', text: 'You were being a minion, dear.' },
+        { who: 'king', text: 'A MINION?! I am a KING! The last thing I remember... it was two weeks ago...' }
+      ];
+      const CH4_FLASHBACK = [
+        { who: 'narr', text: '*FLASHBACK. The Ironing Fortress, two weeks ago. The King is here to get his cape pressed.*' },
+        { who: 'king', text: 'KNEEL! ...Nobody is here. I shall kneel to MYSELF. ...No. That is not how kneeling works.' },
+        { who: 'narr', text: '*A tiny figure in a tiara toddles in through the steam.*' },
+        { who: 'fake', text: 'Uncle King! Uncle King! Goo goo!' },
+        { who: 'king', text: 'PRINCESS BABY BOOTIE! My favourite little royal! Have you come to KNEEL?' },
+        { who: 'fake', text: 'No, Uncle King. Look at my pwetty spinning rattle...' },
+        { who: 'king', text: 'A KING does not look at rattles. ...Oh. Ooh. It goes round... and round...', fx: s => { s.hypno = ['king']; } },
+        { who: 'fake', text: '*in a deep, smoky voice* Now guard this fortress... and make everyone KNEEL for the DEMON.' },
+        { who: 'king', text: 'Kneel... for... the Demon... *twitch* ...and also for me?' },
+        { who: 'fake', text: '...Fine. Also for you.' },
+        { who: 'narr', text: '*Under the tiara: two little horns. Its tiny booties are smouldering.*' },
+        { who: 'narr', text: '*END OF FLASHBACK.*' }
+      ];
+      const CH4_KING_AFTER = [
+        { who: 'hero', text: 'That was the Dryer Demon in disguise! He fooled Cling Queen the same way!' },
+        { who: 'king', text: 'He made me shout KNEEL at everybody!' },
+        { who: 'fishnet', text: '...You shouted that before, though.' },
+        { who: 'king', text: '...Yes. But this time it was against my WILL.' },
+        { who: 'gran', text: "Off you pop. The Shogun's waiting. I'll put the kettle on." }
       ];
       const CH4_BOSS = [
         { who: 'iron', text: 'I am IRON SHOGUN. I press. I flatten. I remove all WRINKLES.' },
@@ -15308,13 +15426,15 @@
       ];
       const CH5_BOSS = [
         { who: 'demon', text: 'WHO DARES ENTER... THE TUMBLE THRONE?!', fx: s => (s.embers = 1) },
-        { who: 'hero', text: "{HERO}! And I want everybody's socks back!" },
-        { who: 'demon', text: 'HAHAHAHA! I have taken a sock from EVERY laundry day for a THOUSAND YEARS!' },
+        { who: 'hero', text: "It's over, Demon! We know YOU were Princess Baby Bootie!" },
+        { who: 'demon', text: 'HAHAHAHA! Nobody says no to a baby in a tiara! I hypnotised CLING QUEEN! I hypnotised KING KNEE-SOCK!' },
+        { who: 'demon', text: 'With the royals as my puppets, I would march on Nylonia... and spin the whole kingdom into DOOM! ETERNAL TUMBLE DRY!' },
         { who: 'queen', text: 'And Our stockings! Give them back this INSTANT, you overheated toaster!' },
         { who: 'demon', text: 'I AM A DRYER! TOASTERS ARE COMPLETELY DIFFERENT!' },
+        { who: 'hero', text: "{HERO}'s here now. And I want everybody's socks back!" },
         { who: 'demon', text: '...*long pause*... I am looking for someone.' },
         { who: 'fishnet', text: 'Uh... are we sure we should fight the sad one?' },
-        { who: 'demon', text: 'I AM NOT SAD! I AM FURIOUS! AND ALSO A LITTLE BIT SAD! FIGHT ME!' }
+        { who: 'demon', text: 'I AM NOT SAD! I AM FURIOUS! AND ALSO A LITTLE BIT SAD! LOOK INTO MY SPIRAL AND FIGHT ME!' }
       ];
       const CH5_END = [
         { who: 'narr', text: "*The Demon's flames flicker down to a tiny, sad pilot light.*", fx: s => (s.embers = 0) },
@@ -15363,9 +15483,11 @@
             { scene: CH2_MID, cast: ['robo', 'shinobi'] },
             { fight: 'shinobi' },
             { walk: true },
-            { scene: CH2_BOSS, cast: ['cling'], boss: true },
-            { fight: 'cling' },
-            { scene: CH2_END, cast: ['cling'] },
+            { scene: CH2_BOSS, cast: ['cling'], boss: true, hypno: ['cling'] },
+            { fight: 'cling', hypno: true },
+            { scene: CH2_END, cast: ['cling'], hypno: ['cling'] },
+            { scene: CH2_FLASHBACK, cast: ['demon', 'cling'], flashback: true, disguise: true },
+            { scene: CH2_AFTER, cast: ['cling'] },
             { walk: true },
             { clear: true }
           ]
@@ -15397,8 +15519,11 @@
             { scene: CH4_INTRO, cast: ['steel', 'gran'] },
             { fight: 'steel' },
             { walk: true },
-            { scene: CH4_MID, cast: ['king', 'gran'] },
-            { fight: 'king' },
+            { scene: CH4_MID, cast: ['king', 'gran'], hypno: ['king'] },
+            { fight: 'king', hypno: true },
+            { scene: CH4_KING_WAKE, cast: ['king', 'gran'], hypno: ['king'] },
+            { scene: CH4_FLASHBACK, cast: ['demon', 'king'], flashback: true, disguise: true },
+            { scene: CH4_KING_AFTER, cast: ['king', 'gran'] },
             { walk: true },
             { scene: CH4_BOSS, cast: ['iron', 'gran'], boss: true },
             { fight: 'iron' },
@@ -15442,7 +15567,7 @@
         const step = ch.steps[S.step];
         if (!step) return leaveStory();
         if (step.scene) {
-          game.adv.stage = { t: 0, stageId: ch.stage, cast: step.cast || [], allies: step.allies || [], warning: step.boss ? 130 : 0, final: !!step.final };
+          game.adv.stage = { t: 0, stageId: ch.stage, cast: step.cast || [], allies: step.allies || [], warning: step.boss ? 130 : 0, final: !!step.final, hypno: (step.hypno || []).slice(), flashback: !!step.flashback, disguise: !!step.disguise };
           particles.length = 0;
           floatingTexts.length = 0;
           game.screen = 'advScene';
@@ -15491,6 +15616,7 @@
         game.p1Def = advHeroLook();
         const foe = findCharacter(ch.steps[S.step].fight);
         game.p2Def = withSkin(foe, foe.id === game.p1Def.id ? 1 : 0);
+        if (ch.steps[S.step].hypno) game.p2Def = Object.assign(Object.create(game.p2Def), { hypnotised: true }); // the Demon's puppet
         game.stageId = ch.stage;
         game.screen = 'vs';
         game.versusTime = 0;
@@ -15524,6 +15650,34 @@
       // frames of 'Ah... AH...' before the ACHOO (the big one takes longer to build up)
       const sneezeAt = z => (z.kind === 'big' ? 70 : 40);
       const WIND_FRAMES = 110; // how long the big sneeze's gust blows
+
+      /** Sepia old-film look for flashbacks: a warm tint, a dark vignette, scratches, flicker and a FLASHBACK label. */
+      function drawFlashbackFilm(t) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.fillStyle = '#d9b27a';
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = 'rgba(120,80,30,' + (0.12 + (t % 7 === 0 ? 0.06 : 0)) + ')';
+        ctx.fillRect(0, 0, W, H);
+        const g = ctx.createRadialGradient(W / 2, H / 2 - 40, 180, W / 2, H / 2 - 40, 560);
+        g.addColorStop(0, 'rgba(40,20,0,0)');
+        g.addColorStop(1, 'rgba(40,20,0,0.75)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        // film scratches
+        ctx.strokeStyle = 'rgba(255,240,210,0.35)';
+        ctx.lineWidth = 1.5;
+        for (let i = 0; i < 3; i++) {
+          const x = (Math.sin(t * 0.37 + i * 91) * 0.5 + 0.5) * W;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x + Math.sin(t + i) * 6, H);
+          ctx.stroke();
+        }
+        ctx.restore();
+        drawText('FLASHBACK', 24, 30, 26, FONT_COMIC, '#ffe8b8', INK, 6, 'left');
+      }
 
       function drawFuzzBall(x, y, r, seed) {
         ctx.fillStyle = seed % 3 === 1 ? '#d8cfe8' : '#e9e4f2';
@@ -15614,7 +15768,7 @@
         // where everyone stands (the Queen comes along in the last chapter)
         const withQueen = (St.allies || []).includes('queen');
         const spots = { hero: { x: withQueen ? 330 : 270, top: 200 }, fishnet: { x: withQueen ? 196 : 140, top: 215 } };
-        if (withQueen) {
+        if (withQueen && !St.flashback) {
           spots.queen = { x: 78, top: 205 };
           drawHosiery(ctx, 'queen', 78, 400, 0.9, 1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
         }
@@ -15634,7 +15788,7 @@
           draw();
           ctx.restore();
         };
-        tilt(spots.fishnet.x, 400, gust * (0.22 + Math.sin(t * 0.9) * 0.04), () =>
+        if (!St.flashback) tilt(spots.fishnet.x, 400, gust * (0.22 + Math.sin(t * 0.9) * 0.04), () =>
           drawHosiery(ctx, 'fishnet', spots.fishnet.x, 400, 0.95, 1, t, { mouth: gust > 0.2 ? 'open' : speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' })
         );
         const hp = pose(speaking === 'hero', 0);
@@ -15642,7 +15796,7 @@
           hp.eyes = 'happy';
           hp.mouth = 'yell';
         }
-        tilt(spots.hero.x, 396, gust * (0.2 + Math.sin(t * 0.8 + 1) * 0.04), () => drawSock(ctx, hero, hp, spots.hero.x, 396, 1, fitScale(hero, 1.0), { x: 4, y: 0 }));
+        if (!St.flashback) tilt(spots.hero.x, 396, gust * (0.2 + Math.sin(t * 0.8 + 1) * 0.04), () => drawSock(ctx, hero, hp, spots.hero.x, 396, 1, fitScale(hero, 1.0), { x: 4, y: 0 }));
         if (St.linty != null) {
           // fluff sticking to both of them, a clump at a time
           const age = St.t - St.linty;
@@ -15660,11 +15814,15 @@
         St.cast.forEach((id, i) => {
           const d = withSkin(findCharacter(id), id === hero.id ? 1 : 0); // same as your hero? another skin
           const p = pose(speaking === id, 30 + i * 20);
-          p.eyes = 'angry';
-          const x = 700 + i * 120;
+          if (!St.flashback) p.eyes = 'angry'; // (in a flashback they were still nice)
+          const hypnotised = (St.hypno || []).includes(id);
+          if (hypnotised) p.eyes = 'spiral';
+          const back = St.flashback && i > 0; // the flashback's victim stands on the left, facing the 'Princess'
+          const x = back ? 330 : 700 + i * 120;
+          const face = back ? 1 : -1;
           // villains hop in from the right when the scene starts
           const enter = Math.min(1, Math.max(0, (t - i * 12) / 26));
-          const ex = x + (1 - ease(enter)) * 360;
+          const ex = back ? x : x + (1 - ease(enter)) * 360;
           if (enter < 1) p.yOff = -Math.abs(Math.sin(enter * Math.PI * 2)) * 30;
           if (St.sneeze && id === 'lint' && St.sneeze.t < sneezeAt(St.sneeze) + 16) {
             const z = St.sneeze,
@@ -15684,8 +15842,65 @@
               p.eyes = 'x';
             }
           }
-          drawSock(ctx, d, p, ex, 396, -1, fitScale(d, d.tall && d.tall > 1 ? 0.9 : 1.0), { x: -4, y: 0 });
+          if (id === 'demon' && St.disguise) {
+            // the Demon in disguise: PRINCESS BABY BOOTIE (tiara, rattle... and little horns, and smoke)
+            const bb = withSkin(findCharacter('baby'), 0);
+            const bp = pose(speaking === 'fake', 30);
+            bp.eyes = 'happy';
+            drawSock(ctx, bb, bp, ex, 396, -1, fitScale(bb, 1.0), { x: -4, y: 0 });
+            const top = 396 - 190 * (bb.tall || 1);
+            const hx = ex - 6;
+            // tiara
+            ctx.fillStyle = '#ffd23f';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(hx - 22, top + 12);
+            ctx.lineTo(hx - 18, top - 6);
+            ctx.lineTo(hx - 9, top + 4);
+            ctx.lineTo(hx, top - 14);
+            ctx.lineTo(hx + 9, top + 4);
+            ctx.lineTo(hx + 18, top - 6);
+            ctx.lineTo(hx + 22, top + 12);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ff4fa3';
+            ctx.beginPath();
+            ctx.arc(hx, top + 2, 3.5, 0, 7);
+            ctx.fill();
+            // the horns giving it away
+            for (const side of [-1, 1]) {
+              ctx.fillStyle = '#2a0a12';
+              ctx.beginPath();
+              ctx.moveTo(hx + side * 26, top + 12);
+              ctx.quadraticCurveTo(hx + side * 40, top, hx + side * 36, top - 18);
+              ctx.lineTo(hx + side * 30, top + 10);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            // a spinning rattle, held out, with a hypno spiral for a head... on fire
+            const rx = ex - 100,
+              ry = 338 + Math.sin(t * 0.15) * 6;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(ex - 46, 356);
+            ctx.lineTo(rx + 8, ry + 12);
+            ctx.stroke();
+            drawHypnoSpiral(ctx, rx, ry, 15, t * 0.3);
+            if (t % 3 === 0) {
+              addParticle({ type: 'spark', x: rx + rand(-10, 10), y: ry - 10, vx: rand(-0.6, 0.6), vy: -rand(1, 3), life: 24, color: pick(['#ff9d2e', '#ff5a1f']) });
+              addParticle({ type: 'spark', x: ex + rand(-22, 22), y: 398, vx: rand(-0.5, 0.5), vy: -rand(1, 2.5), life: 22, color: pick(['#ff9d2e', '#ff5a1f']) });
+            }
+            spots.fake = { x: ex - 20, top: top - 10 };
+            spots[id] = spots.fake;
+            return;
+          }
+          drawSock(ctx, d, p, ex, 396, face, fitScale(d, d.tall && d.tall > 1 ? 0.9 : 1.0), { x: 4 * face, y: 0 });
           spots[id] = { x: ex - 20, top: 396 - 190 * Math.min(1.3, d.tall || 1) * (d.tall && d.tall < 1 ? 1 : 0.9) };
+          if (hypnotised) drawHypnoSpiral(ctx, ex, spots[id].top - 30, 14, t * 0.2);
           if (id === 'lint') spots.lint.top = 250;
         });
         // the lint ball swelling on the tip of his nose
@@ -15760,6 +15975,7 @@
           });
           ctx.restore();
         }
+        if (St.flashback) drawFlashbackFilm(t);
         // speech marks pop over whoever is talking
         if (S && S.emote && spots[S.emote.who]) {
           const age = S.t - S.emote.at;
@@ -16992,6 +17208,12 @@
         FighterVoice,
         hubItems: () => HUB_ITEMS(),
         startChapter,
+        /** tests: jump straight to step i of chapter ch */
+        storyJump(ch, i) {
+          startChapter(ch);
+          game.story.step = i - 1;
+          nextStoryStep();
+        },
         drawHosiery,
         /** tests: forget all progress */
         resetProgress() {

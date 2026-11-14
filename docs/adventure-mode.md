@@ -51,6 +51,8 @@ He rules the **Tumble Throne**, a burning dryer drum deep under the Rinse Sea. H
 | 4 | **Iron Shogun** with **Steel Toe** and **King Knee-Sock** | The Ironing Fortress |
 | 5 | **THE DRYER DEMON** | The Tumble Throne |
 
+**The hypnosis twist (their backstory):** Cling Queen and King Knee-Sock are not truly evil. The Dryer Demon can **shapeshift**: he toddled up to each of them as **Princess Baby Bootie**, in a tiara, holding a "pwetty spinning rattle", and **hypnotised** them into minions so he could march on Nylonia and spin the kingdom into doom. Their eyes are swirly in their scenes and fights; beat them and they POP back to normal, and an old-film **FLASHBACK** shows the moment they were tricked (Cling in her swamp a month ago; the King at the Ironing Fortress two weeks ago, getting his cape pressed). The real Baby Bootie (Chapter 3) is very confused about why everyone calls him Princess. At the Tumble Throne the Demon admits it all. His fight move **HYPNO SPIRAL** leaves you hypnotised (dazed) for a moment.
+
 ### The heroes (you)
 The hero you lock in is the one the Queen calls: all 8 heroes, plus any villains you've unlocked. The script below uses **Stinky Tabi**; if you pick someone else, they say their own version of his lines. Each hero gets a basic attack, **3 different specials** and an ULT. A few examples:
 

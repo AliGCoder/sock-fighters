@@ -31,7 +31,8 @@ Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N p
 
 ## Story mode: *Lost in the Spin Cycle*
 Main menu → **STORY MODE**. Queen Nylonia of the Hosiery (a two-legged pantyhose people from the Island of Nylonia) appears in Dryer No. 7 and asks for a hero to stop the Dryer Demon. You pick your hero on a big hero select screen, jump through the dryer portal, and fight from the Queen's palace.
-- Each chapter is a run of normal fights with story scenes in between. Lose a fight and it's **MISSION FAILED**: try again, or go back to the palace. **Chapter 1, The Lint Plains** (Lint Bunny, Socklet, boss Holey Moley) and **Chapter 2, The Static Swamp** (a static-scrambled Mecha-Sock, Toe-Shinobi, boss Cling Queen) are playable; each chapter opens when the one before is cleared. Chapters 3–5 are coming.
+- Each chapter is a run of normal fights with story scenes in between. Lose a fight and it's **MISSION FAILED**: try again, or go back to the palace. **Chapter 1, The Lint Plains** (Lint Bunny, Socklet, boss Holey Moley) and **Chapter 2, The Static Swamp** (a static-scrambled Mecha-Sock, Toe-Shinobi, boss Cling Queen) are followed by **Chapter 3, The Bleach Badlands**, **Chapter 4, The Ironing Fortress** and **Chapter 5, The Tumble Throne**, with end credits and a palace ball. Each chapter opens when the one before is cleared.
+- **The twist:** Cling Queen and King Knee-Sock were never really bad. The Dryer Demon shapeshifted into **Princess Baby Bootie** (who could say no to a baby in a tiara?) and **hypnotised** them with a spinning rattle into his minions, so he could march on Nylonia. Beat them and they snap out of it, and a sepia **FLASHBACK** shows how it happened. In fights, the Demon's second special is now **HYPNO SPIRAL**: a slow spinning spiral that leaves you hypnotised (dazed) for a moment.
 - The whole story script is in [docs/adventure-mode.md](docs/adventure-mode.md).
 
 ## Modes
