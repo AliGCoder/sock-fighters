@@ -13361,8 +13361,8 @@
         const swing = walking ? Math.sin(t * 0.3) * 0.32 : 0;
         const bob = walking ? Math.abs(Math.sin(t * 0.3)) * 4 : Math.sin(t * 0.08) * 1.5;
         const bodyW = H.big ? 70 : 54,
-          top = H.big ? -162 : -150,
-          hip = -84;
+          top = H.big ? -190 : -178, // long pantyhose legs: as tall as a sock
+          hip = -112;
         c.save();
         c.translate(x, y);
         // shadow
@@ -13815,7 +13815,7 @@
           roundRectPath(ctx, 28, 414, 106, 106, 12);
           ctx.clip();
           const talk = Math.floor(S.t / 5) % 2 === 0 && S.shown < text.length;
-          if (info.hosiery) drawHosiery(ctx, info.hosiery, 74, 560, 0.95, 1, S.t, { mouth: talk ? 'open' : 'smile' });
+          if (info.hosiery) drawHosiery(ctx, info.hosiery, 74, 592, 0.95, 1, S.t, { mouth: talk ? 'open' : 'smile' });
           else {
             const p = idleAnim(basePose(), S.t);
             p.mouth = talk ? 'yell' : 'grin';
@@ -14671,7 +14671,7 @@
           ctx.fill();
         }
         // a guard standing to attention between the pillar and the curtain
-        drawHosiery(ctx, 'seamed', 420, 398, 0.42, 1, t, {});
+        drawHosiery(ctx, 'seamed', 418, 470, 0.95, 1, t, {});
       }
 
       /** The Queen's throne on a raised dais: a tall crown-topped back with velvet inside. */
@@ -14726,7 +14726,7 @@
         const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         // the throne and the Queen
         drawThrone();
-        drawHosiery(ctx, 'queen', 790, 444, 1.05, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        drawHosiery(ctx, 'queen', 790, 444, 1.12, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
         // your hero and the scout
         const def = advHeroLook();
         const p = idleAnim(basePose(), t);
@@ -14735,7 +14735,7 @@
           p.yOff = -Math.abs(Math.sin(t * 0.25)) * 8;
         }
         drawSock(ctx, def, p, 520, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
-        if (Hb.scout) drawHosiery(ctx, 'fishnet', 620, 476, 0.6, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
+        if (Hb.scout) drawHosiery(ctx, 'fishnet', 626, 474, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
         if (game.adv.scene) return drawSceneBox();
         // menu
         drawText('PALACE OF NYLONIA', 174, 80, 26, FONT_COMIC, '#ffe234', INK, 7);
@@ -14939,7 +14939,7 @@
         };
         const hero = advHeroLook();
         drawSock(ctx, hero, pose(speaking === 'hero', 0), 270, 396, 1, fitScale(hero, 1.0), { x: 4, y: 0 });
-        drawHosiery(ctx, 'fishnet', 140, 400, 0.62, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
+        drawHosiery(ctx, 'fishnet', 140, 400, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
         St.cast.forEach((id, i) => {
           const d = withSkin(findCharacter(id), id === hero.id ? 1 : 0); // same as your hero? another skin
           const p = pose(speaking === id, 30 + i * 20);
@@ -14966,7 +14966,7 @@
         drawText('CH.' + C.chapter + '  ' + ch.name, W / 2, 172, 18, FONT_PIXEL, '#fff', INK, 5);
         const hero = advHeroLook();
         drawSock(ctx, hero, winAnim(basePose(), C.t, hero.id), W / 2, 460, 1, fitScale(hero, 1.2), { x: 4, y: 0 });
-        drawHosiery(ctx, 'fishnet', W / 2 - 170, 466, 0.7, 1, C.t, { mouth: 'open' });
+        drawHosiery(ctx, 'fishnet', W / 2 - 170, 466, 1.0, 1, C.t, { mouth: 'open' });
         if (C.t > 60 && C.t % 60 < 40) drawText('TAP / SPACE: BACK TO THE PALACE', W / 2, 510, 13, FONT_PIXEL, '#fff', INK, 5);
       }
 
