@@ -1005,6 +1005,62 @@
    "text": "I'd help, but my holes let the smell straight in."
   }
  ],
+ "CH5_MID": [
+  {
+   "who": "narr",
+   "text": "*Deeper inside the drum. Something HUGE lurches out of the steam... a giant made of a hundred different socks, all stitched together.*"
+  },
+  {
+   "who": "mismatch",
+   "text": "HALT! I am MISMATCH! Guardian of the Tumble Throne! Made from every sock that ever went missing!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Is that a Christmas sock? And a baby sock? And somebody's football sock?"
+  },
+  {
+   "who": "mismatch",
+   "text": "I am ALL of them! One hundred heels! ZERO pairs!"
+  },
+  {
+   "who": "hero",
+   "text": "Wait... that stripy patch on your elbow. That's the sock I lost on laundry day!"
+  },
+  {
+   "who": "mismatch",
+   "text": "FINDERS KEEPERS! ...Losers... sleepers? Weepers? I always mix that one up."
+  },
+  {
+   "who": "queen",
+   "text": "We do not have time to argue with a quilt. Knight, unpick him."
+  },
+  {
+   "who": "mismatch",
+   "text": "Nobody unpicks MISMATCH! The Demon stitched me himself! Prepare to be... MISMATCHED!"
+  }
+ ],
+ "CH5_MID_END": [
+  {
+   "who": "mismatch",
+   "text": "My stitches... coming... LOOSE..."
+  },
+  {
+   "who": "narr",
+   "text": "*POP! POP! POP! Mismatch bursts at the seams! A hundred socks rain down, all hopping off to find their partners.*"
+  },
+  {
+   "who": "hero",
+   "text": "My sock! ...Oh. It's a left one. I needed a right one."
+  },
+  {
+   "who": "fishnet",
+   "text": "Look on the bright side. Now you've got two lefts!"
+  },
+  {
+   "who": "queen",
+   "text": "Onward. The Demon is just ahead. And somebody sweep up these socks."
+  }
+ ],
  "CH5_BOSS": [
   {
    "who": "demon",

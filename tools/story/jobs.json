@@ -5677,6 +5677,321 @@
   "file": "story"
  },
  {
+  "key": "389600a9",
+  "voice": "narr",
+  "say": "回転ドラムのさらに奥。蒸気の中から、何か巨大なものがよろよろと現れた…百枚もの靴下を縫い合わせた、巨人だ。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "8346eaca",
+  "voice": "mismatch",
+  "say": "止まれ!オレ様はミスマッチ!回転の玉座の番人!消えた靴下、ぜんぶでできてるんだぞ!",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "df7c048f",
+  "voice": "fishnet",
+  "say": "あれ、クリスマスの靴下ですか?赤ちゃんの靴下も?誰かのサッカーソックスまで?",
+  "note": "eager, quick young scout, confused, questioning",
+  "file": "story"
+ },
+ {
+  "key": "4302ec3f",
+  "voice": "mismatch",
+  "say": "ぜんぶオレ様だ!かかとが百個!ペアはゼロ!",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "5336a13f",
+  "voice": "stinky",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "cocky young street brawler, lively",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "fe53493b",
+  "voice": "argyle",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "calm, noble samurai, lively",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "0f3a944d",
+  "voice": "shinobi",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "cool, quiet ninja woman, lively",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "0875d685",
+  "voice": "gran",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "very old, creaky, wheezy grandmother, lively",
+  "file": "hero-gran"
+ },
+ {
+  "key": "d88a39e7",
+  "voice": "baby",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "squeaky, bratty toddler, lively",
+  "file": "hero-baby"
+ },
+ {
+  "key": "eddbdfc3",
+  "voice": "kneehi",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "booming, jolly sumo wrestler, lively",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "b389a8bf",
+  "voice": "robo",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "flat, monotone robot, lively",
+  "file": "hero-robo"
+ },
+ {
+  "key": "bc4ab07a",
+  "voice": "ghost",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "soft, whispery, eerie ghost girl, lively",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "c758c0b6",
+  "voice": "lint",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "hero-lint"
+ },
+ {
+  "key": "c82b9510",
+  "voice": "socklet",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "2549abd4",
+  "voice": "holey",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "nervous, whiny coward, lively",
+  "file": "hero-holey"
+ },
+ {
+  "key": "eeb24f16",
+  "voice": "steel",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "gruff, deep construction worker, lively",
+  "file": "hero-steel"
+ },
+ {
+  "key": "db626534",
+  "voice": "king",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "pompous, theatrical king, lively",
+  "file": "hero-king"
+ },
+ {
+  "key": "4ad40ca2",
+  "voice": "demon",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "deep, growling demon lord, lively",
+  "file": "hero-demon"
+ },
+ {
+  "key": "1e7b7080",
+  "voice": "bleach",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "snobbish, sneering aristocrat, lively",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "4cb03124",
+  "voice": "cling",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "sultry, smug villainess queen, lively",
+  "file": "hero-cling"
+ },
+ {
+  "key": "eed99f55",
+  "voice": "iron",
+  "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
+  "note": "stern, booming warlord, lively",
+  "file": "hero-iron"
+ },
+ {
+  "key": "9ccb4514",
+  "voice": "mismatch",
+  "say": "拾ったもん勝ち!…失くしたもんは…寝る?泣く?いつもごっちゃになるんだ。",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, lively",
+  "file": "story"
+ },
+ {
+  "key": "c87c92f0",
+  "voice": "queen",
+  "say": "キルトと言い争っている暇はございませんの。騎士殿、ほどいておしまいなさい。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "89f311de",
+  "voice": "mismatch",
+  "say": "ミスマッチをほどけるやつなんかいない!魔王様がじきじきに縫ってくれたんだ!覚悟しろ…ミスマッチにしてやる!",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "b68e0c71",
+  "voice": "mismatch",
+  "say": "縫い目が…ほどける…ほどけるう…!",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, conversational",
+  "file": "story"
+ },
+ {
+  "key": "f9f57f93",
+  "voice": "narr",
+  "say": "ポン!ポン!ポン!ミスマッチの縫い目が弾けた!百枚の靴下が降りそそぎ、みんな相方を探して跳ねていく。",
+  "note": "warm, playful storybook narrator, excited storytelling",
+  "file": "story"
+ },
+ {
+  "key": "75dc02c1",
+  "voice": "stinky",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "cocky young street brawler, lively",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "c2cc87cd",
+  "voice": "argyle",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "calm, noble samurai, lively",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "23ca506b",
+  "voice": "shinobi",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "cool, quiet ninja woman, lively",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "a44cbf73",
+  "voice": "gran",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "very old, creaky, wheezy grandmother, lively",
+  "file": "hero-gran"
+ },
+ {
+  "key": "b4e0aa79",
+  "voice": "baby",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "squeaky, bratty toddler, lively",
+  "file": "hero-baby"
+ },
+ {
+  "key": "d9915505",
+  "voice": "kneehi",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "booming, jolly sumo wrestler, lively",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "c9d71d41",
+  "voice": "robo",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "flat, monotone robot, lively",
+  "file": "hero-robo"
+ },
+ {
+  "key": "783ad6c6",
+  "voice": "ghost",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "soft, whispery, eerie ghost girl, lively",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "05b60522",
+  "voice": "lint",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "hero-lint"
+ },
+ {
+  "key": "6e126f90",
+  "voice": "socklet",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "b6e5bdc4",
+  "voice": "holey",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "nervous, whiny coward, lively",
+  "file": "hero-holey"
+ },
+ {
+  "key": "75d56242",
+  "voice": "steel",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "gruff, deep construction worker, lively",
+  "file": "hero-steel"
+ },
+ {
+  "key": "4fe76b64",
+  "voice": "king",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "pompous, theatrical king, lively",
+  "file": "hero-king"
+ },
+ {
+  "key": "5616943e",
+  "voice": "demon",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "deep, growling demon lord, lively",
+  "file": "hero-demon"
+ },
+ {
+  "key": "bf353700",
+  "voice": "bleach",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "snobbish, sneering aristocrat, lively",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "4d070c14",
+  "voice": "cling",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "sultry, smug villainess queen, lively",
+  "file": "hero-cling"
+ },
+ {
+  "key": "7e9f5d03",
+  "voice": "iron",
+  "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
+  "note": "stern, booming warlord, lively",
+  "file": "hero-iron"
+ },
+ {
+  "key": "788dc19a",
+  "voice": "fishnet",
+  "say": "前向きに考えましょう。これで左が二枚ですよ!",
+  "note": "eager, quick young scout, lively",
+  "file": "story"
+ },
+ {
+  "key": "8183ca4b",
+  "voice": "queen",
+  "say": "先へ参りましょう。魔王はすぐそこですわ。それと、どなたかこの靴下をお片付けなさって。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
   "key": "880e8a19",
   "voice": "demon",
   "say": "何者だ…回転の玉座に足を踏み入れる者は?!",

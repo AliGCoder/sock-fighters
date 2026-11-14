@@ -75,7 +75,8 @@ const PERSONA = {
   demon: 'deep, growling demon lord',
   bleach: 'snobbish, sneering aristocrat',
   cling: 'sultry, smug villainess queen',
-  iron: 'stern, booming warlord'
+  iron: 'stern, booming warlord',
+  mismatch: 'huge, deep, rumbling patchwork golem, a little dim-witted'
 };
 /** The mood of one line, read from how it's written. */
 function mood(who, text) {
@@ -105,24 +106,17 @@ function mood(who, text) {
   return 'conversational';
 }
 
-// Spoken in JAPANESE (the English shows on screen, like subtitles): ja.js has one translation per line of
-// to_translate.txt (every unique line, in story order — write it with `node prep.js --list`).
-const ORDER_FILE = path.join(__dirname, 'to_translate.txt');
-if (process.argv.includes('--list')) {
-  const seen = new Set(),
-    out = [];
+// Spoken in JAPANESE (the English shows on screen, like subtitles): ja.js maps each English line to its Japanese.
+const JA = require('./ja.js');
+{
+  const missing = [];
   for (const k of Object.keys(raw))
-    if (k !== 'ROSTER')
-      for (const l of raw[k])
-        if (!seen.has(l.text)) {
-          seen.add(l.text);
-          out.push(l.who + '\t' + l.text);
-        }
-  fs.writeFileSync(ORDER_FILE, out.join('\n'));
+    if (k !== 'ROSTER') for (const l of raw[k]) if (JA[l.text] === undefined && !missing.includes(l.text)) missing.push(l.who + ': ' + l.text);
+  if (missing.length) {
+    console.log('These story lines need a Japanese translation in ja.js:\n  ' + missing.join('\n  '));
+    process.exit(1);
+  }
 }
-const order = fs.readFileSync(ORDER_FILE, 'utf8').split('\n').map(l => l.slice(l.indexOf('\t') + 1));
-const JA = {};
-require('./ja.js').forEach((t, i) => (JA[order[i]] = t));
 // heroes' Japanese names, as the announcer calls them (CALL_NAMES in index.html)
 const JP_NAME = {};
 {
