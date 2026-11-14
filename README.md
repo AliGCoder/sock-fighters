@@ -25,8 +25,14 @@ Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N p
 
 ## Trophies, skins and unlockable heroes
 - **16 trophies** (main menu → TROPHIES). Some give rewards: clearing **Easy** unlocks the Lint Gang as playable heroes, **Hard** unlocks Steel Toe, King Knee-Sock and the Dryer Demon, and **Nightmare** unlocks Bleach Baron, Cling Queen and Iron Shogun. Others unlock the effect skins **FROST, NEON, CANDY, GOLD and SHADOW**, which work on every sock.
-- **The Dryer:** on the character select screen, tap **DRYER: STYLE IT** (or press **C**). Your sock hops into the dryer, where you pick a base skin and an effect, then tune the colour, vividness and brightness. Save it as **MY STYLE**.
+- **The Dryer:** on the character select screen, tap **DRYER: STYLE IT** (or press **C**). Your sock hops into the dryer, where you pick a base skin and an effect, tune the colour, vividness and brightness, and add an **accessory** in any colour (cool shades, hero cape, top hat, headphones, lucky clover, bow, scarf, beret, halo — each unlocked by a trophy). Save it as **MY STYLE**.
 - Progress is saved on your device. Online, your friend sees your custom style too.
+
+## Adventure mode: *Lost in the Spin Cycle*
+Main menu → **ADVENTURE**. Queen Nylonia of the Hosiery (a two-legged pantyhose people from the Island of Nylonia) appears in Dryer No. 7 and asks for a hero to stop the Dryer Demon. You pick your hero on a big hero select screen, jump through the dryer portal, and fight from the Queen's palace.
+- Tap or click to walk, tap enemies to attack. Every hero has **3 special abilities** (1 2 3) and an **ULT** (R), and levels up during a chapter.
+- **Chapter 1, The Lint Plains,** is playable: smash three Lint Gang camps, then beat Holey Moley. Chapters 2–5 are coming.
+- The whole story script is in [docs/adventure-mode.md](docs/adventure-mode.md).
 
 ## Modes
 - **Arcade:** pick Easy, Medium, Hard or **Nightmare**. Each ladder starts gentler and builds up to its final boss.

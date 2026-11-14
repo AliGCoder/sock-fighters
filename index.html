@@ -4020,9 +4020,11 @@
           glove: recolor(base.glove, style),
           arm: recolor(base.arm, style),
           color: recolor(base.color, style),
-          hat: base.hat,
+          hat: style.acc && ACCESSORIES[style.acc] && ACCESSORIES[style.acc].head ? null : base.hat,
           stache: base.stache,
-          shades: base.shades,
+          shades: base.shades && style.acc !== 'shades',
+          acc: ACCESSORIES[style.acc] ? style.acc : null,
+          accColor: style.accColor || '#e8333a',
           skin: style,
           skinName: style.name || (style.fx ? SKIN_FX[style.fx].name : 'MY STYLE')
         });
@@ -4042,7 +4044,9 @@
           hue: num(st.hue, -180, 180, 0),
           sat: num(st.sat, 0, 2, 1),
           light: num(st.light, -0.35, 0.35, 0),
-          name: typeof st.name === 'string' ? st.name.slice(0, 16) : undefined
+          name: typeof st.name === 'string' ? st.name.slice(0, 16) : undefined,
+          acc: ACCESSORIES[st.acc] ? st.acc : null,
+          accColor: typeof st.accColor === 'string' && /^#[0-9a-f]{6}$/i.test(st.accColor) ? st.accColor : '#e8333a'
         };
       }
 
@@ -4075,11 +4079,11 @@
       const ACHIEVEMENTS = [
         { id: 'firstwin', name: 'FIRST WASH', desc: 'Win your first fight', reward: { skin: 'frost' } },
         { id: 'socknado', name: 'SOCK-NADO!', desc: 'Land the 3-kick combo (E E E)', reward: { skin: 'neon' } },
-        { id: 'combo5', name: 'COMBO KING', desc: 'Land a 5-hit combo' },
+        { id: 'combo5', name: 'COMBO KING', desc: 'Land a 5-hit combo', reward: { acc: 'shades' } },
         { id: 'perfect', name: 'FLAWLESS FOLD', desc: 'Win a round without getting hit', reward: { skin: 'candy' } },
-        { id: 'superko', name: 'SUPER SOCKER', desc: 'K.O. someone with a super move' },
+        { id: 'superko', name: 'SUPER SOCKER', desc: 'K.O. someone with a super move', reward: { acc: 'cape' } },
         { id: 'easy', name: 'LINT BUSTER', desc: 'Clear the EASY ladder', reward: { heroes: ['lint', 'socklet', 'holey'] } },
-        { id: 'medium', name: 'DRAWER CHAMP', desc: 'Clear the MEDIUM ladder' },
+        { id: 'medium', name: 'DRAWER CHAMP', desc: 'Clear the MEDIUM ladder', reward: { acc: 'tophat' } },
         { id: 'hard', name: 'DRYER DESTROYER', desc: 'Clear the HARD ladder', reward: { heroes: ['steel', 'king', 'demon'] } },
         {
           id: 'nightmare',
@@ -4088,12 +4092,12 @@
           reward: { heroes: ['bleach', 'cling', 'iron'], skin: 'shadow' }
         },
         { id: 'wins25', name: 'VETERAN SOCK', desc: 'Win 25 fights', goal: 25, stat: 'wins', reward: { skin: 'gold' } },
-        { id: 'arenas', name: 'WORLD TOUR', desc: 'Fight in all 5 arenas', goal: 5, stat: 'arenas' },
-        { id: 'lucky', name: 'LUCKY SOCK', desc: 'Win with a RANDOM pick' },
-        { id: 'online1', name: 'BEST FRIENDS', desc: 'Win an online match' },
-        { id: 'online5', name: 'GOOD SPORT', desc: 'Play 5 online matches', goal: 5, stat: 'online' },
-        { id: 'stylist', name: 'FASHION SOCK', desc: 'Save your own style in the dryer' },
-        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins' }
+        { id: 'arenas', name: 'WORLD TOUR', desc: 'Fight in all 5 arenas', goal: 5, stat: 'arenas', reward: { acc: 'headphones' } },
+        { id: 'lucky', name: 'LUCKY SOCK', desc: 'Win with a RANDOM pick', reward: { acc: 'clover' } },
+        { id: 'online1', name: 'BEST FRIENDS', desc: 'Win an online match', reward: { acc: 'bow' } },
+        { id: 'online5', name: 'GOOD SPORT', desc: 'Play 5 online matches', goal: 5, stat: 'online', reward: { acc: 'scarf' } },
+        { id: 'stylist', name: 'FASHION SOCK', desc: 'Save your own style in the dryer', reward: { acc: 'beret' } },
+        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins', reward: { acc: 'halo' } }
       ];
       const ACHIEVEMENT_BY_ID = Object.fromEntries(ACHIEVEMENTS.map(a => [a.id, a]));
 
@@ -4104,7 +4108,183 @@
         const parts = [];
         if (r.heroes) parts.push('NEW HEROES: ' + r.heroes.map(id => findCharacter(id).name).join(', '));
         if (r.skin) parts.push('NEW SKIN: ' + SKIN_FX[r.skin].name);
+        if (r.acc) parts.push('NEW ACCESSORY: ' + ACCESSORIES[r.acc].name);
         return parts.join('  +  ');
+      }
+
+
+      /* ---- accessories: unlocked by trophies, worn on any sock, coloured in the Dryer ---- */
+      // head: true = sits on the head, so it replaces the skin's own hat
+      const ACCESSORIES = {
+        shades: { name: 'COOL SHADES' },
+        cape: { name: 'HERO CAPE' },
+        tophat: { name: 'TOP HAT', head: true },
+        headphones: { name: 'TOUR HEADPHONES', head: true },
+        clover: { name: 'LUCKY CLOVER' },
+        bow: { name: 'FRIENDSHIP BOW' },
+        scarf: { name: 'TEAM SCARF' },
+        beret: { name: 'FASHION BERET', head: true },
+        halo: { name: 'GOLDEN HALO' }
+      };
+      const ACCESSORY_IDS = Object.keys(ACCESSORIES);
+      const ACC_COLORS = ['#e8333a', '#ff9d2e', '#ffe234', '#4fdc6a', '#3fd0ff', '#7b5cff', '#ff4fa3', '#ffffff', '#2a2a2a', '#d4a017'];
+
+      /** Draw a sock's accessory. layer: 'behind' (cape, scarf tails), 'mask' (on the body), 'face' (shades). */
+      function drawAccessory(c, spine, pose, def, layer) {
+        const acc = def.acc,
+          col = def.accColor || '#e8333a';
+        const dark = shadeColor(col, -0.35);
+        c.save();
+        c.strokeStyle = INK;
+        c.lineWidth = 3;
+        c.lineJoin = 'round';
+        if (layer === 'behind') {
+          if (acc === 'cape') {
+            const sh = spine.sh;
+            const wave = Math.sin(game.time * 0.12) * 6;
+            c.beginPath();
+            c.moveTo(sh.x + 6, sh.y - 10);
+            c.quadraticCurveTo(sh.x - 34, sh.y + 20, -52 + wave, -2);
+            c.lineTo(-10, -2);
+            c.quadraticCurveTo(sh.x - 8, sh.y + 20, sh.x + 14, sh.y - 4);
+            c.closePath();
+            c.fillStyle = col;
+            c.fill();
+            c.stroke();
+          } else if (acc === 'scarf') {
+            const k = ankleBand(spine);
+            drawBandTailsAt(c, k.back.x, k.back.y, col, game.time);
+          }
+          c.restore();
+          return;
+        }
+        if (layer === 'mask') {
+          if (acc === 'scarf') {
+            const k = ankleBand(spine);
+            for (const [cc, w] of [[INK, 17], [col, 12]]) {
+              c.strokeStyle = cc;
+              c.lineWidth = w;
+              c.lineCap = 'round';
+              c.beginPath();
+              c.moveTo(k.back.x, k.back.y);
+              c.quadraticCurveTo(k.ctrl.x, k.ctrl.y, k.front.x, k.front.y);
+              c.stroke();
+            }
+            c.strokeStyle = dark;
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(k.mid.x - 6, k.mid.y - 3);
+            c.lineTo(k.mid.x + 6, k.mid.y + 3);
+            c.stroke();
+            c.restore();
+            return;
+          }
+          // head accessories, in the same frame as hats (y going up away from the head)
+          const a = sockPoint(spine, acc === 'clover' ? 0.32 : acc === 'bow' ? 0.06 : 0.18);
+          c.translate(a.x - a.nx * a.w * 0.5, a.y - a.ny * a.w * 0.5);
+          c.rotate(Math.atan2(-a.nx, a.ny));
+          c.fillStyle = col;
+          if (acc === 'tophat') {
+            c.beginPath();
+            c.ellipse(0, 2, 28, 7, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            roundRectPath(c, -16, -40, 32, 42, 4);
+            c.fill();
+            c.stroke();
+            c.fillStyle = dark;
+            c.fillRect(-16, -12, 32, 8);
+            c.strokeRect(-16, -12, 32, 8);
+          } else if (acc === 'beret') {
+            c.beginPath();
+            c.ellipse(6, -6, 28, 12, 0.18, 0, 7);
+            c.fill();
+            c.stroke();
+            c.beginPath();
+            c.arc(8, -19, 4, 0, 7);
+            c.fill();
+            c.stroke();
+          } else if (acc === 'headphones') {
+            c.lineWidth = 8;
+            c.beginPath();
+            c.arc(0, 10, 25, Math.PI, 0);
+            c.stroke();
+            c.strokeStyle = col;
+            c.lineWidth = 5;
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            for (const sx of [-25, 25]) {
+              c.beginPath();
+              c.ellipse(sx, 14, 9, 13, 0, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+          } else if (acc === 'bow') {
+            for (const sx of [-1, 1]) {
+              c.beginPath();
+              c.moveTo(0, -4);
+              c.lineTo(sx * 22, -16);
+              c.lineTo(sx * 22, 8);
+              c.closePath();
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = dark;
+            c.beginPath();
+            c.arc(0, -4, 6, 0, 7);
+            c.fill();
+            c.stroke();
+          } else if (acc === 'clover') {
+            for (let k = 0; k < 4; k++) {
+              c.beginPath();
+              c.arc(Math.cos((k * Math.PI) / 2) * 7, -6 + Math.sin((k * Math.PI) / 2) * 7, 6.5, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            c.beginPath();
+            c.moveTo(0, -6);
+            c.lineTo(4, 8);
+            c.stroke();
+          } else if (acc === 'halo') {
+            const bob = Math.sin(game.time * 0.08) * 3;
+            c.shadowColor = col;
+            c.shadowBlur = 14;
+            c.strokeStyle = col;
+            c.lineWidth = 6;
+            c.beginPath();
+            c.ellipse(0, -34 + bob, 24, 7, 0, 0, 7);
+            c.stroke();
+          }
+          c.restore();
+          return;
+        }
+        if (layer === 'face' && acc === 'shades') {
+          const eyes = eyePositions(spine);
+          const drop = pose.eyes === 'x' || pose.eyes === 'spiral' ? 9 : 0;
+          for (const eye of eyes) {
+            c.fillStyle = dark;
+            c.beginPath();
+            c.ellipse(eye.x, eye.y + drop, eye.r + 3, eye.r - 1, 0, 0, 7);
+            c.fill();
+            c.lineWidth = 3.5;
+            c.strokeStyle = col;
+            c.stroke();
+            c.strokeStyle = 'rgba(255,255,255,0.7)';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(eye.x - 6, eye.y + drop - 4);
+            c.lineTo(eye.x + 2, eye.y + drop - 7);
+            c.stroke();
+          }
+          c.strokeStyle = col;
+          c.lineWidth = 3;
+          c.beginPath();
+          c.moveTo(eyes[0].x + eyes[0].r, eyes[0].y + drop);
+          c.lineTo(eyes[1].x - eyes[1].r, eyes[1].y + drop);
+          c.stroke();
+        }
+        c.restore();
       }
 
       const Progress = {
@@ -4120,6 +4300,8 @@
             ach: d.ach || {},
             skins: d.skins || {},
             heroes: d.heroes || {},
+            accs: d.accs || {},
+            adv: d.adv || {},
             looks: {},
             stats: Object.assign({ wins: 0, online: 0, arenas: {}, heroWins: {} }, d.stats || {})
           };
@@ -4131,6 +4313,7 @@
           } catch (e) {}
         },
         hasSkin: fx => !!Progress.data.skins[fx],
+        hasAcc: a => !!Progress.data.accs[a],
         heroUnlocked: id => !HERO_UNLOCKS[id] || !!Progress.data.heroes[id],
         statValue(a) {
           const st = this.data.stats;
@@ -4145,6 +4328,7 @@
           const r = a.reward || {};
           if (r.skin) this.data.skins[r.skin] = true;
           for (const h of r.heroes || []) this.data.heroes[h] = true;
+          if (r.acc) this.data.accs[r.acc] = true;
           this.save();
           Toasts.push(a);
         },
@@ -4690,6 +4874,7 @@
         c.lineJoin = 'round';
 
         if (def.behind && !flash) def.behind(c, spine, pose);
+        if (def.acc && !flash) drawAccessory(c, spine, pose, def, 'behind');
         drawArm(c, spine.sh, pose.back, def, true, false, flash);
 
         // 1. thick ink outline along the spine
@@ -4760,6 +4945,7 @@
           shadingLine(-0.24, 6, 'rgba(255,255,255,0.28)');
           if (def.mask) def.mask(c, spine, pose);
           if (def.hat) drawHat(c, spine, def);
+          if (def.acc && !flash) drawAccessory(c, spine, pose, def, 'mask');
         }
 
         // 6. face
@@ -4768,6 +4954,7 @@
         );
         if (!flash && def.front) def.front(c, spine, pose);
         if (!flash && def.shades) drawShades(c, spine, pose);
+        if (!flash && def.acc) drawAccessory(c, spine, pose, def, 'face');
         drawMouth(c, spine, pose.mouth);
         if (!flash && def.stache) drawStache(c, spine, def.stache);
         if (!flash && def.top) def.top(c, spine, pose);
@@ -10127,12 +10314,14 @@
       const MODE_MENU = IS_TOUCH
         ? [
             ['1 PLAYER', 'VS CPU', 'cpu'],
+            ['ADVENTURE', 'STORY MODE: LOST IN THE SPIN CYCLE', 'adventure'],
             ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
           ]
         : [
             ['1 PLAYER', 'VS CPU', 'cpu'],
+            ['ADVENTURE', 'STORY MODE: LOST IN THE SPIN CYCLE', 'adventure'],
             ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
             ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
@@ -10140,8 +10329,8 @@
           ];
       const ONLINE_MENU_INDEX = MODE_MENU.findIndex(item => item[2] === 'online');
 
-      const MODE_ITEM_H = 40;
-      const modeItemY = i => 114 + i * 45;
+      const MODE_ITEM_H = 34;
+      const modeItemY = i => 104 + i * 39;
 
       function updateModeMenu() {
         if (backWasPressed()) {
@@ -10189,6 +10378,10 @@
           const action = MODE_MENU[game.menuIndex][2];
           if (action === 'online') {
             openOnlineLobby();
+            return;
+          }
+          if (action === 'adventure') {
+            startAdventure();
             return;
           }
           if (action === 'awards') {
@@ -10246,8 +10439,8 @@
           ctx.strokeStyle = on ? '#fff' : INK;
           ctx.lineWidth = 4;
           ctx.stroke();
-          drawText(a, 480, y + 16, 25, FONT_COMIC, '#fff', INK, 6);
-          drawText(b, 480, y + 33, 7, FONT_PIXEL, on ? '#fff' : '#bbb', INK, 0);
+          drawText(a, 480, y + 13, 22, FONT_COMIC, '#fff', INK, 6);
+          drawText(b, 480, y + 28, 6, FONT_PIXEL, on ? '#fff' : '#bbb', INK, 0);
           if (on) {
             const p = idleAnim(basePose(), game.time);
             drawSock(
@@ -11803,23 +11996,32 @@
       // There you pick a base skin, an effect skin you've unlocked, and tweak colour / vividness / brightness:
       // every change gives the sock a tumble. SAVE pops it out as "MY STYLE" (one per character).
 
-      const DRYER_ROWS = ['SKIN', 'EFFECT', 'COLOUR', 'VIVID', 'BRIGHT', 'SAVE', 'RESET'];
+      const DRYER_ROWS = ['SKIN', 'EFFECT', 'COLOUR', 'VIVID', 'BRIGHT', 'ACCESSORY', 'ACC. COLOUR', 'SAVE', 'RESET'];
+      const DRYER_VALUE_ROWS = 7; // rows 0..6 change with ◀ ▶; then SAVE and RESET
       const DRYER_ENTER = 100; // frames of the hop-in + zoom
       const DRYER_EXIT = 80; // frames of the pop-out
-      const dryerRowY = i => 132 + i * 48;
-      const DRYER_SAVE = { x: 540, y: 372, w: 380, h: 44 };
-      const DRYER_RESET = { x: 540, y: 424, w: 380, h: 34 };
-      const dryerArrow = (i, dir) => ({ x: dir < 0 ? 700 : 886, y: dryerRowY(i) - 19, w: 40, h: 38 });
+      const dryerRowY = i => 126 + i * 36;
+      const DRYER_SAVE = { x: 540, y: 380, w: 380, h: 40 };
+      const DRYER_RESET = { x: 540, y: 428, w: 380, h: 32 };
+      const dryerArrow = (i, dir) => ({ x: dir < 0 ? 700 : 886, y: dryerRowY(i) - 16, w: 40, h: 32 });
 
-      function openDryer() {
-        const s = game.selection;
-        const def = ROSTER[s.c1];
-        const current = sideLook(0);
+      /** Open the Dryer for `def` wearing `current`; onExit(saved) is called when you leave. With no arguments it
+       *  styles player 1's sock on the character select screen. */
+      function openDryer(def, current, onExit) {
+        if (!def) {
+          const s = game.selection;
+          def = ROSTER[s.c1];
+          current = sideLook(0);
+          onExit = saved => {
+            if (saved) s.k1 = skinOptions(ROSTER[s.c1]).length - 1; // wear the new style: it's the last option
+            game.screen = 'select';
+          };
+        }
         const look =
-          typeof current === 'object'
-            ? { base: current.base || 0, fx: current.fx || null, hue: current.hue || 0, sat: current.sat === undefined ? 1 : current.sat, light: current.light || 0 }
-            : { base: current, fx: null, hue: 0, sat: 1, light: 0 };
-        game.dryer = { c: s.c1, def, look, row: 0, phase: 'enter', t: 0, tumble: 0 };
+          current && typeof current === 'object'
+            ? Object.assign(sanitizeStyle(current), { name: undefined })
+            : { base: current || 0, fx: null, hue: 0, sat: 1, light: 0, acc: null, accColor: '#e8333a' };
+        game.dryer = { def, look, row: 0, phase: 'enter', t: 0, tumble: 0, onExit };
         game.screen = 'dryer';
         SFX.select();
       }
@@ -11842,6 +12044,18 @@
         } else if (row === 2) L.hue = clamp(L.hue + dir * 20, -180, 180);
         else if (row === 3) L.sat = clamp(Math.round((L.sat + dir * 0.1) * 10) / 10, 0, 2);
         else if (row === 4) L.light = clamp(Math.round((L.light + dir * 0.05) * 100) / 100, -0.3, 0.3);
+        else if (row === 5) {
+          const opts = [null, ...ACCESSORY_IDS.filter(a => Progress.hasAcc(a))];
+          if (opts.length === 1) {
+            D.note = { text: 'WIN TROPHIES TO UNLOCK ACCESSORIES!', until: game.time + 120 };
+            SFX.block();
+            return;
+          }
+          L.acc = opts[wrapIndex(opts.indexOf(L.acc || null) + dir, opts.length)];
+        } else if (row === 6) {
+          L.accColor = ACC_COLORS[wrapIndex(ACC_COLORS.indexOf(L.accColor) + dir, ACC_COLORS.length)];
+          if (!L.acc) D.note = { text: 'PICK AN ACCESSORY FIRST!', until: game.time + 90 };
+        }
         D.tumble = 30; // the sock does a flip in the drum
         SFX.spin();
       }
@@ -11857,12 +12071,7 @@
       }
 
       function leaveDryer(saved) {
-        const s = game.selection;
-        if (saved) {
-          // wear the new style straight away: it's the last skin option
-          s.k1 = skinOptions(ROSTER[s.c1]).length - 1;
-        }
-        game.screen = 'select';
+        game.dryer.onExit(saved);
       }
 
       function updateDryerScreen() {
@@ -11894,19 +12103,19 @@
           D.row = wrapIndex(D.row + 1, DRYER_ROWS.length);
           SFX.select();
         }
-        if (D.row < 5) {
+        if (D.row < DRYER_VALUE_ROWS) {
           if (wasPressed('KeyA', 'ArrowLeft')) dryerChange(D.row, -1);
           if (wasPressed('KeyD', 'ArrowRight', ...CONFIRM_KEYS)) dryerChange(D.row, 1);
         } else if (wasPressed(...CONFIRM_KEYS)) {
-          if (D.row === 5) return dryerSave();
-          D.look = { base: 0, fx: null, hue: 0, sat: 1, light: 0 };
+          if (D.row === DRYER_VALUE_ROWS) return dryerSave();
+          D.look = { base: 0, fx: null, hue: 0, sat: 1, light: 0, acc: null, accColor: '#e8333a' };
           D.tumble = 30;
           SFX.spin();
         }
         const c0 = game.click;
         if (c0) {
           const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
-          for (let i = 0; i < 5; i++)
+          for (let i = 0; i < DRYER_VALUE_ROWS; i++)
             for (const dir of [-1, 1])
               if (inside(dryerArrow(i, dir))) {
                 D.row = i;
@@ -11914,7 +12123,7 @@
               }
           if (inside(DRYER_SAVE)) return dryerSave();
           if (inside(DRYER_RESET)) {
-            D.look = { base: 0, fx: null, hue: 0, sat: 1, light: 0 };
+            D.look = { base: 0, fx: null, hue: 0, sat: 1, light: 0, acc: null, accColor: '#e8333a' };
             D.tumble = 30;
             SFX.spin();
           }
@@ -12051,7 +12260,7 @@
         if (D.tumble > 0) drawSparkles(250, 270, 110, game.time, 6, '#fff');
         drawTumblingSock(def, 250, y, size, angle, game.time);
         drawText(def.name, 250, 470, 30, FONT_COMIC, def.color, INK, 7);
-        drawText(def.skinName === 'MY STYLE' || D.look.hue || D.look.light || D.look.sat !== 1 ? 'MY STYLE' : def.skinName, 250, 500, 10, FONT_PIXEL, '#ffe234', INK, 0);
+        drawText(D.look.acc ? 'WEARING: ' + ACCESSORIES[D.look.acc].name : def.skinName, 250, 500, 10, FONT_PIXEL, '#ffe234', INK, 0);
         if (D.phase === 'exit') {
           if (t > 20) drawText('FRESH LOOK!', W / 2, 90, 54, FONT_COMIC, '#ffe234', INK, 10);
           if (t > 60) {
@@ -12076,14 +12285,16 @@
           L.fx ? SKIN_FX[L.fx].name : 'NONE',
           null,
           null,
-          null
+          null,
+          L.acc ? ACCESSORIES[L.acc].name : 'NONE',
+          'swatch'
         ];
         const sliders = [null, null, [L.hue, -180, 180], [L.sat, 0, 2], [L.light, -0.3, 0.3]];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < DRYER_VALUE_ROWS; i++) {
           const y0 = dryerRowY(i),
             on = D.row === i;
           if (on) {
-            roundRectPath(ctx, 530, y0 - 22, 400, 44, 10);
+            roundRectPath(ctx, 530, y0 - 17, 400, 34, 10);
             ctx.fillStyle = 'rgba(255,79,163,0.25)';
             ctx.fill();
           }
@@ -12098,7 +12309,15 @@
             ctx.stroke();
             drawText(dir < 0 ? '◀' : '▶', r.x + r.w / 2, r.y + r.h / 2 + 1, 14, FONT_PIXEL, '#fff', INK, 0);
           }
-          if (values[i] !== null) {
+          if (values[i] === 'swatch') {
+            ctx.fillStyle = L.accColor || '#e8333a';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(813, y0, 12, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+          } else if (values[i] !== null) {
             const fxCol = i === 1 && L.fx ? SKIN_FX[L.fx].color : '#ffe234';
             drawText(values[i], 813, y0, values[i].length > 10 ? 8 : 10, FONT_PIXEL, fxCol, INK, 0);
           } else {
@@ -12124,8 +12343,8 @@
           }
         }
         for (const [r, label, row, col] of [
-          [DRYER_SAVE, 'SAVE AS MY STYLE', 5, '#ff4fa3'],
-          [DRYER_RESET, 'RESET', 6, '#6b6290']
+          [DRYER_SAVE, 'SAVE AS MY STYLE', DRYER_VALUE_ROWS, '#ff4fa3'],
+          [DRYER_RESET, 'RESET', DRYER_VALUE_ROWS + 1, '#6b6290']
         ]) {
           roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
           ctx.fillStyle = D.row === row ? shadeColor(col, -0.2) : '#2a1d48';
@@ -12133,7 +12352,7 @@
           ctx.strokeStyle = col;
           ctx.lineWidth = 3;
           ctx.stroke();
-          drawText(label, r.x + r.w / 2, r.y + r.h / 2 + 1, row === 5 ? 13 : 10, FONT_PIXEL, '#fff', INK, 0);
+          drawText(label, r.x + r.w / 2, r.y + r.h / 2 + 1, row === DRYER_VALUE_ROWS ? 13 : 10, FONT_PIXEL, '#fff', INK, 0);
         }
         const note = D.note && game.time < D.note.until ? D.note.text : null;
         drawText(
@@ -12218,6 +12437,2684 @@
           4
         );
         drawText('Style your sock in THE DRYER on the character select screen', W / 2, 528, 7, FONT_PIXEL, '#aaa', INK, 0);
+      }
+
+      /* ================= ADVENTURE MODE: "LOST IN THE SPIN CYCLE" ================= */
+      // Story mode. Queen Nylonia of the Hosiery (two-legged pantyhose people on the Island of Nylonia) asks the
+      // hero you choose to stop the Dryer Demon and his generals. Screens:
+      //   advStory  a story scene on its own stage (the prologue in the laundromat)
+      //   advSelect the big hero select ("who will answer the Queen's call?")
+      //   advPortal the dryer turning into a portal
+      //   advHub    the Queen's palace: pick a chapter, change hero
+      //   advPlay   a chapter: tap to move, auto-attack, 3 specials + ULT, camps, a boss, level ups
+      // Story scenes can also play over the hub or a chapter (see playScene). The script: docs/adventure-mode.md.
+
+      /* ---- the Hosiery: two-legged pantyhose characters ---- */
+      const HOSIERY = {
+        queen: { name: 'QUEEN NYLONIA', jp: 'ナイロニア女王', color: '#c6a4ff', band: '#7a4fc9', sheer: 0.82, crown: true, lashes: true, train: true, gloves: '#f6eeff', sceptre: true, blush: true },
+        fishnet: { name: 'FISHNET SCOUT', jp: '網タイツ斥候', color: '#3a2a44', band: '#1d141d', net: true, gloves: '#3a2a44', bandana: true },
+        sheer: { name: 'SHEER SPY', jp: 'シアー密偵', color: '#e9c7b0', band: '#c9a088', sheer: 0.45, gloves: '#e9c7b0' },
+        control: { name: 'CONTROL-TOP GUARD', jp: '補正部隊', color: '#5a3f6e', band: '#3a2650', big: true, gloves: '#5a3f6e' },
+        tights: { name: 'TIGHTS TROOPER', jp: 'タイツ兵', color: '#e8333a', band: '#a51f25', gloves: '#e8333a' },
+        lacetop: { name: 'LACETOP LADY', jp: 'レースの貴婦人', color: '#2b2f4a', band: '#1b1e30', lace: true, lashes: true, gloves: '#ffffff' },
+        glitter: { name: 'GLITTER TIGHTS', jp: 'キラキラタイツ', color: '#ff4fa3', band: '#c4207a', glitter: true, gloves: '#ff9dd0' },
+        footless: { name: 'FOOTLESS LEGGINGS', jp: 'レギンス伝令', color: '#262626', band: '#111', footless: true, gloves: '#262626' },
+        seamed: { name: 'SEAMED GUARD', jp: 'シーム衛兵', color: '#d9b48c', band: '#9a7550', seam: true, plume: true, gloves: '#ffffff' }
+      };
+
+      /**
+       * Draw a Hosiery character standing at (x, y) (feet on y). s = size, face = 1 right / -1 left, t = time.
+       * o: { walk, mouth: 'smile'|'open'|'shock'|'smug', eyes: 'normal'|'closed', alpha }
+       */
+      function drawHosiery(c, kind, x, y, s, face, t, o = {}) {
+        const H = HOSIERY[kind];
+        const walking = !!o.walk;
+        const swing = walking ? Math.sin(t * 0.3) * 0.32 : 0;
+        const bob = walking ? Math.abs(Math.sin(t * 0.3)) * 4 : Math.sin(t * 0.08) * 1.5;
+        const bodyW = H.big ? 70 : 54,
+          top = H.big ? -162 : -150,
+          hip = -84;
+        c.save();
+        c.translate(x, y);
+        // shadow
+        c.fillStyle = 'rgba(0,0,0,0.25)';
+        c.beginPath();
+        c.ellipse(0, 0, 34 * s, 7 * s, 0, 0, 7);
+        c.fill();
+        c.scale(s * face, s);
+        if (o.alpha !== undefined) c.globalAlpha = o.alpha;
+        c.translate(0, -bob);
+        c.lineJoin = 'round';
+        c.lineCap = 'round';
+        // the royal train behind the Queen
+        if (H.train) {
+          const wave = Math.sin(t * 0.05) * 6;
+          c.beginPath();
+          c.moveTo(-20, top + 8);
+          c.quadraticCurveTo(-90, -70 + wave, -120, 4);
+          c.lineTo(-40, 4);
+          c.quadraticCurveTo(-30, -60, 10, top + 14);
+          c.closePath();
+          c.fillStyle = '#9b6fe0';
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 4;
+          c.stroke();
+        }
+        // legs: two tapered tubes from the hips down to the feet
+        const legs = [
+          [-13, swing],
+          [13, -swing]
+        ].map(([lx, a]) => {
+          const ax = lx + Math.sin(a) * 30,
+            ay = -12 + (1 - Math.cos(a)) * 6;
+          return { lx, ax, ay };
+        });
+        const legPath = L => {
+          c.beginPath();
+          c.moveTo(L.lx - 11, hip);
+          c.lineTo(L.lx + 11, hip);
+          c.lineTo(L.ax + 7, L.ay);
+          c.lineTo(L.ax - 7, L.ay);
+          c.closePath();
+        };
+        const bodyPath = () => {
+          c.beginPath();
+          c.moveTo(-bodyW / 2, top + 6);
+          c.quadraticCurveTo(-bodyW / 2, top, -bodyW / 2 + 6, top);
+          c.lineTo(bodyW / 2 - 6, top);
+          c.quadraticCurveTo(bodyW / 2, top, bodyW / 2, top + 6);
+          c.lineTo(bodyW / 2 - 2, hip + 6);
+          c.quadraticCurveTo(0, hip + 22, -bodyW / 2 + 2, hip + 6);
+          c.closePath();
+        };
+        const fillAlpha = H.sheer || 1;
+        for (const L of legs) {
+          // feet first (behind the leg's end)
+          if (!H.footless) {
+            c.beginPath();
+            c.ellipse(L.ax + 8, L.ay + 2, 15, 8, 0, 0, 7);
+            c.fillStyle = H.color;
+            c.globalAlpha = (o.alpha === undefined ? 1 : o.alpha) * Math.min(1, fillAlpha + 0.25);
+            c.fill();
+            c.globalAlpha = o.alpha === undefined ? 1 : o.alpha;
+            c.strokeStyle = INK;
+            c.lineWidth = 3.5;
+            c.stroke();
+          }
+          legPath(L);
+          c.globalAlpha = (o.alpha === undefined ? 1 : o.alpha) * fillAlpha;
+          c.fillStyle = H.color;
+          c.fill();
+          c.globalAlpha = o.alpha === undefined ? 1 : o.alpha;
+          c.strokeStyle = INK;
+          c.lineWidth = 3.5;
+          c.stroke();
+          // sheen down the front of the leg
+          c.strokeStyle = 'rgba(255,255,255,0.35)';
+          c.lineWidth = 3;
+          c.beginPath();
+          c.moveTo(L.lx + 4, hip + 8);
+          c.lineTo(L.ax + 3, L.ay - 12);
+          c.stroke();
+          if (H.footless) {
+            c.fillStyle = H.band;
+            c.fillRect(L.ax - 9, L.ay - 10, 18, 8);
+          }
+          if (H.seam) {
+            c.strokeStyle = '#5a3a20';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(L.lx - 6, hip + 4);
+            c.lineTo(L.ax - 4, L.ay - 2);
+            c.stroke();
+          }
+          if (H.lace) {
+            // a scalloped lace band at mid-thigh
+            const ly = hip + 22,
+              lx0 = L.lx + (L.ax - L.lx) * 0.25;
+            c.fillStyle = '#fff';
+            for (let k = -2; k <= 2; k++) {
+              c.beginPath();
+              c.arc(lx0 + k * 5, ly, 3.4, 0, Math.PI);
+              c.fill();
+            }
+            c.fillRect(lx0 - 12, ly - 4, 24, 4);
+          }
+        }
+        // body (the brief) with the waistband
+        bodyPath();
+        c.globalAlpha = (o.alpha === undefined ? 1 : o.alpha) * Math.min(1, fillAlpha + 0.15);
+        c.fillStyle = H.color;
+        c.fill();
+        c.globalAlpha = o.alpha === undefined ? 1 : o.alpha;
+        if (H.big) {
+          c.save();
+          bodyPath();
+          c.clip();
+          c.fillStyle = H.band;
+          c.fillRect(-bodyW / 2, top + 40, bodyW, 60);
+          c.restore();
+        }
+        c.strokeStyle = INK;
+        c.lineWidth = 4;
+        bodyPath();
+        c.stroke();
+        roundRectPath(c, -bodyW / 2 - 2, top - 2, bodyW + 4, 12, 5);
+        c.fillStyle = H.band;
+        c.fill();
+        c.lineWidth = 3;
+        c.stroke();
+        // fishnet: a diamond grid over legs and body
+        if (H.net) {
+          c.save();
+          c.beginPath();
+          for (const L of legs) {
+            c.moveTo(L.lx - 11, hip);
+            c.lineTo(L.lx + 11, hip);
+            c.lineTo(L.ax + 7, L.ay);
+            c.lineTo(L.ax - 7, L.ay);
+            c.closePath();
+          }
+          c.rect(-bodyW / 2, top + 10, bodyW, hip - top + 6);
+          c.clip();
+          c.strokeStyle = 'rgba(255,190,220,0.55)';
+          c.lineWidth = 1.6;
+          for (let k = -12; k < 12; k++) {
+            c.beginPath();
+            c.moveTo(k * 10 - 80, top);
+            c.lineTo(k * 10 + 80, 10);
+            c.moveTo(k * 10 + 80, top);
+            c.lineTo(k * 10 - 80, 10);
+            c.stroke();
+          }
+          c.restore();
+        }
+        if (H.glitter) {
+          const r = seededRandom(9);
+          for (let k = 0; k < 18; k++) {
+            const gx = (r() - 0.5) * 60,
+              gy = top + 14 + r() * 150;
+            const tw = 0.4 + 0.6 * Math.abs(Math.sin(t * 0.12 + k));
+            c.fillStyle = `rgba(255,255,255,${tw})`;
+            starPath(c, gx, gy, 3 + tw * 2, k);
+            c.fill();
+          }
+        }
+        // face on the body
+        const ey = top + 30;
+        const look = 2;
+        for (const ex of [6, 24]) {
+          c.fillStyle = '#fff';
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.beginPath();
+          c.arc(ex, ey, 9, 0, 7);
+          c.fill();
+          c.stroke();
+          if (o.eyes === 'closed') {
+            c.beginPath();
+            c.moveTo(ex - 6, ey);
+            c.lineTo(ex + 6, ey);
+            c.stroke();
+          } else {
+            c.fillStyle = INK;
+            c.beginPath();
+            c.arc(ex + look, ey + 1, 3.8, 0, 7);
+            c.fill();
+          }
+          if (H.lashes) {
+            c.lineWidth = 2.4;
+            for (const k of [-1, 0, 1]) {
+              c.beginPath();
+              c.moveTo(ex + k * 5, ey - 8);
+              c.lineTo(ex + k * 7, ey - 14);
+              c.stroke();
+            }
+          }
+        }
+        if (H.blush) {
+          c.fillStyle = 'rgba(255,120,170,0.45)';
+          for (const bx of [0, 32]) {
+            c.beginPath();
+            c.ellipse(bx, ey + 15, 6, 3.5, 0, 0, 7);
+            c.fill();
+          }
+        }
+        const my = ey + 22,
+          mx = 16;
+        c.strokeStyle = INK;
+        c.lineWidth = 3;
+        c.fillStyle = '#5a1430';
+        const mouth = o.mouth || 'smile';
+        c.beginPath();
+        if (mouth === 'open' || mouth === 'shock') {
+          c.ellipse(mx, my + 2, mouth === 'shock' ? 5 : 8, mouth === 'shock' ? 7 : 6, 0, 0, 7);
+          c.fill();
+          c.stroke();
+        } else if (mouth === 'smug') {
+          c.moveTo(mx - 8, my);
+          c.quadraticCurveTo(mx + 2, my + 6, mx + 9, my - 3);
+          c.stroke();
+        } else {
+          c.arc(mx, my - 3, 8, 0.2, Math.PI - 0.2);
+          c.stroke();
+        }
+        // floating gloves
+        const arm = Math.sin(t * 0.09) * 3;
+        for (const [gx, gy] of [
+          [-bodyW / 2 - 12, top + 58 + arm],
+          [bodyW / 2 + 14, top + 52 - arm]
+        ]) {
+          c.fillStyle = H.gloves;
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.beginPath();
+          c.arc(gx, gy, 9, 0, 7);
+          c.fill();
+          c.stroke();
+        }
+        if (H.sceptre) {
+          // a sceptre shaped like a darning needle, held in the front glove
+          const gx = bodyW / 2 + 14,
+            gy = top + 52 - arm;
+          c.strokeStyle = INK;
+          c.lineWidth = 7;
+          c.beginPath();
+          c.moveTo(gx + 2, gy + 26);
+          c.lineTo(gx + 8, gy - 64);
+          c.stroke();
+          c.strokeStyle = '#e8e8f4';
+          c.lineWidth = 4;
+          c.stroke();
+          c.beginPath();
+          c.ellipse(gx + 8, gy - 56, 3, 7, 0.06, 0, 7);
+          c.strokeStyle = INK;
+          c.lineWidth = 2;
+          c.stroke();
+          c.fillStyle = '#ffd23f';
+          c.beginPath();
+          c.arc(gx + 8, gy - 68, 5, 0, 7);
+          c.fill();
+          c.stroke();
+        }
+        if (H.crown) {
+          c.beginPath();
+          c.moveTo(-20, top - 2);
+          for (let k = 0; k <= 4; k++) {
+            c.lineTo(-20 + k * 10, top - 18 - (k % 2 ? 0 : 6));
+            c.lineTo(-15 + k * 10, top - 8);
+          }
+          c.lineTo(22, top - 2);
+          c.closePath();
+          c.fillStyle = '#ffd23f';
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.stroke();
+          c.fillStyle = '#ff4fa3';
+          c.beginPath();
+          c.arc(0, top - 9, 3.5, 0, 7);
+          c.fill();
+        }
+        if (H.plume) {
+          roundRectPath(c, -14, top - 30, 28, 28, 6);
+          c.fillStyle = '#c8202f';
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.stroke();
+          c.fillStyle = '#ffd23f';
+          c.beginPath();
+          c.ellipse(4, top - 40, 6, 12, 0.3, 0, 7);
+          c.fill();
+          c.stroke();
+        }
+        if (H.bandana) {
+          c.fillStyle = '#e8333a';
+          c.fillRect(-bodyW / 2 - 1, top + 12, bodyW + 2, 7);
+          c.beginPath();
+          c.moveTo(-bodyW / 2, top + 14);
+          c.lineTo(-bodyW / 2 - 16, top + 8 + Math.sin(t * 0.2) * 3);
+          c.lineTo(-bodyW / 2 - 14, top + 22);
+          c.closePath();
+          c.fill();
+        }
+        c.restore();
+      }
+
+      /* ---- adventure state and saving ---- */
+      const ADV_ONELINERS = {
+        stinky: "I'm not smelly. I'm *memorable*.",
+        argyle: 'Discipline. Patterns. Diamonds.',
+        shinobi: 'You never saw me. Neither did your feet.',
+        gran: 'I have fought for ninety-five years. My back has fought for ninety.',
+        baby: 'Small sock. BIG feelings.',
+        kneehi: 'Stretchy. Strong. Slightly sumo.',
+        robo: 'COMPRESSION: ENGAGED.',
+        ghost: 'Lost once. Never again.'
+      };
+
+      function advData() {
+        const d = Progress.data;
+        d.adv = Object.assign({ prologue: false, hero: 0, look: 0, cleared: {}, seen: {} }, d.adv || {});
+        return d.adv;
+      }
+      const advHero = () => ROSTER[clamp(advData().hero | 0, 0, ROSTER.length - 1)];
+      const advHeroLook = () => withSkin(advHero(), sanitizeStyle(advData().look));
+
+      function startAdventure() {
+        const A = advData();
+        game.adv = { scene: null };
+        if (!A.prologue) startPrologue();
+        else openHub();
+      }
+
+      /* ---- story scenes: a dialogue box with the speaker's portrait; tap / SPACE for the next line ---- */
+      // A line is { who, text, fx }. who = a character id, 'queen' / 'fishnet' (Hosiery), 'hero' (your hero) or
+      // 'narr' (narrator). fx(state) runs when the line appears (e.g. the Queen shows up in the dryer window).
+      function speakerInfo(who) {
+        if (who === 'narr') return { name: '', color: '#aaa' };
+        if (who === 'hero') {
+          const d = advHeroLook();
+          return { name: d.name, color: d.color, sock: d };
+        }
+        if (HOSIERY[who]) return { name: HOSIERY[who].name, color: HOSIERY[who].color, hosiery: who };
+        const d = findCharacter(who);
+        return { name: d.name, color: d.color, sock: withSkin(d, 0) };
+      }
+
+      /** A character's voice clip outside a fight (story scenes, adventure). Never lets a sound problem stop the game. */
+      function advVoice(def, word) {
+        try {
+          FighterVoice.play({ def, side: 0, x: W / 2, y: GROUND, face: 1 }, word, true);
+        } catch (e) {}
+      }
+
+      function playScene(lines, onDone, state) {
+        game.adv.scene = { lines, i: -1, shown: 0, t: 0, onDone, state: state || {} };
+        nextSceneLine();
+      }
+      function nextSceneLine() {
+        const S = game.adv.scene;
+        S.i++;
+        S.shown = 0;
+        if (S.i >= S.lines.length) {
+          game.adv.scene = null;
+          if (S.onDone) S.onDone();
+          return;
+        }
+        const line = S.lines[S.i];
+        if (line.fx) line.fx(S.state);
+        if (line.who !== 'narr' && line.who !== 'hero' && !HOSIERY[line.who]) {
+          const d = findCharacter(line.who);
+          if (d && Math.random() < 0.6) advVoice(d, 'light');
+        }
+      }
+      const SCENE_SKIP = { x: 832, y: 370, w: 112, h: 28 };
+      /** Returns true while a scene is playing (it takes the input). */
+      function updateScene() {
+        const S = game.adv && game.adv.scene;
+        if (!S) return false;
+        S.t++;
+        const line = S.lines[S.i];
+        S.shown += 1.4;
+        const c0 = game.click;
+        game.click = null;
+        if (wasPressed('Escape') || (c0 && c0.x > SCENE_SKIP.x && c0.y > SCENE_SKIP.y && c0.y < SCENE_SKIP.y + SCENE_SKIP.h && c0.x < SCENE_SKIP.x + SCENE_SKIP.w)) {
+          // skip the whole scene (still running every line's effect so the story state is right)
+          while (game.adv.scene === S) nextSceneLine();
+          return true;
+        }
+        if (wasPressed(...CONFIRM_KEYS, 'KeyK') || c0) {
+          if (S.shown < line.text.length) S.shown = line.text.length;
+          else {
+            SFX.select();
+            nextSceneLine();
+          }
+        }
+        return true;
+      }
+      function drawSceneBox() {
+        const S = game.adv && game.adv.scene;
+        if (!S || S.i < 0 || S.i >= S.lines.length) return;
+        const line = S.lines[S.i];
+        const info = speakerInfo(line.who);
+        const text = line.text.replace(/\{HERO\}/g, advHeroLook().name);
+        roundRectPath(ctx, 16, 404, 928, 126, 16);
+        ctx.fillStyle = 'rgba(16,8,30,0.94)';
+        ctx.fill();
+        ctx.strokeStyle = info.color;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        let textX = 40;
+        if (line.who !== 'narr') {
+          // portrait
+          roundRectPath(ctx, 28, 414, 106, 106, 12);
+          ctx.fillStyle = shadeColor(info.color, -0.55);
+          ctx.fill();
+          ctx.save();
+          roundRectPath(ctx, 28, 414, 106, 106, 12);
+          ctx.clip();
+          const talk = Math.floor(S.t / 5) % 2 === 0 && S.shown < text.length;
+          if (info.hosiery) drawHosiery(ctx, info.hosiery, 74, 560, 0.95, 1, S.t, { mouth: talk ? 'open' : 'smile' });
+          else {
+            const p = idleAnim(basePose(), S.t);
+            p.mouth = talk ? 'yell' : 'grin';
+            drawSock(ctx, info.sock, p, 66, 548, 1, fitScale(info.sock, 0.9), { x: 3, y: 0 });
+          }
+          ctx.restore();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          roundRectPath(ctx, 28, 414, 106, 106, 12);
+          ctx.stroke();
+          drawText(info.name, 150, 426, 18, FONT_COMIC, info.color, INK, 5, 'left');
+          textX = 150;
+        }
+        const shown = text.slice(0, Math.floor(S.shown));
+        const lines = wrapText(shown, 930 - textX - 20, `21px ${FONT_COMIC}`);
+        lines.slice(0, 3).forEach((l, i) =>
+          drawText(l, textX, (line.who === 'narr' ? 440 : 456) + i * 26, 21, FONT_COMIC, line.who === 'narr' ? '#ddd' : '#fff', INK, 0, 'left')
+        );
+        if (S.shown >= text.length && S.t % 40 < 26) drawText('▼', 920, 512, 14, FONT_PIXEL, '#ffe234', INK, 0);
+        // skip button
+        roundRectPath(ctx, SCENE_SKIP.x, SCENE_SKIP.y, SCENE_SKIP.w, SCENE_SKIP.h, 8);
+        ctx.fillStyle = 'rgba(20,10,36,0.85)';
+        ctx.fill();
+        ctx.strokeStyle = '#6b6290';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        drawText(IS_TOUCH ? 'SKIP ▶▶' : 'SKIP ▶▶ [ESC]', SCENE_SKIP.x + SCENE_SKIP.w / 2, SCENE_SKIP.y + 15, 8, FONT_PIXEL, '#ccc', INK, 0);
+      }
+
+      /* ---- PROLOGUE: Laundry Day (a scene on its own stage) ---- */
+      const PROLOGUE = [
+        { who: 'narr', text: 'The coin laundry. Midnight. Somewhere, a sock is about to go missing...', fx: s => (s.spin = true) },
+        { who: 'narr', text: '*Dryer No. 7 starts spinning by itself. A sock is sucked toward the door!*', fx: s => (s.suck = 1) },
+        { who: 'stinky', text: "HEY! THAT'S MY OTHER HALF!" },
+        { who: 'gran', text: 'In my day, socks went missing the honest way. Behind the radiator! ...Oh, my back.' },
+        { who: 'narr', text: '*The dryer window glows purple. A glamorous face appears in the glass...*', fx: s => (s.queen = 1) },
+        { who: 'queen', text: 'Greetings, single-leggers. We are QUEEN NYLONIA, ruler of the Hosiery and of the beautiful Island of Nylonia.' },
+        { who: 'argyle', text: 'Why is she saying "we"? There is one of her.' },
+        { who: 'queen', text: 'We have TWO LEGS, darling. We are ALWAYS a "we".' },
+        { who: 'queen', text: 'Listen carefully, for We will only say this once. ...Twice if you are slow.' },
+        { who: 'queen', text: 'The DRYER DEMON has awoken. He steals your socks. He steals Our stockings. Soon there will be nothing left in any drawer, in any world.' },
+        { who: 'queen', text: 'We need... a HERO.' },
+        { who: 'narr', text: '*Everyone looks at Stinky Tabi. Stinky Tabi looks behind himself.*', fx: s => (s.look = 1) },
+        { who: 'stinky', text: '...Me?' },
+        { who: 'queen', text: 'We asked for a hero. Not a... *sniff* ...gym bag.' },
+        { who: 'stinky', text: "He took my other half, lady. I'm going." },
+        { who: 'argyle', text: 'Then we all go. The way of the sock is never to walk alone.' },
+        { who: 'queen', text: 'Very well. Choose who answers Our call. Bring snacks. Do NOT touch Our curtains.' }
+      ];
+
+      function startPrologue() {
+        game.adv = { scene: null, story: { t: 0 } };
+        game.screen = 'advStory';
+        playScene(PROLOGUE, () => openAdvSelect('prologue'), game.adv.story);
+      }
+      function updateAdvStory() {
+        game.adv.story.t++;
+        if (game.adv.story.suck) game.adv.story.suck++;
+        updateScene();
+      }
+      function drawAdvStory() {
+        const S = game.adv.story,
+          t = S.t;
+        drawStage(0.25, 'laundry');
+        const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
+        // Dryer No. 7, with the Queen in its window
+        const shake = S.spin ? Math.sin(t * 1.3) * (S.queen ? 1 : 3) : 0;
+        ctx.save();
+        ctx.translate(720, 214);
+        ctx.scale(0.62, 0.62);
+        ctx.translate(-720, -214);
+        drawDryerMachine(720, 214, 0, shake);
+        ctx.restore();
+        if (S.spin && !S.queen) {
+          // a purple swirl in the window
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(720 + shake * 0.62, 214, 60, 0, 7);
+          ctx.clip();
+          ctx.translate(720, 214);
+          ctx.rotate(t * 0.2);
+          for (let k = 0; k < 4; k++) {
+            ctx.rotate(Math.PI / 2);
+            ctx.strokeStyle = k % 2 ? '#c6a4ff' : '#ff4fa3';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(14, 0, 30, 0, 2.4);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+        if (S.queen) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(720, 214, 60, 0, 7);
+          ctx.clip();
+          const g = ctx.createRadialGradient(720, 214, 10, 720, 214, 70);
+          g.addColorStop(0, '#7a3fd0');
+          g.addColorStop(1, '#2a0f45');
+          ctx.fillStyle = g;
+          ctx.fillRect(650, 140, 140, 150);
+          const appear = Math.min(1, S.queen++ / 30);
+          drawHosiery(ctx, 'queen', 714, 300 + (1 - appear) * 60, 0.62, -1, t, {
+            mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug',
+            alpha: appear
+          });
+          ctx.restore();
+          ctx.save();
+          ctx.shadowColor = '#c6a4ff';
+          ctx.shadowBlur = 20;
+          ctx.strokeStyle = 'rgba(198,164,255,0.8)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(720, 214, 62, 0, 7);
+          ctx.stroke();
+          ctx.restore();
+        }
+        // Stinky's other half flying into the dryer
+        if (S.suck && S.suck < 60) {
+          const k = S.suck / 60;
+          const p = basePose();
+          p.eyes = 'spiral';
+          p.mouth = 'yell';
+          ctx.save();
+          ctx.translate(lerp(150, 720, k), lerp(340, 214, k) - Math.sin(k * Math.PI) * 80);
+          ctx.rotate(S.suck * 0.4);
+          drawSock(ctx, withSkin(findCharacter('stinky'), 0), p, 0, 30, 1, 0.4 * (1 - k * 0.6), { x: 3, y: 0 });
+          ctx.restore();
+        }
+        // the gang
+        const cast = [
+          ['stinky', 150],
+          ['argyle', 290],
+          ['gran', 420]
+        ];
+        for (const [id, x] of cast) {
+          const d = withSkin(findCharacter(id), 0);
+          const p = idleAnim(basePose(), t + x);
+          const talking = speaking === id;
+          if (talking) {
+            p.mouth = t % 10 < 5 ? 'yell' : 'grin';
+            p.yOff = -Math.abs(Math.sin(t * 0.25)) * 8;
+          }
+          if (S.queen && !talking) p.eyes = 'happy';
+          if (S.look && id !== 'stinky') {
+            p.eyes = 'angry';
+          }
+          drawSock(ctx, d, p, x, 396, S.look && id === 'stinky' ? -1 : 1, fitScale(d, 0.95), { x: S.queen ? 4 : 3, y: 0 });
+        }
+        drawSceneBox();
+      }
+
+      /* ---- the League-style hero select ---- */
+      const ADV_GRID = { x: 18, y: 96, cell: 64, gap: 6, cols: 4 };
+      const advCellRect = i => ({
+        x: ADV_GRID.x + (i % ADV_GRID.cols) * (ADV_GRID.cell + ADV_GRID.gap),
+        y: ADV_GRID.y + Math.floor(i / ADV_GRID.cols) * (ADV_GRID.cell + ADV_GRID.gap),
+        w: ADV_GRID.cell,
+        h: ADV_GRID.cell
+      });
+      const ADV_LOCK = { x: 400, y: 476, w: 240, h: 50 };
+      const advSkinRect = i => ({ x: 18 + i * 56, y: 466, w: 50, h: 58 });
+      const ADV_DRYER = { x: 242, y: 466, w: 70, h: 58 };
+
+      function openAdvSelect(from) {
+        const A = advData();
+        game.adv.sel = { c: A.hero || 0, k: 0, locked: 0, from, t: 0 };
+        // start on the skin you used last time
+        const opts = skinOptions(ROSTER[game.adv.sel.c]);
+        const idx = opts.findIndex(o => JSON.stringify(o) === JSON.stringify(A.look));
+        game.adv.sel.k = idx >= 0 ? idx : 0;
+        game.screen = 'advSelect';
+      }
+
+      function updateAdvSelect() {
+        const S = game.adv.sel;
+        S.t++;
+        if (S.locked) {
+          if (++S.locked > 75) {
+            const A = advData();
+            A.hero = S.c;
+            A.look = skinOptions(ROSTER[S.c])[wrapIndex(S.k, skinOptions(ROSTER[S.c]).length)];
+            Progress.save();
+            if (S.from === 'prologue') openPortal();
+            else openHub();
+          }
+          return;
+        }
+        if (backWasPressed()) {
+          if (S.from === 'prologue') toTitle();
+          else openHub();
+          return;
+        }
+        const move = d => {
+          S.c = wrapIndex(S.c + d, ROSTER.length);
+          S.k = 0;
+          SFX.select();
+        };
+        if (wasPressed('KeyA', 'ArrowLeft')) move(-1);
+        if (wasPressed('KeyD', 'ArrowRight')) move(1);
+        if (wasPressed('KeyW', 'ArrowUp')) move(-ADV_GRID.cols);
+        if (wasPressed('KeyS', 'ArrowDown')) move(ADV_GRID.cols);
+        const skins = skinOptions(ROSTER[S.c]).length;
+        if (wasPressed('KeyQ', 'BracketLeft')) {
+          S.k = wrapIndex(S.k - 1, skins);
+          SFX.select();
+        }
+        if (wasPressed('KeyE', 'BracketRight')) {
+          S.k = wrapIndex(S.k + 1, skins);
+          SFX.select();
+        }
+        if (wasPressed('KeyC')) return openAdvDryer(S);
+        let lock = wasPressed(...CONFIRM_KEYS);
+        const c0 = game.click;
+        if (c0) {
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          for (let i = 0; i < ROSTER.length; i++)
+            if (inside(advCellRect(i))) {
+              if (S.c !== i) {
+                S.c = i;
+                S.k = 0;
+                SFX.select();
+              }
+            }
+          if (inside(ADV_DRYER)) openAdvDryer(S);
+          for (let i = 0; i < Math.min(4, skins); i++)
+            if (inside(advSkinRect(i))) {
+              S.k = i;
+              SFX.select();
+            }
+          if (inside(ADV_LOCK)) lock = true;
+          game.click = null;
+        }
+        if (lock) {
+          if (!Progress.heroUnlocked(ROSTER[S.c].id)) {
+            SFX.block();
+            S.lockedNote = S.t + 90;
+            return;
+          }
+          S.locked = 1;
+          const def = ROSTER[S.c];
+          SFX.confirm();
+          Announcer.characterPicked(def);
+          FighterVoice.catchphrase(def, 0, 0.5);
+        }
+      }
+
+      function drawAdvSelect() {
+        const S = game.adv.sel,
+          t = S.t;
+        const base = ROSTER[S.c];
+        const locked = !Progress.heroUnlocked(base.id);
+        const opts = skinOptions(base);
+        const def = withSkin(base, opts[wrapIndex(S.k, opts.length)]);
+        // background: deep purple with light beams
+        const g = ctx.createLinearGradient(0, 0, 0, H);
+        g.addColorStop(0, '#1a0b33');
+        g.addColorStop(1, '#070312');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        for (let i = 0; i < 6; i++) {
+          ctx.fillStyle = i % 2 ? def.color : '#c6a4ff';
+          ctx.beginPath();
+          const a = -0.5 + i * 0.2 + Math.sin(t * 0.01 + i) * 0.05;
+          ctx.moveTo(520, 520);
+          ctx.lineTo(520 + Math.cos(a - Math.PI / 2) * 700 - 40, 520 + Math.sin(a - Math.PI / 2) * 700);
+          ctx.lineTo(520 + Math.cos(a - Math.PI / 2) * 700 + 40, 520 + Math.sin(a - Math.PI / 2) * 700);
+          ctx.fill();
+        }
+        ctx.restore();
+        drawText(S.from === 'prologue' ? "WHO WILL ANSWER THE QUEEN'S CALL?" : 'CHOOSE YOUR HERO', 520, 30, 26, FONT_COMIC, '#ffe234', INK, 7);
+        drawBackButton(S.from === 'prologue' ? 'QUIT' : 'BACK');
+        // portrait grid
+        for (let i = 0; i < ROSTER.length; i++) {
+          const r = advCellRect(i),
+            d = ROSTER[i],
+            lk = !Progress.heroUnlocked(d.id),
+            on = i === S.c;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.fillStyle = lk ? '#1d1630' : shadeColor(d.color, -0.45);
+          ctx.fill();
+          ctx.save();
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.clip();
+          if (lk) ctx.globalAlpha = 0.3;
+          const p = basePose();
+          drawSock(ctx, withSkin(d, 0), p, r.x + 24, r.y + r.h + 10, 1, fitScale(d, 0.34), { x: 3, y: 0 });
+          ctx.restore();
+          if (lk) drawPadlock(r.x + r.w / 2, r.y + r.h / 2, 0.8);
+          ctx.strokeStyle = on ? '#ffe234' : INK;
+          ctx.lineWidth = on ? 4 : 2;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.stroke();
+        }
+        // the hero, big, on a glowing pedestal
+        ctx.save();
+        ctx.fillStyle = 'rgba(198,164,255,0.25)';
+        ctx.beginPath();
+        ctx.ellipse(520, 446, 120, 22, 0, 0, 7);
+        ctx.fill();
+        ctx.strokeStyle = def.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.restore();
+        const p = S.locked ? winAnim(basePose(), t, def.id) : idleAnim(basePose(), t);
+        if (!S.locked) {
+          p.eyes = 'angry';
+          p.mouth = 'grin';
+        }
+        ctx.save();
+        if (locked) ctx.globalAlpha = 0.25;
+        drawSock(ctx, def, p, 500, 444, 1, fitScale(def, 1.3), { x: 4, y: 0 });
+        ctx.restore();
+        if (locked) drawPadlock(520, 330, 2.6);
+        drawText(locked ? '???' : def.name, 520, 82, def.name.length > 13 ? 34 : 42, FONT_COMIC, locked ? '#888' : def.color, INK, 8);
+        drawText(locked ? unlockHint(def.id) : def.title || '', 520, 112, 11, FONT_PIXEL, '#fff', INK, 0);
+        if (!locked) drawText('"' + (ADV_ONELINERS[def.id] || (def.taunts && def.taunts[0]) || '') + '"', 520, 134, 15, FONT_COMIC, '#ccc', INK, 4);
+        // abilities panel
+        roundRectPath(ctx, 700, 70, 246, 330, 14);
+        ctx.fillStyle = 'rgba(20,10,36,0.85)';
+        ctx.fill();
+        ctx.strokeStyle = '#6b6290';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        drawText('ABILITIES', 823, 90, 12, FONT_PIXEL, '#ffe234', INK, 0);
+        const kit = heroKit(base);
+        [...kit.specials, kit.ult].forEach((ab, i) => {
+          const y = 132 + i * 70;
+          const isUlt = i === 3;
+          ctx.fillStyle = ab.color;
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(732, y, isUlt ? 22 : 19, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          drawText(isUlt ? 'ULT' : String(i + 1), 732, y + 1, isUlt ? 9 : 13, FONT_PIXEL, '#fff', INK, 3);
+          drawText(ab.name, 762, y - 12, ab.name.length > 15 ? 14 : 17, FONT_COMIC, '#fff', INK, 4, 'left');
+          wrapText(ab.desc, 172, `7px ${FONT_PIXEL}`)
+            .slice(0, 3)
+            .forEach((l, j) => drawText(l, 762, y + 6 + j * 11, 7, FONT_PIXEL, '#bbb', INK, 0, 'left'));
+        });
+        // skins
+        drawText('SKINS', 18, 456, 9, FONT_PIXEL, '#ffe234', INK, 0, 'left');
+        opts.slice(0, 4).forEach((o, i) => {
+          const r = advSkinRect(i),
+            on = wrapIndex(S.k, opts.length) === i;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.fillStyle = '#1d1630';
+          ctx.fill();
+          ctx.save();
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.clip();
+          drawSock(ctx, withSkin(base, o), basePose(), r.x + 18, r.y + r.h + 4, 1, fitScale(base, 0.3), { x: 3, y: 0 });
+          ctx.restore();
+          ctx.strokeStyle = on ? '#ffe234' : INK;
+          ctx.lineWidth = on ? 3 : 2;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.stroke();
+        });
+        drawText(def.skinName, 70, 456, 8, FONT_PIXEL, '#fff', INK, 0, 'left');
+        // into the Dryer to style this hero (skin, effect, colours, accessory)
+        roundRectPath(ctx, ADV_DRYER.x, ADV_DRYER.y, ADV_DRYER.w, ADV_DRYER.h, 8);
+        ctx.fillStyle = '#2a1d48';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,79,163,' + (0.6 + 0.4 * Math.sin(t * 0.12)) + ')';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        drawText('DRYER', ADV_DRYER.x + ADV_DRYER.w / 2, ADV_DRYER.y + 22, 16, FONT_COMIC, '#fff', INK, 4);
+        drawText(IS_TOUCH ? 'STYLE IT' : 'STYLE [C]', ADV_DRYER.x + ADV_DRYER.w / 2, ADV_DRYER.y + 42, 6, FONT_PIXEL, '#ffe234', INK, 0);
+        // LOCK IN
+        const r = ADV_LOCK,
+          pulse = 0.6 + 0.4 * Math.sin(t * 0.15);
+        roundRectPath(ctx, r.x, r.y, r.w, r.h, 12);
+        ctx.fillStyle = locked ? '#3a2d58' : S.locked ? '#ffe234' : `rgba(255,79,163,${0.75 + pulse * 0.25})`;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        drawText(S.locked ? 'LOCKED IN!' : locked ? 'LOCKED' : 'LOCK IN', r.x + r.w / 2, r.y + r.h / 2 + 2, 30, FONT_COMIC, S.locked ? INK : '#fff', INK, S.locked ? 0 : 6);
+        if (S.lockedNote && t < S.lockedNote) drawText('Unlock this villain in TROPHIES first!', 520, 466, 9, FONT_PIXEL, '#ff6b81', INK, 0);
+        if (!IS_TOUCH && !S.locked) drawText('WASD pick  •  Q/E skin  •  C dryer  •  SPACE lock in', 823, 420, 7, FONT_PIXEL, '#888', INK, 0);
+        if (S.locked) {
+          ctx.fillStyle = `rgba(255,255,255,${Math.max(0, 0.6 - S.locked / 20)})`;
+          ctx.fillRect(0, 0, W, H);
+        }
+      }
+
+      /** From the adventure hero select into the Dryer, and back with the new style selected. */
+      function openAdvDryer(S) {
+        const base = ROSTER[S.c];
+        if (!Progress.heroUnlocked(base.id)) {
+          SFX.block();
+          S.lockedNote = S.t + 90;
+          return;
+        }
+        const opts = skinOptions(base);
+        openDryer(base, opts[wrapIndex(S.k, opts.length)], saved => {
+          game.screen = 'advSelect';
+          if (saved) S.k = skinOptions(base).length - 1;
+        });
+      }
+
+      /* ---- the dryer becomes a portal ---- */
+      const PORTAL_FRAMES = 200;
+      function openPortal() {
+        game.adv.portal = { t: 0 };
+        game.screen = 'advPortal';
+      }
+      function updateAdvPortal() {
+        const P = game.adv.portal;
+        P.t++;
+        if (P.t === 4) SFX.jump();
+        if (P.t === 50) SFX.clonk();
+        if (P.t === 70) SFX.superStart();
+        if (P.t === 100) advVoice(advHero(), 'heavy');
+        const skip = wasPressed(...CONFIRM_KEYS, 'Escape') || game.click;
+        game.click = null;
+        if (P.t >= PORTAL_FRAMES || (skip && P.t > 20)) {
+          SFX.fanfare();
+          openHub(true);
+        }
+      }
+      function drawAdvPortal() {
+        const t = game.adv.portal.t;
+        const def = advHeroLook();
+        const door = { x: 480, y: 300 };
+        const zoom = t > 70 ? ease((t - 70) / 50) : 0;
+        if (zoom < 1) {
+          drawStage(0.35, 'laundry');
+          drawDryerMachine(door.x, door.y, t < 48 ? 1 : Math.max(0, 1 - (t - 48) / 5), t > 50 && t < 70 ? Math.sin(t * 2.5) * 6 : 0);
+          if (t > 52) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(door.x, door.y, 96, 0, 7);
+            ctx.clip();
+            drawPortalSwirl(door.x, door.y, t, 1);
+            ctx.restore();
+          }
+          if (t < 50) {
+            const k = Math.min(1, t / 44);
+            const p = idleAnim(basePose(), t);
+            p.eyes = 'angry';
+            p.mouth = 'yell';
+            drawSock(ctx, def, p, lerp(820, door.x, k), lerp(470, door.y + 40, k) - Math.sin(k * Math.PI) * 230, -1, fitScale(def, lerp(1.1, 0.35, Math.max(0, (k - 0.55) / 0.45))), { x: -4, y: 0 });
+          }
+          if (t > 52) drawText('THE DRYER IS A PORTAL?!', 480, 64, 36, FONT_COMIC, '#c6a4ff', INK, 8);
+        }
+        if (zoom > 0) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(door.x, door.y, 96 + zoom * 640, 0, 7);
+          ctx.clip();
+          drawPortalSwirl(480, 270, t, 3);
+          // things tumbling past: buttons, coins and one very confused rubber duck
+          for (let i = 0; i < 14; i++) {
+            const life = ((t * 1.4 + i * 37) % 120) / 120;
+            const a = i * 2.3 + t * 0.01;
+            const x = 480 + Math.cos(a) * life * 520,
+              y = 270 + Math.sin(a) * life * 320,
+              sc = 0.3 + life * 1.6;
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(t * 0.05 + i);
+            ctx.scale(sc, sc);
+            if (i % 7 === 0) {
+              ctx.fillStyle = '#ffe234';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.ellipse(0, 4, 14, 10, 0, 0, 7);
+              ctx.arc(10, -6, 7, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = '#ff9d2e';
+              ctx.fillRect(16, -6, 7, 3);
+            } else if (i % 2) {
+              ctx.fillStyle = '#ffd23f';
+              ctx.strokeStyle = '#a07a10';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(0, 0, 9, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = FX_COLORS[i % FX_COLORS.length];
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(0, 0, 8, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = INK;
+              for (const [bx, by] of [[-3, -3], [3, -3], [-3, 3], [3, 3]]) ctx.fillRect(bx - 1, by - 1, 2, 2);
+            }
+            ctx.restore();
+          }
+          const p = basePose();
+          p.eyes = 'spiral';
+          p.mouth = 'yell';
+          ctx.save();
+          ctx.translate(480, 280);
+          ctx.rotate(t * 0.18);
+          drawSock(ctx, def, p, -10, 80, 1, fitScale(def, 1.1), { x: 3, y: 0 });
+          ctx.restore();
+          if (t > 90 && t < 180) drawText('I REGRET NOTHIIIIING!', 480, 70 + Math.sin(t * 0.3) * 4, 40, FONT_COMIC, '#fff', INK, 9);
+          ctx.restore();
+        }
+        if (t > 170) {
+          ctx.fillStyle = `rgba(255,255,255,${Math.min(1, (t - 170) / 25)})`;
+          ctx.fillRect(0, 0, W, H);
+        }
+        if (t > 20) drawText('TAP TO SKIP', W - 80, H - 16, 7, FONT_PIXEL, '#aaa', INK, 0);
+      }
+      function drawPortalSwirl(cx, cy, t, size) {
+        const g = ctx.createRadialGradient(cx, cy, 5, cx, cy, 300 * size);
+        g.addColorStop(0, '#ffffff');
+        g.addColorStop(0.15, '#ff9dd0');
+        g.addColorStop(0.5, '#7a3fd0');
+        g.addColorStop(1, '#14052a');
+        ctx.fillStyle = g;
+        ctx.fillRect(cx - 320 * size, cy - 320 * size, 640 * size, 640 * size);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(t * 0.08);
+        for (let k = 0; k < 6; k++) {
+          ctx.rotate(Math.PI / 3);
+          ctx.strokeStyle = k % 2 ? 'rgba(255,255,255,0.55)' : 'rgba(255,79,163,0.6)';
+          ctx.lineWidth = 10 * size;
+          ctx.beginPath();
+          for (let r = 0; r < 90 * size; r += 4) {
+            const a = r * 0.03;
+            ctx.lineTo(Math.cos(a) * r * 3, Math.sin(a) * r * 3);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      /* ---- the Queen's palace (the hub) ---- */
+      const ADV_CHAPTERS = [
+        { n: 1, name: 'THE LINT PLAINS', jp: 'リント平原', open: true },
+        { n: 2, name: 'THE STATIC SWAMP', jp: '静電気の沼' },
+        { n: 3, name: 'THE BLEACH BADLANDS', jp: '漂白荒野' },
+        { n: 4, name: 'THE IRONING FORTRESS', jp: 'アイロン要塞' },
+        { n: 5, name: 'THE TUMBLE THRONE', jp: '回転の玉座' }
+      ];
+      const hubButton = i => ({ x: 24, y: 104 + i * 49, w: 300, h: 42 });
+      const HUB_ITEMS = () => [
+        ...ADV_CHAPTERS.map(ch => ({
+          label: 'CH.' + ch.n + '  ' + ch.name,
+          sub: advData().cleared[ch.n] ? 'CLEARED ★' : ch.open ? 'TAP TO PLAY' : 'COMING SOON',
+          on: !!ch.open,
+          go: () => startChapter(ch.n)
+        })),
+        { label: 'CHANGE HERO', sub: advHeroLook().name, on: true, go: () => openAdvSelect('hub') },
+        { label: 'WATCH THE PROLOGUE', sub: 'LAUNDRY DAY', on: true, go: () => startPrologue() },
+        { label: 'BACK TO MENU', sub: '', on: true, go: () => toModeMenu() }
+      ];
+
+      const PALACE_ARRIVAL = [
+        { who: 'queen', text: 'Welcome to Nylonia. Please wipe your... *looks at your foot* ...everything.' },
+        { who: 'queen', text: 'See that smoke over the sea? That is the TUMBLE THRONE, where the Demon sits.' },
+        { who: 'queen', text: 'To reach it, you must defeat his four generals. We shall send Our finest Hosiery with you.' },
+        { who: 'fishnet', text: 'Reporting for duty, Your Majesty!', fx: s => (s.scout = 1) },
+        { who: 'queen', text: '...And this is Our finest?' },
+        { who: 'fishnet', text: "I've got lots of holes, so I'm very breathable on long trips." },
+        { who: 'queen', text: 'First, the LINT PLAINS. Go, Knight. And if anything touches Our curtains, We will KNOW.' }
+      ];
+      const PALACE_AFTER_CH1 = [
+        { who: 'queen', text: 'We watched the whole thing through Our royal telescope. Magnificent. Mostly.' },
+        { who: 'queen', text: 'You did trip over a lint bunny.' },
+        { who: 'hero', text: 'It tripped ME.' },
+        { who: 'queen', text: 'Next: the Static Swamp. Our royal engineers are still building the bridge. They are... thorough.' },
+        { who: 'fishnet', text: "They've been building it for three years. It's a very nice bridge." },
+        { who: 'queen', text: 'Until then, rest, Knight. And for goodness’ sake... have a WASH.' }
+      ];
+
+      function toModeMenu() {
+        game.adv = null;
+        game.screen = 'mode';
+        game.menuIndex = MODE_MENU.findIndex(m => m[2] === 'adventure');
+      }
+
+      function openHub(arriving) {
+        const A = advData();
+        game.adv = Object.assign(game.adv || {}, { scene: null, hub: { t: 0, scout: A.prologue ? 1 : 0, sel: 0 } });
+        game.screen = 'advHub';
+        if (arriving || !A.prologue) {
+          A.prologue = true;
+          Progress.save();
+          playScene(PALACE_ARRIVAL, null, game.adv.hub);
+        } else if (A.cleared[1] && !A.seen.afterCh1) {
+          A.seen.afterCh1 = true;
+          Progress.save();
+          playScene(PALACE_AFTER_CH1, null, game.adv.hub);
+        }
+      }
+      function updateAdvHub() {
+        const Hb = game.adv.hub;
+        Hb.t++;
+        if (updateScene()) return;
+        const items = HUB_ITEMS();
+        if (backWasPressed()) return toModeMenu();
+        if (wasPressed('KeyW', 'ArrowUp')) {
+          Hb.sel = wrapIndex(Hb.sel - 1, items.length);
+          SFX.select();
+        }
+        if (wasPressed('KeyS', 'ArrowDown')) {
+          Hb.sel = wrapIndex(Hb.sel + 1, items.length);
+          SFX.select();
+        }
+        let go = wasPressed(...CONFIRM_KEYS) ? Hb.sel : -1;
+        const c0 = game.click;
+        if (c0) {
+          items.forEach((it, i) => {
+            const r = hubButton(i);
+            if (c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h) {
+              Hb.sel = i;
+              go = i;
+            }
+          });
+          game.click = null;
+        }
+        if (go >= 0) {
+          const it = items[go];
+          if (!it.on) {
+            SFX.block();
+            Hb.note = Hb.t + 100;
+            return;
+          }
+          SFX.confirm();
+          it.go();
+        }
+      }
+
+      /** The palace: lilac hall, silk curtains, a window over the Rinse Sea with the Demon's smoke far away. */
+      function drawPalace(t) {
+        let g = ctx.createLinearGradient(0, 0, 0, 400);
+        g.addColorStop(0, '#3a1f6e');
+        g.addColorStop(1, '#8a64c9');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, 400);
+        // the big arched window
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(470, 340);
+        ctx.lineTo(470, 120);
+        ctx.arc(600, 120, 130, Math.PI, 0);
+        ctx.lineTo(730, 340);
+        ctx.closePath();
+        ctx.clip();
+        g = ctx.createLinearGradient(0, 0, 0, 340);
+        g.addColorStop(0, '#ffb3d9');
+        g.addColorStop(0.6, '#ffe0a8');
+        g.addColorStop(1, '#7fd6ff');
+        ctx.fillStyle = g;
+        ctx.fillRect(460, 0, 280, 340);
+        ctx.fillStyle = '#3fa0d8';
+        ctx.fillRect(460, 250, 280, 90);
+        for (let i = 0; i < 6; i++) {
+          ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          const y = 262 + i * 13,
+            off = (t * 0.4 + i * 30) % 60;
+          ctx.moveTo(470 + off, y);
+          ctx.lineTo(500 + off, y);
+          ctx.moveTo(600 - off, y + 4);
+          ctx.lineTo(640 - off, y + 4);
+          ctx.stroke();
+        }
+        // the Demon's smoke, far away
+        for (let i = 0; i < 7; i++) {
+          const k = ((t * 0.5 + i * 22) % 150) / 150;
+          ctx.fillStyle = `rgba(40,20,30,${0.5 * (1 - k)})`;
+          ctx.beginPath();
+          ctx.arc(670 + Math.sin(k * 4 + i) * 8, 248 - k * 160, 8 + k * 20, 0, 7);
+          ctx.fill();
+        }
+        ctx.fillStyle = '#ff5a1f';
+        ctx.beginPath();
+        ctx.arc(670, 250, 6 + Math.sin(t * 0.2) * 2, 0, 7);
+        ctx.fill();
+        ctx.restore();
+        ctx.strokeStyle = '#ffd23f';
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(470, 340);
+        ctx.lineTo(470, 120);
+        ctx.arc(600, 120, 130, Math.PI, 0);
+        ctx.lineTo(730, 340);
+        ctx.stroke();
+        ctx.strokeStyle = '#d4a017';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(600, -10);
+        ctx.lineTo(600, 340);
+        ctx.moveTo(470, 200);
+        ctx.lineTo(730, 200);
+        ctx.stroke();
+        // silk curtains
+        for (const [x, dir] of [[440, 1], [760, -1]]) {
+          ctx.fillStyle = '#c6a4ff';
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(x - 40 * dir, -10);
+          ctx.quadraticCurveTo(x + 30 * dir + Math.sin(t * 0.03) * 4, 170, x - 10 * dir, 400);
+          ctx.lineTo(x - 60 * dir, 400);
+          ctx.lineTo(x - 60 * dir, -10);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        // columns
+        for (const x of [330, 880]) {
+          ctx.fillStyle = '#efe2ff';
+          ctx.fillRect(x - 22, 0, 44, 400);
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.strokeRect(x - 22, -4, 44, 404);
+          ctx.strokeStyle = 'rgba(122,79,201,0.4)';
+          for (let k = -12; k <= 12; k += 8) {
+            ctx.beginPath();
+            ctx.moveTo(x + k, 0);
+            ctx.lineTo(x + k, 400);
+            ctx.stroke();
+          }
+        }
+        // marble floor
+        perspectiveFloor(ctx, '#d9c9f2', '#efe5ff', '#c6b2ea');
+        ctx.fillStyle = '#7a4fc9';
+        ctx.fillRect(0, 396, W, 6);
+        // a royal carpet to the throne
+        ctx.fillStyle = '#c8202f';
+        ctx.beginPath();
+        ctx.moveTo(640, 400);
+        ctx.lineTo(760, 400);
+        ctx.lineTo(900, 540);
+        ctx.lineTo(560, 540);
+        ctx.closePath();
+        ctx.fill();
+        // seamed guards marching across the back
+        for (let i = 0; i < 2; i++) {
+          const k = ((t * 0.6 + i * 300) % 700) / 700;
+          const goingRight = Math.floor((t * 0.6 + i * 300) / 700) % 2 === 0;
+          const x = goingRight ? 380 + k * 120 : 500 - k * 120;
+          drawHosiery(ctx, 'seamed', x + i * 360, 392, 0.42, goingRight ? 1 : -1, t + i * 50, { walk: true });
+        }
+      }
+
+      function drawAdvHub() {
+        const Hb = game.adv.hub,
+          t = Hb.t;
+        drawPalace(t);
+        const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
+        // the throne and the Queen
+        roundRectPath(ctx, 720, 250, 140, 200, 20);
+        ctx.fillStyle = '#ffd23f';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        roundRectPath(ctx, 736, 270, 108, 170, 14);
+        ctx.fillStyle = '#7a1f9a';
+        ctx.fill();
+        drawHosiery(ctx, 'queen', 790, 462, 1.05, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        // your hero and the scout
+        const def = advHeroLook();
+        const p = idleAnim(basePose(), t);
+        if (speaking === 'hero') {
+          p.mouth = t % 10 < 5 ? 'yell' : 'grin';
+          p.yOff = -Math.abs(Math.sin(t * 0.25)) * 8;
+        }
+        drawSock(ctx, def, p, 520, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
+        if (Hb.scout) drawHosiery(ctx, 'fishnet', 620, 476, 0.6, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
+        if (game.adv.scene) return drawSceneBox();
+        // menu
+        drawText('PALACE OF NYLONIA', 174, 80, 26, FONT_COMIC, '#ffe234', INK, 7);
+        HUB_ITEMS().forEach((it, i) => {
+          const r = hubButton(i),
+            on = Hb.sel === i;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
+          ctx.fillStyle = !it.on ? 'rgba(30,20,50,0.75)' : on ? '#ff4fa3' : 'rgba(42,29,72,0.92)';
+          ctx.fill();
+          ctx.strokeStyle = on ? '#fff' : INK;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          drawText(it.label, r.x + 14, r.y + 15, it.label.length > 24 ? 14 : 17, FONT_COMIC, it.on ? '#fff' : '#777', INK, 4, 'left');
+          drawText(it.sub, r.x + 14, r.y + 32, 7, FONT_PIXEL, it.on ? '#ffe234' : '#666', INK, 0, 'left');
+        });
+        if (Hb.note && t < Hb.note)
+          drawText('The royal engineers are still building that bridge!', 480, 520, 10, FONT_PIXEL, '#ff6b81', INK, 4);
+        drawBackButton('MENU');
+      }
+
+      /* ---- hero kits: a basic attack, 3 different specials and an ULT for every hero ---- */
+      // Ability types: bolt (shot at the nearest enemy), nova (blast around you), dash (charge through, can't be hit),
+      // cone (big hit in front), trap (sticky zone), shield (soaks damage), stun (puts enemies to sleep),
+      // beam (long line), heal, pull (yank an enemy to you).
+      const ABILITY_TYPES = {
+        bolt: { cd: 80, dmg: 42, desc: 'Fires at the nearest enemy', sfx: () => SFX.pfft() },
+        nova: { cd: 300, dmg: 36, desc: 'Blasts every enemy around you', sfx: () => SFX.poof() },
+        dash: { cd: 240, dmg: 30, desc: "Charges through enemies; you can't be hit while dashing", sfx: () => SFX.whoosh() },
+        cone: { cd: 150, dmg: 52, desc: 'A big hit on everything in front of you', sfx: () => SFX.hit(true) },
+        trap: { cd: 420, dmg: 0.4, desc: 'A sticky zone that slows and hurts enemies', sfx: () => SFX.yarn() },
+        shield: { cd: 600, dmg: 0, desc: 'A shield that soaks up damage', sfx: () => SFX.zap() },
+        stun: { cd: 540, dmg: 14, desc: 'Puts nearby enemies to sleep', sfx: () => SFX.boo() },
+        beam: { cd: 300, dmg: 58, desc: 'A long beam that hits everything in a line', sfx: () => SFX.zap() },
+        heal: { cd: 720, dmg: 0, desc: 'Heals you a lot', sfx: () => SFX.confirm() },
+        pull: { cd: 260, dmg: 28, desc: 'Yanks an enemy to you and stuns it', sfx: () => SFX.yarn() }
+      };
+      // the fighting game's special moves -> ability types
+      const STATE_TO_ABILITY = {
+        stink: 'bolt', shoot: 'bolt', cry: 'bolt', shuriken: 'bolt', rocketfire: 'bolt',
+        aura: 'nova', spin: 'nova', tantrum: 'nova', sumo: 'nova', zap: 'nova',
+        vanish: 'dash', portal: 'dash', roll: 'dash', snap: 'dash',
+        rising: 'cone', lasso: 'pull', boo: 'stun'
+      };
+      // hand-made kits (names, types) where the story or the user asked for something specific; others are built
+      const KIT_OVERRIDES = {
+        stinky: [['STINK-O-KEN', 'bolt', 'Throws a cloud of pure stink'], ['STINK AURA', 'nova', 'Toxic fumes all around you'], ['SWEAT SLIDE', 'dash', 'Slides through enemies on your own sweat']],
+        gran: [['CANE WHACK', 'cone', 'A long walking-stick whack'], ['KNITTING TRAP', 'trap', 'Yarn everywhere: enemies get tangled'], ['"BACK IN MY DAY"', 'stun', 'A lecture so long that enemies fall asleep']],
+        robo: [['ROCKET TOE', 'bolt', 'Fires his toe like a rocket'], ['COMPRESSION SHIELD', 'shield', 'Squeezes into a tough shell'], ['LASER LINT-SWEEP', 'beam', 'A laser that sweeps the floor clean']],
+        baby: [['TEAR TORPEDO', 'bolt', 'Fires a giant tear'], ['TANTRUM', 'nova', 'Flails at everyone nearby'], ['NAP TIME', 'heal', 'A power nap that heals']],
+        argyle: [['DIAMOND SPIN', 'nova', 'Spins like a diamond blade'], ['RISING SOCK', 'cone', 'An upward strike'], ['IRON DISCIPLINE', 'shield', 'Pure focus blocks damage']],
+        shinobi: [['SHADOW STEP', 'dash', 'Vanishes and strikes through enemies'], ['TOE-RIKEN', 'bolt', 'Throws a five-toed star'], ['CALTROP SOCKS', 'trap', 'Scatters spiky socks on the floor']],
+        kneehi: [['ELASTIC GRAB', 'pull', 'Stretches out and yanks an enemy in'], ['SUMO SLAM', 'nova', 'A belly-slam shockwave'], ['BELLY BOUNCE', 'dash', 'Bounces through enemies']],
+        ghost: [['SPECTRAL SLIP', 'dash', 'Floats through enemies'], ['BOO!', 'stun', 'So scary enemies freeze'], ['SPOOKY FOG', 'trap', 'A chilly fog that slows enemies']]
+      };
+      const THIRD_ABILITY = {
+        lint: 'FLUFF UP', socklet: 'ANKLE ZOOM', holey: 'MOTH CLOUD', steel: 'HARD HAT', king: 'ROYAL DECREE',
+        demon: 'HEAT WAVE', bleach: 'SPOTLESS SHIELD', cling: 'STATIC TRAP', iron: 'STEAM PRESS'
+      };
+      const ABILITY_COLORS = ['#a6ff3a', '#3fd0ff', '#ff9d2e', '#ff4fa3', '#c6a4ff', '#ffe234'];
+
+      const kitCache = {};
+      /** The adventure abilities of a character: { specials: [3], ult }. */
+      function heroKit(def) {
+        if (kitCache[def.id]) return kitCache[def.id];
+        let list = KIT_OVERRIDES[def.id];
+        if (!list) {
+          const slots = SPECIAL_SLOTS[def.id] || ['shoot', 'aura'];
+          const types = [];
+          for (const st of slots) {
+            let ty = STATE_TO_ABILITY[st] || 'bolt';
+            if (types.includes(ty)) ty = ['cone', 'dash', 'bolt'].find(x => !types.includes(x));
+            types.push(ty);
+          }
+          types.push(['shield', 'trap', 'cone', 'beam', 'heal'].find(x => !types.includes(x)));
+          const names = [def.special, def.special2, THIRD_ABILITY[def.id] || 'SECRET MOVE'];
+          list = types.map((ty, i) => [names[i], ty, ABILITY_TYPES[ty].desc]);
+        }
+        const kit = {
+          specials: list.map(([name, type, desc], i) => ({ name, type, desc, color: ABILITY_COLORS[(i + def.id.length) % ABILITY_COLORS.length] })),
+          ult: { name: def.superName || 'ULTIMATE', type: 'ult', desc: 'Your ULTIMATE: a huge blast that stuns everyone nearby. Charges as you fight.', color: '#ffd23f' }
+        };
+        kitCache[def.id] = kit;
+        return kit;
+      }
+
+      /* ---- chapter play ---- */
+      const WORLD_W = 2800,
+        WORLD_H = 1500;
+      const ENEMY_TYPES = {
+        lint: { char: 'lint', hp: 46, speed: 1.5, dmg: 7, r: 22, xp: 10, size: 0.42, sneezer: true },
+        lintBaby: { char: 'lint', hp: 14, speed: 1.9, dmg: 4, r: 14, xp: 3, size: 0.26 },
+        socklet: { char: 'socklet', hp: 36, speed: 2.1, dmg: 9, r: 20, xp: 14, size: 0.46, dasher: true },
+        holey: { char: 'holey', hp: 1150, speed: 1.25, dmg: 16, r: 42, xp: 160, size: 0.9, boss: true }
+      };
+      const ADV_BUTTONS = [
+        { x: 784, y: 494, r: 30, key: '1' },
+        { x: 796, y: 414, r: 30, key: '2' },
+        { x: 862, y: 368, r: 30, key: '3' },
+        { x: 884, y: 470, r: 44, key: 'R' }
+      ];
+      const ADV_PAUSE = { x: 896, y: 54, w: 50, h: 40 };
+
+      const CH1_INTRO = [
+        { who: 'hero', text: "Ugh. It's like walking on a sweater that gave up." },
+        { who: 'fishnet', text: "The LINT PLAINS, Sir Knight! The Demon's Lint Gang guards the way to the Static Swamp." },
+        { who: 'lint', text: 'HALT! You are entering the land of the... *sneezes* ...LINT GANG!' },
+        { who: 'hero', text: 'Bless you.' },
+        { who: 'lint', text: '*sniffles* Nobody ever says bless you. *sneezes again*' },
+        { who: 'narr', text: '*Three more lint bunnies fall out of the sneeze.*' },
+        { who: 'hero', text: '...Did you just sneeze out your FAMILY?' },
+        { who: 'lint', text: "Every lint bunny is born from a sneeze. It's beautiful, actually. ...GET HIM, FAMILY!" },
+        { who: 'fishnet', text: "Smash all THREE Lint Gang camps! I'll throw nets. I've got LOTS of net." }
+      ];
+      const CH1_BOSS = [
+        { who: 'holey', text: 'Nobody passes! The Demon made ME guardian of the plains!' },
+        { who: 'hero', text: "You're more hole than sock." },
+        { who: 'holey', text: "I'm *breathable*." },
+        { who: 'fishnet', text: "Hey. That's MY thing." }
+      ];
+      const CH1_END = [
+        { who: 'holey', text: "The Demon said if I guarded the plains, he'd fix my holes. *a moth flies out of his mouth* ...He hasn't fixed my holes." },
+        { who: 'hero', text: 'Why does he even want all these socks?' },
+        { who: 'holey', text: "Nobody knows. He just keeps muttering... 'Not her. Not her. NOT HER.'" },
+        { who: 'fishnet', text: "Spooky. Let's report back to the Queen!" }
+      ];
+      const SCOUT_BARKS = ['NET INCOMING!', 'Got one!', 'Hold still, fluffball!', 'Breathable AND useful!', 'Netted!'];
+
+      function startChapter(n) {
+        const def = advHeroLook();
+        const lvlHp = 520;
+        const P = {
+          chapter: n,
+          t: 0,
+          phase: 'intro',
+          cam: { x: 0, y: 0 },
+          hero: {
+            x: 200, y: 760, r: 22, face: 1, hp: lvlHp, maxHp: lvlHp, lvl: 1, xp: 0, atkCd: 0, atkT: 0,
+            cds: [0, 0, 0], ranks: [0, 0, 0], ult: 0, shield: 0, shieldT: 0, inv: 0, dash: null, moveTo: null, target: null, walkT: 0, hurtT: 0
+          },
+          def,
+          kit: heroKit(def),
+          scout: { x: 150, y: 800, face: 1, netCd: 200, walkT: 0, bark: null },
+          enemies: [],
+          shots: [],
+          zones: [],
+          pickups: [],
+          weeds: [],
+          beams: [],
+          camps: [
+            { x: 760, y: 560, cleared: false },
+            { x: 1240, y: 1080, cleared: false },
+            { x: 1960, y: 600, cleared: false }
+          ],
+          rocks: [],
+          decor: [],
+          wall: true,
+          boss: null,
+          picks: 0,
+          kills: 0,
+          barks: []
+        };
+        // the camps
+        const spawn = (type, x, y, camp) => P.enemies.push(makeEnemy(type, x, y, camp));
+        [[0, 'lint', 4], [1, 'lint', 3], [1, 'socklet', 2], [2, 'socklet', 3], [2, 'lint', 3]].forEach(([camp, type, n]) => {
+          for (let i = 0; i < n; i++) {
+            const a = (i / n) * Math.PI * 2 + camp + (type === 'socklet' ? 0.5 : 0);
+            spawn(type, P.camps[camp].x + Math.cos(a) * 90, P.camps[camp].y + Math.sin(a) * 70, camp);
+          }
+        });
+        // fluff rocks to walk around, and decoration
+        const rnd = seededRandom(42);
+        for (let i = 0; i < 26; i++) {
+          const x = 300 + rnd() * 2200,
+            y = 120 + rnd() * 1260;
+          if (P.camps.some(c => Math.hypot(c.x - x, c.y - y) < 200) || Math.hypot(x - 200, y - 760) < 200 || x > 2120) continue;
+          P.rocks.push({ x, y, r: 30 + rnd() * 30 });
+        }
+        for (let i = 0; i < 160; i++) P.decor.push({ x: rnd() * WORLD_W, y: rnd() * WORLD_H, r: 20 + rnd() * 60, k: rnd() });
+        game.adv.play = P;
+        game.screen = 'advPlay';
+        particles.length = 0;
+        floatingTexts.length = 0;
+        playScene(CH1_INTRO, () => (P.phase = 'play'), P);
+      }
+
+      function makeEnemy(type, x, y, camp) {
+        const T = ENEMY_TYPES[type];
+        return { type, T, x, y, hp: T.hp, maxHp: T.hp, camp, aggro: false, wind: 0, atkCd: 0, stun: 0, slow: 0, root: 0, flash: 0, face: -1, dash: 0, dashCd: 60 + Math.random() * 60, babies: 0, walkT: Math.random() * 100, vx: 0, vy: 0 };
+      }
+
+      const advRand = (a, b) => a + Math.random() * (b - a);
+      function heroAbilityPower(P, slot) {
+        return 1 + 0.35 * P.hero.ranks[slot] + 0.06 * (P.hero.lvl - 1);
+      }
+      function nearestEnemy(P, x, y, maxDist) {
+        let best = null,
+          bd = maxDist;
+        for (const e of P.enemies) {
+          if (e.hp <= 0 || e.hidden) continue;
+          const d = Math.hypot(e.x - x, e.y - y) - e.T.r;
+          if (d < bd) {
+            bd = d;
+            best = e;
+          }
+        }
+        return best;
+      }
+      function blockedAt(P, x, y, r) {
+        for (const rk of P.rocks) if (Math.hypot(rk.x - x, rk.y - y) < rk.r + r) return rk;
+        return null;
+      }
+      /** Move a thing by (dx, dy), sliding around rocks, the walls and (while it stands) the lint wall. */
+      function moveBody(P, b, dx, dy, r) {
+        let nx = clamp(b.x + dx, r + 20, WORLD_W - r - 20),
+          ny = clamp(b.y + dy, r + 40, WORLD_H - r - 20);
+        if (P.wall && b.x < 2150 && nx > 2150 - r) nx = 2150 - r;
+        const rk = blockedAt(P, nx, ny, r);
+        if (rk) {
+          const a = Math.atan2(ny - rk.y, nx - rk.x);
+          nx = rk.x + Math.cos(a) * (rk.r + r + 0.5);
+          ny = rk.y + Math.sin(a) * (rk.r + r + 0.5);
+        }
+        b.x = nx;
+        b.y = ny;
+      }
+      const inRiver = x => x > 1480 && x < 1620;
+
+      function hurtEnemy(P, e, dmg, fromX, fromY, opts = {}) {
+        if (e.hp <= 0 || (e.hidden && !opts.any)) return;
+        dmg = Math.round(dmg);
+        e.hp -= dmg;
+        e.flash = 8;
+        e.aggro = true;
+        if (e.camp !== undefined) for (const o of P.enemies) if (o.camp === e.camp) o.aggro = true;
+        P.hero.ult = Math.min(100, P.hero.ult + dmg * 0.35);
+        addText(e.x + advRand(-10, 10), e.y - 90 * e.T.size - 20, String(dmg), opts.color || '#fff', opts.big ? 30 : 22);
+        const a = Math.atan2(e.y - fromY, e.x - fromX);
+        if (!e.T.boss) {
+          e.vx += Math.cos(a) * (opts.knock || 3);
+          e.vy += Math.sin(a) * (opts.knock || 3);
+        }
+        for (let i = 0; i < 5; i++)
+          addParticle({ type: 'puff', x: e.x, y: e.y - 30, vx: advRand(-3, 3), vy: advRand(-4, 1), life: 18, size: advRand(6, 11), color: '#e6e0f0' });
+        // lint bunnies sneeze out more lint bunnies when they get hit
+        if (e.T.sneezer && e.hp > 0 && e.babies < 2 && Math.random() < 0.22) {
+          e.babies++;
+          const baby = makeEnemy('lintBaby', e.x + advRand(-20, 20), e.y + advRand(-20, 20), e.camp);
+          baby.aggro = true;
+          P.enemies.push(baby);
+          addText(e.x, e.y - 70, 'ACHOO!', '#fff', 24);
+        }
+        if (e.hp <= 0) killEnemy(P, e);
+        else SFX.hit(dmg > 40);
+      }
+      function killEnemy(P, e) {
+        P.kills++;
+        SFX.poof();
+        for (let i = 0; i < 12; i++)
+          addParticle({ type: 'puff', x: e.x, y: e.y - 30, vx: advRand(-5, 5), vy: advRand(-6, 2), life: 26, size: advRand(8, 16), color: '#cfc6e2' });
+        addText(e.x, e.y - 60, pick(['POOF!', 'FLUMP!', 'PFFT!']), '#ffe234', 26);
+        gainXp(P, e.T.xp);
+        if (Math.random() < (e.T.boss ? 0 : 0.14)) P.pickups.push({ x: e.x, y: e.y, t: 0 });
+        if (e.T.boss) {
+          P.phase = 'bossDown';
+          SFX.ko();
+          game.slowMotion = 40;
+          playScene(CH1_END, () => finishChapter(P), P);
+        }
+      }
+      function gainXp(P, n) {
+        const h = P.hero;
+        h.xp += n;
+        let need = xpNeeded(h.lvl);
+        while (h.xp >= need) {
+          h.xp -= need;
+          h.lvl++;
+          h.maxHp += 60;
+          h.hp = Math.min(h.maxHp, h.hp + h.maxHp * 0.35);
+          P.picks++;
+          addText(h.x, h.y - 120, 'LEVEL UP!', '#ffe234', 34);
+          SFX.fanfare();
+          need = xpNeeded(h.lvl);
+        }
+      }
+      const xpNeeded = lvl => 40 + (lvl - 1) * 35;
+
+      function hurtHero(P, dmg, fromX, fromY) {
+        const h = P.hero;
+        if (h.inv > 0 || P.phase === 'dead') return;
+        dmg = Math.round(dmg);
+        if (h.shield > 0) {
+          const soak = Math.min(h.shield, dmg);
+          h.shield -= soak;
+          dmg -= soak;
+          addText(h.x, h.y - 110, 'BLOCKED', '#3fd0ff', 18);
+        }
+        if (dmg <= 0) return;
+        h.hp -= dmg;
+        h.hurtT = 14;
+        h.inv = 18;
+        game.shake = Math.max(game.shake, 4);
+        addText(h.x, h.y - 110, '-' + dmg, '#ff4f5e', 24);
+        SFX.hit(dmg > 14);
+        const a = Math.atan2(h.y - fromY, h.x - fromX);
+        moveBody(P, h, Math.cos(a) * 10, Math.sin(a) * 10, h.r);
+        if (h.hp <= 0) {
+          h.hp = 0;
+          P.phase = 'dead';
+          P.deadT = 0;
+          SFX.ko();
+          advVoice(P.def, 'ko');
+        }
+      }
+
+      /** Use special `slot` (0..2) or the ULT (3). */
+      function castAbility(P, slot) {
+        const h = P.hero;
+        if (P.phase !== 'play' && P.phase !== 'boss') return;
+        const isUlt = slot === 3;
+        if (isUlt ? h.ult < 100 : h.cds[slot] > 0) return;
+        const ab = isUlt ? P.kit.ult : P.kit.specials[slot];
+        const T = ABILITY_TYPES[ab.type] || {};
+        const pow = isUlt ? 1 + 0.08 * (h.lvl - 1) : heroAbilityPower(P, slot);
+        const target = nearestEnemy(P, h.x, h.y, 560);
+        const aim = target ? Math.atan2(target.y - h.y, target.x - h.x) : h.face > 0 ? 0 : Math.PI;
+        if (Math.cos(aim) !== 0) h.face = Math.cos(aim) > 0 ? 1 : -1;
+        h.atkT = 14;
+        addText(h.x, h.y - 140, ab.name + '!', ab.color, 22);
+        const hitCircle = (cx, cy, rad, dmg, knock, extra) => {
+          for (const e of P.enemies)
+            if (e.hp > 0 && !e.hidden && Math.hypot(e.x - cx, e.y - cy) < rad + e.T.r) {
+              hurtEnemy(P, e, dmg, cx, cy, { knock, color: ab.color });
+              if (extra) extra(e);
+            }
+        };
+        const ring = (cx, cy, rad, col) => {
+          P.beams.push({ kind: 'ring', x: cx, y: cy, r: rad, t: 0, life: 18, color: col });
+        };
+        if (isUlt) {
+          h.ult = 0;
+          SFX.superStart();
+          setTimeout(() => SFX.crash(), 200);
+          game.whiteFlash = 8;
+          game.shake = 14;
+          ring(h.x, h.y, 330, ab.color);
+          hitCircle(h.x, h.y, 330, 140 * pow, 12, e => (e.stun = Math.max(e.stun, e.T.boss ? 50 : 120)));
+          advVoice(P.def, 'superv');
+          return;
+        }
+        h.cds[slot] = Math.round(T.cd * (1 - 0.12 * h.ranks[slot]));
+        T.sfx && T.sfx();
+        const dmg = T.dmg * pow;
+        switch (ab.type) {
+          case 'bolt':
+            P.shots.push({ x: h.x, y: h.y - 40, vx: Math.cos(aim) * 10, vy: Math.sin(aim) * 10, dmg, r: 18, life: 60, from: 'hero', color: ab.color });
+            break;
+          case 'nova':
+            ring(h.x, h.y, 160, ab.color);
+            hitCircle(h.x, h.y, 160, dmg, 9);
+            break;
+          case 'dash':
+            h.dash = { vx: Math.cos(aim) * 15, vy: Math.sin(aim) * 15, t: 16, hit: new Set(), dmg, color: ab.color };
+            h.inv = 20;
+            break;
+          case 'cone':
+            P.beams.push({ kind: 'cone', x: h.x, y: h.y, a: aim, r: 175, t: 0, life: 14, color: ab.color });
+            for (const e of P.enemies) {
+              if (e.hp <= 0 || e.hidden) continue;
+              const d = Math.hypot(e.x - h.x, e.y - h.y);
+              let da = Math.abs(Math.atan2(e.y - h.y, e.x - h.x) - aim);
+              if (da > Math.PI) da = Math.PI * 2 - da;
+              if (d < 175 + e.T.r && da < 1.05) hurtEnemy(P, e, dmg, h.x, h.y, { knock: 10, color: ab.color });
+            }
+            break;
+          case 'trap': {
+            const tx = target ? target.x : h.x + Math.cos(aim) * 140,
+              ty = target ? target.y : h.y + Math.sin(aim) * 140;
+            P.zones.push({ x: tx, y: ty, r: 125, life: 300, max: 300, slow: 0.4, dps: dmg, color: ab.color });
+            break;
+          }
+          case 'shield':
+            h.shield = 160 * pow;
+            h.shieldT = 360;
+            break;
+          case 'stun':
+            ring(h.x, h.y, 210, ab.color);
+            hitCircle(h.x, h.y, 210, dmg, 2, e => {
+              e.stun = Math.max(e.stun, e.T.boss ? 60 : 160);
+              addText(e.x, e.y - 80, 'Zzz', '#c6a4ff', 22);
+            });
+            break;
+          case 'beam': {
+            const len = 470;
+            P.beams.push({ kind: 'beam', x: h.x, y: h.y - 40, a: aim, len, t: 0, life: 14, color: ab.color });
+            for (const e of P.enemies) {
+              if (e.hp <= 0 || e.hidden) continue;
+              const rx = e.x - h.x,
+                ry = e.y - h.y;
+              const along = rx * Math.cos(aim) + ry * Math.sin(aim),
+                side = Math.abs(-rx * Math.sin(aim) + ry * Math.cos(aim));
+              if (along > 0 && along < len && side < 30 + e.T.r) hurtEnemy(P, e, dmg, h.x, h.y, { knock: 6, color: ab.color });
+            }
+            break;
+          }
+          case 'heal':
+            h.hp = Math.min(h.maxHp, h.hp + h.maxHp * 0.35 * pow);
+            addText(h.x, h.y - 120, '+HEAL', '#a6ff3a', 26);
+            for (let i = 0; i < 14; i++) addParticle({ type: 'puff', x: h.x + advRand(-30, 30), y: h.y - advRand(10, 90), vx: 0, vy: -1.5, life: 30, size: 8, color: '#a6ff3a' });
+            break;
+          case 'pull':
+            if (target) {
+              const a = Math.atan2(h.y - target.y, h.x - target.x);
+              const d = Math.max(0, Math.hypot(h.x - target.x, h.y - target.y) - 60);
+              P.beams.push({ kind: 'line', x: h.x, y: h.y - 40, x2: target.x, y2: target.y - 30, t: 0, life: 12, color: ab.color });
+              if (!target.T.boss) moveBody(P, target, Math.cos(a) * d, Math.sin(a) * d, target.T.r);
+              target.stun = Math.max(target.stun, target.T.boss ? 30 : 70);
+              hurtEnemy(P, target, dmg, h.x, h.y, { knock: 0, color: ab.color });
+            }
+            break;
+        }
+      }
+
+      function updateAdvPlay() {
+        const P = game.adv.play;
+        if (updateScene()) return;
+        P.t++;
+        updateFX();
+        if (game.shake > 0) game.shake *= 0.85;
+        if (game.whiteFlash > 0) game.whiteFlash--;
+        const h = P.hero;
+        // overlays: level-up choice, pause, defeat, chapter clear
+        if (P.paused) return updateAdvPause(P);
+        if (P.phase === 'dead') {
+          P.deadT++;
+          if (P.deadT > 60 && (wasPressed(...CONFIRM_KEYS) || game.click)) {
+            game.click = null;
+            startChapter(P.chapter);
+            game.adv.scene = null;
+            game.adv.play.phase = 'play';
+          }
+          return;
+        }
+        if (P.phase === 'clear') {
+          P.clearT++;
+          if (P.clearT > 60 && (wasPressed(...CONFIRM_KEYS) || game.click)) {
+            game.click = null;
+            openHub();
+          }
+          return;
+        }
+        if (P.picks > 0) return updateLevelPick(P);
+        if (P.phase !== 'play' && P.phase !== 'boss') return;
+        if (wasPressed('Escape')) {
+          P.paused = true;
+          return;
+        }
+        // input: ability keys / buttons, pause button, tap to move or attack
+        if (wasPressed('Digit1')) castAbility(P, 0);
+        if (wasPressed('Digit2')) castAbility(P, 1);
+        if (wasPressed('Digit3')) castAbility(P, 2);
+        if (wasPressed('KeyR', 'Digit4')) castAbility(P, 3);
+        const c0 = game.click;
+        if (c0) {
+          game.click = null;
+          let used = false;
+          ADV_BUTTONS.forEach((b, i) => {
+            if (Math.hypot(c0.x - b.x, c0.y - b.y) < b.r + 8) {
+              castAbility(P, i);
+              used = true;
+            }
+          });
+          if (c0.x > ADV_PAUSE.x && c0.x < ADV_PAUSE.x + ADV_PAUSE.w && c0.y > ADV_PAUSE.y && c0.y < ADV_PAUSE.y + ADV_PAUSE.h) {
+            P.paused = true;
+            used = true;
+          }
+          if (!used) {
+            const wx = c0.x + P.cam.x,
+              wy = c0.y + P.cam.y;
+            let tapped = null;
+            for (const e of P.enemies)
+              if (e.hp > 0 && !e.hidden && Math.hypot(e.x - wx, e.y - 30 * e.T.size - wy) < e.T.r + 34) tapped = e;
+            h.target = tapped;
+            h.moveTo = tapped ? null : { x: wx, y: wy };
+            if (!tapped) P.beams.push({ kind: 'tap', x: wx, y: wy, t: 0, life: 16, color: '#ffe234' });
+          }
+        }
+        // movement
+        const speed = 3.5 * (P.def.speed || 1) * (inRiver(h.x) ? 0.55 : 1);
+        let mx = 0,
+          my = 0;
+        if (keysDown.KeyA || keysDown.ArrowLeft) mx -= 1;
+        if (keysDown.KeyD || keysDown.ArrowRight) mx += 1;
+        if (keysDown.KeyW || keysDown.ArrowUp) my -= 1;
+        if (keysDown.KeyS || keysDown.ArrowDown) my += 1;
+        if (mx || my) {
+          h.moveTo = null;
+          h.target = null;
+        }
+        if (h.target && h.target.hp <= 0) h.target = null;
+        const atkRange = 64;
+        if (h.dash) {
+          moveBody(P, h, h.dash.vx, h.dash.vy, h.r);
+          addParticle({ type: 'puff', x: h.x, y: h.y - 20, vx: 0, vy: 0, life: 14, size: 12, color: h.dash.color });
+          for (const e of P.enemies)
+            if (e.hp > 0 && !e.hidden && !h.dash.hit.has(e) && Math.hypot(e.x - h.x, e.y - h.y) < e.T.r + 40) {
+              h.dash.hit.add(e);
+              hurtEnemy(P, e, h.dash.dmg, h.x, h.y, { knock: 8, color: h.dash.color });
+            }
+          if (--h.dash.t <= 0) h.dash = null;
+        } else if (mx || my) {
+          const l = Math.hypot(mx, my);
+          moveBody(P, h, (mx / l) * speed, (my / l) * speed, h.r);
+          h.walkT++;
+          if (mx) h.face = mx > 0 ? 1 : -1;
+        } else {
+          const goal = h.target ? { x: h.target.x, y: h.target.y } : h.moveTo;
+          if (goal) {
+            const dx = goal.x - h.x,
+              dy = goal.y - h.y,
+              d = Math.hypot(dx, dy);
+            const stopAt = h.target ? atkRange + h.target.T.r - 6 : 4;
+            if (d > stopAt) {
+              const step = Math.min(speed, d - stopAt);
+              moveBody(P, h, (dx / d) * step, (dy / d) * step, h.r);
+              h.walkT++;
+              if (Math.abs(dx) > 2) h.face = dx > 0 ? 1 : -1;
+            } else if (!h.target) h.moveTo = null;
+          }
+        }
+        // basic attack: auto-hits the nearest enemy in reach
+        if (h.atkCd > 0) h.atkCd--;
+        if (h.atkT > 0) h.atkT--;
+        if (h.inv > 0) h.inv--;
+        if (h.hurtT > 0) h.hurtT--;
+        if (h.shieldT > 0 && --h.shieldT === 0) h.shield = 0;
+        for (let i = 0; i < 3; i++) if (h.cds[i] > 0) h.cds[i]--;
+        const near = h.target && Math.hypot(h.target.x - h.x, h.target.y - h.y) < atkRange + h.target.T.r + 4 ? h.target : nearestEnemy(P, h.x, h.y, atkRange);
+        if (near && h.atkCd <= 0 && !h.dash) {
+          h.atkCd = 32;
+          h.atkT = 12;
+          h.face = near.x > h.x ? 1 : -1;
+          SFX.whoosh();
+          hurtEnemy(P, near, 17 + 3 * (h.lvl - 1), h.x, h.y, { knock: 5 });
+        }
+        // the scout follows and throws nets
+        const S = P.scout;
+        const sx = h.x - h.face * 70,
+          sy = h.y + 30;
+        const sd = Math.hypot(sx - S.x, sy - S.y);
+        if (sd > 8) {
+          S.x += ((sx - S.x) / sd) * Math.min(sd, 4.2);
+          S.y += ((sy - S.y) / sd) * Math.min(sd, 4.2);
+          S.walkT++;
+          S.face = sx > S.x ? 1 : -1;
+        }
+        if (--S.netCd <= 0) {
+          const e = nearestEnemy(P, S.x, S.y, 330);
+          if (e) {
+            S.netCd = 330;
+            P.shots.push({ x: S.x, y: S.y - 50, vx: ((e.x - S.x) / Math.hypot(e.x - S.x, e.y - S.y)) * 9, vy: ((e.y - S.y) / Math.hypot(e.x - S.x, e.y - S.y)) * 9, dmg: 6, r: 18, life: 50, from: 'net', color: '#ff9dd0' });
+            S.bark = { text: pick(SCOUT_BARKS), t: 90 };
+            SFX.yarn();
+          } else S.netCd = 30;
+        }
+        if (S.bark && --S.bark.t <= 0) S.bark = null;
+        updateAdvEnemies(P);
+        updateAdvShots(P);
+        // zones
+        for (const z of P.zones) {
+          z.life--;
+          for (const e of P.enemies)
+            if (e.hp > 0 && Math.hypot(e.x - z.x, e.y - z.y) < z.r) {
+              e.slow = 20;
+              if (P.t % 15 === 0) hurtEnemy(P, e, z.dps * 15, z.x, z.y, { knock: 0, color: z.color });
+            }
+        }
+        P.zones = P.zones.filter(z => z.life > 0);
+        for (const b of P.beams) b.t++;
+        P.beams = P.beams.filter(b => b.t < b.life);
+        // pickups: fabric softener heals
+        for (const pk of P.pickups) {
+          pk.t++;
+          if (Math.hypot(pk.x - h.x, pk.y - h.y) < 40) {
+            pk.taken = true;
+            h.hp = Math.min(h.maxHp, h.hp + h.maxHp * 0.25);
+            addText(h.x, h.y - 120, '+SOFTENER', '#a6ff3a', 22);
+            SFX.squeak();
+          }
+        }
+        P.pickups = P.pickups.filter(pk => !pk.taken && pk.t < 1200);
+        // lint tumbleweeds roll across now and then
+        if (P.t % 300 === 0 && P.phase === 'play') {
+          const fromTop = Math.random() < 0.5;
+          P.weeds.push({ x: h.x + advRand(-300, 300), y: fromTop ? P.cam.y - 40 : P.cam.y + H + 40, vx: advRand(-1, 1), vy: fromTop ? 3.2 : -3.2, rot: 0, hp: 1 });
+        }
+        for (const w of P.weeds) {
+          w.x += w.vx;
+          w.y += w.vy;
+          w.rot += 0.15;
+          if (!w.hit && Math.hypot(w.x - h.x, w.y - h.y) < 40) {
+            w.hit = true;
+            hurtHero(P, 12, w.x, w.y);
+            addText(w.x, w.y - 40, 'BONK!', '#fff', 22);
+          }
+        }
+        P.weeds = P.weeds.filter(w => w.y > -200 && w.y < WORLD_H + 200);
+        // camps cleared -> the lint wall comes down -> boss
+        P.camps.forEach((c, i) => {
+          if (!c.cleared && !P.enemies.some(e => e.camp === i && e.hp > 0)) {
+            c.cleared = true;
+            const n = P.camps.filter(cc => cc.cleared).length;
+            S.bark = { text: n < 3 ? 'Camp smashed! ' + n + ' of 3!' : 'All camps down! The lint wall is crumbling!', t: 160 };
+            SFX.confirm();
+            if (n === 3) {
+              P.wall = false;
+              game.shake = 10;
+              for (let k = 0; k < 40; k++) addParticle({ type: 'puff', x: 2150 + advRand(-20, 20), y: advRand(100, 1400), vx: advRand(-3, 3), vy: advRand(-3, 3), life: 40, size: 20, color: '#d6d0e4' });
+            }
+          }
+        });
+        P.enemies = P.enemies.filter(e => e.hp > 0 || e.T.boss);
+        if (!P.wall && !P.boss && h.x > 2240) {
+          P.boss = makeEnemy('holey', 2560, 760);
+          P.boss.aggro = true;
+          P.boss.attack = { kind: null, t: 0, next: 120 };
+          P.enemies.push(P.boss);
+          P.phase = 'bossIntro';
+          playScene(CH1_BOSS, () => (P.phase = 'boss'), P);
+        }
+        // camera
+        P.cam.x = clamp(h.x - W / 2, 0, WORLD_W - W);
+        P.cam.y = clamp(h.y - H * 0.58, 0, WORLD_H - H);
+      }
+
+      function updateAdvEnemies(P) {
+        const h = P.hero;
+        for (const e of P.enemies) {
+          if (e.hp <= 0) continue;
+          e.walkT++;
+          if (e.flash > 0) e.flash--;
+          e.x += e.vx;
+          e.y += e.vy;
+          e.vx *= 0.8;
+          e.vy *= 0.8;
+          if (e.stun > 0) {
+            e.stun--;
+            continue;
+          }
+          if (e.T.boss) {
+            updateBoss(P, e);
+            continue;
+          }
+          const dx = h.x - e.x,
+            dy = h.y - e.y,
+            d = Math.hypot(dx, dy);
+          if (d < 360) e.aggro = true;
+          if (!e.aggro) continue;
+          e.face = dx > 0 ? 1 : -1;
+          const spd = e.T.speed * (e.slow > 0 ? 0.4 : 1) * (inRiver(e.x) ? 0.6 : 1);
+          if (e.slow > 0) e.slow--;
+          if (e.root > 0) {
+            e.root--;
+            continue;
+          }
+          if (e.atkCd > 0) e.atkCd--;
+          // socklets dash
+          if (e.T.dasher) {
+            if (e.dash > 0) {
+              e.dash--;
+              moveBody(P, e, e.dvx, e.dvy, e.T.r);
+              if (!e.dashHit && Math.hypot(h.x - e.x, h.y - e.y) < e.T.r + h.r + 6) {
+                e.dashHit = true;
+                hurtHero(P, e.T.dmg + 4, e.x, e.y);
+              }
+              continue;
+            }
+            if (e.wind > 0) {
+              if (--e.wind === 0) {
+                e.dash = 18;
+                e.dashHit = false;
+                e.dvx = (dx / d) * 8;
+                e.dvy = (dy / d) * 8;
+              }
+              continue;
+            }
+            if (--e.dashCd <= 0 && d < 260) {
+              e.wind = 24;
+              e.dashCd = 150 + Math.random() * 60;
+              continue;
+            }
+          }
+          const reach = e.T.r + h.r + 14;
+          if (e.wind > 0) {
+            if (--e.wind === 0 && d < reach + 18) hurtHero(P, e.T.dmg, e.x, e.y);
+            continue;
+          }
+          if (d < reach) {
+            if (e.atkCd <= 0) {
+              e.wind = 22;
+              e.atkCd = 60;
+            }
+          } else {
+            moveBody(P, e, (dx / d) * spd, (dy / d) * spd, e.T.r);
+          }
+        }
+        // keep enemies from piling up on each other
+        const list = P.enemies.filter(e => e.hp > 0 && !e.hidden);
+        for (let i = 0; i < list.length; i++)
+          for (let j = i + 1; j < list.length; j++) {
+            const a = list[i],
+              b = list[j];
+            const dx = b.x - a.x,
+              dy = b.y - a.y,
+              d = Math.hypot(dx, dy) || 1,
+              min = a.T.r + b.T.r;
+            if (d < min) {
+              const push = (min - d) / 2;
+              if (!a.T.boss) {
+                a.x -= (dx / d) * push;
+                a.y -= (dy / d) * push;
+              }
+              if (!b.T.boss) {
+                b.x += (dx / d) * push;
+                b.y += (dy / d) * push;
+              }
+            }
+          }
+      }
+
+      /** Holey Moley: moth swarms, hopping out of a hole under you, and calling the Lint Gang for help. */
+      function updateBoss(P, e) {
+        const h = P.hero;
+        const A = e.attack;
+        if (P.phase !== 'boss') return;
+        const dx = h.x - e.x,
+          dy = h.y - e.y,
+          d = Math.hypot(dx, dy);
+        e.face = dx > 0 ? 1 : -1;
+        if (!e.summoned1 && e.hp < e.maxHp * 0.6) {
+          e.summoned1 = true;
+          summonLint(P, e);
+        }
+        if (!e.summoned2 && e.hp < e.maxHp * 0.3) {
+          e.summoned2 = true;
+          summonLint(P, e);
+        }
+        if (A.kind === null) {
+          if (d > 90) moveBody(P, e, (dx / d) * e.T.speed, (dy / d) * e.T.speed, e.T.r);
+          if (e.atkCd > 0) e.atkCd--;
+          if (d < e.T.r + h.r + 20 && e.atkCd <= 0) {
+            e.atkCd = 70;
+            A.kind = 'swipe';
+            A.t = 0;
+          } else if (--A.next <= 0) {
+            A.kind = Math.random() < 0.5 ? 'moths' : 'hop';
+            A.t = 0;
+            if (A.kind === 'hop') A.spot = { x: h.x, y: h.y };
+          }
+          return;
+        }
+        A.t++;
+        if (A.kind === 'swipe') {
+          if (A.t === 24 && d < e.T.r + h.r + 40) hurtHero(P, e.T.dmg, e.x, e.y);
+          if (A.t >= 36) A.kind = null;
+        } else if (A.kind === 'moths') {
+          if (A.t === 50) {
+            addText(e.x, e.y - 130, 'MOTH SWARM!', '#c9b58a', 28);
+            SFX.boo();
+            for (let i = 0; i < 12; i++) {
+              const a = (i / 12) * Math.PI * 2;
+              P.shots.push({ x: e.x, y: e.y - 50, vx: Math.cos(a) * 3.6, vy: Math.sin(a) * 3.6, dmg: 11, r: 14, life: 140, from: 'enemy', moth: true });
+            }
+            for (const off of [-0.25, 0, 0.25]) {
+              const a = Math.atan2(dy, dx) + off;
+              P.shots.push({ x: e.x, y: e.y - 50, vx: Math.cos(a) * 5, vy: Math.sin(a) * 5, dmg: 11, r: 14, life: 120, from: 'enemy', moth: true });
+            }
+          }
+          if (A.t >= 80) {
+            A.kind = null;
+            A.next = 130 + Math.random() * 60;
+          }
+        } else if (A.kind === 'hop') {
+          if (A.t === 1) {
+            e.hidden = true;
+            addText(e.x, e.y - 100, 'HIDE IN A HOLE!', '#c9b58a', 26);
+            SFX.poof();
+          }
+          if (A.t < 60) A.spot = { x: lerp(A.spot.x, h.x, 0.04), y: lerp(A.spot.y, h.y, 0.04) };
+          if (A.t === 75) {
+            e.x = A.spot.x;
+            e.y = A.spot.y;
+            e.hidden = false;
+            game.shake = 10;
+            SFX.thoom();
+            P.beams.push({ kind: 'ring', x: e.x, y: e.y, r: 120, t: 0, life: 16, color: '#c9b58a' });
+            if (Math.hypot(h.x - e.x, h.y - e.y) < 120 + h.r) hurtHero(P, 28, e.x, e.y);
+          }
+          if (A.t >= 100) {
+            A.kind = null;
+            A.next = 140 + Math.random() * 60;
+          }
+        }
+      }
+      function summonLint(P, e) {
+        addText(e.x, e.y - 140, 'LINT GANG, ASSEMBLE!', '#fff', 28);
+        for (let i = 0; i < 3; i++) {
+          const m = makeEnemy('lint', e.x + Math.cos(i * 2.1) * 120, e.y + Math.sin(i * 2.1) * 90);
+          m.aggro = true;
+          P.enemies.push(m);
+        }
+      }
+
+      function updateAdvShots(P) {
+        const h = P.hero;
+        for (const s of P.shots) {
+          s.x += s.vx;
+          s.y += s.vy;
+          s.life--;
+          if (s.from === 'hero' && P.t % 2 === 0) addParticle({ type: 'puff', x: s.x, y: s.y, vx: 0, vy: 0, life: 14, size: 10, color: s.color });
+          if (s.from === 'enemy') {
+            if (Math.hypot(s.x - h.x, s.y - (h.y - 40)) < s.r + h.r + 8) {
+              hurtHero(P, s.dmg, s.x, s.y);
+              s.life = 0;
+            }
+          } else {
+            for (const e of P.enemies)
+              if (e.hp > 0 && !e.hidden && Math.hypot(s.x - e.x, s.y - (e.y - 30)) < s.r + e.T.r + 6) {
+                if (s.from === 'net') {
+                  e.root = e.T.boss ? 30 : 110;
+                  addText(e.x, e.y - 80, 'NETTED!', '#ff9dd0', 20);
+                }
+                hurtEnemy(P, e, s.dmg, s.x - s.vx, s.y - s.vy, { knock: 5, color: s.color });
+                s.life = 0;
+                break;
+              }
+            for (const w of P.weeds)
+              if (!w.hit && Math.hypot(s.x - w.x, s.y - w.y) < 40) {
+                w.hit = true;
+                w.vy *= -0.3;
+              }
+          }
+          if (blockedAt(P, s.x, s.y + 30, 4)) s.life = 0;
+        }
+        P.shots = P.shots.filter(s => s.life > 0);
+      }
+
+      function updateLevelPick(P) {
+        const c0 = game.click;
+        game.click = null;
+        if (P.hero.ranks.every(r => r >= 4)) {
+          // everything is maxed: the level up just makes you tougher
+          P.picks = 0;
+          P.hero.maxHp += 40;
+          return;
+        }
+        let choice = wasPressed('Digit1') ? 0 : wasPressed('Digit2') ? 1 : wasPressed('Digit3') ? 2 : -1;
+        if (c0)
+          for (let i = 0; i < 3; i++) {
+            const r = levelCardRect(i);
+            if (c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h) choice = i;
+          }
+        if (choice >= 0 && P.hero.ranks[choice] < 4) {
+          P.hero.ranks[choice]++;
+          P.picks--;
+          SFX.confirm();
+        }
+      }
+      const levelCardRect = i => ({ x: 150 + i * 230, y: 170, w: 210, h: 220 });
+
+      function updateAdvPause(P) {
+        const c0 = game.click;
+        game.click = null;
+        if (wasPressed('Escape') || (c0 && c0.y < 300)) {
+          P.paused = false;
+          return;
+        }
+        if (wasPressed('KeyQ') || (c0 && c0.y >= 300)) {
+          P.paused = false;
+          openHub();
+        }
+      }
+
+      function finishChapter(P) {
+        const A = advData();
+        const first = !A.cleared[P.chapter];
+        A.cleared[P.chapter] = true;
+        Progress.save();
+        P.phase = 'clear';
+        P.clearT = 0;
+        P.firstClear = first;
+        SFX.fanfare();
+        Announcer.roundWin(P.def, false);
+      }
+
+      /* ---- drawing a chapter ---- */
+      function drawAdvWorld(P) {
+        const t = P.t,
+          cam = P.cam;
+        // ground: soft grey lint
+        let g = ctx.createLinearGradient(0, 0, 0, H);
+        g.addColorStop(0, '#a49cb8');
+        g.addColorStop(1, '#8c84a3');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        ctx.save();
+        ctx.translate(-cam.x, -cam.y);
+        // fluff patches
+        for (const d of P.decor) {
+          if (d.x < cam.x - 80 || d.x > cam.x + W + 80 || d.y < cam.y - 80 || d.y > cam.y + H + 80) continue;
+          ctx.fillStyle = d.k > 0.5 ? 'rgba(255,255,255,0.12)' : 'rgba(60,50,80,0.10)';
+          ctx.beginPath();
+          ctx.ellipse(d.x, d.y, d.r, d.r * 0.55, 0, 0, 7);
+          ctx.fill();
+        }
+        // the lint river (flows very slowly)
+        ctx.fillStyle = '#c9c2dc';
+        ctx.fillRect(1480, 0, 140, WORLD_H);
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+        ctx.lineWidth = 3;
+        for (let y = -40; y < WORLD_H; y += 70) {
+          const yy = y + ((t * 0.2) % 70);
+          ctx.beginPath();
+          ctx.moveTo(1500, yy);
+          ctx.quadraticCurveTo(1550, yy + 12, 1600, yy);
+          ctx.stroke();
+        }
+        // world border: big fluffy walls
+        ctx.fillStyle = '#6e6688';
+        ctx.fillRect(-200, -200, WORLD_W + 400, 240);
+        ctx.fillRect(-200, WORLD_H - 20, WORLD_W + 400, 220);
+        ctx.fillRect(-200, -200, 220, WORLD_H + 400);
+        ctx.fillRect(WORLD_W - 20, -200, 220, WORLD_H + 400);
+        // camps: a pile of fluff with a flame banner of the Demon
+        P.camps.forEach(c => {
+          ctx.fillStyle = 'rgba(214,208,228,0.7)';
+          ctx.beginPath();
+          ctx.ellipse(c.x, c.y, 150, 90, 0, 0, 7);
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(c.x, c.y - 10);
+          ctx.lineTo(c.x, c.y - 110);
+          ctx.stroke();
+          ctx.fillStyle = c.cleared ? '#c6a4ff' : '#d1452a';
+          ctx.beginPath();
+          ctx.moveTo(c.x, c.y - 110);
+          ctx.lineTo(c.x + 46 + Math.sin(t * 0.1) * 4, c.y - 96);
+          ctx.lineTo(c.x, c.y - 80);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          if (c.cleared) drawText('✔', c.x + 20, c.y - 96, 14, FONT_PIXEL, '#fff', INK, 0);
+        });
+        // boss arena
+        ctx.strokeStyle = 'rgba(80,60,40,0.4)';
+        ctx.lineWidth = 6;
+        ctx.setLineDash([20, 16]);
+        ctx.beginPath();
+        ctx.ellipse(2500, 760, 290, 230, 0, 0, 7);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // the lint wall
+        if (P.wall) {
+          for (let y = 30; y < WORLD_H; y += 46) {
+            ctx.fillStyle = y % 92 ? '#d6d0e4' : '#c3bcd6';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(2160 + Math.sin(y) * 6, y, 34, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+          }
+        }
+        // zones
+        for (const z of P.zones) {
+          ctx.globalAlpha = Math.min(1, z.life / 40) * 0.45;
+          ctx.fillStyle = z.color;
+          ctx.beginPath();
+          ctx.ellipse(z.x, z.y, z.r, z.r * 0.6, 0, 0, 7);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = z.color;
+          ctx.lineWidth = 3;
+          ctx.setLineDash([10, 8]);
+          ctx.beginPath();
+          ctx.ellipse(z.x, z.y, z.r, z.r * 0.6, t * 0.02, 0, 7);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        // boss hop target
+        const B = P.boss;
+        if (B && B.hidden && B.attack.spot) {
+          const k = B.attack.t / 75;
+          ctx.strokeStyle = `rgba(232,51,58,${0.4 + 0.5 * Math.sin(t * 0.5)})`;
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.ellipse(B.attack.spot.x, B.attack.spot.y, 120, 72, 0, 0, 7);
+          ctx.stroke();
+          ctx.fillStyle = `rgba(30,20,10,${0.5 * k})`;
+          ctx.beginPath();
+          ctx.ellipse(B.attack.spot.x, B.attack.spot.y, 60 * k, 36 * k, 0, 0, 7);
+          ctx.fill();
+        }
+        if (B && B.attack.kind === 'moths' && B.attack.t < 50) {
+          ctx.strokeStyle = `rgba(201,181,138,${0.5 + 0.5 * Math.sin(t * 0.6)})`;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(B.x, B.y - 50, 60 + B.attack.t, 0, 7);
+          ctx.stroke();
+        }
+        // things sorted by depth
+        const things = [];
+        for (const rk of P.rocks) things.push({ y: rk.y, draw: () => drawFluffRock(rk) });
+        for (const pk of P.pickups) things.push({ y: pk.y, draw: () => drawSoftener(pk, t) });
+        for (const w of P.weeds) things.push({ y: w.y, draw: () => drawTumbleweed(w) });
+        for (const e of P.enemies) if (e.hp > 0 && !e.hidden) things.push({ y: e.y, draw: () => drawAdvEnemy(e, t) });
+        things.push({ y: P.scout.y, draw: () => drawHosiery(ctx, 'fishnet', P.scout.x, P.scout.y, 0.44, P.scout.face, P.scout.walkT, { walk: Math.hypot(P.hero.x - P.scout.x, P.hero.y - P.scout.y) > 90 }) });
+        things.push({ y: P.hero.y, draw: () => drawAdvHero(P) });
+        things.sort((a, b) => a.y - b.y).forEach(th => th.draw());
+        // shots and effects
+        for (const s of P.shots) drawAdvShot(s, t);
+        for (const b of P.beams) drawAdvBeam(b);
+        drawFX();
+        // speech bubble over the scout
+        if (P.scout.bark) drawBark(P.scout.x, P.scout.y - 100, P.scout.bark.text);
+        ctx.restore();
+      }
+
+      function drawFluffRock(rk) {
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.beginPath();
+        ctx.ellipse(rk.x, rk.y + rk.r * 0.4, rk.r, rk.r * 0.35, 0, 0, 7);
+        ctx.fill();
+        ctx.fillStyle = '#d6d0e4';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (let k = 0; k < 10; k++) {
+          const a = (k / 10) * Math.PI * 2,
+            rr = rk.r * (k % 2 ? 0.86 : 1);
+          ctx.lineTo(rk.x + Math.cos(a) * rr, rk.y - rk.r * 0.4 + Math.sin(a) * rr * 0.75);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+      function drawSoftener(pk, t) {
+        const y = pk.y - 20 + Math.sin(t * 0.1) * 4;
+        roundRectPath(ctx, pk.x - 10, y - 26, 20, 30, 5);
+        ctx.fillStyle = '#7fe3ff';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(pk.x - 4, y - 34, 8, 8);
+        ctx.strokeRect(pk.x - 4, y - 34, 8, 8);
+        drawText('♥', pk.x, y - 12, 10, FONT_PIXEL, '#ff4fa3', INK, 0);
+      }
+      function drawTumbleweed(w) {
+        ctx.save();
+        ctx.translate(w.x, w.y - 26);
+        ctx.rotate(w.rot);
+        ctx.strokeStyle = '#8c84a3';
+        ctx.lineWidth = 3;
+        for (let k = 0; k < 6; k++) {
+          ctx.beginPath();
+          ctx.arc(0, 0, 14 + k * 3, k, k + 3.4);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      function drawBark(x, y, text) {
+        ctx.font = `14px ${FONT_COMIC}`;
+        const w = ctx.measureText(text).width + 22;
+        roundRectPath(ctx, x - w / 2, y - 26, w, 28, 10);
+        ctx.fillStyle = '#fffdf2';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        drawText(text, x, y - 12, 14, FONT_COMIC, INK, INK, 0);
+      }
+      function drawAdvHero(P) {
+        const h = P.hero;
+        const p = idleAnim(basePose(), P.t);
+        const moving = h.walkT % 1000 && (h.moveTo || h.target || h.dash || keysDown.KeyA || keysDown.KeyD || keysDown.KeyW || keysDown.KeyS);
+        if (moving) p.yOff = -Math.abs(Math.sin(h.walkT * 0.3)) * 7;
+        if (h.atkT > 0) {
+          p.lean = 0.25;
+          p.front = { x: 70, y: -40 };
+          p.mouth = 'yell';
+          p.eyes = 'angry';
+        }
+        if (h.hurtT > 0) {
+          p.eyes = 'x';
+          p.mouth = 'yell';
+        }
+        if (P.phase === 'dead') {
+          p.rot = -1.5;
+          p.yOff = 30;
+          p.eyes = 'spiral';
+        }
+        if (h.inv > 0 && h.inv % 6 < 3 && !h.dash) return;
+        drawSock(ctx, P.def, p, h.x, h.y, h.face, fitScale(P.def, 0.6), { x: 3 * h.face, y: 0 });
+        if (h.shield > 0) {
+          ctx.strokeStyle = 'rgba(63,208,255,0.8)';
+          ctx.fillStyle = 'rgba(63,208,255,0.15)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.ellipse(h.x, h.y - 50, 50, 64, 0, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+        }
+      }
+      function drawAdvEnemy(e, t) {
+        const def = withSkin(findCharacter(e.T.char), 0);
+        const p = idleAnim(basePose(), t + e.walkT);
+        p.eyes = 'angry';
+        if (e.aggro) p.yOff = -Math.abs(Math.sin(e.walkT * 0.3)) * 5;
+        if (e.wind > 0) {
+          p.lean = -0.2;
+          p.mouth = 'yell';
+        }
+        if (e.flash > 0) p.eyes = 'x';
+        if (e.stun > 0) p.eyes = 'spiral';
+        drawSock(ctx, def, p, e.x, e.y, e.face, fitScale(def, e.T.size), { x: 3 * e.face, y: 0 });
+        if (e.root > 0) {
+          ctx.strokeStyle = '#ff9dd0';
+          ctx.lineWidth = 2;
+          for (let k = -2; k <= 2; k++) {
+            ctx.beginPath();
+            ctx.moveTo(e.x + k * 10 - 20, e.y - 60);
+            ctx.lineTo(e.x + k * 10 + 20, e.y);
+            ctx.moveTo(e.x + k * 10 + 20, e.y - 60);
+            ctx.lineTo(e.x + k * 10 - 20, e.y);
+            ctx.stroke();
+          }
+        }
+        if (e.wind > 0 && !e.T.boss) drawText('!', e.x, e.y - 100 * e.T.size - 30, 22, FONT_COMIC, '#ff4f5e', INK, 5);
+        // health bar (not for the boss: his is on the HUD)
+        if (!e.T.boss && e.hp < e.maxHp) {
+          const w = 44;
+          ctx.fillStyle = 'rgba(0,0,0,0.5)';
+          ctx.fillRect(e.x - w / 2, e.y - 120 * e.T.size - 26, w, 6);
+          ctx.fillStyle = '#ff4f5e';
+          ctx.fillRect(e.x - w / 2, e.y - 120 * e.T.size - 26, (w * e.hp) / e.maxHp, 6);
+        }
+      }
+      function drawAdvShot(s, t) {
+        if (s.moth) {
+          ctx.save();
+          ctx.translate(s.x, s.y);
+          const flap = Math.sin(t * 0.8) * 0.6;
+          ctx.fillStyle = '#c9b58a';
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2;
+          for (const sgn of [-1, 1]) {
+            ctx.beginPath();
+            ctx.ellipse(sgn * 7, 0, 8, 5 + flap * 3, sgn * 0.5, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+          }
+          ctx.restore();
+          return;
+        }
+        if (s.from === 'net') {
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, 14, 0, 7);
+          ctx.moveTo(s.x - 14, s.y);
+          ctx.lineTo(s.x + 14, s.y);
+          ctx.moveTo(s.x, s.y - 14);
+          ctx.lineTo(s.x, s.y + 14);
+          ctx.stroke();
+          return;
+        }
+        ctx.save();
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = 14;
+        ctx.fillStyle = s.color;
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+      function drawAdvBeam(b) {
+        const k = 1 - b.t / b.life;
+        ctx.save();
+        ctx.globalAlpha = k;
+        ctx.strokeStyle = b.color;
+        ctx.fillStyle = b.color;
+        if (b.kind === 'ring') {
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.ellipse(b.x, b.y - 20, b.r * (1 - k * 0.3), b.r * 0.62 * (1 - k * 0.3), 0, 0, 7);
+          ctx.stroke();
+        } else if (b.kind === 'cone') {
+          ctx.globalAlpha = k * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y - 30);
+          ctx.arc(b.x, b.y - 30, b.r, b.a - 1, b.a + 1);
+          ctx.closePath();
+          ctx.fill();
+        } else if (b.kind === 'beam') {
+          ctx.lineWidth = 30 * k + 6;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y);
+          ctx.lineTo(b.x + Math.cos(b.a) * b.len, b.y + Math.sin(b.a) * b.len);
+          ctx.stroke();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 8 * k;
+          ctx.stroke();
+        } else if (b.kind === 'line') {
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y);
+          ctx.lineTo(b.x2, b.y2);
+          ctx.stroke();
+        } else if (b.kind === 'tap') {
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.ellipse(b.x, b.y, 20 * (1 + (1 - k)), 10 * (1 + (1 - k)), 0, 0, 7);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      /** The HUD: hero portrait, health, level, objective, the boss bar, ability buttons, pause. */
+      function drawAdvHud(P) {
+        const h = P.hero,
+          t = P.t;
+        roundRectPath(ctx, 12, 10, 300, 74, 12);
+        ctx.fillStyle = 'rgba(16,8,30,0.85)';
+        ctx.fill();
+        ctx.strokeStyle = P.def.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(46, 47, 28, 0, 7);
+        ctx.clip();
+        ctx.fillStyle = shadeColor(P.def.color, -0.5);
+        ctx.fillRect(14, 15, 70, 70);
+        drawSock(ctx, P.def, basePose(), 40, 104, 1, fitScale(P.def, 0.5), { x: 3, y: 0 });
+        ctx.restore();
+        drawText(P.def.name, 84, 24, 15, FONT_COMIC, '#fff', INK, 4, 'left');
+        drawText('LV ' + h.lvl, 300, 24, 10, FONT_PIXEL, '#ffe234', INK, 0, 'right');
+        const hpK = Math.max(0, h.hp / h.maxHp);
+        ctx.fillStyle = '#2a1d48';
+        ctx.fillRect(84, 38, 216, 14);
+        ctx.fillStyle = hpK > 0.5 ? '#4fdc6a' : hpK > 0.25 ? '#ffe234' : '#ff4f5e';
+        ctx.fillRect(84, 38, 216 * hpK, 14);
+        if (h.shield > 0) {
+          ctx.fillStyle = 'rgba(63,208,255,0.7)';
+          ctx.fillRect(84, 38, Math.min(216, (216 * h.shield) / h.maxHp), 5);
+        }
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(84, 38, 216, 14);
+        drawText(Math.ceil(h.hp) + ' / ' + h.maxHp, 192, 46, 7, FONT_PIXEL, '#fff', INK, 0);
+        ctx.fillStyle = '#2a1d48';
+        ctx.fillRect(84, 60, 216, 7);
+        ctx.fillStyle = '#c6a4ff';
+        ctx.fillRect(84, 60, (216 * h.xp) / xpNeeded(h.lvl), 7);
+        drawText('XP', 76, 64, 6, FONT_PIXEL, '#c6a4ff', INK, 0, 'right');
+        // objective
+        const camps = P.camps.filter(c => c.cleared).length;
+        const objective = P.boss ? 'DEFEAT HOLEY MOLEY!' : camps < 3 ? 'SMASH THE LINT GANG CAMPS  ' + camps + ' / 3' : 'THE WALL IS DOWN! GO EAST →';
+        drawText(objective, W / 2 + 40, 26, 12, FONT_PIXEL, '#ffe234', INK, 5);
+        // arrow to the next objective when it's off screen
+        let goal = null;
+        if (!P.boss) {
+          const next = P.camps.find(c => !c.cleared);
+          goal = next || { x: 2500, y: 760 };
+        }
+        if (goal) {
+          const gx = goal.x - P.cam.x,
+            gy = goal.y - P.cam.y;
+          if (gx < 0 || gx > W || gy < 0 || gy > H) {
+            const a = Math.atan2(gy - H / 2, gx - W / 2);
+            const ax = clamp(W / 2 + Math.cos(a) * 400, 40, W - 40),
+              ay = clamp(H / 2 + Math.sin(a) * 220, 110, H - 60);
+            ctx.save();
+            ctx.translate(ax, ay);
+            ctx.rotate(a);
+            ctx.fillStyle = `rgba(255,226,52,${0.6 + 0.4 * Math.sin(t * 0.15)})`;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(20, 0);
+            ctx.lineTo(-12, -14);
+            ctx.lineTo(-6, 0);
+            ctx.lineTo(-12, 14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+        // boss bar
+        if (P.boss && P.boss.hp > 0 && (P.phase === 'boss' || P.phase === 'bossIntro')) {
+          const B = P.boss;
+          drawText('HOLEY MOLEY — GUARDIAN OF THE PLAINS', W / 2, 52, 12, FONT_PIXEL, '#c9b58a', INK, 4);
+          ctx.fillStyle = '#2a1d48';
+          ctx.fillRect(W / 2 - 220, 62, 440, 14);
+          ctx.fillStyle = '#ff4f5e';
+          ctx.fillRect(W / 2 - 220, 62, (440 * B.hp) / B.maxHp, 14);
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(W / 2 - 220, 62, 440, 14);
+        }
+        // ability buttons
+        const specials = P.kit.specials;
+        ADV_BUTTONS.forEach((b, i) => {
+          const isUlt = i === 3;
+          const ab = isUlt ? P.kit.ult : specials[i];
+          const ready = isUlt ? h.ult >= 100 : h.cds[i] <= 0;
+          ctx.save();
+          if (isUlt && ready) {
+            ctx.shadowColor = '#ffd23f';
+            ctx.shadowBlur = 20 + Math.sin(t * 0.2) * 8;
+          }
+          ctx.fillStyle = ready ? ab.color : shadeColor(ab.color, -0.55);
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+          let frac = 0;
+          if (isUlt) frac = 1 - h.ult / 100;
+          else {
+            const T = ABILITY_TYPES[ab.type];
+            frac = h.cds[i] / Math.max(1, Math.round(T.cd * (1 - 0.12 * h.ranks[i])));
+          }
+          if (frac > 0) {
+            ctx.fillStyle = 'rgba(0,0,0,0.55)';
+            ctx.beginPath();
+            ctx.moveTo(b.x, b.y);
+            ctx.arc(b.x, b.y, b.r - 2, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+          }
+          drawText(isUlt ? 'ULT' : String(i + 1), b.x, b.y - (isUlt ? 4 : 2), isUlt ? 18 : 16, FONT_COMIC, '#fff', INK, 4);
+          if (!isUlt && h.cds[i] > 0) drawText(String(Math.ceil(h.cds[i] / 60)), b.x, b.y + 14, 9, FONT_PIXEL, '#fff', INK, 0);
+          if (isUlt) drawText(Math.floor(h.ult) + '%', b.x, b.y + 18, 8, FONT_PIXEL, '#fff', INK, 0);
+          if (!IS_TOUCH) drawText('[' + b.key + ']', b.x - b.r + 4, b.y - b.r + 6, 7, FONT_PIXEL, '#ccc', INK, 0);
+        });
+        // pause
+        const r = ADV_PAUSE;
+        roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+        ctx.fillStyle = 'rgba(20,10,36,0.8)';
+        ctx.fill();
+        ctx.strokeStyle = '#3ff0ff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        drawText('II', r.x + r.w / 2, r.y + r.h / 2 + 1, 14, FONT_PIXEL, '#fff', INK, 0);
+        if (!IS_TOUCH && P.t < 600)
+          drawText('CLICK to move / attack  •  WASD move  •  1 2 3 specials  •  R ultimate  •  ESC pause', W / 2, 530, 7, FONT_PIXEL, '#fff', INK, 3);
+        else if (IS_TOUCH && P.t < 600) drawText('TAP to move  •  TAP an enemy to attack  •  buttons for specials', W / 2 - 60, 530, 7, FONT_PIXEL, '#fff', INK, 3);
+      }
+
+      function drawAdvPlay() {
+        const P = game.adv.play;
+        ctx.save();
+        if (game.shake > 0.5) ctx.translate(rand(-game.shake, game.shake), rand(-game.shake, game.shake) * 0.6);
+        drawAdvWorld(P);
+        ctx.restore();
+        drawAdvHud(P);
+        if (game.adv.scene) return drawSceneBox();
+        if (P.picks > 0) drawLevelPick(P);
+        if (P.paused) {
+          ctx.fillStyle = 'rgba(8,2,18,0.75)';
+          ctx.fillRect(0, 0, W, H);
+          drawText('PAUSED', W / 2, 130, 60, FONT_COMIC, '#ffe234', INK, 10);
+          drawText(IS_TOUCH ? 'TAP THE TOP HALF TO CARRY ON' : 'ESC: CARRY ON', W / 2, 220, 14, FONT_PIXEL, '#fff', INK, 5);
+          drawText(IS_TOUCH ? 'TAP THE BOTTOM HALF: BACK TO THE PALACE' : 'Q: BACK TO THE PALACE', W / 2, 380, 14, FONT_PIXEL, '#ff9dd0', INK, 5);
+        }
+        if (P.phase === 'dead') {
+          ctx.fillStyle = `rgba(30,4,10,${Math.min(0.75, P.deadT / 40)})`;
+          ctx.fillRect(0, 0, W, H);
+          drawText('FOLDED!', W / 2, 200, 90, FONT_COMIC, '#ff4f5e', INK, 12);
+          drawText('Your sock needs a rest... and a wash.', W / 2, 270, 14, FONT_PIXEL, '#fff', INK, 5);
+          if (P.deadT > 60 && P.deadT % 60 < 40) drawText('TAP / SPACE TO TRY AGAIN', W / 2, 340, 14, FONT_PIXEL, '#ffe234', INK, 5);
+        }
+        if (P.phase === 'clear') {
+          ctx.fillStyle = 'rgba(16,8,30,0.8)';
+          ctx.fillRect(0, 0, W, H);
+          drawText('CHAPTER CLEAR!', W / 2, 130, 70, FONT_COMIC, '#ffe234', INK, 12);
+          drawText('THE LINT PLAINS', W / 2, 190, 18, FONT_PIXEL, '#fff', INK, 5);
+          drawText('LEVEL ' + P.hero.lvl + '   •   ' + P.kills + ' LINT DEFEATED', W / 2, 250, 13, FONT_PIXEL, '#c6a4ff', INK, 4);
+          const p = winAnim(basePose(), P.clearT, P.def.id);
+          drawSock(ctx, P.def, p, W / 2, 470, 1, fitScale(P.def, 1.1), { x: 4, y: 0 });
+          if (P.clearT > 60 && P.clearT % 60 < 40) drawText('TAP / SPACE: BACK TO THE PALACE', W / 2, 510, 13, FONT_PIXEL, '#fff', INK, 5);
+        }
+      }
+
+      function drawLevelPick(P) {
+        ctx.fillStyle = 'rgba(8,2,18,0.8)';
+        ctx.fillRect(0, 0, W, H);
+        drawText('LEVEL UP!', W / 2, 90, 60, FONT_COMIC, '#ffe234', INK, 10);
+        drawText('Pick a special to power up' + (IS_TOUCH ? '' : ' (1 / 2 / 3)'), W / 2, 140, 12, FONT_PIXEL, '#fff', INK, 4);
+        P.kit.specials.forEach((ab, i) => {
+          const r = levelCardRect(i),
+            rank = P.hero.ranks[i],
+            maxed = rank >= 4;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 14);
+          ctx.fillStyle = maxed ? '#2a2238' : 'rgba(42,29,72,0.95)';
+          ctx.fill();
+          ctx.strokeStyle = maxed ? '#555' : ab.color;
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          ctx.fillStyle = ab.color;
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(r.x + r.w / 2, r.y + 50, 30, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          drawText(String(i + 1), r.x + r.w / 2, r.y + 50, 24, FONT_COMIC, '#fff', INK, 4);
+          drawText(ab.name, r.x + r.w / 2, r.y + 104, ab.name.length > 14 ? 15 : 19, FONT_COMIC, '#fff', INK, 4);
+          drawText(maxed ? 'MAXED OUT' : '+35% POWER', r.x + r.w / 2, r.y + 138, 9, FONT_PIXEL, '#a6ff3a', INK, 0);
+          if (!maxed) drawText('-12% COOLDOWN', r.x + r.w / 2, r.y + 156, 9, FONT_PIXEL, '#3fd0ff', INK, 0);
+          for (let k = 0; k < 4; k++) {
+            ctx.fillStyle = k < rank ? '#ffe234' : '#3a2d58';
+            ctx.beginPath();
+            ctx.arc(r.x + r.w / 2 - 36 + k * 24, r.y + 190, 7, 0, 7);
+            ctx.fill();
+          }
+        });
       }
 
       /* ---------------- ONLINE ---------------- */
@@ -13002,7 +15899,12 @@
         ending: { update: updateEnding, draw: drawEnding },
         online: { update: updateOnlineLobby, draw: drawOnlineLobby },
         dryer: { update: updateDryerScreen, draw: drawDryerScreen },
-        awards: { update: updateAwards, draw: drawAwards }
+        awards: { update: updateAwards, draw: drawAwards },
+        advStory: { update: updateAdvStory, draw: drawAdvStory },
+        advSelect: { update: updateAdvSelect, draw: drawAdvSelect },
+        advPortal: { update: updateAdvPortal, draw: drawAdvPortal },
+        advHub: { update: updateAdvHub, draw: drawAdvHub },
+        advPlay: { update: updateAdvPlay, draw: drawAdvPlay }
       };
 
       function updateGame() {
@@ -13175,6 +16077,10 @@
         Net,
         Progress,
         ROSTER,
+        startAdventure,
+        startChapter,
+        heroKit,
+        drawHosiery,
         /** tests: forget all progress */
         resetProgress() {
           localStorage.removeItem(Progress.KEY);
