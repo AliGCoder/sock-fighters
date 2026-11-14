@@ -1,13 +1,13 @@
 # Sock Fighters: LOST IN THE SPIN CYCLE
-*Adventure mode: plan and story script (draft 3, for review)*
+*Story mode: plan and story script*
 
 ---
 
 ## 1. How it plays
 **It's the original fighting game, with the story around it.** No exploring, no top-down gameplay.
-- **Main menu → ADVENTURE.** The prologue plays, then you choose your hero on a big League-style hero select (portraits, the hero's moves, skins, a **DRYER** button to style them, and **LOCK IN**).
+- **Main menu → STORY MODE.** The prologue plays, then you choose your hero on a big League-style hero select (portraits, the hero's moves, skins, a **DRYER** button to style them, and **LOCK IN**).
 - Your hero jumps through the **dryer portal** to Queen Nylonia's palace, the hub where you pick chapters and change hero.
-- **Each chapter is a run of normal 1-on-1 fights** with funny story scenes before, between and after them. Lose a fight and you just try it again.
+- **Each chapter is a run of normal 1-on-1 fights** with funny story scenes before, between and after them. Lose a fight and it says **MISSION FAILED**; try again or go back to the palace.
 - Chapter 1, The Lint Plains: Lint Bunny → Socklet → boss **Holey Moley** (Lint Plains arena).
 - Chapter 2, The Static Swamp: a static-scrambled **Mecha-Sock X** → **Toe-Shinobi** (stuck to the path by static) → boss **Cling Queen** (Static Swamp arena).
 - Chapters 3–5 come next, each with its own arena. Each chapter opens once the one before is cleared.

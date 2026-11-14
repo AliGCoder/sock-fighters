@@ -11178,14 +11178,14 @@
       const MODE_MENU = IS_TOUCH
         ? [
             ['1 PLAYER', 'VS CPU', 'cpu'],
-            ['ADVENTURE', 'STORY MODE: LOST IN THE SPIN CYCLE', 'adventure'],
+            ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
             ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
           ]
         : [
             ['1 PLAYER', 'VS CPU', 'cpu'],
-            ['ADVENTURE', 'STORY MODE: LOST IN THE SPIN CYCLE', 'adventure'],
+            ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
             ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
             ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
@@ -11292,8 +11292,8 @@
           4
         );
         drawText('VOICE: ' + announcerVoiceLabel() + ' [N]', 660, 20, 9, FONT_PIXEL, '#ffe234', INK, 4);
-        drawText('SELECT MODE', W / 2, 64, 56, FONT_COMIC, '#ffe234', INK, 10);
-        drawText('モード選択', W / 2, 102, 18, FONT_JAPANESE, '#fff', INK, 6);
+        drawText('SELECT MODE', W / 2, 52, 50, FONT_COMIC, '#ffe234', INK, 10);
+        drawText('モード選択', W / 2, 86, 15, FONT_JAPANESE, '#fff', INK, 5);
         MODE_MENU.forEach(([a, b], i) => {
           const y = modeItemY(i),
             on = game.menuIndex === i;
@@ -12575,6 +12575,7 @@
           return;
         }
         {
+          if (game.story && !r.p1won && backWasPressed()) return leaveStory(); // mission failed: back to the palace
           if (game.story && readyToContinue(r.t)) {
             SFX.confirm();
             if (r.p1won) nextStoryStep();
@@ -12622,10 +12623,49 @@
         }
       }
 
+      /** Story mode: you lost the fight. The villain gloats; you can try again or head back to the palace. */
+      function drawMissionFailed(r, t) {
+        ctx.fillStyle = 'rgba(40,0,10,0.45)';
+        ctx.fillRect(0, 0, W, H);
+        const shake = t < 20 ? Math.sin(t * 2) * (20 - t) * 0.4 : 0;
+        const pop = t < 10 ? 0.6 + (t / 10) * 0.4 : 1;
+        ctx.save();
+        ctx.translate(W / 2 + shake, 88);
+        ctx.scale(pop, pop);
+        drawText('MISSION FAILED', 4, 4, 84, FONT_COMIC, INK, INK, 12);
+        drawText('MISSION FAILED', 0, 0, 84, FONT_COMIC, '#ff3d5a', INK, 12);
+        ctx.restore();
+        drawText('ミッション失敗', W / 2, 146, 22, FONT_JAPANESE, '#fff', INK, 6);
+        // the winner gloats, your hero lies in a heap
+        const villain = r.w || r.b;
+        const hero = r.a;
+        const pv = winAnim(basePose(), t, villain.id);
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.beginPath();
+        ctx.ellipse(700, GROUND + 4, 70, 11, 0, 0, 7);
+        ctx.fill();
+        drawSock(ctx, villain, pv, 700, GROUND + 6, -1, fitScale(villain, 1.4), { x: -4, y: 0 });
+        const pl = basePose();
+        pl.rot = -1.5;
+        pl.yOff = 41;
+        pl.bodyH = 60;
+        pl.footLen = 48;
+        pl.sy = 0.75;
+        pl.eyes = 'spiral';
+        pl.mouth = 'tongue';
+        drawSock(ctx, hero, pl, 260, GROUND, 1, fitScale(hero, 1.2), { x: 0, y: 0 });
+        drawText('*' + hero.name + ' needs a minute...*', 260, 300, 16, FONT_COMIC, '#ccc', INK, 4);
+        if (r.quote) drawText('"' + r.quote + '"', 700, 206, 22, FONT_COMIC, '#fff', INK, 6);
+        if (t >= INPUT_GRACE_FRAMES && t % 60 < 40)
+          drawText(IS_TOUCH ? 'TAP: TRY AGAIN   •   ◀ BACK: TO THE PALACE' : 'SPACE / TAP: TRY AGAIN   •   ESC: BACK TO THE PALACE', W / 2, 515, 12, FONT_PIXEL, '#fff', INK, 5);
+        if (IS_TOUCH && t >= INPUT_GRACE_FRAMES) drawBackButton('PALACE');
+      }
+
       function drawResult() {
         drawStage(0.55);
         const r = game.result,
           t = r.t;
+        if (game.story && !r.p1won) return drawMissionFailed(r, t);
         if (r.w) {
           drawText('WINNER!', W / 2, 62, 84, FONT_COMIC, '#ffe234', INK, 12);
           drawText('勝者', W / 2, 108, 24, FONT_JAPANESE, '#fff', INK, 7);
