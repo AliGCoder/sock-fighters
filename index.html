@@ -2508,7 +2508,7 @@
           ],
           skins: [
             {
-              name: 'CLASSIC',
+              name: 'GYM SOCK',
               pal: {
                 base: '#f2eedf',
                 s1: '#e8333a',
@@ -2551,7 +2551,7 @@
               glove: '#ffd84a',
               arm: '#e6b422',
               color: '#ffd84a',
-              hat: 'crown',
+              hat: 'laurel',
               shades: true
             }
           ],
@@ -2620,7 +2620,7 @@
           ],
           skins: [
             {
-              name: 'CLASSIC',
+              name: 'TARTAN',
               pal: { a: '#8c1c3a', b: '#2e3f78', dark: '#1b2547', line: '#e8c547', band: '#f6f3ea' }
             },
             {
@@ -2629,7 +2629,7 @@
               glove: '#d4a017',
               arm: '#2a2a2a',
               color: '#d4a017',
-              hat: 'kabuto'
+              hat: 'jingasa'
             },
             {
               name: 'SAKURA',
@@ -2637,15 +2637,15 @@
               glove: '#fff0f5',
               arm: '#e7799f',
               color: '#ff8fb6',
-              hat: 'flower'
+              hat: 'kanzashi'
             },
             {
-              name: 'ROYAL',
+              name: 'NOBLE',
               pal: { a: '#5b2a86', b: '#c99a1e', dark: '#2b1240', line: '#ffffff', band: null },
               glove: '#ffffff',
               arm: '#5b2a86',
               color: '#b07ae0',
-              hat: 'crown',
+              hat: 'eboshi',
               stache: '#2b1a10'
             }
           ],
@@ -2751,7 +2751,7 @@
               glove: '#ffffff',
               arm: '#8a7fb5',
               color: '#c7b8ff',
-              hat: 'party'
+              hat: 'ribbon'
             }
           ],
           pattern(along) {
@@ -2970,7 +2970,7 @@
               pal: { base: '#fff19a', lace: '#ffffff', heel: '#ffcf2e', dot: '#ff9d2e', bon: '#fff' },
               arm: '#fff19a',
               color: '#ffcf2e',
-              hat: 'flower'
+              hat: 'sunhat'
             },
             {
               name: 'PARTY',
@@ -3065,7 +3065,7 @@
           ],
           skins: [
             {
-              name: 'CLASSIC',
+              name: 'SUMO STRIPE',
               pal: { s1: '#e8333a', s2: '#ffffff', cuff: '#e8333a', heel: '#2f5bd3' },
               hat: 'topknot'
             },
@@ -3075,14 +3075,14 @@
               glove: '#ffffff',
               arm: '#1a1a1a',
               color: '#dddddd',
-              hat: 'cap'
+              hat: 'gyoji'
             },
             {
               name: 'CANDY CANE',
               pal: { s1: '#e8333a', s2: '#ffffff', cuff: '#1f7a3a', heel: '#1f7a3a' },
               glove: '#1f7a3a',
               color: '#ff7a7a',
-              hat: 'party'
+              hat: 'candycane'
             },
             {
               name: 'ATHLETE',
@@ -3090,7 +3090,7 @@
               glove: '#2f5bd3',
               arm: '#2f5bd3',
               color: '#5b8cff',
-              hat: 'sweatband'
+              hat: 'hachimaki'
             }
           ],
           pattern(along) {
@@ -3234,14 +3234,14 @@
             "Check behind the washing machine. That's where I'll be."
           ],
           skins: [
-            { name: 'CLASSIC', pal: { base: '#e9e6f2', patch: '#ff8fab', dots: null } },
+            { name: 'BEDSHEET', pal: { base: '#e9e6f2', patch: '#ff8fab', dots: null } },
             {
               name: 'SPOOKY',
               pal: { base: '#c8b6ff', patch: '#ffe234', dots: null },
               arm: '#c8b6ff',
               glove: '#c8b6ff',
               color: '#b49cff',
-              hat: 'witch'
+              hat: 'pumpkin'
             },
             {
               name: 'ODD SOCK',
@@ -3256,7 +3256,7 @@
               arm: '#b8ffcf',
               glove: '#b8ffcf',
               color: '#7dffa8',
-              hat: 'crown'
+              hat: 'wisp'
             }
           ],
           pattern(along) {
@@ -3783,9 +3783,9 @@
           jp: '静電気の女王',
           title: 'Sovereign of Static',
           rank: 'BOSS',
-          color: '#d38bff',
-          glove: '#ffe234',
-          arm: '#8f4fc9',
+          color: '#4fd6a0',
+          glove: '#ffd23f',
+          arm: '#1f6a4e',
           angry: true,
           tall: 1.05,
           hp: 1250,
@@ -3800,15 +3800,112 @@
           intro: 'Royalty. Static. Zero patience for peasants.',
           taunts: ['Ugh. Pathetic.', '*flips hair*', 'Is that ALL?'],
           quotes: ['Know your place, darling.', 'Ew. You touched me.', "Don't cry. Actually... do."],
-          skins: [{ name: 'THUNDER', pal: { base: '#6a2fa0', bolt: '#ffe234', dark: '#2a0f45', glow: '#d38bff', led: '#ffe234' } }],
+          // SWAMP DIVA: she lives in a swamp, and she makes it look FABULOUS
+          skins: [
+            { name: 'SWAMP DIVA', pal: { base: '#1f7a5c', sheen: '#2fae80', sequin: '#ffd23f', dark: '#0d3b2e', glow: '#c58bff', moss: '#7fbf3a', bolt: '#e8ffb0', led: '#ffd23f', cape: '#0f2e24', lining: '#7a3fbf' } },
+            { name: 'THUNDER', pal: { base: '#6a2fa0', sheen: '#7d3fbf', sequin: '#ffe234', dark: '#2a0f45', glow: '#d38bff', moss: '#b98be8', bolt: '#ffe234', led: '#ffe234', cape: '#1d0a33', lining: '#ffe234' } }
+          ],
           pattern(along) {
             const palette = this.pal;
             if (along < 0.09) return palette.dark;
-            if (Math.floor(along * 18) % 4 === 1) return palette.bolt; // lightning stripes
-            if (along > 0.93) return palette.glow;
-            return palette.base;
+            if (along > 0.93) return palette.glow; // an iridescent toe
+            if (Math.floor(along * 18) % 4 === 1) return palette.sequin; // gold sequin bands
+            return Math.floor(along * 36) % 2 ? palette.sheen : palette.base; // shimmering emerald
+          },
+          behind(c, spine) {
+            // a long, dramatic floor-sweeping cape with a tall spiky collar: a villain queen's entrance outfit
+            const pal = this.pal;
+            const neck = spine.pts[spine.fb - 2];
+            const back = { x: neck.x - neck.nx * neck.w * 0.55, y: neck.y - neck.ny * neck.w * 0.55 };
+            const wave = Math.sin(game.time * 0.06) * 10;
+            const hemX = -118 + wave;
+            c.save();
+            c.strokeStyle = INK;
+            c.lineWidth = 3.5;
+            c.lineJoin = 'round';
+            const capePath = () => {
+              c.beginPath();
+              c.moveTo(back.x + 10, back.y - 6);
+              c.bezierCurveTo(back.x - 40, back.y + 30, hemX - 10, -60, hemX, 4);
+              // a ragged, leaf-like hem along the floor
+              for (let k = 1; k <= 6; k++) {
+                const x = hemX + (k / 6) * (-hemX - 12);
+                c.lineTo(x - 8, k % 2 ? 14 : 2);
+                c.lineTo(x, 4);
+              }
+              c.quadraticCurveTo(-30, -60, back.x + 20, back.y + 4);
+              c.closePath();
+            };
+            capePath();
+            c.fillStyle = pal.cape;
+            c.fill();
+            c.stroke();
+            // the lining shows along the inner edge
+            c.save();
+            capePath();
+            c.clip();
+            c.strokeStyle = pal.lining;
+            c.lineWidth = 10;
+            c.beginPath();
+            c.moveTo(back.x + 14, back.y);
+            c.quadraticCurveTo(-34, -60, -12, 6);
+            c.stroke();
+            c.restore();
+            // the tall pointed collar behind the head
+            c.fillStyle = pal.cape;
+            c.beginPath();
+            c.moveTo(back.x + 22, back.y + 2);
+            const spikes = [
+              [-30, -46],
+              [-14, -66],
+              [4, -76],
+              [20, -58]
+            ];
+            for (const [sx, sy] of spikes) {
+              c.lineTo(back.x + sx, back.y + sy);
+              c.lineTo(back.x + sx + 12, back.y + sy + 26);
+            }
+            c.lineTo(back.x + 34, back.y - 4);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.strokeStyle = pal.lining;
+            c.lineWidth = 2.5;
+            c.beginPath();
+            for (const [sx, sy] of spikes) {
+              c.moveTo(back.x + sx + 8, back.y + sy + 22);
+              c.lineTo(back.x + sx + 2, back.y + sy + 10);
+            }
+            c.stroke();
+            c.restore();
           },
           detail(c, spine) {
+            // twinkling sequins
+            for (let i = 2; i < spine.pts.length - 1; i += 3) {
+              const p = spine.pts[i];
+              const tw = Math.abs(Math.sin(game.time * 0.12 + i));
+              if (tw < 0.35) continue;
+              const side = i % 2 ? 1 : -1;
+              c.fillStyle = 'rgba(255,255,255,' + tw + ')';
+              starPath(c, p.x + p.nx * p.w * 0.25 * side, p.y + p.ny * p.w * 0.25 * side, 2 + tw * 2.5, i);
+              c.fill();
+            }
+            // a fringe of swamp moss draped around her leg
+            const m = spine.pts[5];
+            c.fillStyle = this.pal.moss;
+            c.strokeStyle = INK;
+            c.lineWidth = 1.5;
+            for (let k = -3; k <= 3; k++) {
+              const x = m.x + m.nx * m.w * 0.14 * k,
+                y = m.y + m.ny * m.w * 0.14 * k;
+              const len = 10 + ((k * 7 + 21) % 9) + Math.sin(game.time * 0.08 + k) * 2;
+              c.beginPath();
+              c.moveTo(x - 3, y);
+              c.quadraticCurveTo(x, y + len * 1.2, x + 3, y);
+              c.closePath();
+              c.fill();
+              c.stroke();
+            }
             // little lightning sparks that flicker on and off
             c.strokeStyle = this.pal.bolt;
             c.lineWidth = 2;
@@ -3831,6 +3928,12 @@
             }
           },
           front(c, spine) {
+            // a beauty mark
+            const bm = sockPoint(spine, 0.74);
+            c.fillStyle = INK;
+            c.beginPath();
+            c.arc(bm.x - bm.nx * bm.w * 0.05, bm.y - bm.ny * bm.w * 0.05, 2.2, 0, 7);
+            c.fill();
             // eyelashes
             c.strokeStyle = INK;
             c.lineWidth = 2.5;
@@ -3843,7 +3946,7 @@
               }
             }
           },
-          hat: 'tiara'
+          hat: 'lilycrown'
         },
         {
           id: 'iron',
@@ -3987,13 +4090,38 @@
       }
 
       // effect skins: each turns a colour (hue 0..360, saturation 0..1, lightness 0..1) into a new one
-      const SKIN_FX = {
-        frost: { name: 'FROST', color: '#9fe8ff', fn: (h, s, l) => [195 + 20 * s, 0.6, 0.45 + 0.5 * l] },
-        neon: { name: 'NEON', color: '#3fff9a', fn: (h, s, l) => [(h + 140) % 360, 1, 0.4 + 0.2 * l] },
-        candy: { name: 'CANDY', color: '#ff8fd0', fn: (h, s, l) => [(315 + h * 0.12) % 360, 0.78, 0.6 + 0.32 * l] },
-        gold: { name: 'GOLD', color: '#ffd23f', fn: (h, s, l) => [40 + 14 * l, 0.88, 0.18 + 0.64 * l] },
-        shadow: { name: 'SHADOW', color: '#8a5cff', fn: (h, s, l) => [262, 0.32 + 0.25 * s, 0.07 + 0.36 * l] }
+      // Two unique unlockable skins per hero: [name, hue, spread, saturation, darkest, lightest]. Skin 1 unlocks after
+      // 3 wins with that hero, skin 2 after clearing an arcade ladder or a story chapter with them.
+      const HERO_SKINS = {
+        stinky: [['TOXIC WASTE', 100, 0.3, 0.95, 0.2, 0.8], ['GYM GOLD', 45, 0.1, 0.85, 0.2, 0.85]],
+        argyle: [['MIDNIGHT RONIN', 230, 0.3, 0.5, 0.06, 0.55], ['CHERRY BLOSSOM', 340, 0.2, 0.7, 0.45, 0.95]],
+        shinobi: [['SHADOW CLAN', 275, 0.4, 0.55, 0.08, 0.5], ['JADE', 150, 0.3, 0.7, 0.25, 0.8]],
+        gran: [['LAVENDER', 270, 0.2, 0.45, 0.4, 0.92], ['TWEED', 30, 0.3, 0.4, 0.2, 0.7]],
+        baby: [['BUBBLEGUM', 320, 0.2, 0.8, 0.55, 0.95], ['SKY', 200, 0.2, 0.7, 0.5, 0.95]],
+        kneehi: [['YOKOZUNA', 48, 0.05, 0.3, 0.5, 0.98], ['RED SUN', 0, 0.3, 0.85, 0.3, 0.85]],
+        robo: [['CYBER LIME', 85, 0.3, 0.9, 0.2, 0.8], ['DEEP SEA', 205, 0.3, 0.75, 0.1, 0.6]],
+        ghost: [['ECTOPLASM', 120, 0.2, 0.85, 0.35, 0.9], ['PHANTOM VIOLET', 280, 0.2, 0.6, 0.3, 0.85]],
+        lint: [['DUST STORM', 35, 0.2, 0.45, 0.35, 0.85], ['COTTON CANDY', 310, 0.3, 0.65, 0.6, 0.95]],
+        socklet: [['SPRINT RED', 355, 0.2, 0.85, 0.3, 0.85], ['TURBO TEAL', 175, 0.2, 0.8, 0.3, 0.85]],
+        holey: [['SWISS CHEESE', 50, 0.1, 0.85, 0.35, 0.9], ['MOTH NIGHT', 250, 0.3, 0.4, 0.1, 0.5]],
+        steel: [['HAZARD ORANGE', 28, 0.15, 0.95, 0.25, 0.8], ['CHROME DOME', 210, 0.1, 0.15, 0.3, 0.95]],
+        king: [['EMPEROR', 280, 0.2, 0.75, 0.15, 0.7], ['GILDED', 45, 0.1, 0.9, 0.25, 0.9]],
+        demon: [['HELLFIRE', 15, 0.3, 1, 0.15, 0.75], ['FROSTBURN', 195, 0.3, 0.85, 0.2, 0.85]],
+        bleach: [['SEPIA', 35, 0.1, 0.45, 0.2, 0.9], ['MINT RINSE', 160, 0.2, 0.55, 0.4, 0.95]],
+        cling: [['RUBY STATIC', 345, 0.3, 0.85, 0.15, 0.7], ['AURORA', 170, 0.9, 0.75, 0.3, 0.85]],
+        iron: [['OBSIDIAN', 260, 0.2, 0.25, 0.05, 0.45], ['CRIMSON LACQUER', 355, 0.2, 0.85, 0.15, 0.7]]
       };
+      const SKIN_FX = {};
+      for (const [hero, list] of Object.entries(HERO_SKINS))
+        list.forEach(([name, hue, spread, sat, lo, hi], i) => {
+          SKIN_FX[hero + (i + 1)] = {
+            name,
+            hero,
+            unlock: i, // 0 = after 3 wins, 1 = after clearing a ladder / chapter
+            color: hslToHex(hue, sat, (lo + hi) / 2),
+            fn: (h, s, l) => [hue + ((h % 120) - 60) * spread, sat * (0.55 + 0.45 * Math.min(1, s * 2)), lo + l * (hi - lo)]
+          };
+        });
       const SKIN_FX_IDS = Object.keys(SKIN_FX);
 
       /** Recolour one palette colour by a style. Colours that aren't plain #hex are left alone. */
@@ -4021,13 +4149,13 @@
           glove: recolor(base.glove, style),
           arm: recolor(base.arm, style),
           color: recolor(base.color, style),
-          hat: style.acc && ACCESSORIES[style.acc] && ACCESSORIES[style.acc].head ? null : base.hat,
+          hat: base.hat,
           stache: base.stache,
-          shades: base.shades && style.acc !== 'shades',
-          acc: ACCESSORIES[style.acc] ? style.acc : null,
-          accColor: style.accColor || '#e8333a',
+          shades: base.shades,
+          acc: style.acc && style.acc === def.id && ACCESSORIES[style.acc] ? style.acc : null,
+          accColor: style.accColor || (ACCESSORIES[def.id] ? ACCESSORIES[def.id].color : '#e8333a'),
           skin: style,
-          skinName: style.name || (style.fx ? SKIN_FX[style.fx].name : 'MY STYLE')
+          skinName: style.name || (style.fx && SKIN_FX[style.fx] ? SKIN_FX[style.fx].name : 'MY STYLE')
         });
         if (styledCache.size > 300) styledCache.clear();
         styledCache.set(key, out);
@@ -4047,7 +4175,7 @@
           light: num(st.light, -0.35, 0.35, 0),
           name: typeof st.name === 'string' ? st.name.slice(0, 16) : undefined,
           acc: ACCESSORIES[st.acc] ? st.acc : null,
-          accColor: typeof st.accColor === 'string' && /^#[0-9a-f]{6}$/i.test(st.accColor) ? st.accColor : '#e8333a'
+          accColor: typeof st.accColor === 'string' && /^#[0-9a-f]{6}$/i.test(st.accColor) ? st.accColor : null
         };
       }
 
@@ -4078,27 +4206,27 @@
 
       // 16 achievements. reward: { skin: effect id } and/or { heroes: [ids] }. goal + stat = counted ones.
       const ACHIEVEMENTS = [
-        { id: 'firstwin', name: 'FIRST WASH', desc: 'Win your first fight', reward: { skin: 'frost' } },
-        { id: 'socknado', name: 'SOCK-NADO!', desc: 'Land the 3-kick combo (E E E)', reward: { skin: 'neon' } },
-        { id: 'combo5', name: 'COMBO KING', desc: 'Land a 5-hit combo', reward: { acc: 'shades' } },
-        { id: 'perfect', name: 'FLAWLESS FOLD', desc: 'Win a round without getting hit', reward: { skin: 'candy' } },
-        { id: 'superko', name: 'SUPER SOCKER', desc: 'K.O. someone with a super move', reward: { acc: 'cape' } },
+        { id: 'firstwin', name: 'FIRST WASH', desc: 'Win your first fight' },
+        { id: 'socknado', name: 'SOCK-NADO!', desc: 'Land the 3-kick combo (E E E)' },
+        { id: 'combo5', name: 'COMBO KING', desc: 'Land a 5-hit combo' },
+        { id: 'perfect', name: 'FLAWLESS FOLD', desc: 'Win a round without getting hit' },
+        { id: 'superko', name: 'SUPER SOCKER', desc: 'K.O. someone with a super move' },
         { id: 'easy', name: 'LINT BUSTER', desc: 'Clear the EASY ladder', reward: { heroes: ['lint', 'socklet', 'holey'] } },
-        { id: 'medium', name: 'DRAWER CHAMP', desc: 'Clear the MEDIUM ladder', reward: { acc: 'tophat' } },
+        { id: 'medium', name: 'DRAWER CHAMP', desc: 'Clear the MEDIUM ladder' },
         { id: 'hard', name: 'DRYER DESTROYER', desc: 'Clear the HARD ladder', reward: { heroes: ['steel', 'king', 'demon'] } },
         {
           id: 'nightmare',
           name: 'NIGHTMARE SLAYER',
           desc: 'Clear the NIGHTMARE ladder',
-          reward: { heroes: ['bleach', 'cling', 'iron'], skin: 'shadow' }
+          reward: { heroes: ['bleach', 'cling', 'iron'] }
         },
-        { id: 'wins25', name: 'VETERAN SOCK', desc: 'Win 25 fights', goal: 25, stat: 'wins', reward: { skin: 'gold' } },
-        { id: 'arenas', name: 'WORLD TOUR', desc: 'Fight in all 5 arenas', goal: 5, stat: 'arenas', reward: { acc: 'headphones' } },
-        { id: 'lucky', name: 'LUCKY SOCK', desc: 'Win with a RANDOM pick', reward: { acc: 'clover' } },
-        { id: 'online1', name: 'BEST FRIENDS', desc: 'Win an online match', reward: { acc: 'bow' } },
-        { id: 'online5', name: 'GOOD SPORT', desc: 'Play 5 online matches', goal: 5, stat: 'online', reward: { acc: 'scarf' } },
-        { id: 'stylist', name: 'FASHION SOCK', desc: 'Save your own style in the dryer', reward: { acc: 'beret' } },
-        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins', reward: { acc: 'halo' } }
+        { id: 'wins25', name: 'VETERAN SOCK', desc: 'Win 25 fights', goal: 25, stat: 'wins' },
+        { id: 'arenas', name: 'WORLD TOUR', desc: 'Fight in all 5 arenas', goal: 5, stat: 'arenas' },
+        { id: 'lucky', name: 'LUCKY SOCK', desc: 'Win with a RANDOM pick' },
+        { id: 'online1', name: 'BEST FRIENDS', desc: 'Win an online match' },
+        { id: 'online5', name: 'GOOD SPORT', desc: 'Play 5 online matches', goal: 5, stat: 'online' },
+        { id: 'stylist', name: 'FASHION SOCK', desc: 'Save your own style in the dryer' },
+        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins' }
       ];
       const ACHIEVEMENT_BY_ID = Object.fromEntries(ACHIEVEMENTS.map(a => [a.id, a]));
 
@@ -4114,176 +4242,413 @@
       }
 
 
-      /* ---- accessories: unlocked by trophies, worn on any sock, coloured in the Dryer ---- */
-      // head: true = sits on the head, so it replaces the skin's own hat
+      /* ---- accessories: one unique accessory per hero (unlocked by winning with them), coloured in the Dryer ---- */
+      // The key is the hero's id: an accessory can only be worn by its own hero.
       const ACCESSORIES = {
-        shades: { name: 'COOL SHADES' },
-        cape: { name: 'HERO CAPE' },
-        tophat: { name: 'TOP HAT', head: true },
-        headphones: { name: 'TOUR HEADPHONES', head: true },
-        clover: { name: 'LUCKY CLOVER' },
-        bow: { name: 'FRIENDSHIP BOW' },
-        scarf: { name: 'TEAM SCARF' },
-        beret: { name: 'FASHION BERET', head: true },
-        halo: { name: 'GOLDEN HALO' }
+        stinky: { name: 'PINE AIR FRESHENER', color: '#4fdc6a' },
+        argyle: { name: 'KATANA', color: '#c8202f' },
+        shinobi: { name: 'SHURIKEN HAIRPIN', color: '#c9d1de' },
+        gran: { name: 'PEARL NECKLACE', color: '#ffffff' },
+        baby: { name: 'DUCKY BIB', color: '#9fe8ff' },
+        kneehi: { name: 'YOKOZUNA ROPE', color: '#ffffff' },
+        robo: { name: 'JETPACK', color: '#c9d1de' },
+        ghost: { name: 'SPIRIT CANDLE', color: '#fff3d6' },
+        lint: { name: 'BUNNY EARS', color: '#d6d0e4' },
+        socklet: { name: 'RACING GOGGLES', color: '#ff9d2e' },
+        holey: { name: 'SEWN-ON PATCHES', color: '#e8333a' },
+        steel: { name: 'SAFETY VEST', color: '#ff9d2e' },
+        king: { name: 'ERMINE CAPE', color: '#7a1f9a' },
+        demon: { name: 'DEVIL TAIL', color: '#c8202f' },
+        bleach: { name: 'MONOCLE', color: '#d4a017' },
+        cling: { name: 'FEATHER BOA', color: '#ff4fa3' },
+        iron: { name: 'WAR FAN', color: '#c8202f' }
       };
-      const ACCESSORY_IDS = Object.keys(ACCESSORIES);
       const ACC_COLORS = ['#e8333a', '#ff9d2e', '#ffe234', '#4fdc6a', '#3fd0ff', '#7b5cff', '#ff4fa3', '#ffffff', '#2a2a2a', '#d4a017'];
 
-      /** Draw a sock's accessory. layer: 'behind' (cape, scarf tails), 'mask' (on the body), 'face' (shades). */
+      /** Draw a hero's own accessory. layer: 'behind' (behind the sock), 'mask' (on the body/head), 'face'. */
       function drawAccessory(c, spine, pose, def, layer) {
-        const acc = def.acc,
-          col = def.accColor || '#e8333a';
+        const acc = def.acc;
+        if (!acc || acc !== def.id) return; // only its own hero can wear it
+        const col = def.accColor || ACCESSORIES[acc].color;
         const dark = shadeColor(col, -0.35);
+        const t = game.time;
         c.save();
         c.strokeStyle = INK;
         c.lineWidth = 3;
         c.lineJoin = 'round';
+        c.lineCap = 'round';
+        const sh = spine.sh;
+        const headFrame = f => {
+          const a = sockPoint(spine, f);
+          c.translate(a.x - a.nx * a.w * 0.5, a.y - a.ny * a.w * 0.5);
+          c.rotate(Math.atan2(-a.nx, a.ny));
+        };
+        const k = ankleBand(spine);
         if (layer === 'behind') {
-          if (acc === 'cape') {
-            const sh = spine.sh;
-            const wave = Math.sin(game.time * 0.12) * 6;
+          if (acc === 'argyle') {
+            // a katana slung across the back
+            c.translate(sh.x - 44, sh.y + 52);
+            c.rotate(-0.95);
+            c.fillStyle = '#e8e8f4';
             c.beginPath();
-            c.moveTo(sh.x + 6, sh.y - 10);
-            c.quadraticCurveTo(sh.x - 34, sh.y + 20, -52 + wave, -2);
-            c.lineTo(-10, -2);
-            c.quadraticCurveTo(sh.x - 8, sh.y + 20, sh.x + 14, sh.y - 4);
+            c.moveTo(0, -4);
+            c.quadraticCurveTo(80, -10, 124, -2);
+            c.lineTo(0, 4);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#ffd23f';
+            c.fillRect(-6, -8, 5, 16);
+            c.strokeRect(-6, -8, 5, 16);
+            c.fillStyle = col;
+            roundRectPath(c, -30, -4, 24, 8, 3);
+            c.fill();
+            c.stroke();
+          } else if (acc === 'robo') {
+            // a jetpack with flames
+            for (const dx of [-38, -18]) {
+              roundRectPath(c, sh.x + dx, sh.y - 6, 18, 42, 6);
+              c.fillStyle = col;
+              c.fill();
+              c.stroke();
+              c.fillStyle = '#ff9d2e';
+              c.beginPath();
+              c.moveTo(sh.x + dx + 3, sh.y + 36);
+              c.lineTo(sh.x + dx + 9, sh.y + 52 + Math.sin(t * 0.9 + dx) * 6);
+              c.lineTo(sh.x + dx + 15, sh.y + 36);
+              c.closePath();
+              c.fill();
+            }
+          } else if (acc === 'king') {
+            // an ermine cape: white fur trim with black spots
+            const wave = Math.sin(t * 0.1) * 5;
+            c.beginPath();
+            c.moveTo(sh.x + 8, sh.y - 12);
+            c.quadraticCurveTo(sh.x - 40, sh.y + 20, -60 + wave, -2);
+            c.lineTo(-8, -2);
+            c.quadraticCurveTo(sh.x - 6, sh.y + 20, sh.x + 16, sh.y - 6);
             c.closePath();
             c.fillStyle = col;
             c.fill();
             c.stroke();
-          } else if (acc === 'scarf') {
-            const k = ankleBand(spine);
-            drawBandTailsAt(c, k.back.x, k.back.y, col, game.time);
+            c.fillStyle = '#fff';
+            c.beginPath();
+            c.ellipse(-34 + wave * 0.5, -4, 30, 8, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = INK;
+            for (const dx of [-50, -34, -18]) c.fillRect(dx + wave * 0.5, -7, 3, 5);
+          } else if (acc === 'demon') {
+            // a devil tail
+            const sw = Math.sin(t * 0.12) * 8;
+            c.lineWidth = 9;
+            c.beginPath();
+            c.moveTo(-6, -24);
+            c.quadraticCurveTo(-60, -10 + sw, -54, -60 + sw);
+            c.stroke();
+            c.strokeStyle = col;
+            c.lineWidth = 5;
+            c.stroke();
+            c.fillStyle = col;
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(-54, -60 + sw);
+            c.lineTo(-66, -70 + sw);
+            c.lineTo(-48, -76 + sw);
+            c.closePath();
+            c.fill();
+            c.stroke();
+          } else if (acc === 'iron') {
+            // a war fan (gunbai) on his back
+            c.translate(sh.x - 20, sh.y + 4);
+            c.rotate(-0.5);
+            c.strokeStyle = INK;
+            c.lineWidth = 5;
+            c.beginPath();
+            c.moveTo(0, 30);
+            c.lineTo(0, -10);
+            c.stroke();
+            c.fillStyle = col;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.ellipse(0, -30, 22, 24, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#ffd23f';
+            c.beginPath();
+            c.arc(0, -30, 8, 0, 7);
+            c.fill();
+          } else if (acc === 'cling') {
+            drawBandTailsAt(c, k.back.x, k.back.y, col, t);
           }
           c.restore();
           return;
         }
-        if (layer === 'mask') {
-          if (acc === 'scarf') {
-            const k = ankleBand(spine);
-            for (const [cc, w] of [[INK, 17], [col, 12]]) {
+        if (layer === 'face') {
+          if (acc === 'bleach') {
+            // a monocle on the front eye, with a little chain
+            const e = eyePositions(spine)[1];
+            c.lineWidth = 4;
+            c.strokeStyle = col;
+            c.beginPath();
+            c.arc(e.x, e.y, e.r + 4, 0, 7);
+            c.stroke();
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(e.x, e.y + e.r + 4);
+            c.quadraticCurveTo(e.x - 6, e.y + 30, e.x - 18, e.y + 34);
+            c.stroke();
+          }
+          c.restore();
+          return;
+        }
+        // layer 'mask': things on the body or the head
+        switch (acc) {
+          case 'stinky': {
+            // a pine-tree air freshener hanging from the ankle (it is not helping)
+            c.strokeStyle = '#ddd';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(k.front.x, k.front.y);
+            c.lineTo(k.front.x + 4, k.front.y + 22);
+            c.stroke();
+            const x = k.front.x + 4,
+              y = k.front.y + 22 + Math.sin(t * 0.1) * 2;
+            c.fillStyle = col;
+            c.strokeStyle = INK;
+            c.lineWidth = 2.5;
+            c.beginPath();
+            c.moveTo(x, y);
+            c.lineTo(x + 12, y + 12);
+            c.lineTo(x + 6, y + 12);
+            c.lineTo(x + 14, y + 24);
+            c.lineTo(x - 14, y + 24);
+            c.lineTo(x - 6, y + 12);
+            c.lineTo(x - 12, y + 12);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            break;
+          }
+          case 'gran':
+            // pearls along the ankle
+            for (let i = 0; i <= 8; i++) {
+              const u = i / 8;
+              const x = (1 - u) * (1 - u) * k.back.x + 2 * u * (1 - u) * k.ctrl.x + u * u * k.front.x,
+                y = (1 - u) * (1 - u) * k.back.y + 2 * u * (1 - u) * k.ctrl.y + u * u * k.front.y;
+              c.fillStyle = col;
+              c.lineWidth = 1.5;
+              c.beginPath();
+              c.arc(x, y, 4.4, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            break;
+          case 'baby': {
+            // a bib with a little duck
+            const x = k.mid.x + 6,
+              y = k.mid.y;
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(x - 18, y - 2);
+            c.quadraticCurveTo(x, y + 4, x + 18, y - 2);
+            c.quadraticCurveTo(x + 18, y + 30, x, y + 32);
+            c.quadraticCurveTo(x - 18, y + 30, x - 18, y - 2);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#ffe234';
+            c.lineWidth = 1.5;
+            c.beginPath();
+            c.ellipse(x, y + 18, 6, 4, 0, 0, 7);
+            c.arc(x + 5, y + 13, 3, 0, 7);
+            c.fill();
+            break;
+          }
+          case 'kneehi':
+            // a yokozuna's thick twisted rope with zig-zag paper streamers
+            for (const [cc, w] of [[INK, 19], [col, 14]]) {
               c.strokeStyle = cc;
               c.lineWidth = w;
-              c.lineCap = 'round';
               c.beginPath();
               c.moveTo(k.back.x, k.back.y);
               c.quadraticCurveTo(k.ctrl.x, k.ctrl.y, k.front.x, k.front.y);
               c.stroke();
             }
-            c.strokeStyle = dark;
+            c.strokeStyle = '#ccc';
             c.lineWidth = 2;
-            c.beginPath();
-            c.moveTo(k.mid.x - 6, k.mid.y - 3);
-            c.lineTo(k.mid.x + 6, k.mid.y + 3);
-            c.stroke();
-            c.restore();
-            return;
-          }
-          // head accessories, in the same frame as hats (y going up away from the head)
-          const a = sockPoint(spine, acc === 'clover' ? 0.32 : acc === 'bow' ? 0.06 : 0.18);
-          c.translate(a.x - a.nx * a.w * 0.5, a.y - a.ny * a.w * 0.5);
-          c.rotate(Math.atan2(-a.nx, a.ny));
-          c.fillStyle = col;
-          if (acc === 'tophat') {
-            c.beginPath();
-            c.ellipse(0, 2, 28, 7, 0, 0, 7);
-            c.fill();
-            c.stroke();
-            roundRectPath(c, -16, -40, 32, 42, 4);
-            c.fill();
-            c.stroke();
-            c.fillStyle = dark;
-            c.fillRect(-16, -12, 32, 8);
-            c.strokeRect(-16, -12, 32, 8);
-          } else if (acc === 'beret') {
-            c.beginPath();
-            c.ellipse(6, -6, 28, 12, 0.18, 0, 7);
-            c.fill();
-            c.stroke();
-            c.beginPath();
-            c.arc(8, -19, 4, 0, 7);
-            c.fill();
-            c.stroke();
-          } else if (acc === 'headphones') {
-            c.lineWidth = 8;
-            c.beginPath();
-            c.arc(0, 10, 25, Math.PI, 0);
-            c.stroke();
-            c.strokeStyle = col;
-            c.lineWidth = 5;
-            c.stroke();
-            c.strokeStyle = INK;
-            c.lineWidth = 3;
-            for (const sx of [-25, 25]) {
+            for (let i = 1; i < 6; i++) {
+              const u = i / 6;
+              const x = (1 - u) * (1 - u) * k.back.x + 2 * u * (1 - u) * k.ctrl.x + u * u * k.front.x,
+                y = (1 - u) * (1 - u) * k.back.y + 2 * u * (1 - u) * k.ctrl.y + u * u * k.front.y;
               c.beginPath();
-              c.ellipse(sx, 14, 9, 13, 0, 0, 7);
-              c.fill();
+              c.moveTo(x - 4, y - 5);
+              c.lineTo(x + 4, y + 5);
               c.stroke();
             }
-          } else if (acc === 'bow') {
-            for (const sx of [-1, 1]) {
+            c.fillStyle = '#fff';
+            c.strokeStyle = INK;
+            c.lineWidth = 1.5;
+            for (const u of [0.35, 0.65]) {
+              const x = (1 - u) * (1 - u) * k.back.x + 2 * u * (1 - u) * k.ctrl.x + u * u * k.front.x,
+                y = (1 - u) * (1 - u) * k.back.y + 2 * u * (1 - u) * k.ctrl.y + u * u * k.front.y;
               c.beginPath();
-              c.moveTo(0, -4);
-              c.lineTo(sx * 22, -16);
-              c.lineTo(sx * 22, 8);
+              c.moveTo(x, y + 6);
+              c.lineTo(x + 6, y + 12);
+              c.lineTo(x - 2, y + 18);
+              c.lineTo(x + 4, y + 26);
+              c.lineTo(x - 2, y + 26);
+              c.lineTo(x - 8, y + 18);
+              c.lineTo(x, y + 12);
               c.closePath();
               c.fill();
               c.stroke();
             }
-            c.fillStyle = dark;
+            break;
+          case 'holey':
+            // sewn-on patches covering some of his holes
+            for (const [f, s] of [[0.3, 13], [0.62, 10]]) {
+              const p = sampleSpine(spine, 0, spine.fb, f);
+              c.save();
+              c.translate(p.x + p.nx * 6, p.y);
+              c.rotate(0.2 + f);
+              c.fillStyle = col;
+              c.fillRect(-s, -s, s * 2, s * 2);
+              c.strokeRect(-s, -s, s * 2, s * 2);
+              c.strokeStyle = '#fff';
+              c.lineWidth = 1.5;
+              c.setLineDash([3, 3]);
+              c.strokeRect(-s + 3, -s + 3, s * 2 - 6, s * 2 - 6);
+              c.setLineDash([]);
+              c.restore();
+            }
+            break;
+          case 'steel': {
+            // a hi-vis safety vest band with reflective stripes
+            const p = sampleSpine(spine, 0, spine.fb, 0.55);
+            const q = sampleSpine(spine, 0, spine.fb, 0.85);
+            const hw = p.w * 0.5;
+            c.fillStyle = col;
             c.beginPath();
-            c.arc(0, -4, 6, 0, 7);
+            c.moveTo(p.x - p.nx * hw, p.y - p.ny * hw);
+            c.lineTo(p.x + p.nx * hw, p.y + p.ny * hw);
+            c.lineTo(q.x + q.nx * hw, q.y + q.ny * hw);
+            c.lineTo(q.x - q.nx * hw, q.y - q.ny * hw);
+            c.closePath();
             c.fill();
             c.stroke();
-          } else if (acc === 'clover') {
-            for (let k = 0; k < 4; k++) {
+            c.strokeStyle = '#e8f0ff';
+            c.lineWidth = 4;
+            const m = sampleSpine(spine, 0, spine.fb, 0.7);
+            c.beginPath();
+            c.moveTo(m.x - m.nx * hw, m.y - m.ny * hw);
+            c.lineTo(m.x + m.nx * hw, m.y + m.ny * hw);
+            c.stroke();
+            break;
+          }
+          case 'cling':
+            // a fluffy feather boa round the ankle
+            for (let i = 0; i <= 10; i++) {
+              const u = i / 10;
+              const x = (1 - u) * (1 - u) * k.back.x + 2 * u * (1 - u) * k.ctrl.x + u * u * k.front.x,
+                y = (1 - u) * (1 - u) * k.back.y + 2 * u * (1 - u) * k.ctrl.y + u * u * k.front.y;
+              c.fillStyle = i % 2 ? col : shadeColor(col, 0.25);
+              c.lineWidth = 1.5;
               c.beginPath();
-              c.arc(Math.cos((k * Math.PI) / 2) * 7, -6 + Math.sin((k * Math.PI) / 2) * 7, 6.5, 0, 7);
+              c.arc(x, y + Math.sin(t * 0.2 + i) * 1.5, 7, 0, 7);
               c.fill();
               c.stroke();
             }
+            break;
+          case 'lint':
+            // big floppy bunny ears
+            headFrame(0.22);
+            c.fillStyle = col;
+            for (const [dx, a] of [[-10, -0.25], [10, 0.3]]) {
+              c.save();
+              c.translate(dx, 0);
+              c.rotate(a + Math.sin(t * 0.08 + dx) * 0.08);
+              c.beginPath();
+              c.ellipse(0, -26, 8, 26, 0, 0, 7);
+              c.fill();
+              c.stroke();
+              c.fillStyle = '#ffb7d0';
+              c.beginPath();
+              c.ellipse(0, -26, 3.5, 18, 0, 0, 7);
+              c.fill();
+              c.restore();
+              c.fillStyle = col;
+            }
+            break;
+          case 'socklet':
+            // racing goggles pushed up on the head
+            headFrame(0.22);
+            c.scale(1.35, 1.35);
+            c.translate(0, -6);
+            c.lineWidth = 5;
             c.beginPath();
-            c.moveTo(0, -6);
-            c.lineTo(4, 8);
+            c.moveTo(-26, 4);
+            c.lineTo(26, 4);
             c.stroke();
-          } else if (acc === 'halo') {
-            const bob = Math.sin(game.time * 0.08) * 3;
-            c.shadowColor = col;
-            c.shadowBlur = 14;
-            c.strokeStyle = col;
-            c.lineWidth = 6;
-            c.beginPath();
-            c.ellipse(0, -34 + bob, 24, 7, 0, 0, 7);
+            c.strokeStyle = shadeColor(col, -0.3);
+            c.lineWidth = 3;
             c.stroke();
-          }
-          c.restore();
-          return;
-        }
-        if (layer === 'face' && acc === 'shades') {
-          const eyes = eyePositions(spine);
-          const drop = pose.eyes === 'x' || pose.eyes === 'spiral' ? 9 : 0;
-          for (const eye of eyes) {
-            c.fillStyle = dark;
+            for (const dx of [-11, 11]) {
+              c.fillStyle = col;
+              c.strokeStyle = INK;
+              c.lineWidth = 3;
+              c.beginPath();
+              c.ellipse(dx, -2, 10, 8, 0, 0, 7);
+              c.fill();
+              c.stroke();
+              c.fillStyle = 'rgba(255,255,255,0.6)';
+              c.beginPath();
+              c.ellipse(dx - 3, -4, 3, 2, -0.4, 0, 7);
+              c.fill();
+            }
+            break;
+          case 'shinobi':
+            // a throwing-star hairpin
+            headFrame(0.12);
+            c.save();
+            c.translate(-6, -12);
+            c.rotate(t * 0.02);
+            c.fillStyle = col;
             c.beginPath();
-            c.ellipse(eye.x, eye.y + drop, eye.r + 3, eye.r - 1, 0, 0, 7);
+            for (let i = 0; i < 8; i++) {
+              const a = (i / 8) * Math.PI * 2,
+                r = i % 2 ? 5 : 15;
+              c.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+            }
+            c.closePath();
             c.fill();
-            c.lineWidth = 3.5;
-            c.strokeStyle = col;
             c.stroke();
-            c.strokeStyle = 'rgba(255,255,255,0.7)';
-            c.lineWidth = 2;
+            c.fillStyle = INK;
             c.beginPath();
-            c.moveTo(eye.x - 6, eye.y + drop - 4);
-            c.lineTo(eye.x + 2, eye.y + drop - 7);
+            c.arc(0, 0, 3, 0, 7);
+            c.fill();
+            c.restore();
+            break;
+          case 'ghost': {
+            // a spirit candle floating above the head
+            headFrame(0.2);
+            const bob = Math.sin(t * 0.07) * 4;
+            c.fillStyle = col;
+            roundRectPath(c, -6, -50 + bob, 12, 26, 3);
+            c.fill();
             c.stroke();
+            c.save();
+            c.shadowColor = '#9fe8ff';
+            c.shadowBlur = 14;
+            c.fillStyle = '#9fe8ff';
+            c.beginPath();
+            c.moveTo(0, -68 + bob);
+            c.quadraticCurveTo(8, -56 + bob, 0, -50 + bob);
+            c.quadraticCurveTo(-8, -56 + bob, 0, -68 + bob);
+            c.fill();
+            c.restore();
+            break;
           }
-          c.strokeStyle = col;
-          c.lineWidth = 3;
-          c.beginPath();
-          c.moveTo(eyes[0].x + eyes[0].r, eyes[0].y + drop);
-          c.lineTo(eyes[1].x - eyes[1].r, eyes[1].y + drop);
-          c.stroke();
         }
         c.restore();
       }
@@ -4304,7 +4669,8 @@
             accs: d.accs || {},
             adv: d.adv || {},
             looks: {},
-            stats: Object.assign({ wins: 0, online: 0, arenas: {}, heroWins: {} }, d.stats || {})
+            stats: Object.assign({ wins: 0, online: 0, arenas: {}, heroWins: {}, winsBy: {}, clearedBy: {} }, d.stats || {}),
+            announced: d.announced || {}
           };
           for (const id in d.looks || {}) this.data.looks[id] = sanitizeStyle(d.looks[id]);
         },
@@ -4313,8 +4679,39 @@
             localStorage.setItem(this.KEY, JSON.stringify(this.data));
           } catch (e) {}
         },
-        hasSkin: fx => !!Progress.data.skins[fx],
-        hasAcc: a => !!Progress.data.accs[a],
+        /** A hero skin: skin 1 after 3 wins with that hero, skin 2 after clearing a ladder or chapter with them. */
+        hasSkin(fx) {
+          const F = SKIN_FX[fx];
+          if (!F) return false;
+          const st = this.data.stats;
+          return F.unlock === 0 ? (st.winsBy[F.hero] || 0) >= 3 : !!st.clearedBy[F.hero];
+        },
+        /** A hero's own accessory: after 8 wins with them. */
+        hasAcc(id) {
+          return !!ACCESSORIES[id] && (this.data.stats.winsBy[id] || 0) >= 8;
+        },
+        /** How to unlock each of a hero's items, in words. */
+        unlockHint(kind, def) {
+          const wins = this.data.stats.winsBy[def.id] || 0;
+          if (kind === 'skin1') return 'WIN 3 FIGHTS AS ' + def.name + ' (' + Math.min(3, wins) + '/3)';
+          if (kind === 'skin2') return 'CLEAR A LADDER OR CHAPTER AS ' + def.name;
+          return 'WIN 8 FIGHTS AS ' + def.name + ' (' + Math.min(8, wins) + '/8)';
+        },
+        /** Pop-ups for any of this hero's items that just became unlocked. */
+        checkHeroUnlocks(def) {
+          const id = def.id;
+          const items = [
+            [id + '1', () => this.hasSkin(id + '1'), 'NEW SKIN: ' + (SKIN_FX[id + '1'] || {}).name],
+            [id + '2', () => this.hasSkin(id + '2'), 'NEW SKIN: ' + (SKIN_FX[id + '2'] || {}).name],
+            [id + 'acc', () => this.hasAcc(id), 'NEW ACCESSORY: ' + (ACCESSORIES[id] || {}).name]
+          ];
+          for (const [key, has, text] of items)
+            if (!this.data.announced[key] && has()) {
+              this.data.announced[key] = true;
+              Toasts.push({ head: 'UNLOCKED FOR ' + def.name + '!', name: text.split(': ')[1], text: text.split(': ')[0] + ' — style it in THE DRYER' });
+            }
+          this.save();
+        },
         heroUnlocked: id => !HERO_UNLOCKS[id] || !!Progress.data.heroes[id],
         statValue(a) {
           const st = this.data.stats;
@@ -4362,7 +4759,7 @@
           }
           const slide = age < 0.3 ? age / 0.3 : age > 3.2 ? 1 - (age - 3.2) / 0.4 : 1;
           const y = -70 + 82 * slide;
-          const reward = rewardText(toast.a);
+          const reward = toast.a.text || rewardText(toast.a);
           ctx.save();
           roundRectPath(ctx, W / 2 - 250, y, 500, reward ? 74 : 58, 14);
           ctx.fillStyle = 'rgba(20,10,36,0.95)';
@@ -4376,7 +4773,7 @@
           ctx.strokeStyle = INK;
           ctx.lineWidth = 3;
           ctx.stroke();
-          drawText('ACHIEVEMENT UNLOCKED!', W / 2 + 18, y + 16, 9, FONT_PIXEL, '#ffd23f', INK, 0);
+          drawText(toast.a.head || 'ACHIEVEMENT UNLOCKED!', W / 2 + 18, y + 16, 9, FONT_PIXEL, '#ffd23f', INK, 0);
           drawText(toast.a.name, W / 2 + 18, y + 40, 24, FONT_COMIC, '#fff', INK, 5);
           if (reward) drawText(reward, W / 2 + 18, y + 62, 7, FONT_PIXEL, '#3ff0ff', INK, 0);
           ctx.restore();
@@ -4970,6 +5367,16 @@
           strokeAlongSock(c, spine, 0.04, 0.86, 0.1, 11, def.pal.s1);
           return;
         }
+        if (hat === 'hachimaki') {
+          // a sumo wrestler's white headband with a red sun
+          strokeAlongSock(c, spine, 0.04, 0.86, 0.1, 11, '#ffffff');
+          const p = sockPoint(spine, 0.5);
+          c.fillStyle = '#e8333a';
+          c.beginPath();
+          c.arc(p.x - p.nx * p.w * 0.1, p.y - p.ny * p.w * 0.1, 5, 0, 7);
+          c.fill();
+          return;
+        }
         const a = sockPoint(spine, hat === 'flower' ? 0.22 : 0.16);
         const angle = Math.atan2(-a.nx, a.ny);
         c.save();
@@ -4980,6 +5387,236 @@
         c.lineJoin = 'round';
         c.lineCap = 'round';
         switch (hat) {
+          // ---- hats that belong to one character only ----
+          case 'lilycrown': {
+            // Cling Queen: a lily-pad crown with a water-lily and a dragonfly in attendance
+            c.fillStyle = '#4fae3a';
+            c.beginPath();
+            c.ellipse(0, 0, 26, 9, 0, 0.35, Math.PI * 2 - 0.05);
+            c.lineTo(0, 0);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#2f7a2a';
+            c.lineWidth = 1.5;
+            c.beginPath();
+            c.moveTo(0, 0);
+            c.lineTo(-18, -2);
+            c.moveTo(0, 0);
+            c.lineTo(-6, 6);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 2.5;
+            for (let k = 0; k < 6; k++) {
+              const a = -Math.PI / 2 + (k - 2.5) * 0.42;
+              c.fillStyle = k % 2 ? '#ffb7d0' : '#ff8fc0';
+              c.beginPath();
+              c.ellipse(Math.cos(a) * 9, -10 + Math.sin(a) * 9, 5, 11, a + Math.PI / 2, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = '#ffd23f';
+            c.beginPath();
+            c.arc(0, -10, 4, 0, 7);
+            c.fill();
+            c.stroke();
+            const dx = Math.cos(game.time * 0.07) * 26,
+              dy = -30 + Math.sin(game.time * 0.11) * 6;
+            c.strokeStyle = '#3fd0ff';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(dx - 6, dy);
+            c.lineTo(dx + 6, dy);
+            c.stroke();
+            c.fillStyle = 'rgba(200,240,255,0.8)';
+            const flap = Math.sin(game.time * 0.9) * 2;
+            for (const s of [-1, 1]) {
+              c.beginPath();
+              c.ellipse(dx + s * 2, dy - 4 - flap, 5, 2.5, s * 0.6, 0, 7);
+              c.fill();
+            }
+            break;
+          }
+          case 'gyoji': // sumo referee's tall black hat
+            c.fillStyle = '#1d1d2e';
+            c.beginPath();
+            c.moveTo(-16, 4);
+            c.quadraticCurveTo(-18, -30, 0, -40);
+            c.quadraticCurveTo(18, -30, 16, 4);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#ffd23f';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(-10, -2);
+            c.lineTo(10, -2);
+            c.stroke();
+            c.strokeStyle = '#9b1c1c';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(14, 2);
+            c.quadraticCurveTo(26, 10, 22, 22);
+            c.stroke();
+            break;
+          case 'laurel': // a winner's golden laurel wreath
+            c.strokeStyle = '#a07a10';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.arc(0, 6, 22, Math.PI * 1.05, Math.PI * 1.95);
+            c.stroke();
+            c.fillStyle = '#ffd23f';
+            for (let k = 0; k < 7; k++) {
+              const a = Math.PI * (1.08 + k * 0.12);
+              c.save();
+              c.translate(Math.cos(a) * 22, 6 + Math.sin(a) * 22);
+              c.rotate(a + 1.2);
+              c.beginPath();
+              c.ellipse(0, 0, 8, 3.5, 0, 0, 7);
+              c.fill();
+              c.strokeStyle = INK;
+              c.lineWidth = 1.5;
+              c.stroke();
+              c.restore();
+            }
+            break;
+          case 'eboshi': // a court noble's tall black lacquered hat
+            c.fillStyle = '#141414';
+            c.beginPath();
+            c.moveTo(-14, 4);
+            c.lineTo(-10, -36);
+            c.quadraticCurveTo(4, -44, 12, -34);
+            c.lineTo(14, 4);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#ffffff';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(-12, -2);
+            c.lineTo(12, -2);
+            c.stroke();
+            break;
+          case 'jingasa': // a samurai's flat conical war hat
+            c.fillStyle = '#2a1a12';
+            c.beginPath();
+            c.moveTo(-34, 4);
+            c.lineTo(0, -18);
+            c.lineTo(34, 4);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#e8333a';
+            c.beginPath();
+            c.arc(0, -6, 5, 0, 7);
+            c.fill();
+            break;
+          case 'kanzashi': // hairpins with a cluster of cherry blossoms
+            c.strokeStyle = '#d4a017';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(-10, 4);
+            c.lineTo(-22, -24);
+            c.moveTo(-4, 4);
+            c.lineTo(-10, -28);
+            c.stroke();
+            for (const [bx, by] of [[0, -8], [10, -16], [-6, -18]]) {
+              c.fillStyle = '#ffb7d0';
+              for (let k = 0; k < 5; k++) {
+                const a = (k / 5) * Math.PI * 2;
+                c.beginPath();
+                c.arc(bx + Math.cos(a) * 5, by + Math.sin(a) * 5, 3.6, 0, 7);
+                c.fill();
+              }
+              c.fillStyle = '#ff4fa3';
+              c.beginPath();
+              c.arc(bx, by, 2.4, 0, 7);
+              c.fill();
+            }
+            break;
+          case 'sunhat': // a floppy baby sun hat
+            c.fillStyle = '#fff3a8';
+            c.beginPath();
+            c.ellipse(0, 2, 30, 8, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.beginPath();
+            c.arc(0, 0, 16, Math.PI, 0);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#ff9d2e';
+            c.fillRect(-16, -5, 32, 5);
+            break;
+          case 'ribbon': // a big pastel ribbon
+            c.fillStyle = '#c6a4ff';
+            for (const sx of [-1, 1]) {
+              c.beginPath();
+              c.moveTo(0, -8);
+              c.quadraticCurveTo(sx * 26, -30, sx * 24, -2);
+              c.closePath();
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = '#9fe8ff';
+            c.beginPath();
+            c.arc(0, -8, 6, 0, 7);
+            c.fill();
+            c.stroke();
+            break;
+          case 'candycane': // a candy cane hooked over the head
+            c.lineWidth = 9;
+            c.beginPath();
+            c.moveTo(6, 6);
+            c.lineTo(6, -24);
+            c.arc(-6, -24, 12, 0, Math.PI, true);
+            c.stroke();
+            c.strokeStyle = '#fff';
+            c.lineWidth = 6;
+            c.stroke();
+            c.strokeStyle = '#e8333a';
+            c.setLineDash([5, 5]);
+            c.stroke();
+            c.setLineDash([]);
+            break;
+          case 'pumpkin': // a jack-o'-lantern hat
+            c.fillStyle = '#ff9d2e';
+            c.beginPath();
+            c.ellipse(0, -12, 22, 16, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = INK;
+            c.beginPath();
+            c.moveTo(-10, -16);
+            c.lineTo(-5, -10);
+            c.lineTo(-14, -10);
+            c.closePath();
+            c.moveTo(10, -16);
+            c.lineTo(14, -10);
+            c.lineTo(5, -10);
+            c.closePath();
+            c.fill();
+            c.strokeStyle = '#3a7a1a';
+            c.lineWidth = 4;
+            c.beginPath();
+            c.moveTo(0, -27);
+            c.lineTo(3, -36);
+            c.stroke();
+            break;
+          case 'wisp': {
+            // a floating will-o'-the-wisp flame
+            c.save();
+            c.shadowColor = '#9fe8ff';
+            c.shadowBlur = 16;
+            c.fillStyle = 'rgba(159,232,255,0.85)';
+            const bob = Math.sin(game.time * 0.1) * 3;
+            c.beginPath();
+            c.moveTo(0, -46 + bob);
+            c.quadraticCurveTo(14, -24 + bob, 0, -14 + bob);
+            c.quadraticCurveTo(-14, -24 + bob, 0, -46 + bob);
+            c.fill();
+            c.restore();
+            break;
+          }
           case 'crown':
             c.fillStyle = '#ffd23f';
             c.beginPath();
@@ -9823,6 +10460,8 @@
           st.wins++;
           Progress.award('firstwin');
           if (CHARS.some(c => c.id === winner.def.id)) st.heroWins[winner.def.id] = 1;
+          st.winsBy[winner.def.id] = (st.winsBy[winner.def.id] || 0) + 1;
+          Progress.checkHeroUnlocks(winner.def);
           if (game.mode === 'online') Progress.award('online1');
           const s = game.selection;
           if (s && s.randomPick && s.randomPick[0]) Progress.award('lucky');
@@ -11079,7 +11718,7 @@
       /** The skins a character can wear: hand-made ones, unlocked effect skins, and MY STYLE from the dryer. */
       function skinOptions(def) {
         const out = def.skins.map((_, i) => i);
-        for (const fx of SKIN_FX_IDS) if (Progress.hasSkin(fx)) out.push({ base: 0, fx });
+        for (const fx of SKIN_FX_IDS) if (SKIN_FX[fx].hero === def.id && Progress.hasSkin(fx)) out.push({ base: 0, fx });
         const mine = Progress.data.looks[def.id];
         if (mine) out.push(Object.assign({}, mine, { name: 'MY STYLE' }));
         return out;
@@ -11950,6 +12589,8 @@
               if (A.stage >= A.list.length) {
                 game.screen = 'ending';
                 Progress.award(A.tier); // ladder cleared: easy / medium / hard / nightmare
+                Progress.data.stats.clearedBy[game.p1Def.id] = true;
+                Progress.checkHeroUnlocks(game.p1Def);
                 game.endingTime = 0;
               } else {
                 game.screen = 'ladder';
@@ -12230,8 +12871,8 @@
       // There you pick a base skin, an effect skin you've unlocked, and tweak colour / vividness / brightness:
       // every change gives the sock a tumble. SAVE pops it out as "MY STYLE" (one per character).
 
-      const DRYER_ROWS = ['SKIN', 'EFFECT', 'COLOUR', 'VIVID', 'BRIGHT', 'ACCESSORY', 'ACC. COLOUR', 'SAVE', 'RESET'];
-      const DRYER_VALUE_ROWS = 7; // rows 0..6 change with ◀ ▶; then SAVE and RESET
+      const DRYER_ROWS = ['SKIN', 'COLOUR', 'VIVID', 'BRIGHT', 'ACCESSORY', 'ACC. COLOUR', 'SAVE', 'RESET'];
+      const DRYER_VALUE_ROWS = 6; // rows 0..6 change with ◀ ▶; then SAVE and RESET
       const DRYER_ENTER = 100; // frames of the hop-in + zoom
       const DRYER_EXIT = 80; // frames of the pop-out
       const dryerRowY = i => 126 + i * 36;
@@ -12261,34 +12902,38 @@
       }
 
       /** The effect choices you have: none, plus every effect skin unlocked so far. */
-      const dryerFxOptions = () => [null, ...SKIN_FX_IDS.filter(fx => Progress.hasSkin(fx))];
+      /** The skins this hero can wear in the Dryer: their hand-made ones plus their own unlocked hero skins. */
+      const dryerSkinOptions = def => [
+        ...def.skins.map((s, i) => ({ base: i, fx: null, name: s.name })),
+        ...SKIN_FX_IDS.filter(fx => SKIN_FX[fx].hero === def.id && Progress.hasSkin(fx)).map(fx => ({ base: 0, fx, name: SKIN_FX[fx].name }))
+      ];
 
       function dryerChange(row, dir) {
         const D = game.dryer,
           L = D.look;
-        if (row === 0) L.base = wrapIndex(L.base + dir, D.def.skins.length);
-        else if (row === 1) {
-          const opts = dryerFxOptions();
-          L.fx = opts[wrapIndex(opts.indexOf(L.fx) + dir, opts.length)];
-          if (opts.length === 1) {
-            D.note = { text: 'WIN ACHIEVEMENTS TO UNLOCK EFFECT SKINS!', until: game.time + 120 };
+        if (row === 0) {
+          const opts = dryerSkinOptions(D.def);
+          const i = opts.findIndex(o => o.base === (L.base || 0) && (o.fx || null) === (L.fx || null));
+          const next = opts[wrapIndex((i < 0 ? 0 : i) + dir, opts.length)];
+          L.base = next.base;
+          L.fx = next.fx;
+        } else if (row === 1) L.hue = clamp(L.hue + dir * 20, -180, 180);
+        else if (row === 2) L.sat = clamp(Math.round((L.sat + dir * 0.1) * 10) / 10, 0, 2);
+        else if (row === 3) L.light = clamp(Math.round((L.light + dir * 0.05) * 100) / 100, -0.3, 0.3);
+        else if (row === 4) {
+          if (!Progress.hasAcc(D.def.id)) {
+            D.note = { text: Progress.unlockHint('acc', D.def), until: game.time + 150 };
             SFX.block();
             return;
           }
-        } else if (row === 2) L.hue = clamp(L.hue + dir * 20, -180, 180);
-        else if (row === 3) L.sat = clamp(Math.round((L.sat + dir * 0.1) * 10) / 10, 0, 2);
-        else if (row === 4) L.light = clamp(Math.round((L.light + dir * 0.05) * 100) / 100, -0.3, 0.3);
-        else if (row === 5) {
-          const opts = [null, ...ACCESSORY_IDS.filter(a => Progress.hasAcc(a))];
-          if (opts.length === 1) {
-            D.note = { text: 'WIN TROPHIES TO UNLOCK ACCESSORIES!', until: game.time + 120 };
+          L.acc = L.acc ? null : D.def.id;
+        } else if (row === 5) {
+          if (!L.acc) {
+            D.note = { text: 'PUT THE ACCESSORY ON FIRST!', until: game.time + 90 };
             SFX.block();
             return;
           }
-          L.acc = opts[wrapIndex(opts.indexOf(L.acc || null) + dir, opts.length)];
-        } else if (row === 6) {
           L.accColor = ACC_COLORS[wrapIndex(ACC_COLORS.indexOf(L.accColor) + dir, ACC_COLORS.length)];
-          if (!L.acc) D.note = { text: 'PICK AN ACCESSORY FIRST!', until: game.time + 90 };
         }
         D.tumble = 30; // the sock does a flip in the drum
         SFX.spin();
@@ -12495,6 +13140,15 @@
         drawTumblingSock(def, 250, y, size, angle, game.time);
         drawText(def.name, 250, 470, 30, FONT_COMIC, def.color, INK, 7);
         drawText(D.look.acc ? 'WEARING: ' + ACCESSORIES[D.look.acc].name : def.skinName, 250, 500, 10, FONT_PIXEL, '#ffe234', INK, 0);
+        // what's still locked for this hero
+        const locked = [];
+        if (!Progress.hasSkin(D.def.id + '1')) locked.push(Progress.unlockHint('skin1', D.def));
+        if (!Progress.hasSkin(D.def.id + '2')) locked.push(Progress.unlockHint('skin2', D.def));
+        if (!Progress.hasAcc(D.def.id)) locked.push(Progress.unlockHint('acc', D.def));
+        if (D.phase === 'edit' && locked.length) {
+          drawText('🔒 STILL LOCKED FOR THIS HERO:', 250, 108, 8, FONT_PIXEL, '#ffe234', INK, 3);
+          locked.forEach((l, i) => drawText(l, 250, 124 + i * 14, 7, FONT_PIXEL, '#fff', INK, 3));
+        }
         if (D.phase === 'exit') {
           if (t > 20) drawText('FRESH LOOK!', W / 2, 90, 54, FONT_COMIC, '#ffe234', INK, 10);
           if (t > 60) {
@@ -12514,16 +13168,16 @@
         ctx.lineWidth = 3;
         ctx.stroke();
         const L = D.look;
+        const accName = ACCESSORIES[D.def.id] ? ACCESSORIES[D.def.id].name : 'NONE';
         const values = [
-          D.def.skins[wrapIndex(L.base, D.def.skins.length)].name,
-          L.fx ? SKIN_FX[L.fx].name : 'NONE',
+          L.fx ? SKIN_FX[L.fx].name : D.def.skins[wrapIndex(L.base, D.def.skins.length)].name,
           null,
           null,
           null,
-          L.acc ? ACCESSORIES[L.acc].name : 'NONE',
+          L.acc ? accName : Progress.hasAcc(D.def.id) ? 'OFF' : 'LOCKED',
           'swatch'
         ];
-        const sliders = [null, null, [L.hue, -180, 180], [L.sat, 0, 2], [L.light, -0.3, 0.3]];
+        const sliders = [null, [L.hue, -180, 180], [L.sat, 0, 2], [L.light, -0.3, 0.3]];
         for (let i = 0; i < DRYER_VALUE_ROWS; i++) {
           const y0 = dryerRowY(i),
             on = D.row === i;
@@ -12544,7 +13198,7 @@
             drawText(dir < 0 ? '◀' : '▶', r.x + r.w / 2, r.y + r.h / 2 + 1, 14, FONT_PIXEL, '#fff', INK, 0);
           }
           if (values[i] === 'swatch') {
-            ctx.fillStyle = L.accColor || '#e8333a';
+            ctx.fillStyle = L.accColor || (ACCESSORIES[D.def.id] ? ACCESSORIES[D.def.id].color : '#e8333a');
             ctx.strokeStyle = INK;
             ctx.lineWidth = 3;
             ctx.beginPath();
@@ -12552,7 +13206,7 @@
             ctx.fill();
             ctx.stroke();
           } else if (values[i] !== null) {
-            const fxCol = i === 1 && L.fx ? SKIN_FX[L.fx].color : '#ffe234';
+            const fxCol = i === 0 && L.fx ? SKIN_FX[L.fx].color : i === 4 && !L.acc ? '#aaa' : '#ffe234';
             drawText(values[i], 813, y0, values[i].length > 10 ? 8 : 10, FONT_PIXEL, fxCol, INK, 0);
           } else {
             const [v, lo, hi] = sliders[i];
@@ -12661,7 +13315,7 @@
         const heroes = ROSTER.filter(d => Progress.heroUnlocked(d.id)).length;
         const skins = SKIN_FX_IDS.filter(fx => Progress.hasSkin(fx)).length;
         drawText(
-          'HEROES ' + heroes + '/' + ROSTER.length + '   •   EFFECT SKINS ' + skins + '/' + SKIN_FX_IDS.length + '   •   WINS ' + Progress.data.stats.wins,
+          'HEROES ' + heroes + '/' + ROSTER.length + '   •   HERO SKINS ' + skins + '/' + SKIN_FX_IDS.length + '   •   WINS ' + Progress.data.stats.wins,
           W / 2,
           508,
           10,
@@ -14117,7 +14771,9 @@
         else if (step.clear) {
           const A = advData();
           A.cleared[S.chapter] = true;
+          Progress.data.stats.clearedBy[advHero().id] = true;
           Progress.save();
+          Progress.checkHeroUnlocks(advHero());
           game.adv.clear = { t: 0, chapter: S.chapter };
           game.screen = 'advClear';
           SFX.fanfare();
@@ -15160,6 +15816,8 @@
         Progress,
         ROSTER,
         startAdventure,
+        drawSockForTest: (c, d, pose, x, y, face, size) => drawSock(c, d, pose, x, y, face, fitScale(d, size), { x: 3, y: 0 }),
+        skinOptionsFor: def => skinOptions(def),
         FighterVoice,
         hubItems: () => HUB_ITEMS(),
         startChapter,

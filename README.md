@@ -24,8 +24,9 @@ To get an app icon, tap **Share → Add to Home Screen**. The icon then opens th
 Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N plays a voice test.
 
 ## Trophies, skins and unlockable heroes
-- **16 trophies** (main menu → TROPHIES). Some give rewards: clearing **Easy** unlocks the Lint Gang as playable heroes, **Hard** unlocks Steel Toe, King Knee-Sock and the Dryer Demon, and **Nightmare** unlocks Bleach Baron, Cling Queen and Iron Shogun. Others unlock the effect skins **FROST, NEON, CANDY, GOLD and SHADOW**, which work on every sock.
-- **The Dryer:** on the character select screen, tap **DRYER: STYLE IT** (or press **C**). Your sock hops into the dryer, where you pick a base skin and an effect, tune the colour, vividness and brightness, and add an **accessory** in any colour (cool shades, hero cape, top hat, headphones, lucky clover, bow, scarf, beret, halo — each unlocked by a trophy). Save it as **MY STYLE**.
+- **16 trophies** (main menu → TROPHIES). Clearing **Easy** unlocks the Lint Gang as playable heroes, **Hard** unlocks Steel Toe, King Knee-Sock and the Dryer Demon, and **Nightmare** unlocks Bleach Baron, Cling Queen and Iron Shogun.
+- **Every hero has their own unique items**, nothing shared: 2 hero skins (e.g. Stinky's TOXIC WASTE and GYM GOLD) and 1 accessory (Stinky's pine air freshener, Argyle's katana, Gran's pearl necklace, the Demon's devil tail…). Unlock them by fighting with that hero: **3 wins** → skin 1, **8 wins** → accessory, **clear a ladder or story chapter** with them → skin 2. No two heroes share a hat, skin or accessory.
+- **The Dryer:** on the character select screen, tap **DRYER: STYLE IT** (or press **C**). Your sock hops into the dryer, where you pick a skin, tune the colour, vividness and brightness, and put on the hero's accessory in any colour. Save it as **MY STYLE**.
 - Progress is saved on your device. Online, your friend sees your custom style too.
 
 ## Adventure mode: *Lost in the Spin Cycle*
