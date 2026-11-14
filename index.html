@@ -4369,10 +4369,19 @@
         demon2: { name: 'BAT WINGS', color: '#8a2a5a' },
         bleach2: { name: 'SILK BOW TIE', color: '#7fe3ff' },
         cling2: { name: 'LILY PARASOL', color: '#4fae3a' },
-        iron2: { name: 'STARCH SPRAY', color: '#3f9be0' }
+        iron2: { name: 'STARCH SPRAY', color: '#3f9be0' },
+        // Cling Queen's royal wardrobe (unlocked with her second accessory). hat: replaces her lily crown
+        cling3: { name: 'FANCY CAPE', color: '#7a1f9a', cape: true },
+        cling4: { name: 'FANCY SCEPTRE', color: '#3fd0ff' },
+        cling5: { name: 'BIGGEST FANCY HAT', color: '#2b6e4a', hat: true },
+        cling6: { name: 'GRAND CROWN', color: '#ffd23f', hat: true },
+        cling7: { name: 'SORCERESS CAPE', color: '#4a1a66', cape: true },
+        cling8: { name: 'VICTORIAN CAPELET', color: '#7a1c3a', cape: true }
       };
       /** Which hero an accessory belongs to ('stinky2' -> 'stinky'). Only that hero can wear it. */
-      const accOwner = id => String(id).replace(/2$/, '');
+      const accOwner = id => String(id).replace(/\d+$/, '');
+      /** Every accessory a hero has, first one first. */
+      const heroAccessories = id => Object.keys(ACCESSORIES).filter(k => accOwner(k) === id);
       const ACC_COLORS = ['#e8333a', '#ff9d2e', '#ffe234', '#4fdc6a', '#3fd0ff', '#7b5cff', '#ff4fa3', '#ffffff', '#2a2a2a', '#d4a017'];
 
       /** Draw a hero's own accessory. layer: 'behind' (behind the sock), 'mask' (on the body/head), 'face'. */
@@ -4394,8 +4403,8 @@
           c.rotate(Math.atan2(-a.nx, a.ny));
         };
         const k = ankleBand(spine);
-        if (/2$/.test(acc)) {
-          // second accessories are drawn a bit bigger, grown out from where they sit (the back or the ankle)
+        if (/\d$/.test(acc) && !ACCESSORIES[acc].hat) {
+          // second (and royal) accessories are drawn a bit bigger, grown out from where they sit (the back or the ankle)
           const at = layer === 'behind' ? sh : k.mid;
           c.translate(at.x, at.y);
           c.scale(1.3, 1.3);
@@ -4637,6 +4646,176 @@
               c.stroke();
               c.restore();
             }
+          } else if (acc === 'cling3') {
+            // a long, fancy cape sweeping to the floor, gold-trimmed, with a high collar
+            const wave = Math.sin(t * 0.08) * 7;
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(sh.x + 14, sh.y - 20);
+            c.quadraticCurveTo(sh.x - 60, sh.y + 10, -96 + wave, 4);
+            c.lineTo(-6, 4);
+            c.quadraticCurveTo(sh.x - 10, sh.y + 30, sh.x + 22, sh.y - 10);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#ffd23f';
+            c.lineWidth = 4;
+            c.beginPath();
+            c.moveTo(-96 + wave, 2);
+            c.lineTo(-6, 2);
+            c.stroke();
+            // the stand-up collar
+            c.fillStyle = shadeColor(col, 0.25);
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(sh.x + 2, sh.y - 14);
+            c.quadraticCurveTo(sh.x - 26, sh.y - 60, sh.x - 4, sh.y - 74);
+            c.quadraticCurveTo(sh.x + 4, sh.y - 40, sh.x + 22, sh.y - 16);
+            c.closePath();
+            c.fill();
+            c.stroke();
+          } else if (acc === 'cling7') {
+            // SORCERESS CAPE: a huge cape with a purple lining, a tattered hem and a tall horned collar
+            const wave = Math.sin(t * 0.07) * 8;
+            const hem = [];
+            for (let i = 0; i <= 8; i++) hem.push([-150 + wave + i * 18, 4 + (i % 2 ? -14 : 0)]);
+            const cape = () => {
+              c.beginPath();
+              c.moveTo(sh.x + 16, sh.y - 22);
+              c.quadraticCurveTo(sh.x - 90, sh.y - 20, hem[0][0], hem[0][1]);
+              for (const [hx, hy] of hem) c.lineTo(hx, hy);
+              c.lineTo(4, 4);
+              c.quadraticCurveTo(sh.x - 6, sh.y + 30, sh.x + 22, sh.y - 12);
+              c.closePath();
+            };
+            cape();
+            c.fillStyle = '#b066e8'; // the lining shows along the inside edge
+            c.fill();
+            c.save();
+            cape();
+            c.clip();
+            c.fillStyle = col;
+            c.beginPath();
+            c.ellipse(sh.x - 70, sh.y + 30, 110, 140, -0.3, 0, 7);
+            c.fill();
+            c.restore();
+            cape();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.stroke();
+            // the tall collar: two horn-like points rising behind the head
+            for (const [dx, h] of [[-26, 96], [6, 84]]) {
+              c.fillStyle = col;
+              c.beginPath();
+              c.moveTo(sh.x + dx, sh.y - 12);
+              c.quadraticCurveTo(sh.x + dx - 22, sh.y - h * 0.6, sh.x + dx - 6, sh.y - h);
+              c.quadraticCurveTo(sh.x + dx + 4, sh.y - h * 0.5, sh.x + dx + 18, sh.y - 14);
+              c.closePath();
+              c.fill();
+              c.stroke();
+              c.strokeStyle = '#b066e8';
+              c.lineWidth = 2;
+              c.beginPath();
+              c.moveTo(sh.x + dx + 2, sh.y - 16);
+              c.quadraticCurveTo(sh.x + dx - 10, sh.y - h * 0.55, sh.x + dx - 5, sh.y - h + 8);
+              c.stroke();
+              c.strokeStyle = INK;
+              c.lineWidth = 3;
+            }
+          } else if (acc === 'cling8') {
+            // VICTORIAN CAPELET: a short scalloped cape with a lace ruffle collar, a ribbon bow and a cameo brooch
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(sh.x + 18, sh.y - 16);
+            c.quadraticCurveTo(sh.x - 40, sh.y - 20, sh.x - 46, sh.y + 40);
+            for (let i = 0; i < 5; i++) {
+              const x0 = sh.x - 46 + i * 14;
+              c.quadraticCurveTo(x0 + 7, sh.y + 52, x0 + 14, sh.y + 40); // scalloped hem
+            }
+            c.quadraticCurveTo(sh.x + 18, sh.y + 20, sh.x + 24, sh.y - 6);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#ffd23f';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(sh.x - 40, sh.y + 34);
+            c.quadraticCurveTo(sh.x - 12, sh.y + 40, sh.x + 16, sh.y + 22);
+            c.stroke();
+            // lace ruffle collar
+            c.strokeStyle = INK;
+            c.lineWidth = 2;
+            c.fillStyle = '#fffaf0';
+            for (let i = 0; i < 6; i++) {
+              const a = -2.4 + i * 0.42;
+              c.beginPath();
+              c.arc(sh.x + 2 + Math.cos(a) * 22, sh.y - 12 + Math.sin(a) * 10, 7, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            // ribbon bow and a cameo brooch at the front
+            const bx = sh.x + 18,
+              by = sh.y - 4;
+            c.fillStyle = shadeColor(col, 0.25);
+            c.lineWidth = 2.5;
+            for (const side of [-1, 1]) {
+              c.beginPath();
+              c.moveTo(bx, by);
+              c.lineTo(bx + side * 12, by - 7);
+              c.lineTo(bx + side * 12, by + 7);
+              c.closePath();
+              c.fill();
+              c.stroke();
+              c.beginPath();
+              c.moveTo(bx, by);
+              c.lineTo(bx + side * 6, by + 18 + Math.sin(t * 0.1 + side) * 2);
+              c.stroke();
+            }
+            c.fillStyle = '#f2e6c9';
+            c.beginPath();
+            c.ellipse(bx, by, 6, 7.5, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#c97a8a';
+            c.beginPath();
+            c.ellipse(bx, by, 3, 4.5, 0, 0, 7);
+            c.fill();
+          } else if (acc === 'cling4') {
+            // a fancy sceptre: twisted gold rod, a big heart jewel and a ribbon
+            c.translate(sh.x - 24, sh.y + 44);
+            c.rotate(-0.45);
+            c.fillStyle = '#ffd23f';
+            roundRectPath(c, -4, -92, 8, 96, 3);
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#c99a1a';
+            c.lineWidth = 2;
+            for (let y = -84; y < 0; y += 10) {
+              c.beginPath();
+              c.moveTo(-4, y);
+              c.lineTo(4, y + 6);
+              c.stroke();
+            }
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(0, -96);
+            c.bezierCurveTo(-18, -114, -6, -128, 0, -116);
+            c.bezierCurveTo(6, -128, 18, -114, 0, -96);
+            c.fill();
+            c.stroke();
+            c.fillStyle = 'rgba(255,255,255,0.7)';
+            c.beginPath();
+            c.arc(-4, -114, 2.5, 0, 7);
+            c.fill();
+            c.strokeStyle = '#ff4fa3';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(0, -92);
+            c.quadraticCurveTo(14, -80 + Math.sin(t * 0.1) * 4, 8, -64);
+            c.stroke();
           } else if (acc === 'cling2') {
             // a lily-pad parasol held up behind her
             c.lineWidth = 4;
@@ -4795,6 +4974,85 @@
               c.restore();
             }
             break;
+          case 'cling5': {
+            // THE BIGGEST FANCY HAT: an enormous brim, a tall crown, feathers and a flower
+            headFrame(0.16);
+            c.translate(0, -2);
+            c.fillStyle = col;
+            c.beginPath();
+            c.ellipse(0, 0, 62, 13, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            roundRectPath(c, -24, -36, 48, 36, 12);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#ffd23f';
+            c.fillRect(-24, -12, 48, 7);
+            c.strokeRect(-24, -12, 48, 7);
+            // feathers waving
+            for (const [x, h, cc, ph] of [[-10, 60, '#ff4fa3', 0], [4, 72, '#ffe234', 1.3], [16, 54, '#3fd0ff', 2.4]]) {
+              c.save();
+              c.translate(x, -30);
+              c.rotate(0.15 + Math.sin(t * 0.06 + ph) * 0.08);
+              c.fillStyle = cc;
+              c.beginPath();
+              c.ellipse(0, -h / 2, 7, h / 2, 0, 0, 7);
+              c.fill();
+              c.stroke();
+              c.restore();
+            }
+            // a big flower on the side
+            c.fillStyle = '#fff';
+            for (let i = 0; i < 6; i++) {
+              const a = (i / 6) * Math.PI * 2;
+              c.beginPath();
+              c.arc(-30 + Math.cos(a) * 7, -8 + Math.sin(a) * 7, 5, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = '#ffd23f';
+            c.beginPath();
+            c.arc(-30, -8, 4, 0, 7);
+            c.fill();
+            break;
+          }
+          case 'cling6': {
+            // the GRAND CROWN: tall, jewelled, with a velvet cap
+            headFrame(0.16);
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(-26, 4);
+            c.lineTo(-30, -34);
+            c.lineTo(-16, -20);
+            c.lineTo(-8, -46);
+            c.lineTo(0, -24);
+            c.lineTo(8, -46);
+            c.lineTo(16, -20);
+            c.lineTo(30, -34);
+            c.lineTo(26, 4);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#9a2fbf';
+            c.beginPath();
+            c.ellipse(0, -14, 14, 10, 0, Math.PI, 0);
+            c.fill();
+            for (const [x, y, cc] of [[-30, -34, '#3fd0ff'], [-8, -46, '#ff4fa3'], [8, -46, '#ff4fa3'], [30, -34, '#3fd0ff']]) {
+              c.fillStyle = '#fffdf6';
+              c.beginPath();
+              c.arc(x, y - 3, 4, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            for (const [x, cc] of [[-14, '#3fd0ff'], [0, '#e8333a'], [14, '#4fdc6a']]) {
+              c.fillStyle = cc;
+              c.beginPath();
+              c.arc(x, -4, 4, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            break;
+          }
           case 'holey2': {
             // a pet moth fluttering round him
             const x = sh.x + 30 + Math.cos(t * 0.08) * 16,
@@ -5756,7 +6014,7 @@
         c.scale((pose.sx || 1) * (pose.spinX == null ? 1 : pose.spinX), pose.sy || 1);
         c.lineJoin = 'round';
 
-        if (def.behind && !flash) def.behind(c, spine, pose);
+        if (def.behind && !flash && !(def.acc && ACCESSORIES[def.acc] && ACCESSORIES[def.acc].cape)) def.behind(c, spine, pose);
         if (def.acc && !flash) drawAccessory(c, spine, pose, def, 'behind');
         drawArm(c, spine.sh, pose.back, def, true, false, flash);
 
@@ -5827,7 +6085,7 @@
           shadingLine(0.3, 9, 'rgba(0,0,0,0.13)');
           shadingLine(-0.24, 6, 'rgba(255,255,255,0.28)');
           if (def.mask) def.mask(c, spine, pose);
-          if (def.hat) drawHat(c, spine, def);
+          if (def.hat && !(def.acc && ACCESSORIES[def.acc] && ACCESSORIES[def.acc].hat)) drawHat(c, spine, def);
           if (def.acc && !flash) drawAccessory(c, spine, pose, def, 'mask');
         }
 
@@ -14208,7 +14466,7 @@
         else if (row === 2) L.sat = clamp(Math.round((L.sat + dir * 0.1) * 10) / 10, 0, 2);
         else if (row === 3) L.light = clamp(Math.round((L.light + dir * 0.05) * 100) / 100, -0.3, 0.3);
         else if (row === 4) {
-          const opts = [null, D.def.id, D.def.id + '2'].filter(a => a === null || Progress.hasAcc(a));
+          const opts = [null, ...heroAccessories(D.def.id)].filter(a => a === null || Progress.hasAcc(a));
           if (opts.length === 1) {
             D.note = { text: Progress.unlockHint('acc', D.def), until: game.time + 150 };
             SFX.block();
@@ -14674,8 +14932,60 @@
        * Draw a Hosiery character standing at (x, y) (feet on y). s = size, face = 1 right / -1 left, t = time.
        * o: { walk, mouth: 'smile'|'open'|'shock'|'smug', eyes: 'normal'|'closed', alpha }
        */
+      // Queen Nylonia's wardrobe. ch = the chapter you clear to unlock it (0 = from the start).
+      const QUEEN_WARDROBE = {
+        head: [
+          { id: 'tiara', name: 'PEARL TIARA', ch: 0 },
+          { id: 'grand', name: 'GRAND CROWN', ch: 1 },
+          { id: 'bighat', name: 'THE BIGGEST FANCY HAT', ch: 3 }
+        ],
+        cape: [
+          { id: 'train', name: 'ROYAL TRAIN', ch: 0 },
+          { id: 'velvet', name: 'VELVET CAPE', ch: 2 },
+          { id: 'peacock', name: 'PEACOCK CAPE', ch: 4 }
+        ],
+        sceptre: [
+          { id: 'needle', name: 'DARNING-NEEDLE SCEPTRE', ch: 0 },
+          { id: 'jewel', name: 'JEWELLED SCEPTRE', ch: 2 },
+          { id: 'rose', name: 'ROSE WAND', ch: 5 }
+        ],
+        dress: [
+          { name: 'ROSE GOLD', color: '#f6bccd', band: '#c46a86', ch: 0 },
+          { name: 'AMETHYST', color: '#c6a4ff', band: '#7a4fc9', ch: 0 },
+          { name: 'MIDNIGHT SAPPHIRE', color: '#8fa0f5', band: '#1d2a6e', ch: 0 },
+          { name: 'PEARL & GOLD', color: '#f6ecdf', band: '#d4a017', ch: 0 }
+        ]
+      };
+      const QUEEN_TRIMS = ['#a8395f', '#5b2a9e', '#16205a', '#7a1c3a', '#1f6a4e', '#d4a017', '#e8333a', '#2a2a2a', '#ffffff'];
+      /** Her saved look (kept with the story progress). */
+      function queenLook() {
+        const A = (typeof Progress !== 'undefined' && Progress.data && Progress.data.adv) || {};
+        const q = A.queen || {};
+        const pick = (list, i) => clamp(i | 0, 0, list.length - 1);
+        return {
+          head: pick(QUEEN_WARDROBE.head, q.head),
+          cape: pick(QUEEN_WARDROBE.cape, q.cape),
+          sceptre: pick(QUEEN_WARDROBE.sceptre, q.sceptre),
+          dress: pick(QUEEN_WARDROBE.dress, q.dress),
+          trim: QUEEN_TRIMS.includes(q.trim) ? q.trim : QUEEN_TRIMS[0]
+        };
+      }
+      /** The Queen's drawing settings, dressed in her chosen wardrobe. */
+      function queenHosiery(look) {
+        const L = look || queenLook();
+        const dress = QUEEN_WARDROBE.dress[L.dress];
+        return Object.assign({}, HOSIERY.queen, {
+          color: dress.color,
+          band: dress.band,
+          trainCol: L.trim,
+          headStyle: QUEEN_WARDROBE.head[L.head].id,
+          capeStyle: QUEEN_WARDROBE.cape[L.cape].id,
+          sceptreStyle: QUEEN_WARDROBE.sceptre[L.sceptre].id
+        });
+      }
+
       function drawHosiery(c, kind, x, y, s, face, t, o = {}) {
-        const H = HOSIERY[kind];
+        const H = kind === 'queen' ? queenHosiery(o.look) : HOSIERY[kind];
         const walking = !!o.walk;
         const swing = walking ? Math.sin(t * 0.3) * 0.32 : 0;
         const bob = walking ? Math.abs(Math.sin(t * 0.3)) * 4 : Math.sin(t * 0.08) * 1.5;
@@ -14695,8 +15005,71 @@
         c.translate(0, -bob);
         c.lineJoin = 'round';
         c.lineCap = 'round';
+        // the Queen's VELVET CAPE: a full cape with a tall stand-up collar
+        if (H.train && H.capeStyle === 'velvet') {
+          const wave = Math.sin(t * 0.05) * 5;
+          c.beginPath();
+          c.moveTo(-26, top + 10);
+          c.quadraticCurveTo(-110, -60 + wave, -130 + wave, 4);
+          c.lineTo(30, 4);
+          c.quadraticCurveTo(10, -60, 26, top + 10);
+          c.closePath();
+          c.fillStyle = H.trainCol;
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 4;
+          c.stroke();
+          c.strokeStyle = '#ffd23f';
+          c.lineWidth = 4;
+          c.beginPath();
+          c.moveTo(-128 + wave, 2);
+          c.lineTo(28, 2);
+          c.stroke();
+          c.beginPath(); // a wide, low royal collar fanning out at her sides
+          c.moveTo(-28, top + 16);
+          c.quadraticCurveTo(-52, top + 2, -50, top - 14);
+          c.lineTo(-28, top - 4);
+          c.lineTo(28, top - 4);
+          c.lineTo(50, top - 14);
+          c.quadraticCurveTo(52, top + 2, 28, top + 16);
+          c.closePath();
+          c.fillStyle = shadeColor(H.trainCol, 0.3);
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.stroke();
+        }
+        // the Queen's PEACOCK CAPE: a long train of peacock feathers
+        if (H.train && H.capeStyle === 'peacock') {
+          const wave = Math.sin(t * 0.05) * 6;
+          c.beginPath();
+          c.moveTo(-20, top + 8);
+          c.quadraticCurveTo(-120, -80 + wave, -150, 4);
+          c.lineTo(-30, 4);
+          c.quadraticCurveTo(-24, -60, 10, top + 14);
+          c.closePath();
+          c.fillStyle = H.trainCol;
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 4;
+          c.stroke();
+          for (const [ex, ey] of [[-130, -12], [-104, -24], [-78, -14], [-110, -54], [-84, -66], [-60, -40]]) {
+            c.fillStyle = '#1fb7a8';
+            c.beginPath();
+            c.ellipse(ex + wave * 0.5, ey, 11, 14, 0, 0, 7);
+            c.fill();
+            c.fillStyle = '#ffd23f';
+            c.beginPath();
+            c.ellipse(ex + wave * 0.5, ey + 1, 7, 9, 0, 0, 7);
+            c.fill();
+            c.fillStyle = '#16205a';
+            c.beginPath();
+            c.ellipse(ex + wave * 0.5, ey + 2, 3.5, 4.5, 0, 0, 7);
+            c.fill();
+          }
+        }
         // the royal train behind the Queen
-        if (H.train) {
+        if (H.train && (!H.capeStyle || H.capeStyle === 'train')) {
           const wave = Math.sin(t * 0.05) * 6;
           c.beginPath();
           c.moveTo(-20, top + 8);
@@ -15056,7 +15429,68 @@
           c.closePath();
           c.fill();
         }
-        if (H.sceptre) {
+        if (H.sceptre && H.sceptreStyle && H.sceptreStyle !== 'needle') {
+          const gx = bodyW / 2 + 14,
+            gy = top + 52 - arm;
+          c.strokeStyle = INK;
+          c.lineWidth = 8;
+          c.beginPath();
+          c.moveTo(gx + 2, gy + 26);
+          c.lineTo(gx + 8, gy - 62);
+          c.stroke();
+          c.strokeStyle = '#ffd23f';
+          c.lineWidth = 5;
+          c.stroke();
+          if (H.sceptreStyle === 'jewel') {
+            // the JEWELLED SCEPTRE: a gold cradle holding a big gem
+            c.fillStyle = '#ffd23f';
+            c.strokeStyle = INK;
+            c.lineWidth = 2.5;
+            c.beginPath();
+            c.arc(gx + 8, gy - 66, 9, 0, Math.PI);
+            c.fill();
+            c.stroke();
+            c.fillStyle = H.trainCol;
+            c.beginPath();
+            c.moveTo(gx + 8, gy - 90);
+            c.lineTo(gx + 17, gy - 74);
+            c.lineTo(gx + 8, gy - 62);
+            c.lineTo(gx - 1, gy - 74);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = 'rgba(255,255,255,0.75)';
+            c.beginPath();
+            c.arc(gx + 5, gy - 78, 2.5, 0, 7);
+            c.fill();
+          } else {
+            // the ROSE WAND: a rose in bloom with a sparkle
+            c.fillStyle = '#e8333a';
+            c.strokeStyle = INK;
+            c.lineWidth = 2.5;
+            for (let i = 0; i < 5; i++) {
+              const a = (i / 5) * Math.PI * 2 + 0.3;
+              c.beginPath();
+              c.arc(gx + 8 + Math.cos(a) * 7, gy - 72 + Math.sin(a) * 7, 6, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = '#b3202a';
+            c.beginPath();
+            c.arc(gx + 8, gy - 72, 5, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#4fae3a';
+            c.beginPath();
+            c.ellipse(gx + 1, gy - 56, 7, 3.5, -0.6, 0, 7);
+            c.fill();
+            c.stroke();
+            const tw = Math.abs(Math.sin(t * 0.08));
+            starPath(c, gx + 22, gy - 86, 3 + tw * 4, t * 0.05);
+            c.fillStyle = 'rgba(255,255,255,' + tw + ')';
+            c.fill();
+          }
+        } else if (H.sceptre) {
           // a sceptre shaped like a darning needle, held in the front glove
           const gx = bodyW / 2 + 14,
             gy = top + 52 - arm;
@@ -15109,7 +15543,87 @@
             c.stroke();
           }
         }
-        if (H.tiara) {
+        if (H.headStyle === 'grand') {
+          // the GRAND CROWN: a velvet cap inside tall gold points, pearls on every point, jewels round the band
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.fillStyle = H.trainCol;
+          c.beginPath();
+          c.ellipse(0, top - 10, 17, 16, 0, Math.PI, 0);
+          c.fill();
+          c.stroke();
+          const pts = [[-24, -6], [-27, -30], [-15, -18], [-8, -36], [0, -22], [8, -36], [15, -18], [27, -30], [24, -6]];
+          c.fillStyle = '#ffd23f';
+          c.beginPath();
+          pts.forEach(([px, py], i) => (i ? c.lineTo(px, top + py) : c.moveTo(px, top + py)));
+          c.closePath();
+          c.fill();
+          c.stroke();
+          roundRectPath(c, -26, top - 10, 52, 12, 4);
+          c.fill();
+          c.stroke();
+          c.fillStyle = '#fffdf6';
+          for (const [px, py] of [[-27, -30], [-8, -36], [8, -36], [27, -30]]) {
+            c.beginPath();
+            c.arc(px, top + py - 3, 3.5, 0, 7);
+            c.fill();
+            c.lineWidth = 1.5;
+            c.stroke();
+          }
+          for (const [x, cc] of [[-16, '#3fd0ff'], [0, '#e8333a'], [16, '#4fdc6a']]) {
+            c.fillStyle = cc;
+            c.beginPath();
+            c.arc(x, top - 4, 3.5, 0, 7);
+            c.fill();
+          }
+          // an orb and cross on top of the velvet
+          c.fillStyle = '#ffd23f';
+          c.lineWidth = 2;
+          c.beginPath();
+          c.arc(0, top - 30, 4.5, 0, 7);
+          c.fill();
+          c.stroke();
+          c.fillRect(-1.5, top - 44, 3, 11);
+          c.fillRect(-5, top - 40, 10, 3);
+        } else if (H.headStyle === 'bighat') {
+          // THE BIGGEST FANCY HAT in all of Nylonia
+          c.fillStyle = H.trainCol;
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.beginPath();
+          c.ellipse(0, top - 2, 70, 12, 0, 0, 7);
+          c.fill();
+          c.stroke();
+          roundRectPath(c, -24, top - 40, 48, 40, 12);
+          c.fill();
+          c.stroke();
+          c.fillStyle = '#ffd23f';
+          c.fillRect(-24, top - 14, 48, 8);
+          c.strokeRect(-24, top - 14, 48, 8);
+          for (const [fx, h, cc, ph] of [[-14, 74, '#ff4fa3', 0], [0, 92, '#fffdf6', 1.2], [14, 68, '#c6a4ff', 2.3]]) {
+            c.save();
+            c.translate(fx, top - 34);
+            c.rotate(0.2 + Math.sin(t * 0.05 + ph) * 0.08);
+            c.fillStyle = cc;
+            c.beginPath();
+            c.ellipse(0, -h / 2, 8, h / 2, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.restore();
+          }
+          c.fillStyle = '#ff4fa3';
+          for (let i = 0; i < 6; i++) {
+            const a = (i / 6) * Math.PI * 2;
+            c.beginPath();
+            c.arc(34 + Math.cos(a) * 7, top - 10 + Math.sin(a) * 7, 5, 0, 7);
+            c.fill();
+            c.stroke();
+          }
+          c.fillStyle = '#ffd23f';
+          c.beginPath();
+          c.arc(34, top - 10, 4, 0, 7);
+          c.fill();
+        } else if (H.tiara) {
           // a tall, fine tiara: gold arches, pearls on every point, one big jewel in the middle
           const pts = [[-22, -10], [-14, -20], [-7, -15], [0, -30], [7, -15], [14, -20], [22, -10]];
           c.beginPath();
@@ -15342,6 +15856,10 @@
                 let i = 0;
                 while (i < samples.length && Math.abs(samples[i]) < 0.004) i++; // skip the MP3 lead-in
                 this.buffers[key] = { buffer, offset: Math.max(0, i - 24) / buffer.sampleRate };
+                // keep only the last few decoded lines: on a phone, hundreds of decoded voice lines would
+                // fill the sound memory and the game would go quiet
+                const keys = Object.keys(this.buffers);
+                if (keys.length > 8) for (const old of keys.slice(0, keys.length - 8)) delete this.buffers[old];
                 start(this.buffers[key]);
               },
               () => {}
@@ -16020,7 +16538,12 @@
         { n: 5, name: 'THE TUMBLE THRONE', jp: '回転の玉座' }
       ];
       /** Palace menu button i (the rows close up a little when the START AGAIN button joins the list). */
-      const hubButton = i => (HUB_ITEMS().length > 8 ? { x: 24, y: 100 + i * 45, w: 300, h: 40 } : { x: 24, y: 104 + i * 49, w: 300, h: 42 });
+      const hubButton = i => {
+        const n = HUB_ITEMS().length;
+        if (n > 9) return { x: 24, y: 98 + i * 41, w: 300, h: 37 };
+        if (n > 8) return { x: 24, y: 100 + i * 45, w: 300, h: 40 };
+        return { x: 24, y: 104 + i * 49, w: 300, h: 42 };
+      };
       const storyAllCleared = () => ADV_CHAPTERS.every(ch => !STORY_CHAPTERS[ch.n] || advData().cleared[ch.n]);
       /** Play the whole story again from the prologue: chapters lock again, but skins, accessories and trophies stay. */
       function restartStory() {
@@ -16049,6 +16572,7 @@
         })),
         { label: 'CHANGE HERO', sub: advHeroLook().name, on: true, go: () => openAdvSelect('hub') },
         { label: 'WATCH THE PROLOGUE', sub: 'LAUNDRY DAY', on: true, go: () => startPrologue() },
+        { label: 'DRESS THE QUEEN', sub: 'THE ROYAL WARDROBE', on: true, go: () => openQueenRobe() },
         ...(storyAllCleared()
           ? [
               {
@@ -16482,6 +17006,117 @@
         }
         arm(b1, f1, '#ffd23f'); // right armrest (the near one)
         return { x: (b0[0] + b1[0]) / 2 + S[0] * 0.55, y: SEAT + S[1] * 0.55 };
+      }
+
+      /* ---- Queen Nylonia's Royal Wardrobe: dress her up; she wears it all through the story ---- */
+      const ROBE_ROWS = [
+        ['HEADWEAR', 'head'],
+        ['CAPE', 'cape'],
+        ['SCEPTRE', 'sceptre'],
+        ['DRESS', 'dress'],
+        ['TRIM COLOUR', 'trim']
+      ];
+      const robeRow = i => ({ x: 30, y: 120 + i * 70, w: 400, h: 58 });
+      function openQueenRobe() {
+        game.adv.robe = { t: 0, row: 0, look: queenLook(), note: null };
+        game.screen = 'queenRobe';
+      }
+      function robeUnlocked(item) {
+        return !item.ch || !!advData().cleared[item.ch];
+      }
+      function robeChange(row, dir) {
+        const R = game.adv.robe,
+          key = ROBE_ROWS[row][1];
+        if (key === 'trim') {
+          R.look.trim = QUEEN_TRIMS[wrapIndex(QUEEN_TRIMS.indexOf(R.look.trim) + dir, QUEEN_TRIMS.length)];
+        } else {
+          const list = QUEEN_WARDROBE[key];
+          let i = R.look[key];
+          for (let k = 0; k < list.length; k++) {
+            i = wrapIndex(i + dir, list.length);
+            if (robeUnlocked(list[i])) break;
+          }
+          R.look[key] = i;
+        }
+        R.twirl = 24;
+        SFX.spin();
+      }
+      function closeQueenRobe() {
+        advData().queen = Object.assign({}, game.adv.robe.look);
+        Progress.save();
+        SFX.confirm();
+        game.screen = 'advHub';
+      }
+      function updateQueenRobe() {
+        const R = game.adv.robe;
+        R.t++;
+        if (R.twirl > 0) R.twirl--;
+        if (backWasPressed()) return closeQueenRobe();
+        if (wasPressed('ArrowUp', 'KeyW')) R.row = wrapIndex(R.row - 1, ROBE_ROWS.length);
+        if (wasPressed('ArrowDown', 'KeyS')) R.row = wrapIndex(R.row + 1, ROBE_ROWS.length);
+        if (wasPressed('ArrowLeft', 'KeyA')) robeChange(R.row, -1);
+        if (wasPressed('ArrowRight', 'KeyD')) robeChange(R.row, 1);
+        if (wasPressed(...CONFIRM_KEYS)) return closeQueenRobe();
+        const c0 = game.click;
+        if (c0) {
+          game.click = null;
+          ROBE_ROWS.forEach((_, i) => {
+            const r = robeRow(i);
+            if (c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h) {
+              R.row = i;
+              robeChange(i, c0.x < r.x + r.w / 2 ? -1 : 1); // left half: back, right half: next
+            }
+          });
+          const done = { x: 30, y: 474, w: 400, h: 46 };
+          if (c0.x > done.x && c0.x < done.x + done.w && c0.y > done.y && c0.y < done.y + done.h) closeQueenRobe();
+        }
+      }
+      function drawQueenRobe() {
+        const R = game.adv.robe,
+          t = R.t;
+        drawPalace(t);
+        ctx.fillStyle = 'rgba(16,8,30,0.45)';
+        ctx.fillRect(0, 0, W, H);
+        drawText('THE ROYAL WARDROBE', W / 2, 46, 38, FONT_COMIC, '#ffd23f', INK, 8);
+        drawText('王家の衣装部屋', W / 2, 78, 13, FONT_JAPANESE, '#fff', INK, 4);
+        drawBackButton('DONE');
+        // the Queen, turning this way and that as you dress her
+        const face = R.twirl > 12 ? 1 : -1;
+        drawSparkles(690, 330, 120, t, R.twirl > 0 ? 8 : 3, '#fff');
+        drawHosiery(ctx, 'queen', 690, 470, 1.55, face, t, { look: R.look, mouth: 'smug' });
+        ROBE_ROWS.forEach(([label, key], i) => {
+          const r = robeRow(i),
+            on = R.row === i;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
+          ctx.fillStyle = on ? 'rgba(255,79,163,0.9)' : 'rgba(42,29,72,0.92)';
+          ctx.fill();
+          ctx.strokeStyle = on ? '#fff' : INK;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          drawText(label, r.x + 16, r.y + 16, 9, FONT_PIXEL, '#ffe234', INK, 0, 'left');
+          drawText('◀', r.x + 18, r.y + 38, 14, FONT_PIXEL, '#fff', INK, 0);
+          drawText('▶', r.x + r.w - 18, r.y + 38, 14, FONT_PIXEL, '#fff', INK, 0);
+          if (key === 'trim') {
+            ctx.fillStyle = R.look.trim;
+            roundRectPath(ctx, r.x + r.w / 2 - 40, r.y + 28, 80, 20, 6);
+            ctx.fill();
+            ctx.strokeStyle = INK;
+            ctx.stroke();
+          } else {
+            const list = QUEEN_WARDROBE[key];
+            drawText(list[R.look[key]].name, r.x + r.w / 2, r.y + 38, list[R.look[key]].name.length > 18 ? 15 : 18, FONT_COMIC, '#fff', INK, 4);
+            const locked = list.filter(it => !robeUnlocked(it));
+            if (locked.length)
+              drawText('🔒 ' + locked.map(it => 'CH.' + it.ch).join(', ') + ' UNLOCKS MORE', r.x + r.w - 14, r.y + 16, 6, FONT_PIXEL, '#ddd', INK, 0, 'right');
+          }
+        });
+        roundRectPath(ctx, 30, 474, 400, 46, 10);
+        ctx.fillStyle = '#ff4fa3';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        drawText('WE APPROVE. (DONE)', 230, 497, 18, FONT_COMIC, '#fff', INK, 5);
       }
 
       function drawAdvHub() {
@@ -18513,7 +19148,8 @@
         advClear: { update: updateAdvClear, draw: drawAdvClear },
         advWalk: { update: updateAdvWalk, draw: drawAdvWalk },
         advTitle: { update: updateAdvTitle, draw: drawAdvTitle },
-        advCredits: { update: updateAdvCredits, draw: drawAdvCredits }
+        advCredits: { update: updateAdvCredits, draw: drawAdvCredits },
+        queenRobe: { update: updateQueenRobe, draw: drawQueenRobe }
       };
 
       function updateGame() {
