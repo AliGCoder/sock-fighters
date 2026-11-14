@@ -12579,7 +12579,7 @@
           if (game.story && readyToContinue(r.t)) {
             SFX.confirm();
             if (r.p1won) nextStoryStep();
-            else startStoryFight(); // lost: try the same fight again
+            else retryStoryMission(); // lost: replay the story scene before this fight, then fight again
             return;
           }
           if (game.mode === 'cpu' && game.arcade && readyToContinue(r.t)) {
@@ -12657,7 +12657,7 @@
         drawText('*' + hero.name + ' needs a minute...*', 260, 300, 16, FONT_COMIC, '#ccc', INK, 4);
         if (r.quote) drawText('"' + r.quote + '"', 700, 206, 22, FONT_COMIC, '#fff', INK, 6);
         if (t >= INPUT_GRACE_FRAMES && t % 60 < 40)
-          drawText(IS_TOUCH ? 'TAP: TRY AGAIN   •   ◀ BACK: TO THE PALACE' : 'SPACE / TAP: TRY AGAIN   •   ESC: BACK TO THE PALACE', W / 2, 515, 12, FONT_PIXEL, '#fff', INK, 5);
+          drawText(IS_TOUCH ? 'TAP: TRY THE MISSION AGAIN   •   ◀ PALACE' : 'SPACE / TAP: TRY THE MISSION AGAIN   •   ESC: BACK TO THE PALACE', W / 2, 515, 12, FONT_PIXEL, '#fff', INK, 5);
         if (IS_TOUCH && t >= INPUT_GRACE_FRAMES) drawBackButton('PALACE');
       }
 
@@ -12741,7 +12741,7 @@
             game.story
               ? r.p1won
                 ? 'PRESS SPACE / TAP: CONTINUE THE STORY'
-                : 'PRESS SPACE / TAP: TRY AGAIN'
+                : 'PRESS SPACE / TAP: TRY THE MISSION AGAIN'
               : game.mode === 'cpu'
               ? r.p1won
                 ? 'PRESS SPACE: GO TO NEXT STAGE'
@@ -15047,6 +15047,17 @@
         game.screen = 'vs';
         game.versusTime = 0;
         Announcer.versus(game.p1Def, game.p2Def);
+      }
+
+      /** After MISSION FAILED: go back to the story scene that leads into this fight, then fight it again. */
+      function retryStoryMission() {
+        const S = game.story;
+        const steps = STORY_CHAPTERS[S.chapter].steps;
+        let i = S.step - 1;
+        while (i >= 0 && !steps[i].scene) i--;
+        if (i < 0) return startStoryFight();
+        S.step = i - 1; // nextStoryStep moves on to step i: the scene
+        nextStoryStep();
       }
 
       /** Back to the Queen's palace from a story chapter (finished or quit). */
