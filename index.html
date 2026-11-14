@@ -15443,8 +15443,8 @@
         drawHosiery(ctx, 'seamed', 382, 472, 0.9, 1, t, { arms: guards[0] });
       }
 
-      /** The Queen's throne on a raised dais, turned 45 degrees toward the Fishnet Scout (three-quarter view):
-       *  the front of the throne narrows away from us, and we see its right side and the depth of the seat. */
+      /** The Queen's throne on a raised dais, turned toward the Fishnet Scout: an upright crown-topped back (we see its
+       *  thickness on the right) and a box seat coming forward to the front left. Returns where the Queen sits. */
       function drawThrone() {
         // the dais: two broad steps
         roundRectPath(ctx, 690, 450, 200, 22, 6);
@@ -15456,91 +15456,74 @@
         ctx.fillStyle = '#d4a017';
         ctx.fillRect(690, 450, 200, 3);
         ctx.fillRect(708, 434, 164, 3);
-        // turned: x squeezed toward the middle; the near (right) side a little taller than the far (left) side
-        const CX = 790,
-          BASE = 440;
-        const P = (x, y) => {
-          const k = (x - CX) / 66; // -1 (far, left) .. +1 (near, right)
-          return [CX + (x - CX) * 0.56, BASE + (y - BASE) * (1 + 0.1 * k)];
-        };
-        const D = [40, -16]; // the throne's depth, receding to the back right
-        const poly = (pts, fill, stroke = true, lw = 4) => {
+        const poly = (pts, fill, lw = 4) => {
           ctx.beginPath();
           pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
           ctx.closePath();
           ctx.fillStyle = fill;
           ctx.fill();
-          if (stroke) {
-            ctx.strokeStyle = INK;
-            ctx.lineWidth = lw;
-            ctx.stroke();
-          }
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = lw;
+          ctx.stroke();
         };
-        const add = ([x, y], [dx, dy]) => [x + dx, y + dy];
-        // the back: its right side (depth) first, then the crown-topped front
-        const outline = [[724, 440], [724, 250], [748, 222], [768, 244], [790, 206], [812, 244], [832, 222], [856, 250], [856, 440]].map(([x, y]) => P(x, y));
-        poly([outline[7], add(outline[7], D), add(outline[8], D), outline[8]], '#b8860b');
-        poly([outline[6], add(outline[6], D), add(outline[7], D), outline[7]], '#c99a1a');
-        poly(outline, '#ffd23f');
-        const v = [P(740, 262), P(840, 262), P(840, 434), P(740, 434)];
-        const g = ctx.createLinearGradient(v[0][0], 0, v[1][0], 0);
-        g.addColorStop(0, '#4a0858');
-        g.addColorStop(0.55, '#8a2aa8');
-        g.addColorStop(1, '#6a0f80');
-        poly(v, g, false);
-        // jewels on the crown points
-        for (const [x, y, c] of [[748, 230, '#3fd0ff'], [790, 214, '#ff4fa3'], [832, 230, '#3fd0ff']]) {
-          const [px, py] = P(x, y);
+        const add = ([x, y], dx, dy) => [x + dx, y + dy];
+        // the back: seen at an angle it looks narrower, but stays upright
+        const L = 760,
+          R = 846,
+          TOP = 250,
+          SEAT = 392;
+        const T = [10, -6]; // its thickness, receding to the back right
+        const crown = [[L, SEAT], [L, TOP], [L + 14, TOP - 26], [L + 27, TOP - 8], [L + 43, TOP - 44], [R - 27, TOP - 8], [R - 14, TOP - 26], [R, TOP], [R, SEAT]];
+        poly([[R, TOP], add([R, TOP], T[0], T[1]), add([R, SEAT], T[0], T[1]), [R, SEAT]], '#b8860b'); // side edge
+        poly([[R - 14, TOP - 26], add([R - 14, TOP - 26], T[0], T[1]), add([R, TOP], T[0], T[1]), [R, TOP]], '#c99a1a');
+        poly(crown, '#ffd23f');
+        roundRectPath(ctx, L + 11, TOP + 10, R - L - 22, SEAT - TOP - 16, 10);
+        const g = ctx.createLinearGradient(L, 0, R, 0);
+        g.addColorStop(0, '#5a0a6e');
+        g.addColorStop(0.5, '#8a2aa8');
+        g.addColorStop(1, '#5a0a6e');
+        ctx.fillStyle = g;
+        ctx.fill();
+        for (const [x, y, c] of [[L + 14, TOP - 22, '#3fd0ff'], [L + 43, TOP - 38, '#ff4fa3'], [R - 14, TOP - 22, '#3fd0ff']]) {
           ctx.fillStyle = c;
           ctx.beginPath();
-          ctx.arc(px, py, 4.5, 0, 7);
+          ctx.arc(x, y, 4.5, 0, 7);
           ctx.fill();
         }
-        // the seat: a gold box with a velvet cushion on top, coming forward toward us
-        const SD = [-44, 18]; // the seat comes out toward the front left (toward the Scout)
-        const s0 = P(724, 396),
-          s1 = P(856, 396);
-        const box = (y0, y1, col, side) => {
-          const a0 = P(724, y0),
-            a1 = P(856, y0),
-            b0 = P(724, y1),
-            b1 = P(856, y1);
-          poly([a1, b1, add(b1, SD), add(a1, SD)], side); // right side
-          poly([add(a0, SD), add(a1, SD), add(b1, SD), add(b0, SD)], col); // front
-          return [a0, a1];
-        };
-        box(396, 436, '#e8b72e', '#b8860b');
-        // velvet cushion on top
-        const c0 = P(722, 386),
-          c1 = P(858, 386);
-        poly([c0, c1, add(c1, SD), add(c0, SD)], '#9a2fbf');
-        ctx.fillStyle = '#ffd23f';
-        for (const f of [0.25, 0.5, 0.75]) {
-          const x = c0[0] + (c1[0] - c0[0]) * f + SD[0] * 0.5,
-            y = c0[1] + (c1[1] - c0[1]) * f + SD[1] * 0.5;
+        // the seat: a box coming forward toward the Scout (front left), velvet cushion on top
+        const S = [-40, 16]; // seat depth, toward the front left
+        const H = 38; // seat height above the dais
+        const b0 = [L, SEAT],
+          b1 = [R, SEAT],
+          f0 = add(b0, S[0], S[1]),
+          f1 = add(b1, S[0], S[1]);
+        // left armrest (the far one), behind the cushion
+        const arm = (p, q, col) => {
+          poly([add(p, 0, -34), add(q, 0, -34), add(q, 0, 0), add(p, 0, 0)], col, 3.5);
           ctx.beginPath();
-          ctx.arc(x, y, 2.6, 0, 7); // tufted buttons
-          ctx.fill();
-        }
-        // armrests ending in golden scrolls, front one nearer to us
-        for (const [x, near] of [[724, 0], [856, 1]]) {
-          const [ax, ay] = add(P(x, 352), [SD[0] * 0.7, SD[1] * 0.7]);
-          roundRectPath(ctx, ax - 7, ay, 14, 40, 6);
-          ctx.fillStyle = near ? '#ffd23f' : '#e8b72e';
+          ctx.arc(q[0], q[1] - 36, 9, 0, 7);
+          ctx.fillStyle = '#ffd23f';
           ctx.fill();
           ctx.strokeStyle = INK;
           ctx.lineWidth = 3.5;
           ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(ax, ay, near ? 10 : 9, 0, 7);
-          ctx.fill();
-          ctx.stroke();
           ctx.fillStyle = '#ff4fa3';
           ctx.beginPath();
-          ctx.arc(ax, ay, 3.5, 0, 7);
+          ctx.arc(q[0], q[1] - 36, 3.5, 0, 7);
+          ctx.fill();
+        };
+        arm(b0, f0, '#e8b72e');
+        poly([b1, f1, add(f1, 0, H), add(b1, 0, H)], '#b8860b'); // right side of the seat
+        poly([f0, f1, add(f1, 0, H), add(f0, 0, H)], '#e8b72e'); // front of the seat
+        poly([b0, b1, f1, f0], '#9a2fbf'); // velvet cushion
+        ctx.fillStyle = '#ffd23f';
+        for (const k of [0.25, 0.5, 0.75]) {
+          ctx.beginPath();
+          ctx.arc(b0[0] + (b1[0] - b0[0]) * k + S[0] * 0.5, b0[1] + S[1] * 0.5, 2.6, 0, 7);
           ctx.fill();
         }
-        return { seatX: (s0[0] + s1[0]) / 2 + SD[0] * 0.5 };
+        arm(b1, f1, '#ffd23f'); // right armrest (the near one)
+        return { x: (b0[0] + b1[0]) / 2 + S[0] * 0.55, y: SEAT + S[1] * 0.55 };
       }
 
       function drawAdvHub() {
@@ -15549,9 +15532,9 @@
         drawPalace(t);
         const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         // the throne and the Queen
-        drawThrone();
-        // the Queen, seated on her throne like the highest of queens
-        drawHosiery(ctx, 'queen', 776, 442, 0.9, -1, t, { sit: true, mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        const seat = drawThrone();
+        // the Queen, seated on her throne like the highest of queens, facing the Scout
+        drawHosiery(ctx, 'queen', seat.x, seat.y + 50, 0.9, -1, t, { sit: true, mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
         // your hero and the scout
         const def = advHeroLook();
         const p = idleAnim(basePose(), t);
