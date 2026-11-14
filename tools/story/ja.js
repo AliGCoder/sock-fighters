@@ -262,17 +262,18 @@ module.exports = {
   "*dabbing her eyes* This is the most beautiful thing We have ever seen. *gasp* ...Oh no.": "これほど美しいものは、生まれて初めて拝見いたしましたわ。…あっ…いけない。",
   "What? What is it?": "なんだ?どうしたんだ?",
   "We cried so hard... WE HAVE A RUN!": "泣きすぎて…わたくしどものストッキングが、伝線してしまいましたわ。",
-  "*Deeper inside the drum. Something HUGE lurches out of the steam... a giant made of a hundred different socks, all stitched together.*": "回転ドラムのさらに奥。蒸気の中から、何か巨大なものがよろよろと現れた…百枚もの靴下を縫い合わせた、巨人だ。",
   "HALT! I am MISMATCH! Guardian of the Tumble Throne! Made from every sock that ever went missing!": "止まれ!オレ様はミスマッチ!回転の玉座の番人!消えた靴下、ぜんぶでできてるんだぞ!",
   "Is that a Christmas sock? And a baby sock? And somebody's football sock?": "あれ、クリスマスの靴下ですか?赤ちゃんの靴下も?誰かのサッカーソックスまで?",
   "I am ALL of them! One hundred heels! ZERO pairs!": "ぜんぶオレ様だ!かかとが百個!ペアはゼロ!",
   "Wait... that stripy patch on your elbow. That's the sock I lost on laundry day!": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
-  "FINDERS KEEPERS! ...Losers... sleepers? Weepers? I always mix that one up.": "拾ったもん勝ち!…失くしたもんは…寝る?泣く?いつもごっちゃになるんだ。",
+  "FINDERS KEEPERS! ...Losers... sleepers? Weepers? I always mix that one up.": "へっへーん、拾ったもん勝ちー!…失くしたもんは…寝る?泣く?いつもごっちゃになるんだ。",
   "We do not have time to argue with a quilt. Knight, unpick him.": "キルトと言い争っている暇はございませんの。騎士殿、ほどいておしまいなさい。",
   "Nobody unpicks MISMATCH! The Demon stitched me himself! Prepare to be... MISMATCHED!": "ミスマッチをほどけるやつなんかいない!魔王様がじきじきに縫ってくれたんだ!覚悟しろ…ミスマッチにしてやる!",
   "My stitches... coming... LOOSE...": "縫い目が…ほどける…ほどけるう…!",
   "*POP! POP! POP! Mismatch bursts at the seams! A hundred socks rain down, all hopping off to find their partners.*": "ポン!ポン!ポン!ミスマッチの縫い目が弾けた!百枚の靴下が降りそそぎ、みんな相方を探して跳ねていく。",
   "My sock! ...Oh. It's a left one. I needed a right one.": "オレの靴下!…あ。左だ。右がほしかったのに。",
   "Look on the bright side. Now you've got two lefts!": "前向きに考えましょう。これで左が二枚ですよ!",
-  "Onward. The Demon is just ahead. And somebody sweep up these socks.": "先へ参りましょう。魔王はすぐそこですわ。それと、どなたかこの靴下をお片付けなさって。"
+  "Onward. The Demon is just ahead. And somebody sweep up these socks.": "先へ参りましょう。魔王はすぐそこですわ。それと、どなたかこの靴下をお片付けなさって。",
+  "*Beneath the Tumble Throne: THE ODD SOCK VAULT. Mountains of lost socks. Something HUGE rises out of a pile... a giant made of a hundred different socks, all stitched together.*": "回転の玉座の真下、片っぽ靴下の宝物庫。失くした靴下の山、山、山。その山のひとつから、何か巨大なものが起き上がった…百枚もの靴下を縫い合わせた、巨人だ。",
+  "Ooh, THIS one? It's YOURS? *waves it* It's my favourite patch! I wave it at night! Nyah-nyah!": "おやぁ?これ?お前のかぁ?…ひらひら〜。オレ様のお気に入りの継ぎあてだぞ!毎晩これ振って遊んでるんだ!べーっだ!"
 };

@@ -5677,9 +5677,9 @@
   "file": "story"
  },
  {
-  "key": "389600a9",
+  "key": "c2526c4e",
   "voice": "narr",
-  "say": "回転ドラムのさらに奥。蒸気の中から、何か巨大なものがよろよろと現れた…百枚もの靴下を縫い合わせた、巨人だ。",
+  "say": "回転の玉座の真下、片っぽ靴下の宝物庫。失くした靴下の山、山、山。その山のひとつから、何か巨大なものが起き上がった…百枚もの靴下を縫い合わせた、巨人だ。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
@@ -5824,10 +5824,17 @@
   "file": "hero-iron"
  },
  {
+  "key": "c6fbe87d",
+  "voice": "mismatch",
+  "say": "おやぁ?これ?お前のかぁ?…ひらひら〜。オレ様のお気に入りの継ぎあてだぞ!毎晩これ振って遊んでるんだ!べーっだ!",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, mocking, taunting and teasing, sing-song and gloating, like a playground bully",
+  "file": "story"
+ },
+ {
   "key": "9ccb4514",
   "voice": "mismatch",
-  "say": "拾ったもん勝ち!…失くしたもんは…寝る?泣く?いつもごっちゃになるんだ。",
-  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, lively",
+  "say": "へっへーん、拾ったもん勝ちー!…失くしたもんは…寝る?泣く?いつもごっちゃになるんだ。",
+  "note": "huge, deep, rumbling patchwork golem, a little dim-witted, mocking, taunting and teasing, sing-song and gloating, like a playground bully",
   "file": "story"
  },
  {

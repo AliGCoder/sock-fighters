@@ -80,6 +80,8 @@ const PERSONA = {
 };
 /** The mood of one line, read from how it's written. */
 function mood(who, text) {
+  // Mismatch gloating over the hero's lost sock: mocking and taunting
+  if (who === 'mismatch' && /YOURS|Nyah|FINDERS/.test(text)) return 'mocking, taunting and teasing, sing-song and gloating, like a playground bully';
   if (who === 'queen') {
     // the Queen never shouts: even her big moments stay poised
     if (/dabbing|RUN!/.test(text)) return 'gently tearful, still graceful'; // (her *sniff* is a sniff at a smell)

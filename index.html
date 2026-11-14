@@ -10479,6 +10479,163 @@
           addParticle({ type: 'confetti', x: rand(0, W), y: rand(150, 300), vx: rand(-1, 1), vy: -rand(2, 4), g: 0.12, life: 60, size: rand(5, 9), rot: rand(0, 6), vr: rand(-0.3, 0.3), color: pick(ARENA_FAN_COLORS) });
       }
 
+      /* --- The Odd Sock Vault (story only): a cavern under the Tumble Throne, piled high with every odd sock the
+         Demon ever stole. Mountains of socks, giant thread spools, sewing needles, washing lines of mismatched pairs. --- */
+      const VAULT_SOCK_COLORS = ['#e8333a', '#3f9be0', '#ffd23f', '#4fdc6a', '#c86bff', '#ff9d2e', '#ff6fb5', '#f4f1ea'];
+      /** One little odd sock (an L shape with a cuff stripe), for the vault's piles and washing lines. */
+      function vaultSock(c, x, y, size, angle, col, stripe) {
+        c.save();
+        c.translate(x, y);
+        c.rotate(angle);
+        c.scale(size, size);
+        c.fillStyle = col;
+        c.strokeStyle = INK;
+        c.lineWidth = 2.5 / size;
+        c.beginPath();
+        c.moveTo(-6, -16);
+        c.lineTo(6, -16);
+        c.lineTo(6, 3);
+        c.quadraticCurveTo(18, 3, 18, 10);
+        c.quadraticCurveTo(18, 17, 7, 17);
+        c.lineTo(-3, 17);
+        c.quadraticCurveTo(-6, 17, -6, 11);
+        c.closePath();
+        c.fill();
+        c.stroke();
+        c.fillStyle = stripe;
+        c.fillRect(-6, -12, 12, 3);
+        c.restore();
+      }
+      function buildVault(b) {
+        // the cave: deep violet-teal dark, a glow from the lost-and-found sign
+        let g = b.createLinearGradient(0, 0, 0, 400);
+        g.addColorStop(0, '#120c22');
+        g.addColorStop(0.6, '#25193f');
+        g.addColorStop(1, '#3a2a55');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // rocky cave ceiling
+        b.fillStyle = '#0b0716';
+        b.beginPath();
+        b.moveTo(0, 0);
+        for (let x = 0; x <= W; x += 48) b.lineTo(x, 30 + ((x * 37) % 50));
+        b.lineTo(W, 0);
+        b.closePath();
+        b.fill();
+        // giant thread spools at the back
+        for (const [x, col] of [[170, '#e8333a'], [790, '#3f9be0']]) {
+          b.fillStyle = '#c9a36a';
+          b.strokeStyle = INK;
+          b.lineWidth = 4;
+          roundRectPath(b, x - 52, 120, 104, 18, 6);
+          b.fill();
+          b.stroke();
+          roundRectPath(b, x - 52, 292, 104, 18, 6);
+          b.fill();
+          b.stroke();
+          b.fillStyle = col;
+          b.fillRect(x - 40, 138, 80, 154);
+          b.strokeRect(x - 40, 138, 80, 154);
+          b.strokeStyle = 'rgba(0,0,0,0.25)';
+          b.lineWidth = 2;
+          for (let y = 146; y < 290; y += 8) {
+            b.beginPath();
+            b.moveTo(x - 40, y);
+            b.lineTo(x + 40, y + 4);
+            b.stroke();
+          }
+        }
+        // mountains of odd socks, far to near
+        const rnd = seededRandom(23);
+        for (const [cx, cy, rw, rh, n] of [[480, 360, 260, 150, 120], [60, 380, 170, 120, 60], [900, 380, 170, 120, 60], [300, 392, 140, 70, 40], [660, 392, 140, 70, 40]]) {
+          for (let i = 0; i < n; i++) {
+            const a = rnd() * Math.PI,
+              r = Math.sqrt(rnd());
+            const x = cx + Math.cos(a) * rw * r,
+              y = cy - Math.sin(a) * rh * r;
+            vaultSock(b, x, y, 0.8 + rnd() * 0.6, rnd() * 6.28, VAULT_SOCK_COLORS[(rnd() * 8) | 0], VAULT_SOCK_COLORS[(rnd() * 8) | 0]);
+          }
+        }
+        // the piles sit in shadow, so the fighters stand out in front of them
+        g = b.createLinearGradient(0, 200, 0, 400);
+        g.addColorStop(0, 'rgba(18,10,36,0.25)');
+        g.addColorStop(1, 'rgba(18,10,36,0.6)');
+        b.fillStyle = g;
+        b.fillRect(0, 160, W, 240);
+        // sewing needles stuck in the piles
+        for (const [x, y, a] of [[420, 250, -0.35], [880, 300, 0.3], [90, 310, -0.25]]) {
+          b.save();
+          b.translate(x, y);
+          b.rotate(a);
+          b.fillStyle = '#d8dde8';
+          b.strokeStyle = INK;
+          b.lineWidth = 3;
+          b.beginPath();
+          b.moveTo(-5, 0);
+          b.lineTo(0, -110);
+          b.lineTo(5, 0);
+          b.closePath();
+          b.fill();
+          b.stroke();
+          b.beginPath();
+          b.ellipse(0, -92, 2, 7, 0, 0, 7);
+          b.stroke();
+          b.restore();
+        }
+        perspectiveFloor(b, '#3a2f52', '#43375e', '#4d4068');
+        b.fillStyle = '#c86bff';
+        b.fillRect(0, 396, W, 6);
+        floorShade(b);
+      }
+      function drawVault(t) {
+        // the glowing LOST & FOUND sign, flickering
+        const on = t % 97 < 90 ? 1 : 0.35;
+        ctx.save();
+        ctx.shadowColor = '#ffde6b';
+        ctx.shadowBlur = 22 * on;
+        ctx.strokeStyle = '#8a7a50';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(W / 2 - 80, 40);
+        ctx.lineTo(W / 2 - 80, 140);
+        ctx.moveTo(W / 2 + 80, 40);
+        ctx.lineTo(W / 2 + 80, 140);
+        ctx.stroke();
+        drawText('LOST & FOUND', W / 2, 156, 30, FONT_COMIC, on > 0.5 ? '#ffe9a6' : '#8a7a50', INK, 5, 'center');
+        ctx.restore();
+        // washing lines of mismatched socks, swaying
+        for (const [y, x0, x1, ph] of [[150, 40, 330, 0], [150, 630, 920, 1.3]]) {
+          ctx.strokeStyle = '#d8d0b8';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x0, y);
+          ctx.quadraticCurveTo((x0 + x1) / 2, y + 22, x1, y);
+          ctx.stroke();
+          for (let i = 0; i < 6; i++) {
+            const k = (i + 0.5) / 6;
+            const x = x0 + (x1 - x0) * k,
+              yy = y + 22 * 4 * k * (1 - k) * 0.5 * 2;
+            const sway = Math.sin(t * 0.05 + i * 1.3 + ph) * 0.18;
+            vaultSock(ctx, x, yy + 16, 1, sway, VAULT_SOCK_COLORS[(i * 3 + ph * 7) % 8 | 0], VAULT_SOCK_COLORS[(i * 5 + 2) % 8]);
+          }
+        }
+        // the odd sock tumbling down a pile now and then
+        const k = (t % 300) / 300;
+        if (k < 0.35) {
+          const q = k / 0.35;
+          vaultSock(ctx, 360 + q * 120, 230 + q * q * 150 - Math.sin(q * Math.PI) * 30, 1, t * 0.25, '#ff6fb5', '#ffd23f');
+        }
+        // dust motes drifting in the sign's light
+        for (let i = 0; i < 14; i++) {
+          const x = ((i * 71 + t * 0.2) % W),
+            y = 120 + ((i * 53 + t * 0.15) % 220);
+          ctx.fillStyle = 'rgba(255,233,166,' + (0.25 + 0.25 * Math.sin(t * 0.05 + i)) + ')';
+          ctx.beginPath();
+          ctx.arc(x, y, 1.6, 0, 7);
+          ctx.fill();
+        }
+      }
+
       /* --- The Static Swamp (story only): purple fog, crackling sparks, socks stuck to dead trees --- */
       function buildSwamp(b) {
         let g = b.createLinearGradient(0, 0, 0, 400);
@@ -10802,7 +10959,8 @@
         plains: { name: 'THE LINT PLAINS', jp: 'リント平原', build: buildPlains, draw: drawPlains, storyOnly: true },
         swamp: { name: 'THE STATIC SWAMP', jp: '静電気の沼', build: buildSwamp, draw: drawSwamp, storyOnly: true },
         badlands: { name: 'THE BLEACH BADLANDS', jp: '漂白荒野', build: buildBadlands, draw: drawBadlands, storyOnly: true },
-        fortress: { name: 'THE IRONING FORTRESS', jp: 'アイロン要塞', build: buildFortress, draw: drawFortress, storyOnly: true }
+        fortress: { name: 'THE IRONING FORTRESS', jp: 'アイロン要塞', build: buildFortress, draw: drawFortress, storyOnly: true },
+        vault: { name: 'THE ODD SOCK VAULT', jp: '片っぽ靴下の宝物庫', build: buildVault, draw: drawVault, storyOnly: true }
       };
       const STAGE_IDS = Object.keys(STAGES);
       const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder', 'awards'];
@@ -15929,11 +16087,12 @@
         { who: 'fishnet', text: "I'd help, but my holes let the smell straight in." }
       ];
       const CH5_MID = [
-        { who: 'narr', text: '*Deeper inside the drum. Something HUGE lurches out of the steam... a giant made of a hundred different socks, all stitched together.*' },
+        { who: 'narr', text: '*Beneath the Tumble Throne: THE ODD SOCK VAULT. Mountains of lost socks. Something HUGE rises out of a pile... a giant made of a hundred different socks, all stitched together.*' },
         { who: 'mismatch', text: 'HALT! I am MISMATCH! Guardian of the Tumble Throne! Made from every sock that ever went missing!' },
         { who: 'fishnet', text: "Is that a Christmas sock? And a baby sock? And somebody's football sock?" },
         { who: 'mismatch', text: 'I am ALL of them! One hundred heels! ZERO pairs!' },
         { who: 'hero', text: "Wait... that stripy patch on your elbow. That's the sock I lost on laundry day!" },
+        { who: 'mismatch', text: "Ooh, THIS one? It's YOURS? *waves it* It's my favourite patch! I wave it at night! Nyah-nyah!" },
         { who: 'mismatch', text: 'FINDERS KEEPERS! ...Losers... sleepers? Weepers? I always mix that one up.' },
         { who: 'queen', text: 'We do not have time to argue with a quilt. Knight, unpick him.' },
         { who: 'mismatch', text: 'Nobody unpicks MISMATCH! The Demon stitched me himself! Prepare to be... MISMATCHED!' }
@@ -16062,10 +16221,10 @@
             { scene: CH5_INTRO, cast: ['stinky'], allies: ['queen'] },
             { fight: 'stinky' },
             { walk: true },
-            { scene: CH5_MID, cast: ['mismatch'], allies: ['queen'], boss: true },
-            { fight: 'mismatch' },
-            { scene: CH5_MID_END, cast: ['mismatch'], allies: ['queen'] },
-            { walk: true },
+            { scene: CH5_MID, cast: ['mismatch'], allies: ['queen'], boss: true, stage: 'vault' },
+            { fight: 'mismatch', stage: 'vault' },
+            { scene: CH5_MID_END, cast: ['mismatch'], allies: ['queen'], stage: 'vault' },
+            { walk: true, stage: 'vault' },
             { scene: CH5_BOSS, cast: ['demon'], allies: ['queen'], boss: true, final: true },
             { fight: 'demon' },
             { scene: CH5_END, cast: ['demon', 'ghost'], allies: ['queen'] },
@@ -16092,7 +16251,7 @@
         const step = ch.steps[S.step];
         if (!step) return leaveStory();
         if (step.scene) {
-          game.adv.stage = { t: 0, stageId: ch.stage, cast: step.cast || [], allies: step.allies || [], warning: step.boss ? 130 : 0, final: !!step.final, hypno: (step.hypno || []).slice(), flashback: !!step.flashback, disguise: !!step.disguise };
+          game.adv.stage = { t: 0, stageId: step.stage || ch.stage, cast: step.cast || [], allies: step.allies || [], warning: step.boss ? 130 : 0, final: !!step.final, hypno: (step.hypno || []).slice(), flashback: !!step.flashback, disguise: !!step.disguise };
           particles.length = 0;
           floatingTexts.length = 0;
           game.screen = 'advScene';
@@ -16115,7 +16274,7 @@
           const prev = ch.steps[S.step - 1];
           particles.length = 0;
           floatingTexts.length = 0;
-          game.adv.walk = { t: 0, stageId: ch.stage, foe: prev && prev.fight ? prev.fight : null };
+          game.adv.walk = { t: 0, stageId: step.stage || ch.stage, foe: prev && prev.fight ? prev.fight : null };
           game.screen = 'advWalk';
         }
         else if (step.clear) {
@@ -16142,7 +16301,7 @@
         const foe = findCharacter(ch.steps[S.step].fight);
         game.p2Def = withSkin(foe, foe.id === game.p1Def.id ? 1 : 0);
         if (ch.steps[S.step].hypno) game.p2Def = Object.assign(Object.create(game.p2Def), { hypnotised: true }); // the Demon's puppet
-        game.stageId = ch.stage;
+        game.stageId = ch.steps[S.step].stage || ch.stage;
         game.screen = 'vs';
         game.versusTime = 0;
         Announcer.versus(game.p1Def, game.p2Def);

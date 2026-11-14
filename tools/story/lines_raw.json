@@ -1008,7 +1008,7 @@
  "CH5_MID": [
   {
    "who": "narr",
-   "text": "*Deeper inside the drum. Something HUGE lurches out of the steam... a giant made of a hundred different socks, all stitched together.*"
+   "text": "*Beneath the Tumble Throne: THE ODD SOCK VAULT. Mountains of lost socks. Something HUGE rises out of a pile... a giant made of a hundred different socks, all stitched together.*"
   },
   {
    "who": "mismatch",
@@ -1025,6 +1025,10 @@
   {
    "who": "hero",
    "text": "Wait... that stripy patch on your elbow. That's the sock I lost on laundry day!"
+  },
+  {
+   "who": "mismatch",
+   "text": "Ooh, THIS one? It's YOURS? *waves it* It's my favourite patch! I wave it at night! Nyah-nyah!"
   },
   {
    "who": "mismatch",
