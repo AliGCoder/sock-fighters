@@ -16,6 +16,7 @@ Run from `C:\SockFighters`:
 3. The narrator is SPARKLE, the fight announcer: `cd tools/story`, then `../announcer/.venv-qwen/Scripts/python.exe sparkle_narr.py` records the narrator lines first. Then `../announcer/.venv-vox/Scripts/python.exe vox_story.py` records with
    [VoxCPM2](https://huggingface.co/openbmb/VoxCPM2) (Apache-2.0). It takes about an hour for everything on an RTX 5080.
    It only records lines that are new or changed, so after a small script edit it takes a minute.
+   MISMATCH speaks in exactly his fight voice: `../announcer/.venv-qwen/Scripts/python.exe qwen_char.py mismatch` (vox_story.py leaves him and the narrator alone).
 4. `node tools/story/pack.js` writes the `voices/*.js` files.
 
 Each character's voice is cloned from their fight voice (`tools/announcer/refs/fighter_<id>.wav`). Queen Nylonia has her own voice (`refs/queen_option_2.wav`, picked from three designed by `queen_voices.py`), and the Fishnet Scout's was designed by `qwen_story.py` (`refs/story_fishnet.wav`). All voices are original, and none is based on a real person.

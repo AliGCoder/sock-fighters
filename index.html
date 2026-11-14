@@ -10636,6 +10636,209 @@
         }
       }
 
+      /* --- The Tumble Throne (story only): the Dryer Demon's lair. Pitch dark, a furnace glowing deep in the turning
+         drum, a looming throne of odd socks, chains, red eyes watching from the dark, lava cracks, fire vents, and red
+         lightning that throws the Demon's horned shadow across the wall. --- */
+      function buildThrone(b) {
+        // darkness, with the furnace core glowing far back in the drum
+        let g = b.createRadialGradient(480, 200, 20, 480, 200, 560);
+        g.addColorStop(0, '#7a1206');
+        g.addColorStop(0.25, '#3a0505');
+        g.addColorStop(0.6, '#120203');
+        g.addColorStop(1, '#050102');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // the throne of odd socks: a dark silhouette on a mound, rim-lit red
+        const throne = () => {
+          b.beginPath();
+          b.moveTo(330, 330);
+          b.lineTo(350, 190);
+          b.lineTo(380, 150);
+          b.lineTo(392, 70); // left horn spire
+          b.lineTo(416, 150);
+          b.lineTo(452, 120);
+          b.lineTo(480, 60); // centre spire
+          b.lineTo(508, 120);
+          b.lineTo(544, 150);
+          b.lineTo(568, 70); // right horn spire
+          b.lineTo(580, 150);
+          b.lineTo(610, 190);
+          b.lineTo(630, 330);
+          b.closePath();
+        };
+        throne();
+        b.fillStyle = '#1a0408';
+        b.fill();
+        b.strokeStyle = '#a3140f';
+        b.lineWidth = 3;
+        b.stroke();
+        // lumpy odd socks piled into the throne, barely visible
+        const rnd = seededRandom(66);
+        b.save();
+        throne();
+        b.clip();
+        for (let i = 0; i < 90; i++) {
+          const x = 330 + rnd() * 300,
+            y = 60 + rnd() * 270;
+          b.fillStyle = 'rgba(' + (60 + rnd() * 50) + ',10,18,0.8)';
+          b.beginPath();
+          b.ellipse(x, y, 10 + rnd() * 10, 5 + rnd() * 4, rnd() * 3, 0, 7);
+          b.fill();
+        }
+        b.restore();
+        // the empty seat, glowing faintly
+        g = b.createRadialGradient(480, 230, 5, 480, 230, 70);
+        g.addColorStop(0, 'rgba(255,60,20,0.45)');
+        g.addColorStop(1, 'rgba(255,60,20,0)');
+        b.fillStyle = g;
+        b.fillRect(400, 160, 160, 140);
+        // iron fire vents in the walls
+        for (const x of [70, 890]) {
+          roundRectPath(b, x - 36, 250, 72, 110, 8);
+          b.fillStyle = '#1c1c22';
+          b.fill();
+          b.strokeStyle = '#000';
+          b.lineWidth = 4;
+          b.stroke();
+          b.fillStyle = '#050505';
+          for (let k = 0; k < 5; k++) b.fillRect(x - 26, 262 + k * 19, 52, 9);
+        }
+        // the floor: cracked black stone with lava showing through
+        perspectiveFloor(b, '#120a0c', '#1a0e10', '#22120f');
+        b.strokeStyle = '#ff5a1f';
+        b.lineWidth = 3;
+        b.shadowColor = '#ff3a0a';
+        b.shadowBlur = 10;
+        const crack = seededRandom(9);
+        for (let i = 0; i < 9; i++) {
+          let x = crack() * W,
+            y = 410 + crack() * 120;
+          b.beginPath();
+          b.moveTo(x, y);
+          for (let k = 0; k < 4; k++) {
+            x += (crack() - 0.5) * 90;
+            y += (crack() - 0.3) * 18;
+            b.lineTo(x, y);
+          }
+          b.stroke();
+        }
+        b.shadowBlur = 0;
+        b.fillStyle = '#a3140f';
+        b.fillRect(0, 396, W, 5);
+        floorShade(b);
+      }
+      function drawThroneArena(t) {
+        // the drum turning: dark ribs sweeping slowly round
+        ctx.save();
+        ctx.translate(480, 230);
+        ctx.rotate(t * 0.004);
+        ctx.strokeStyle = 'rgba(90,10,10,0.55)';
+        ctx.lineWidth = 14;
+        for (let k = 0; k < 8; k++) {
+          ctx.rotate(Math.PI / 4);
+          ctx.beginPath();
+          ctx.arc(0, 0, 470, -0.12, 0.12);
+          ctx.stroke();
+        }
+        ctx.restore();
+        // the furnace core pulsing
+        const pulse = 0.5 + 0.5 * Math.sin(t * 0.05);
+        const g = ctx.createRadialGradient(480, 230, 10, 480, 230, 260);
+        g.addColorStop(0, 'rgba(255,90,20,' + (0.12 + 0.12 * pulse) + ')');
+        g.addColorStop(1, 'rgba(255,90,20,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(220, 0, 520, 400);
+        // chains hanging from the dark, swaying
+        ctx.strokeStyle = '#2b2b33';
+        ctx.lineWidth = 4;
+        for (const [x, len, ph] of [[150, 170, 0], [260, 110, 1.4], [700, 130, 2.2], [820, 190, 0.7]]) {
+          const sw = Math.sin(t * 0.03 + ph) * 8;
+          for (let k = 0; k < len; k += 14) {
+            const f = k / len;
+            ctx.beginPath();
+            ctx.ellipse(x + sw * f, k, 5, 7, 0, 0, 7);
+            ctx.stroke();
+          }
+        }
+        // red eyes watching from the darkness, blinking
+        for (let i = 0; i < 9; i++) {
+          const blink = (t + i * 47) % 160 < 8;
+          if (blink) continue;
+          const x = [40, 120, 230, 300, 660, 740, 860, 920, 180][i],
+            y = [140, 90, 60, 300, 60, 110, 70, 170, 330][i];
+          const glow = 0.55 + 0.45 * Math.sin(t * 0.04 + i);
+          ctx.fillStyle = i % 4 === 3 ? 'rgba(255,220,60,' + glow + ')' : 'rgba(255,40,30,' + glow + ')';
+          for (const dx of [-7, 7]) {
+            ctx.beginPath();
+            ctx.ellipse(x + dx, y, 4, 2.2, dx * 0.03, 0, 7);
+            ctx.fill();
+          }
+        }
+        // ghosts of stolen socks circling the drum, faint
+        for (let i = 0; i < 6; i++) {
+          const a = t * 0.006 + i * 1.05;
+          const x = 480 + Math.cos(a) * 400,
+            y = 220 + Math.sin(a) * 160;
+          ctx.globalAlpha = 0.12 + 0.08 * Math.sin(t * 0.05 + i);
+          ctx.fillStyle = '#ffd6d6';
+          ctx.beginPath();
+          ctx.moveTo(x - 6, y - 16);
+          ctx.lineTo(x + 6, y - 16);
+          ctx.lineTo(x + 6, y + 4);
+          ctx.quadraticCurveTo(x + 18, y + 4, x + 18, y + 10);
+          ctx.quadraticCurveTo(x + 18, y + 16, x + 6, y + 16);
+          ctx.lineTo(x - 6, y + 16);
+          ctx.closePath();
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        // fire vents blasting flames now and then
+        for (const [x, ph] of [[70, 0], [890, 170]]) {
+          const k = (t + ph) % 340;
+          if (k < 70) {
+            const f = Math.sin((k / 70) * Math.PI);
+            for (let i = 0; i < 3; i++) {
+              ctx.fillStyle = ['rgba(255,60,10,0.75)', 'rgba(255,150,30,0.7)', 'rgba(255,230,120,0.7)'][i];
+              ctx.beginPath();
+              ctx.ellipse(x, 250 - f * (60 - i * 15), 28 - i * 8, f * (90 - i * 22) + 4, 0, 0, 7);
+              ctx.fill();
+            }
+            if (k % 6 === 0) addParticle({ type: 'spark', x: x + rand(-14, 14), y: 220, vx: rand(-1, 1), vy: -rand(2, 5), life: 30, color: pick(['#ff9d2e', '#ffde6b', '#ff5a1f']) });
+          }
+        }
+        // embers drifting up out of the lava cracks
+        if (t % 4 === 0) addParticle({ type: 'spark', x: rand(0, W), y: 400, vx: rand(-0.5, 0.5), vy: -rand(1, 3), life: rand(40, 70), color: pick(['#ff9d2e', '#ff5a1f', '#ffde6b']) });
+        // red lightning: a flash, and the Demon's horned shadow looms across the wall
+        const L = t % 520;
+        if (L < 26) {
+          const f = L < 4 ? 1 : 1 - (L - 4) / 22;
+          ctx.fillStyle = 'rgba(255,30,30,' + 0.28 * f + ')';
+          ctx.fillRect(0, 0, W, 400);
+          ctx.fillStyle = 'rgba(0,0,0,' + 0.55 * f + ')';
+          ctx.beginPath();
+          ctx.moveTo(300, 400);
+          ctx.quadraticCurveTo(300, 150, 400, 120);
+          ctx.lineTo(360, 20);
+          ctx.lineTo(440, 110);
+          ctx.quadraticCurveTo(480, 100, 520, 110);
+          ctx.lineTo(600, 20);
+          ctx.lineTo(560, 120);
+          ctx.quadraticCurveTo(660, 150, 660, 400);
+          ctx.closePath();
+          ctx.fill();
+          // its eyes in the shadow
+          ctx.fillStyle = 'rgba(255,220,60,' + f + ')';
+          ctx.beginPath();
+          ctx.ellipse(445, 190, 16, 6, 0.2, 0, 7);
+          ctx.ellipse(515, 190, 16, 6, -0.2, 0, 7);
+          ctx.fill();
+          if (L === 1) {
+            SFX.thoom();
+            game.shake = Math.max(game.shake || 0, 6);
+          }
+        }
+      }
+
       /* --- The Static Swamp (story only): purple fog, crackling sparks, socks stuck to dead trees --- */
       function buildSwamp(b) {
         let g = b.createLinearGradient(0, 0, 0, 400);
@@ -10960,7 +11163,8 @@
         swamp: { name: 'THE STATIC SWAMP', jp: '静電気の沼', build: buildSwamp, draw: drawSwamp, storyOnly: true },
         badlands: { name: 'THE BLEACH BADLANDS', jp: '漂白荒野', build: buildBadlands, draw: drawBadlands, storyOnly: true },
         fortress: { name: 'THE IRONING FORTRESS', jp: 'アイロン要塞', build: buildFortress, draw: drawFortress, storyOnly: true },
-        vault: { name: 'THE ODD SOCK VAULT', jp: '片っぽ靴下の宝物庫', build: buildVault, draw: drawVault, storyOnly: true }
+        vault: { name: 'THE ODD SOCK VAULT', jp: '片っぽ靴下の宝物庫', build: buildVault, draw: drawVault, storyOnly: true },
+        throne: { name: 'THE TUMBLE THRONE', jp: '回転の玉座', build: buildThrone, draw: drawThroneArena, storyOnly: true }
       };
       const STAGE_IDS = Object.keys(STAGES);
       const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder', 'awards'];
@@ -16225,10 +16429,10 @@
             { fight: 'mismatch', stage: 'vault' },
             { scene: CH5_MID_END, cast: ['mismatch'], allies: ['queen'], stage: 'vault' },
             { walk: true, stage: 'vault' },
-            { scene: CH5_BOSS, cast: ['demon'], allies: ['queen'], boss: true, final: true },
-            { fight: 'demon' },
-            { scene: CH5_END, cast: ['demon', 'ghost'], allies: ['queen'] },
-            { walk: true },
+            { scene: CH5_BOSS, cast: ['demon'], allies: ['queen'], boss: true, final: true, stage: 'throne' },
+            { fight: 'demon', stage: 'throne' },
+            { scene: CH5_END, cast: ['demon', 'ghost'], allies: ['queen'], stage: 'throne' },
+            { walk: true, stage: 'throne' },
             { credits: true },
             { clear: true }
           ]

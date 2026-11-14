@@ -105,6 +105,8 @@ def main():
     jobs.sort(key=lambda j: (j['file'] != 'story', j['file']))  # everyone's lines first, then hero by hero
     done = json.load(open(OUT, encoding='utf-8')) if os.path.exists(OUT) else {}
     skip = set(args[args.index('--skip') + 1].split(',')) if '--skip' in args else set()
+    # voices recorded with their fight-voice engine instead (qwen_char.py <id>; the narrator: sparkle_narr.py)
+    skip |= {'mismatch', 'narr'}
     todo = [j for j in jobs if j['key'] not in done and (not only or j['voice'] in only) and j['voice'] not in skip]
     if limit:
         todo = todo[:limit]
