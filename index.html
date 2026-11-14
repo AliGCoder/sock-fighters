@@ -1113,7 +1113,7 @@
         },
 
         /** A character says one of their recorded words outside a fight (menus, ladder). Returns its length in seconds. */
-        characterLine(def, word, side, delay) {
+        characterLine(def, word, side, delay, rate) {
           const ac = Sound.context;
           const takes = FighterClips.get(def.id, word);
           if (!ac || Sound.muted || !takes) return 0;
@@ -1121,6 +1121,7 @@
           this.stopCatchphrase(side);
           const source = ac.createBufferSource();
           source.buffer = clip.buffer;
+          source.playbackRate.value = rate || 1; // above 1 = higher and quicker
           const gain = ac.createGain();
           gain.gain.value = 0.9;
           source.connect(gain);
@@ -1134,7 +1135,7 @@
           output.connect(Sound.sfxBus);
           source.start(ac.currentTime + delay, clip.offset);
           this.speaking['pick' + side] = source;
-          return clip.buffer.duration - clip.offset;
+          return (clip.buffer.duration - clip.offset) / (rate || 1);
         },
 
         stopCatchphrase(side) {
@@ -10627,7 +10628,6 @@
             k2: prev ? prev.k2 : 0,
             done1: false,
             done2: false,
-            roul: 0,
             wait: 0
           };
           if (game.mode === 'cpu') {
@@ -11246,7 +11246,6 @@
             cancelPick(0);
             if (!two && game.mode !== 'online') s.done2 = false;
             s.wait = 0;
-            s.roul = 0;
             SFX.select();
           } else if (game.mode === 'online') netLeave();
           else goBack(game.mode === 'cpu' ? 'diff' : 'mode');
@@ -11975,7 +11974,6 @@
             }
             const s = game.selection;
             s.done1 = s.done2 = false;
-            s.roul = 0;
             s.wait = 0;
             game.screen = 'select';
           }
@@ -13069,6 +13067,35 @@
         } catch (e) {}
       }
 
+      // The Queen and the Fishnet Scout have no recorded voice of their own: they borrow one, pitched to suit them.
+      const BORROWED_VOICES = { queen: { id: 'cling', rate: 1.12 }, fishnet: { id: 'socklet', rate: 0.9 } };
+
+      /** Say a story line in the speaker's voice: their catchphrase the first time they talk in a scene, then a clip
+       *  that fits the line (a laugh for jokes, a dazed sound for '...', a shout for '!'). */
+      function sceneVoice(line, S) {
+        FighterVoice.stopCatchphrase(0);
+        FighterVoice.stopCatchphrase(1);
+        if (line.who === 'narr') return;
+        const borrowed = BORROWED_VOICES[line.who];
+        const def = line.who === 'hero' ? advHero() : findCharacter(borrowed ? borrowed.id : line.who);
+        if (!def) return;
+        const rate = borrowed ? borrowed.rate : 1;
+        const side = line.who === 'hero' || line.who === 'fishnet' ? 0 : 1;
+        const text = line.text;
+        S.spoken = S.spoken || {};
+        let word;
+        if (!S.spoken[line.who] && !borrowed && FighterClips.get(def.id, 'catchphrase')) word = 'catchphrase';
+        else if (/\bHA\b|laugh|beautiful|sweetie|darling/i.test(text)) word = 'laugh';
+        else if (/^\.\.\.|^\*sniff/.test(text)) word = 'dizzy';
+        else if (/!/.test(text)) word = pick(['special', 'heavy', 'superv']);
+        else if (/\?$/.test(text)) word = 'hurt';
+        else word = pick(['light', 'win']);
+        S.spoken[line.who] = true;
+        try {
+          FighterVoice.characterLine(def, word, side, 0.05, rate);
+        } catch (e) {}
+      }
+
       function playScene(lines, onDone, state) {
         game.adv.scene = { lines, i: -1, shown: 0, t: 0, onDone, state: state || {} };
         nextSceneLine();
@@ -13078,16 +13105,15 @@
         S.i++;
         S.shown = 0;
         if (S.i >= S.lines.length) {
+          FighterVoice.stopCatchphrase(0);
+          FighterVoice.stopCatchphrase(1);
           game.adv.scene = null;
           if (S.onDone) S.onDone();
           return;
         }
         const line = S.lines[S.i];
         if (line.fx) line.fx(S.state);
-        if (line.who !== 'narr' && line.who !== 'hero' && !HOSIERY[line.who]) {
-          const d = findCharacter(line.who);
-          if (d && Math.random() < 0.6) advVoice(d, 'light');
-        }
+        sceneVoice(line, S);
       }
       const SCENE_SKIP = { x: 832, y: 370, w: 112, h: 28 };
       /** Returns true while a scene is playing (it takes the input). */
@@ -13683,7 +13709,7 @@
 
       /* ---- the Queen's palace (the hub) ---- */
       const ADV_CHAPTERS = [
-        { n: 1, name: 'THE LINT PLAINS', jp: 'リント平原', open: true },
+        { n: 1, name: 'THE LINT PLAINS', jp: 'リント平原' },
         { n: 2, name: 'THE STATIC SWAMP', jp: '静電気の沼' },
         { n: 3, name: 'THE BLEACH BADLANDS', jp: '漂白荒野' },
         { n: 4, name: 'THE IRONING FORTRESS', jp: 'アイロン要塞' },
@@ -14508,7 +14534,6 @@
           k2: 0,
           done1: false,
           done2: false,
-          roul: 0,
           wait: 0
         };
         game.screen = 'select';
@@ -14593,7 +14618,6 @@
         const s = game.selection;
         s.done1 = s.done2 = false;
         s.sentPick = s.started = false;
-        s.roul = 0;
         s.wait = 0;
         s.roll = null;
         if (s.c1 >= ROSTER.length) s.c1 = 0;
@@ -15136,6 +15160,7 @@
         Progress,
         ROSTER,
         startAdventure,
+        FighterVoice,
         hubItems: () => HUB_ITEMS(),
         startChapter,
         drawHosiery,
