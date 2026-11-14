@@ -30,7 +30,7 @@ Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N p
 
 ## Adventure mode: *Lost in the Spin Cycle*
 Main menu → **ADVENTURE**. Queen Nylonia of the Hosiery (a two-legged pantyhose people from the Island of Nylonia) appears in Dryer No. 7 and asks for a hero to stop the Dryer Demon. You pick your hero on a big hero select screen, jump through the dryer portal, and fight from the Queen's palace.
-- Each chapter is a run of normal fights with story scenes in between. **Chapter 1, The Lint Plains,** is playable: Lint Bunny, Socklet, then the boss Holey Moley. Chapters 2–5 are coming.
+- Each chapter is a run of normal fights with story scenes in between. **Chapter 1, The Lint Plains** (Lint Bunny, Socklet, boss Holey Moley) and **Chapter 2, The Static Swamp** (a static-scrambled Mecha-Sock, Toe-Shinobi, boss Cling Queen) are playable; each chapter opens when the one before is cleared. Chapters 3–5 are coming.
 - The whole story script is in [docs/adventure-mode.md](docs/adventure-mode.md).
 
 ## Modes

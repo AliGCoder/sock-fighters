@@ -9582,6 +9582,138 @@
         drawLintCrowd(t, [250, 400, 560, 700], 384, '#cfc6e2');
       }
 
+      /* --- The Static Swamp (story only): purple fog, crackling sparks, socks stuck to dead trees --- */
+      function buildSwamp(b) {
+        let g = b.createLinearGradient(0, 0, 0, 400);
+        g.addColorStop(0, '#1a0b2e');
+        g.addColorStop(0.65, '#4a2a6e');
+        g.addColorStop(1, '#6a4a8e');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // a big pale moon behind the fog
+        b.fillStyle = 'rgba(230,210,255,0.55)';
+        b.beginPath();
+        b.arc(720, 110, 54, 0, 7);
+        b.fill();
+        // dead trees with socks stuck to them by static
+        const rnd = seededRandom(17);
+        for (const [x, s] of [[90, 1.1], [300, 0.8], [640, 0.9], [880, 1.2]]) {
+          b.strokeStyle = '#1d1030';
+          b.lineCap = 'round';
+          b.lineWidth = 16 * s;
+          b.beginPath();
+          b.moveTo(x, 400);
+          b.lineTo(x + 10 * s, 400 - 220 * s);
+          b.stroke();
+          b.lineWidth = 7 * s;
+          for (const [dx, dy, ex, ey] of [[0, -150, -60, -200], [6, -180, 70, -240], [10, -210, -30, -270]]) {
+            b.beginPath();
+            b.moveTo(x + dx * s, 400 + dy * s);
+            b.lineTo(x + ex * s, 400 + ey * s);
+            b.stroke();
+          }
+          for (let k = 0; k < 2; k++) {
+            const sx = x + (rnd() - 0.5) * 70 * s,
+              sy = 400 - (150 + rnd() * 100) * s;
+            b.save();
+            b.translate(sx, sy);
+            b.rotate((rnd() - 0.5) * 1.5);
+            b.strokeStyle = INK;
+            b.lineWidth = 12;
+            b.beginPath();
+            b.moveTo(0, 0);
+            b.lineTo(0, 26);
+            b.lineTo(12, 30);
+            b.stroke();
+            b.strokeStyle = ['#ff4fa3', '#3fd0ff', '#ffe234', '#a6ff3a'][(k + Math.round(x)) % 4];
+            b.lineWidth = 8;
+            b.stroke();
+            b.restore();
+          }
+        }
+        // swamp water
+        g = b.createLinearGradient(0, 330, 0, 400);
+        g.addColorStop(0, '#3a2a5a');
+        g.addColorStop(1, '#2a1a40');
+        b.fillStyle = g;
+        b.fillRect(0, 340, W, 60);
+        perspectiveFloor(b, '#3d2a58', '#46325f', '#523c6c');
+        b.fillStyle = '#1d1030';
+        b.fillRect(0, 396, W, 6);
+        floorShade(b);
+      }
+      function drawSwamp(t) {
+        // drifting fog
+        for (let i = 0; i < 7; i++) {
+          const x = ((t * (0.2 + i * 0.04) + i * 160) % (W + 300)) - 150;
+          ctx.fillStyle = 'rgba(200,170,255,0.10)';
+          ctx.beginPath();
+          ctx.ellipse(x, 300 + (i % 3) * 30, 160, 34, 0, 0, 7);
+          ctx.fill();
+        }
+        // a balloon covered in socks, bobbing past
+        const bx = ((t * 0.3) % (W + 200)) - 100,
+          by = 130 + Math.sin(t * 0.02) * 16;
+        ctx.strokeStyle = '#ddd';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(bx, by + 40);
+        ctx.lineTo(bx + 6, by + 90);
+        ctx.stroke();
+        ctx.fillStyle = '#ff4fa3';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(bx, by, 34, 40, 0, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        for (let k = 0; k < 4; k++) {
+          const a = k * 1.6 + 0.4;
+          ctx.save();
+          ctx.translate(bx + Math.cos(a) * 26, by + Math.sin(a) * 30);
+          ctx.rotate(a);
+          ctx.strokeStyle = ['#fff', '#ffe234', '#3fd0ff', '#a6ff3a'][k];
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(0, -8);
+          ctx.lineTo(0, 6);
+          ctx.lineTo(6, 8);
+          ctx.stroke();
+          ctx.restore();
+        }
+        // static sparks crackling now and then
+        for (let i = 0; i < 4; i++) {
+          if ((t + i * 37) % 90 > 8) continue;
+          const sx = 80 + i * 240 + Math.sin(i * 7) * 60,
+            sy = 200 + Math.cos(i * 3) * 70;
+          ctx.strokeStyle = '#ffe234';
+          ctx.lineWidth = 3;
+          ctx.shadowColor = '#d38bff';
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          let x = sx,
+            y = sy;
+          ctx.moveTo(x, y);
+          for (let k = 0; k < 5; k++) {
+            x += (k % 2 ? 14 : -10) + Math.sin(t + k) * 6;
+            y += 14;
+            ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+        // bubbles in the swamp water
+        for (let i = 0; i < 6; i++) {
+          const k = ((t * 0.5 + i * 40) % 120) / 120;
+          ctx.strokeStyle = `rgba(210,180,255,${1 - k})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(60 + i * 160, 380 - k * 30, 4 + k * 6, 0, 7);
+          ctx.stroke();
+        }
+        drawLintCrowd(t, [200, 470, 760], 384, '#b9a3d8');
+      }
+
       // All arenas: name and Japanese name (shown on the VS screen), painter and animator.
       const STAGES = {
         laundry: { name: 'COIN LAUNDRY', jp: 'コインランドリー', build: buildLaundry, draw: drawLaundry },
@@ -9589,7 +9721,8 @@
         beach: { name: 'SUNSET BEACH', jp: '夕焼けビーチ', build: buildBeach, draw: drawBeach },
         dojo: { name: 'SAKURA DOJO', jp: '桜の道場', build: buildDojo, draw: drawDojo },
         dryer: { name: 'INSIDE THE DRYER', jp: '乾燥機の中', build: buildDryer, draw: drawDryer },
-        plains: { name: 'THE LINT PLAINS', jp: 'リント平原', build: buildPlains, draw: drawPlains, storyOnly: true }
+        plains: { name: 'THE LINT PLAINS', jp: 'リント平原', build: buildPlains, draw: drawPlains, storyOnly: true },
+        swamp: { name: 'THE STATIC SWAMP', jp: '静電気の沼', build: buildSwamp, draw: drawSwamp, storyOnly: true }
       };
       const STAGE_IDS = Object.keys(STAGES);
       const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder', 'awards'];
@@ -13557,11 +13690,20 @@
         { n: 5, name: 'THE TUMBLE THRONE', jp: '回転の玉座' }
       ];
       const hubButton = i => ({ x: 24, y: 104 + i * 49, w: 300, h: 42 });
+      /** A chapter can be played once it exists and the one before it is cleared. */
+      const chapterOpen = n => !!STORY_CHAPTERS[n] && (n === 1 || !!advData().cleared[n - 1]);
+
       const HUB_ITEMS = () => [
         ...ADV_CHAPTERS.map(ch => ({
           label: 'CH.' + ch.n + '  ' + ch.name,
-          sub: advData().cleared[ch.n] ? 'CLEARED ★' : ch.open ? 'TAP TO PLAY' : 'COMING SOON',
-          on: !!ch.open,
+          sub: advData().cleared[ch.n]
+            ? 'CLEARED ★'
+            : !STORY_CHAPTERS[ch.n]
+              ? 'COMING SOON'
+              : chapterOpen(ch.n)
+                ? 'TAP TO PLAY'
+                : 'CLEAR CH.' + (ch.n - 1) + ' FIRST',
+          on: chapterOpen(ch.n),
           go: () => startChapter(ch.n)
         })),
         { label: 'CHANGE HERO', sub: advHeroLook().name, on: true, go: () => openAdvSelect('hub') },
@@ -13582,10 +13724,20 @@
         { who: 'queen', text: 'We watched the whole thing through Our royal telescope. Magnificent. Mostly.' },
         { who: 'queen', text: 'You did trip over a lint bunny.' },
         { who: 'hero', text: 'It tripped ME.' },
-        { who: 'queen', text: 'Next: the Static Swamp. Our royal engineers are still building the bridge. They are... thorough.' },
-        { who: 'fishnet', text: "They've been building it for three years. It's a very nice bridge." },
-        { who: 'queen', text: 'Until then, rest, Knight. And for goodness’ sake... have a WASH.' }
+        { who: 'queen', text: 'Next: the STATIC SWAMP. Our royal engineers have FINALLY finished the bridge. It only took them three years.' },
+        { who: 'fishnet', text: "It's a very nice bridge." },
+        { who: 'queen', text: 'Go when you are ready, Knight. And for goodness’ sake... have a WASH first.' }
       ];
+      const PALACE_AFTER_CH2 = [
+        { who: 'queen', text: 'We hear Cling Queen said something about Our sheen.' },
+        { who: 'hero', text: 'She said it was... last season.' },
+        { who: 'queen', text: '...' },
+        { who: 'queen', text: 'We are going to need a moment.' },
+        { who: 'narr', text: '*The Queen stares out of the window for a very long, very dramatic moment.*' },
+        { who: 'fishnet', text: "Should we... say something?" },
+        { who: 'queen', text: 'The BLEACH BADLANDS are next. The bridge is still being built. Rest, Knight. We shall be over here. Being TIMELESS.' }
+      ];
+      const PALACE_AFTER = { 1: PALACE_AFTER_CH1, 2: PALACE_AFTER_CH2 };
 
       function toModeMenu() {
         game.adv = null;
@@ -13601,10 +13753,14 @@
           A.prologue = true;
           Progress.save();
           playScene(PALACE_ARRIVAL, null, game.adv.hub);
-        } else if (A.cleared[1] && !A.seen.afterCh1) {
-          A.seen.afterCh1 = true;
-          Progress.save();
-          playScene(PALACE_AFTER_CH1, null, game.adv.hub);
+        } else {
+          // the Queen's reaction to a chapter you've just cleared (once each)
+          const n = Object.keys(PALACE_AFTER).find(k => A.cleared[k] && !A.seen['afterCh' + k]);
+          if (n) {
+            A.seen['afterCh' + n] = true;
+            Progress.save();
+            playScene(PALACE_AFTER[n], null, game.adv.hub);
+          }
         }
       }
       function updateAdvHub() {
@@ -13802,7 +13958,16 @@
           drawText(it.sub, r.x + 14, r.y + 32, 7, FONT_PIXEL, it.on ? '#ffe234' : '#666', INK, 0, 'left');
         });
         if (Hb.note && t < Hb.note)
-          drawText('The royal engineers are still building that bridge!', 480, 520, 10, FONT_PIXEL, '#ff6b81', INK, 4);
+          drawText(
+            HUB_ITEMS()[Hb.sel] && /FIRST/.test(HUB_ITEMS()[Hb.sel].sub) ? 'Clear the chapter before it first!' : 'The royal engineers are still building that bridge!',
+            480,
+            520,
+            10,
+            FONT_PIXEL,
+            '#ff6b81',
+            INK,
+            4
+          );
         drawBackButton('MENU');
       }
 
@@ -13840,6 +14005,39 @@
         { who: 'holey', text: "Nobody knows. He just keeps muttering... 'Not her. Not her. NOT HER.'" },
         { who: 'fishnet', text: "Spooky. Let's report back to the Queen!" }
       ];
+      const CH2_INTRO = [
+        { who: 'narr', text: '*Purple fog. Crackling sparks. Everything sticks to everything. A balloon floats past, covered in socks.*' },
+        { who: 'hero', text: 'My everything is standing on end.' },
+        { who: 'fishnet', text: 'The STATIC SWAMP, Sir Knight. Cling Queen rules here. Watch your fibres.' },
+        { who: 'robo', text: 'GREETINGS. I AM HERE ON A RESCUE MISSION.' },
+        { who: 'hero', text: "You're stuck to a tree." },
+        { who: 'robo', text: 'THE RESCUE MISSION IS NOW FOR ME.' },
+        { who: 'narr', text: '*{HERO} peels him off the tree. ZAP! All the static goes straight into his circuits.*' },
+        { who: 'robo', text: 'COMPRESSION LEVEL... OVERLOAD. TARGET ACQUIRED: YOU. *beep* ...SORRY IN ADVANCE.' },
+        { who: 'fishnet', text: "He's static-scrambled! Knock the fuzz out of his circuits!" }
+      ];
+      const CH2_MID = [
+        { who: 'robo', text: 'REBOOT COMPLETE. COMPRESSION LEVEL: GRATEFUL. ALSO: EMBARRASSED.' },
+        { who: 'shinobi', text: 'Halt. Nobody crosses the swamp without passing ME.' },
+        { who: 'hero', text: 'Toe-Shinobi? Since when do you work for the Demon?' },
+        { who: 'shinobi', text: "I don't. I've been standing in this static so long, I'm stuck to the path. Fighting is the only way I can move." },
+        { who: 'fishnet', text: "That's the saddest ninja story I've ever heard." },
+        { who: 'shinobi', text: 'Then make it quick. And aim for the feet. I have five toes, so there is plenty of choice.' }
+      ];
+      const CH2_BOSS = [
+        { who: 'cling', text: 'So. NYLONIA sent a little errand sock. How sweet.' },
+        { who: 'hero', text: 'You know the Queen?' },
+        { who: 'cling', text: 'Know her? Darling, we were the two most fabulous royals in the Rinse Sea. Then she got an ISLAND and I got... *gestures at the swamp* ...THIS.' },
+        { who: 'cling', text: "There's only room for ONE queen, sweetie. And she's wearing last season's sheen." },
+        { who: 'fishnet', text: "Ooh. I'm telling her you said that." }
+      ];
+      const CH2_END = [
+        { who: 'cling', text: 'Ugh. FINE. The Demon pays me to stick the stolen socks together and float them to his throne.' },
+        { who: 'cling', text: "Don't look at me like that. A girl's gotta get her dry cleaning paid for." },
+        { who: 'hero', text: 'Where do the socks go after that?' },
+        { who: 'cling', text: 'Past the Bleach Badlands. *looks you up and down* You won\'t make it, sweetie. Your colours will FADE.' },
+        { who: 'fishnet', text: 'Rude. Accurate, maybe. But rude.' }
+      ];
       const STORY_CHAPTERS = {
         1: {
           name: 'THE LINT PLAINS',
@@ -13853,6 +14051,21 @@
             { scene: CH1_BOSS, cast: ['holey'] },
             { fight: 'holey' },
             { scene: CH1_END, cast: ['holey'] },
+            { clear: true }
+          ]
+        },
+        2: {
+          name: 'THE STATIC SWAMP',
+          stage: 'swamp',
+          tier: 'medium',
+          steps: [
+            { scene: CH2_INTRO, cast: ['robo'] },
+            { fight: 'robo' },
+            { scene: CH2_MID, cast: ['robo', 'shinobi'] },
+            { fight: 'shinobi' },
+            { scene: CH2_BOSS, cast: ['cling'] },
+            { fight: 'cling' },
+            { scene: CH2_END, cast: ['cling'] },
             { clear: true }
           ]
         }
@@ -13894,7 +14107,8 @@
         game.mode = 'cpu';
         game.arcade = { tier: ch.tier, list: fights.map(f => ({ id: f.fight, k: 0 })), stage: fights.indexOf(ch.steps[S.step]) };
         game.p1Def = advHeroLook();
-        game.p2Def = withSkin(findCharacter(ch.steps[S.step].fight), 0);
+        const foe = findCharacter(ch.steps[S.step].fight);
+        game.p2Def = withSkin(foe, foe.id === game.p1Def.id ? 1 : 0);
         game.stageId = ch.stage;
         game.screen = 'vs';
         game.versusTime = 0;
@@ -13931,7 +14145,7 @@
         drawSock(ctx, hero, pose(speaking === 'hero', 0), 270, 396, 1, fitScale(hero, 1.0), { x: 4, y: 0 });
         drawHosiery(ctx, 'fishnet', 140, 400, 0.62, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
         St.cast.forEach((id, i) => {
-          const d = withSkin(findCharacter(id), 0);
+          const d = withSkin(findCharacter(id), id === hero.id ? 1 : 0); // same as your hero? another skin
           const p = pose(speaking === id, 30 + i * 20);
           p.eyes = 'angry';
           drawSock(ctx, d, p, 700 + i * 120, 396, -1, fitScale(d, d.tall && d.tall > 1 ? 0.9 : 1.0), { x: -4, y: 0 });
@@ -14922,6 +15136,7 @@
         Progress,
         ROSTER,
         startAdventure,
+        hubItems: () => HUB_ITEMS(),
         startChapter,
         drawHosiery,
         /** tests: forget all progress */
