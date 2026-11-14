@@ -14978,11 +14978,14 @@
           steps: [
             { scene: CH1_INTRO, cast: ['lint'] },
             { fight: 'lint' },
+            { walk: true },
             { scene: CH1_MID, cast: ['socklet'] },
             { fight: 'socklet' },
+            { walk: true },
             { scene: CH1_BOSS, cast: ['holey'] },
             { fight: 'holey' },
             { scene: CH1_END, cast: ['holey'] },
+            { walk: true },
             { clear: true }
           ]
         },
@@ -14995,9 +14998,11 @@
             { fight: 'robo' },
             { scene: CH2_MID, cast: ['robo', 'shinobi'] },
             { fight: 'shinobi' },
+            { walk: true },
             { scene: CH2_BOSS, cast: ['cling'] },
             { fight: 'cling' },
             { scene: CH2_END, cast: ['cling'] },
+            { walk: true },
             { clear: true }
           ]
         }
@@ -15020,6 +15025,12 @@
           game.screen = 'advScene';
           playScene(step.scene, nextStoryStep, game.adv.stage);
         } else if (step.fight) startStoryFight();
+        else if (step.walk) {
+          // the hero and the Scout walk off the edge of the arena; whoever they just beat lies dazed on the floor
+          const prev = ch.steps[S.step - 1];
+          game.adv.walk = { t: 0, stageId: ch.stage, foe: prev && prev.fight ? prev.fight : null };
+          game.screen = 'advWalk';
+        }
         else if (step.clear) {
           const A = advData();
           A.cleared[S.chapter] = true;
@@ -15096,6 +15107,62 @@
           drawSock(ctx, d, p, 700 + i * 120, 396, -1, fitScale(d, d.tall && d.tall > 1 ? 0.9 : 1.0), { x: -4, y: 0 });
         });
         drawSceneBox();
+      }
+
+      // walking on to the next part of the story (tap to skip)
+      const WALK_FRAMES = 200;
+      function updateAdvWalk() {
+        const Wk = game.adv.walk;
+        Wk.t++;
+        if (Wk.t === 30 || Wk.t === 90) SFX.jump();
+        const skip = wasPressed(...CONFIRM_KEYS, 'Escape') || game.click;
+        game.click = null;
+        if (Wk.t >= WALK_FRAMES || (skip && Wk.t > 15)) nextStoryStep();
+      }
+      function drawAdvWalk() {
+        const Wk = game.adv.walk,
+          t = Wk.t;
+        drawStage(0, Wk.stageId);
+        // the villain they just beat, flat on the floor and seeing stars
+        if (Wk.foe) {
+          const foe = withSkin(findCharacter(Wk.foe), Wk.foe === advHero().id ? 1 : 0);
+          const pl = basePose();
+          pl.rot = -1.5;
+          pl.yOff = 41;
+          pl.bodyH = 60;
+          pl.footLen = 48;
+          pl.sy = 0.75;
+          pl.eyes = 'spiral';
+          pl.mouth = 'tongue';
+          drawSock(ctx, foe, pl, 700, GROUND, -1, fitScale(foe, 1.0), { x: 0, y: 0 });
+          for (let i = 0; i < 3; i++) {
+            const a = t * 0.08 + (i * Math.PI * 2) / 3;
+            starPath(ctx, 690 + Math.cos(a) * 34, GROUND - 70 + Math.sin(a) * 10, 7, a);
+            ctx.fillStyle = '#ffe234';
+            ctx.fill();
+          }
+        }
+        // the hero strolls off to the right, the Scout tags along behind
+        const k = Math.max(0, (t - 20) / (WALK_FRAMES - 40));
+        const heroX = 300 + k * 860,
+          scoutX = heroX - 150;
+        const hero = advHeroLook();
+        const p = basePose();
+        const step = Math.sin(t * 0.3);
+        p.yOff = -Math.abs(step) * 9;
+        p.lean = 0.12;
+        p.front = { x: 30 + step * 14, y: -18 };
+        p.back = { x: 20 - step * 14, y: -30 };
+        p.eyes = 'happy';
+        p.mouth = 'grin';
+        drawSock(ctx, hero, p, heroX, GROUND, 1, fitScale(hero, 1.0), { x: 4, y: 0 });
+        drawHosiery(ctx, 'fishnet', scoutX, GROUND + 4, 0.95, 1, t, { walk: true });
+        if (t < 70) drawText('ONWARD!', 300, 150, 40, FONT_COMIC, '#ffe234', INK, 8);
+        if (t > WALK_FRAMES - 25) {
+          ctx.fillStyle = 'rgba(8,4,18,' + Math.min(1, (t - (WALK_FRAMES - 25)) / 25) + ')';
+          ctx.fillRect(0, 0, W, H);
+        }
+        if (t > 15) drawText(IS_TOUCH ? 'TAP TO SKIP' : 'SPACE / TAP TO SKIP', W - 80, H - 16, 7, FONT_PIXEL, '#ccc', INK, 0);
       }
 
       // chapter clear
@@ -15905,7 +15972,8 @@
         advPortal: { update: updateAdvPortal, draw: drawAdvPortal },
         advHub: { update: updateAdvHub, draw: drawAdvHub },
         advScene: { update: updateAdvScene, draw: drawAdvScene },
-        advClear: { update: updateAdvClear, draw: drawAdvClear }
+        advClear: { update: updateAdvClear, draw: drawAdvClear },
+        advWalk: { update: updateAdvWalk, draw: drawAdvWalk }
       };
 
       function updateGame() {
