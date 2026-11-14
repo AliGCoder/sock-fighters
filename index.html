@@ -14481,119 +14481,241 @@
         }
       }
 
-      /** The palace: lilac hall, silk curtains, a window over the Rinse Sea with the Demon's smoke far away. */
+      /** The Queen's throne room: one grand arched window over the Rinse Sea (the Demon's smoke far away), velvet
+       *  curtains tied back, smooth pillars, a beam of light on the marble floor. Every shape keeps to its own space:
+       *  nothing crosses the window, nothing hangs over anything else. */
       function drawPalace(t) {
+        // deep royal wall, a soft glow around the window
         let g = ctx.createLinearGradient(0, 0, 0, 400);
-        g.addColorStop(0, '#3a1f6e');
-        g.addColorStop(1, '#8a64c9');
+        g.addColorStop(0, '#140726');
+        g.addColorStop(1, '#3d1d6b');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, W, 400);
-        // the big arched window
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(470, 340);
-        ctx.lineTo(470, 120);
-        ctx.arc(600, 120, 130, Math.PI, 0);
-        ctx.lineTo(730, 340);
-        ctx.closePath();
-        ctx.clip();
-        g = ctx.createLinearGradient(0, 0, 0, 340);
-        g.addColorStop(0, '#ffb3d9');
-        g.addColorStop(0.6, '#ffe0a8');
-        g.addColorStop(1, '#7fd6ff');
+        g = ctx.createRadialGradient(600, 200, 40, 600, 200, 330);
+        g.addColorStop(0, 'rgba(255,190,235,0.32)');
+        g.addColorStop(1, 'rgba(255,190,235,0)');
         ctx.fillStyle = g;
-        ctx.fillRect(460, 0, 280, 340);
-        ctx.fillStyle = '#3fa0d8';
-        ctx.fillRect(460, 250, 280, 90);
-        for (let i = 0; i < 6; i++) {
-          ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-          ctx.lineWidth = 2;
+        ctx.fillRect(250, 0, 700, 400);
+        // the arched window: everything inside is clipped to it
+        const arch = () => {
           ctx.beginPath();
-          const y = 262 + i * 13,
-            off = (t * 0.4 + i * 30) % 60;
-          ctx.moveTo(470 + off, y);
-          ctx.lineTo(500 + off, y);
-          ctx.moveTo(600 - off, y + 4);
-          ctx.lineTo(640 - off, y + 4);
-          ctx.stroke();
-        }
-        // the Demon's smoke, far away
+          ctx.moveTo(480, 340);
+          ctx.lineTo(480, 150);
+          ctx.arc(600, 150, 120, Math.PI, 0);
+          ctx.lineTo(720, 340);
+          ctx.closePath();
+        };
+        ctx.save();
+        arch();
+        ctx.clip();
+        g = ctx.createLinearGradient(0, 30, 0, 340);
+        g.addColorStop(0, '#2a1458');
+        g.addColorStop(0.45, '#c05a9a');
+        g.addColorStop(0.75, '#ffb46b');
+        g.addColorStop(1, '#ffd9a0');
+        ctx.fillStyle = g;
+        ctx.fillRect(480, 30, 240, 310);
+        // a low sun on the horizon
+        ctx.fillStyle = 'rgba(255,236,170,0.9)';
+        ctx.beginPath();
+        ctx.arc(560, 268, 26, 0, 7);
+        ctx.fill();
+        // the sea, with soft glints
+        g = ctx.createLinearGradient(0, 270, 0, 340);
+        g.addColorStop(0, '#5a4aa8');
+        g.addColorStop(1, '#22306e');
+        ctx.fillStyle = g;
+        ctx.fillRect(480, 270, 240, 70);
         for (let i = 0; i < 7; i++) {
-          const k = ((t * 0.5 + i * 22) % 150) / 150;
-          ctx.fillStyle = `rgba(40,20,30,${0.5 * (1 - k)})`;
+          const k = ((t * 0.25 + i * 37) % 60) / 60;
+          ctx.fillStyle = `rgba(255,220,170,${0.5 * (1 - k)})`;
           ctx.beginPath();
-          ctx.arc(670 + Math.sin(k * 4 + i) * 8, 248 - k * 160, 8 + k * 20, 0, 7);
+          ctx.ellipse(520 + i * 30, 282 + (i % 3) * 16, 10 + k * 6, 2, 0, 0, 7);
           ctx.fill();
         }
-        ctx.fillStyle = '#ff5a1f';
+        // the Tumble Throne far out at sea: a dark speck with smoke rising
+        ctx.fillStyle = '#1a0a1a';
         ctx.beginPath();
-        ctx.arc(670, 250, 6 + Math.sin(t * 0.2) * 2, 0, 7);
+        ctx.ellipse(668, 272, 9, 4, 0, 0, 7);
         ctx.fill();
-        ctx.restore();
-        ctx.strokeStyle = '#ffd23f';
-        ctx.lineWidth = 8;
-        ctx.beginPath();
-        ctx.moveTo(470, 340);
-        ctx.lineTo(470, 120);
-        ctx.arc(600, 120, 130, Math.PI, 0);
-        ctx.lineTo(730, 340);
-        ctx.stroke();
-        ctx.strokeStyle = '#d4a017';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(600, -10);
-        ctx.lineTo(600, 340);
-        ctx.moveTo(470, 200);
-        ctx.lineTo(730, 200);
-        ctx.stroke();
-        // silk curtains
-        for (const [x, dir] of [[440, 1], [760, -1]]) {
-          ctx.fillStyle = '#c6a4ff';
-          ctx.strokeStyle = INK;
-          ctx.lineWidth = 3;
+        for (let i = 0; i < 7; i++) {
+          const k = ((t * 0.4 + i * 22) % 150) / 150;
+          ctx.fillStyle = `rgba(40,16,36,${0.55 * (1 - k)})`;
           ctx.beginPath();
-          ctx.moveTo(x - 40 * dir, -10);
-          ctx.quadraticCurveTo(x + 30 * dir + Math.sin(t * 0.03) * 4, 170, x - 10 * dir, 400);
-          ctx.lineTo(x - 60 * dir, 400);
-          ctx.lineTo(x - 60 * dir, -10);
+          ctx.arc(668 + Math.sin(k * 4 + i) * 6, 266 - k * 150, 6 + k * 18, 0, 7);
+          ctx.fill();
+        }
+        ctx.fillStyle = `rgba(255,90,31,${0.6 + 0.4 * Math.sin(t * 0.2)})`;
+        ctx.beginPath();
+        ctx.arc(668, 270, 3, 0, 7);
+        ctx.fill();
+        // a stained-glass rose at the top of the arch: soft coloured petals, no lead lines
+        const rose = ['#ff4fa3', '#c6a4ff', '#3fd0ff', '#ffd23f'];
+        for (let k = 0; k < 12; k++) {
+          ctx.fillStyle = rose[k % 4];
+          ctx.globalAlpha = 0.28;
+          ctx.beginPath();
+          ctx.moveTo(600, 120);
+          ctx.arc(600, 120, 62, (k / 12) * Math.PI * 2 + 0.04, ((k + 1) / 12) * Math.PI * 2 - 0.04);
           ctx.closePath();
           ctx.fill();
-          ctx.stroke();
         }
-        // columns
-        for (const x of [330, 880]) {
-          ctx.fillStyle = '#efe2ff';
-          ctx.fillRect(x - 22, 0, 44, 400);
-          ctx.strokeStyle = INK;
-          ctx.lineWidth = 3;
-          ctx.strokeRect(x - 22, -4, 44, 404);
-          ctx.strokeStyle = 'rgba(122,79,201,0.4)';
-          for (let k = -12; k <= 12; k += 8) {
-            ctx.beginPath();
-            ctx.moveTo(x + k, 0);
-            ctx.lineTo(x + k, 400);
-            ctx.stroke();
-          }
-        }
-        // marble floor
-        perspectiveFloor(ctx, '#d9c9f2', '#efe5ff', '#c6b2ea');
-        ctx.fillStyle = '#7a4fc9';
-        ctx.fillRect(0, 396, W, 6);
-        // a royal carpet to the throne
-        ctx.fillStyle = '#c8202f';
+        ctx.globalAlpha = 0.5;
+        ctx.fillStyle = '#fff3d6';
         ctx.beginPath();
-        ctx.moveTo(640, 400);
-        ctx.lineTo(760, 400);
-        ctx.lineTo(900, 540);
-        ctx.lineTo(560, 540);
+        ctx.arc(600, 120, 16, 0, 7);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        ctx.restore();
+        // the gold frame (two concentric strokes that never cross the glass)
+        arch();
+        ctx.strokeStyle = '#d4a017';
+        ctx.lineWidth = 14;
+        ctx.stroke();
+        arch();
+        ctx.strokeStyle = '#ffe58a';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        // the sill
+        roundRectPath(ctx, 466, 336, 268, 14, 4);
+        ctx.fillStyle = '#d4a017';
+        ctx.fill();
+        // velvet curtains, tied back beside the window
+        for (const dir of [-1, 1]) {
+          const edge = dir < 0 ? 470 : 730;
+          const outer = edge + dir * 62;
+          g = ctx.createLinearGradient(edge, 0, outer, 0);
+          g.addColorStop(0, '#a01e6e');
+          g.addColorStop(1, '#5a0a3e');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.moveTo(edge - dir * 6, 0);
+          ctx.lineTo(outer, 0);
+          ctx.lineTo(outer, 400);
+          ctx.lineTo(outer - dir * 30, 400);
+          ctx.quadraticCurveTo(outer - dir * 14, 300, edge + dir * 4, 236);
+          ctx.quadraticCurveTo(edge - dir * 4, 120, edge - dir * 6, 0);
+          ctx.closePath();
+          ctx.fill();
+          // soft folds as lighter bands (filled, not lines)
+          ctx.fillStyle = 'rgba(255,140,200,0.14)';
+          for (const f of [0.35, 0.7]) {
+            const x = edge + dir * 62 * f;
+            ctx.beginPath();
+            ctx.ellipse(x, 120, 5, 120, 0, 0, 7);
+            ctx.fill();
+          }
+          // the gold tie-back
+          ctx.fillStyle = '#ffd23f';
+          ctx.beginPath();
+          ctx.ellipse(edge + dir * 20, 238, 16, 7, dir * 0.4, 0, 7);
+          ctx.fill();
+          ctx.fillStyle = '#d4a017';
+          ctx.beginPath();
+          ctx.arc(edge + dir * 34, 250, 6, 0, 7);
+          ctx.fill();
+        }
+        // smooth marble pillars, well apart from everything else
+        for (const x of [372, 908]) {
+          g = ctx.createLinearGradient(x - 22, 0, x + 22, 0);
+          g.addColorStop(0, '#c9b8ea');
+          g.addColorStop(0.45, '#f6f0ff');
+          g.addColorStop(1, '#a99ad0');
+          ctx.fillStyle = g;
+          ctx.fillRect(x - 22, 24, 44, 360);
+          ctx.fillStyle = '#d4a017';
+          roundRectPath(ctx, x - 30, 10, 60, 18, 4);
+          ctx.fill();
+          roundRectPath(ctx, x - 30, 378, 60, 18, 4);
+          ctx.fill();
+        }
+        // the marble floor, a gold edge, and a royal carpet with a gold border
+        perspectiveFloor(ctx, '#d9c9f2', '#efe5ff', '#c6b2ea');
+        ctx.fillStyle = '#d4a017';
+        ctx.fillRect(0, 394, W, 8);
+        ctx.fillStyle = '#d4a017';
+        ctx.beginPath();
+        ctx.moveTo(632, 402);
+        ctx.lineTo(768, 402);
+        ctx.lineTo(912, 540);
+        ctx.lineTo(548, 540);
         ctx.closePath();
         ctx.fill();
-        // seamed guards marching across the back
-        for (let i = 0; i < 2; i++) {
-          const k = ((t * 0.6 + i * 300) % 700) / 700;
-          const goingRight = Math.floor((t * 0.6 + i * 300) / 700) % 2 === 0;
-          const x = goingRight ? 380 + k * 120 : 500 - k * 120;
-          drawHosiery(ctx, 'seamed', x + i * 360, 392, 0.42, goingRight ? 1 : -1, t + i * 50, { walk: true });
+        ctx.fillStyle = '#9b1c3a';
+        ctx.beginPath();
+        ctx.moveTo(640, 402);
+        ctx.lineTo(760, 402);
+        ctx.lineTo(896, 540);
+        ctx.lineTo(564, 540);
+        ctx.closePath();
+        ctx.fill();
+        // the beam of light from the window onto the floor, with drifting sparkles
+        g = ctx.createLinearGradient(0, 340, 0, 540);
+        g.addColorStop(0, 'rgba(255,225,245,0.22)');
+        g.addColorStop(1, 'rgba(255,225,245,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.moveTo(486, 344);
+        ctx.lineTo(714, 344);
+        ctx.lineTo(820, 540);
+        ctx.lineTo(400, 540);
+        ctx.closePath();
+        ctx.fill();
+        for (let i = 0; i < 14; i++) {
+          const k = ((t * 0.3 + i * 29) % 200) / 200;
+          const x = 500 + ((i * 53) % 220) + k * 40,
+            y = 350 + k * 170;
+          ctx.fillStyle = `rgba(255,255,255,${0.6 * Math.sin(k * Math.PI)})`;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.6 + (i % 3) * 0.6, 0, 7);
+          ctx.fill();
+        }
+        // a guard standing to attention between the pillar and the curtain
+        drawHosiery(ctx, 'seamed', 420, 398, 0.42, 1, t, {});
+      }
+
+      /** The Queen's throne on a raised dais: a tall crown-topped back with velvet inside. */
+      function drawThrone() {
+        // the dais: two broad steps
+        roundRectPath(ctx, 690, 450, 200, 22, 6);
+        ctx.fillStyle = '#8f7ac0';
+        ctx.fill();
+        roundRectPath(ctx, 708, 434, 164, 20, 6);
+        ctx.fillStyle = '#b8a5e0';
+        ctx.fill();
+        ctx.fillStyle = '#d4a017';
+        ctx.fillRect(690, 450, 200, 3);
+        ctx.fillRect(708, 434, 164, 3);
+        // the throne back, topped with a crown shape
+        ctx.beginPath();
+        ctx.moveTo(724, 440);
+        ctx.lineTo(724, 250);
+        ctx.lineTo(748, 222);
+        ctx.lineTo(768, 244);
+        ctx.lineTo(790, 206);
+        ctx.lineTo(812, 244);
+        ctx.lineTo(832, 222);
+        ctx.lineTo(856, 250);
+        ctx.lineTo(856, 440);
+        ctx.closePath();
+        ctx.fillStyle = '#ffd23f';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        roundRectPath(ctx, 740, 258, 100, 176, 14);
+        const g = ctx.createLinearGradient(740, 0, 840, 0);
+        g.addColorStop(0, '#5a0a6e');
+        g.addColorStop(0.5, '#8a2aa8');
+        g.addColorStop(1, '#5a0a6e');
+        ctx.fillStyle = g;
+        ctx.fill();
+        // jewels on the crown points
+        for (const [x, y, c] of [[748, 230, '#3fd0ff'], [790, 214, '#ff4fa3'], [832, 230, '#3fd0ff']]) {
+          ctx.fillStyle = c;
+          ctx.beginPath();
+          ctx.arc(x, y, 5, 0, 7);
+          ctx.fill();
         }
       }
 
@@ -14603,16 +14725,8 @@
         drawPalace(t);
         const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         // the throne and the Queen
-        roundRectPath(ctx, 720, 250, 140, 200, 20);
-        ctx.fillStyle = '#ffd23f';
-        ctx.fill();
-        ctx.strokeStyle = INK;
-        ctx.lineWidth = 4;
-        ctx.stroke();
-        roundRectPath(ctx, 736, 270, 108, 170, 14);
-        ctx.fillStyle = '#7a1f9a';
-        ctx.fill();
-        drawHosiery(ctx, 'queen', 790, 462, 1.05, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        drawThrone();
+        drawHosiery(ctx, 'queen', 790, 444, 1.05, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
         // your hero and the scout
         const def = advHeroLook();
         const p = idleAnim(basePose(), t);
