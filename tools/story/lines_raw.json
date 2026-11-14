@@ -1,0 +1,1178 @@
+{
+ "PROLOGUE": [
+  {
+   "who": "narr",
+   "text": "The coin laundry. Midnight. Somewhere, a sock is about to go missing..."
+  },
+  {
+   "who": "narr",
+   "text": "*Dryer No. 7 starts spinning by itself. A sock is sucked toward the door!*"
+  },
+  {
+   "who": "stinky",
+   "text": "HEY! THAT'S MY OTHER HALF!"
+  },
+  {
+   "who": "gran",
+   "text": "In my day, socks went missing the honest way. Behind the radiator! ...Oh, my back."
+  },
+  {
+   "who": "narr",
+   "text": "*The dryer window glows purple. A glamorous face appears in the glass...*"
+  },
+  {
+   "who": "queen",
+   "text": "Greetings, single-leggers. We are QUEEN NYLONIA, ruler of the Hosiery and of the beautiful Island of Nylonia."
+  },
+  {
+   "who": "argyle",
+   "text": "Why is she saying \"we\"? There is one of her."
+  },
+  {
+   "who": "queen",
+   "text": "We have TWO LEGS, darling. We are ALWAYS a \"we\"."
+  },
+  {
+   "who": "queen",
+   "text": "Listen carefully, for We will only say this once. ...Twice if you are slow."
+  },
+  {
+   "who": "queen",
+   "text": "The DRYER DEMON has awoken. He steals your socks. He steals Our stockings. Soon there will be nothing left in any drawer, in any world."
+  },
+  {
+   "who": "queen",
+   "text": "We need... a HERO."
+  },
+  {
+   "who": "narr",
+   "text": "*Everyone looks at Stinky Tabi. Stinky Tabi looks behind himself.*"
+  },
+  {
+   "who": "stinky",
+   "text": "...Me?"
+  },
+  {
+   "who": "queen",
+   "text": "We asked for a hero. Not a... *sniff* ...gym bag."
+  },
+  {
+   "who": "stinky",
+   "text": "He took my other half, lady. I'm going."
+  },
+  {
+   "who": "argyle",
+   "text": "Then we all go. The way of the sock is never to walk alone."
+  },
+  {
+   "who": "queen",
+   "text": "Very well. Choose who answers Our call. Bring snacks. Do NOT touch Our curtains."
+  }
+ ],
+ "PALACE_ARRIVAL": [
+  {
+   "who": "queen",
+   "text": "Welcome to Nylonia. Please wipe your... *looks at your foot* ...everything."
+  },
+  {
+   "who": "queen",
+   "text": "See that smoke over the sea? That is the TUMBLE THRONE, where the Demon sits."
+  },
+  {
+   "who": "queen",
+   "text": "To reach it, you must defeat his four generals. We shall send Our finest Hosiery with you."
+  },
+  {
+   "who": "fishnet",
+   "text": "Reporting for duty, Your Majesty!"
+  },
+  {
+   "who": "queen",
+   "text": "...And this is Our finest?"
+  },
+  {
+   "who": "fishnet",
+   "text": "I've got lots of holes, so I'm very breathable on long trips."
+  },
+  {
+   "who": "queen",
+   "text": "First, the LINT PLAINS. Go, Knight. And if anything touches Our curtains, We will KNOW."
+  }
+ ],
+ "PALACE_AFTER_CH1": [
+  {
+   "who": "queen",
+   "text": "We watched the whole thing through Our royal telescope. Magnificent. Mostly."
+  },
+  {
+   "who": "queen",
+   "text": "You did trip over a lint bunny."
+  },
+  {
+   "who": "hero",
+   "text": "It tripped ME."
+  },
+  {
+   "who": "queen",
+   "text": "Next: the STATIC SWAMP. Our royal engineers have FINALLY finished the bridge. It only took them three years."
+  },
+  {
+   "who": "fishnet",
+   "text": "It's a very nice bridge."
+  },
+  {
+   "who": "queen",
+   "text": "Go when you are ready, Knight. And for goodness’ sake... have a WASH first."
+  }
+ ],
+ "PALACE_AFTER_CH2": [
+  {
+   "who": "queen",
+   "text": "We hear the Demon has been going about disguised as... a PRINCESS?"
+  },
+  {
+   "who": "hero",
+   "text": "Princess Baby Bootie. With a tiara. And a spinning rattle."
+  },
+  {
+   "who": "queen",
+   "text": "A PRINCESS?! Without Our royal permission?! We have not even APPROVED that tiara!"
+  },
+  {
+   "who": "queen",
+   "text": "...We also hear Cling Queen said something about Our sheen."
+  },
+  {
+   "who": "hero",
+   "text": "She said it was... last season. That part wasn't the hypnosis."
+  },
+  {
+   "who": "queen",
+   "text": "..."
+  },
+  {
+   "who": "queen",
+   "text": "We are going to need a moment."
+  },
+  {
+   "who": "narr",
+   "text": "*The Queen stares out of the window for a very long, very dramatic moment.*"
+  },
+  {
+   "who": "fishnet",
+   "text": "Should we... say something?"
+  },
+  {
+   "who": "queen",
+   "text": "The BLEACH BADLANDS are next. Go, Knight. We shall be over here. Being TIMELESS."
+  }
+ ],
+ "PALACE_AFTER_CH3": [
+  {
+   "who": "queen",
+   "text": "The Bleach Baron, defeated! The fish of the Rinse Sea have their colours back."
+  },
+  {
+   "who": "queen",
+   "text": "One of them sent Us a thank-you note. It is VERY wet."
+  },
+  {
+   "who": "fishnet",
+   "text": "It's mostly just a drawing of a fish. Signed: 'a fish'."
+  },
+  {
+   "who": "queen",
+   "text": "Next: the IRONING FORTRESS, where the Iron Shogun flattens anything with a wrinkle."
+  },
+  {
+   "who": "queen",
+   "text": "...Knight. We have noticed you are EXTREMELY wrinkly. Do be careful."
+  },
+  {
+   "who": "hero",
+   "text": "I'm a sock! I'm SUPPOSED to be wrinkly!"
+  },
+  {
+   "who": "queen",
+   "text": "That is exactly what a wrinkle would say."
+  }
+ ],
+ "PALACE_AFTER_CH4": [
+  {
+   "who": "queen",
+   "text": "Heartbreak? *quietly* ...We know a little about that."
+  },
+  {
+   "who": "fishnet",
+   "text": "Your Majesty?"
+  },
+  {
+   "who": "queen",
+   "text": "*VERY loudly* ANYWAY! The Tumble Throne lies beneath the sea. This time, WE are coming with you."
+  },
+  {
+   "who": "queen",
+   "text": "We do not normally go places that are this... DAMP. But for Our people, We shall make an exception."
+  },
+  {
+   "who": "queen",
+   "text": "Somebody fetch Our waterproof crown."
+  },
+  {
+   "who": "fishnet",
+   "text": "Your Majesty, that is just a crown with a shower cap on it."
+  },
+  {
+   "who": "queen",
+   "text": "It is FASHION."
+  }
+ ],
+ "PALACE_AFTER_CH5": [
+  {
+   "who": "narr",
+   "text": "*THE ROYAL LAUNDRY BALL. Socks and Hosiery dance together. The Demon is running the cloakroom.*"
+  },
+  {
+   "who": "queen",
+   "text": "For saving both Our worlds, We name you... KNIGHT OF THE ROYAL DRAWER!"
+  },
+  {
+   "who": "hero",
+   "text": "Do I get a crown?"
+  },
+  {
+   "who": "queen",
+   "text": "You get a WASHING. Immediately."
+  },
+  {
+   "who": "demon",
+   "text": "Welcome to the cloakroom. Lost socks are returned within one thousand years. ...We are working on that."
+  },
+  {
+   "who": "cling",
+   "text": "Love the ball, Nylonia. Shame about the sheen."
+  },
+  {
+   "who": "queen",
+   "text": "...GUARDS."
+  },
+  {
+   "who": "king",
+   "text": "Lovely party! Everybody KNEEL! ...Sorry. The hypnosis wore off. The bossiness did not."
+  },
+  {
+   "who": "demon",
+   "text": "And no more disguises. I promise. *briefly turns into a coat rack* ...Old habits."
+  },
+  {
+   "who": "gran",
+   "text": "Now can somebody help me down from this chandelier? I don't know how I got up here either."
+  },
+  {
+   "who": "fishnet",
+   "text": "Best. Mission. EVER."
+  }
+ ],
+ "CH1_INTRO": [
+  {
+   "who": "hero",
+   "text": "Ugh. It's like walking on a sweater that gave up."
+  },
+  {
+   "who": "fishnet",
+   "text": "The LINT PLAINS, Sir Knight! The Demon's Lint Gang guards the way to the Static Swamp."
+  },
+  {
+   "who": "lint",
+   "text": "HALT! You are entering the land of the... *ACHOO!* ...LINT GANG!"
+  },
+  {
+   "who": "narr",
+   "text": "*Three tiny Lint Gang members tumble out of the sneeze.*"
+  },
+  {
+   "who": "hero",
+   "text": "Bless you."
+  },
+  {
+   "who": "lint",
+   "text": "*sniffles* Nobody ever says bless you."
+  },
+  {
+   "who": "hero",
+   "text": "...Did you just sneeze out your whole GANG?"
+  },
+  {
+   "who": "lint",
+   "text": "Every Lint Gang member is born from a sneeze. It's beautiful, actually."
+  },
+  {
+   "who": "lint",
+   "text": "We are FOUR THOUSAND strong!"
+  },
+  {
+   "who": "hero",
+   "text": "There are four of you."
+  },
+  {
+   "who": "lint",
+   "text": "Then watch me make MORE! *Ah... AH...*"
+  },
+  {
+   "who": "narr",
+   "text": "*...Nothing comes out.*"
+  },
+  {
+   "who": "lint",
+   "text": "...That was a practice one."
+  },
+  {
+   "who": "lint",
+   "text": "*Ah... AHH... AHHHHHH...* BIG ONE!"
+  },
+  {
+   "who": "narr",
+   "text": "*A MASSIVE sneeze-wind blasts across the plains! Everybody is covered in fluff. The Lint Gang runs for it!*"
+  },
+  {
+   "who": "fishnet",
+   "text": "I'm FUZZY! There's lint in ALL my holes!"
+  },
+  {
+   "who": "hero",
+   "text": "...I'm a sweater now."
+  },
+  {
+   "who": "lint",
+   "text": "My gang... ran away. *sniff* ...FINE! I'll fight you MYSELF!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Go get him, Sir Knight! I'd help, but I'm mostly holes."
+  }
+ ],
+ "CH1_MID": [
+  {
+   "who": "socklet",
+   "text": "HEY! You beat up my cousin!"
+  },
+  {
+   "who": "hero",
+   "text": "You're related to the Lint Gang?"
+  },
+  {
+   "who": "socklet",
+   "text": "We're ALL related to the Lint Gang. It's a whole sneeze thing."
+  },
+  {
+   "who": "fishnet",
+   "text": "This is the weirdest family tree I have ever seen."
+  },
+  {
+   "who": "socklet",
+   "text": "I may be tiny, but these ankles are FAST. Try to keep up!"
+  }
+ ],
+ "CH1_BOSS": [
+  {
+   "who": "holey",
+   "text": "Nobody passes! The Demon made ME guardian of the plains!"
+  },
+  {
+   "who": "hero",
+   "text": "You're more hole than sock."
+  },
+  {
+   "who": "holey",
+   "text": "I'm *breathable*."
+  },
+  {
+   "who": "fishnet",
+   "text": "Hey. That's MY thing."
+  }
+ ],
+ "CH1_END": [
+  {
+   "who": "holey",
+   "text": "The Demon said if I guarded the plains, he'd fix my holes. *a moth flies out of his mouth* ...He hasn't fixed my holes."
+  },
+  {
+   "who": "hero",
+   "text": "Why does he even want all these socks?"
+  },
+  {
+   "who": "holey",
+   "text": "Nobody knows. He just keeps muttering... 'Not her. Not her. NOT HER.'"
+  },
+  {
+   "who": "fishnet",
+   "text": "Spooky. Let's report back to the Queen!"
+  }
+ ],
+ "CH2_INTRO": [
+  {
+   "who": "narr",
+   "text": "*Purple fog. Crackling sparks. Everything sticks to everything. A balloon floats past, covered in socks.*"
+  },
+  {
+   "who": "hero",
+   "text": "My everything is standing on end."
+  },
+  {
+   "who": "fishnet",
+   "text": "The STATIC SWAMP, Sir Knight. Cling Queen rules here. Watch your fibres."
+  },
+  {
+   "who": "robo",
+   "text": "GREETINGS. I AM HERE ON A RESCUE MISSION."
+  },
+  {
+   "who": "hero",
+   "text": "You're stuck to a tree."
+  },
+  {
+   "who": "robo",
+   "text": "THE RESCUE MISSION IS NOW FOR ME."
+  },
+  {
+   "who": "narr",
+   "text": "*{HERO} peels him off the tree. ZAP! All the static goes straight into his circuits.*"
+  },
+  {
+   "who": "robo",
+   "text": "COMPRESSION LEVEL... OVERLOAD. TARGET ACQUIRED: YOU. *beep* ...SORRY IN ADVANCE."
+  },
+  {
+   "who": "fishnet",
+   "text": "He's static-scrambled! Knock the fuzz out of his circuits!"
+  }
+ ],
+ "CH2_MID": [
+  {
+   "who": "robo",
+   "text": "REBOOT COMPLETE. COMPRESSION LEVEL: GRATEFUL. ALSO: EMBARRASSED."
+  },
+  {
+   "who": "shinobi",
+   "text": "Halt. Nobody crosses the swamp without passing ME."
+  },
+  {
+   "who": "hero",
+   "text": "Toe-Shinobi? Since when do you work for the Demon?"
+  },
+  {
+   "who": "shinobi",
+   "text": "I don't. I've been standing in this static so long, I'm stuck to the path. Fighting is the only way I can move."
+  },
+  {
+   "who": "fishnet",
+   "text": "That's the saddest ninja story I've ever heard."
+  },
+  {
+   "who": "shinobi",
+   "text": "Then make it quick. And aim for the feet. I have five toes, so there is plenty of choice."
+  }
+ ],
+ "CH2_BOSS": [
+  {
+   "who": "cling",
+   "text": "So. NYLONIA sent a little errand sock. How sweet."
+  },
+  {
+   "who": "fishnet",
+   "text": "Sir Knight... why are her eyes doing that swirly thing?"
+  },
+  {
+   "who": "cling",
+   "text": "Swirly? Darling, these are my FABULOUS eyes. I serve the Demon. I serve the Demon. I serve the... *twitch* ...the Demon."
+  },
+  {
+   "who": "hero",
+   "text": "She said that three times. That is NOT normal."
+  },
+  {
+   "who": "cling",
+   "text": "There's only room for ONE queen, sweetie. And she's wearing last season's sheen."
+  },
+  {
+   "who": "fishnet",
+   "text": "Okay. THAT part sounded exactly like her."
+  },
+  {
+   "who": "cling",
+   "text": "Now hold still, darling. The Demon wants you... STUCK!"
+  }
+ ],
+ "CH2_END": [
+  {
+   "who": "narr",
+   "text": "*Cling Queen wobbles. Her swirly eyes spin... slower... and slower...*"
+  },
+  {
+   "who": "narr",
+   "text": "*POP! The swirls fade from Cling Queen's eyes.*"
+  },
+  {
+   "who": "cling",
+   "text": "*blinks* ...Why am I in a fight? Why is my lily crown on BACKWARDS?"
+  },
+  {
+   "who": "hero",
+   "text": "You've been working for the Dryer Demon!"
+  },
+  {
+   "who": "cling",
+   "text": "ME? WORK? Darling, I have never worked a day in my life."
+  },
+  {
+   "who": "cling",
+   "text": "The last thing I remember... it was a month ago..."
+  }
+ ],
+ "CH2_FLASHBACK": [
+  {
+   "who": "narr",
+   "text": "*FLASHBACK. The Static Swamp, one month ago...*"
+  },
+  {
+   "who": "cling",
+   "text": "Another day of being FABULOUS in a swamp. Alone. As usual. *sigh*"
+  },
+  {
+   "who": "narr",
+   "text": "*A tiny figure in a tiara toddles out of the purple fog.*"
+  },
+  {
+   "who": "fake",
+   "text": "*sniff* Auntie Cling... I'm LOST..."
+  },
+  {
+   "who": "cling",
+   "text": "PRINCESS BABY BOOTIE?! Oh, sweetie, come here! Who let a princess wander about a SWAMP?"
+  },
+  {
+   "who": "fake",
+   "text": "Look at my pwetty spinning rattle, Auntie Cling..."
+  },
+  {
+   "who": "cling",
+   "text": "Ooh, it IS pretty. It goes round... and round... and round..."
+  },
+  {
+   "who": "fake",
+   "text": "*in a deep, smoky voice* You serve... the DEMON now."
+  },
+  {
+   "who": "cling",
+   "text": "I serve... the Demon. I serve the Demon. I serve the..."
+  },
+  {
+   "who": "narr",
+   "text": "*Under the tiara: two little horns. In the air: a smell of burning lint.*"
+  },
+  {
+   "who": "narr",
+   "text": "*END OF FLASHBACK.*"
+  }
+ ],
+ "CH2_AFTER": [
+  {
+   "who": "fishnet",
+   "text": "Princess? Baby Bootie isn't a princess. He's a BABY. He doesn't even have a kingdom. He has a COT."
+  },
+  {
+   "who": "cling",
+   "text": "...Then it was never him. It was the Dryer Demon. In a TIARA. And I said \"sweetie\" to it."
+  },
+  {
+   "who": "hero",
+   "text": "The Demon can change shape?!"
+  },
+  {
+   "who": "cling",
+   "text": "And hypnotise, sweetie. He is turning the royals into his puppets. Then he marches on Nylonia and drags the whole kingdom to its DOOM."
+  },
+  {
+   "who": "cling",
+   "text": "Next stop, the Bleach Badlands. *looks you up and down* Your colours will FADE out there, sweetie."
+  },
+  {
+   "who": "fishnet",
+   "text": "Rude. Accurate, maybe. But rude."
+  }
+ ],
+ "CH3_INTRO": [
+  {
+   "who": "narr",
+   "text": "*THE BLEACH BADLANDS. A blinding white desert. Signs everywhere: \"NO STAINS.\" \"NO SPILLS.\" \"NO FUN.\"*"
+  },
+  {
+   "who": "hero",
+   "text": "Is it just me, or am I getting... beige?"
+  },
+  {
+   "who": "fishnet",
+   "text": "Keep moving! Anything that stands still gets bleached. I stood still for ONE second once and lost a whole shade."
+  },
+  {
+   "who": "fishnet",
+   "text": "I used to be BLACK fishnet. ...Okay, I'm still black. But I FEEL lighter."
+  },
+  {
+   "who": "baby",
+   "text": "WAAAAAH! I was BLUE! I was SO BLUE! Now I'm... *sniff* ...EGGSHELL!"
+  },
+  {
+   "who": "hero",
+   "text": "Hey, little buddy. Eggshell is very in this year."
+  },
+  {
+   "who": "baby",
+   "text": "*stops crying* ...Really?"
+  },
+  {
+   "who": "hero",
+   "text": "No."
+  },
+  {
+   "who": "baby",
+   "text": "WAAAAAAAAH! TANTRUM TIIIIIME!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Oh no. He's doing the floppy-arm thing. NOBODY survives the floppy-arm thing!"
+  }
+ ],
+ "CH3_MID": [
+  {
+   "who": "baby",
+   "text": "*hiccup* ...I feel better now. I still look like a boiled egg, though."
+  },
+  {
+   "who": "baby",
+   "text": "Also, why does everyone keep calling me PRINCESS? And telling me to stop spinning my rattle at them? I don't even HAVE a rattle!"
+  },
+  {
+   "who": "fishnet",
+   "text": "...Suspicious."
+  },
+  {
+   "who": "kneehi",
+   "text": "HALT! Nobody crosses this dune without bowing to the sumo master!"
+  },
+  {
+   "who": "hero",
+   "text": "Knee-Hi? You're... completely white."
+  },
+  {
+   "who": "kneehi",
+   "text": "The Baron bleached me! Now I think I am a BEGINNER! A WHITE BELT! I must challenge EVERYONE!"
+  },
+  {
+   "who": "fishnet",
+   "text": "That's... not how belts work."
+  },
+  {
+   "who": "kneehi",
+   "text": "Sumo has no belts! ...Wait. Does it? I DO NOT REMEMBER ANYTHING!"
+  },
+  {
+   "who": "baby",
+   "text": "He just challenged a cactus. The cactus won."
+  },
+  {
+   "who": "kneehi",
+   "text": "BEHOLD! STRETCHY... *checks notes written on his own foot* ...BEGINNER SUMO!"
+  }
+ ],
+ "CH3_BOSS": [
+  {
+   "who": "bleach",
+   "text": "HALT, you STAINED creature! You are tracking COLOUR all over my lovely desert!"
+  },
+  {
+   "who": "hero",
+   "text": "It's not a stain. It's CHARACTER."
+  },
+  {
+   "who": "bleach",
+   "text": "That's what EVERY stain says!"
+  },
+  {
+   "who": "fishnet",
+   "text": "He bleached half the Rinse Sea. The fish are see-through now. You can see what they had for lunch."
+  },
+  {
+   "who": "bleach",
+   "text": "And they have never been more HYGIENIC."
+  },
+  {
+   "who": "bleach",
+   "text": "Prepare to be WHITENED! BRIGHTENED! And slightly LEMON-SCENTED!"
+  }
+ ],
+ "CH3_END": [
+  {
+   "who": "narr",
+   "text": "*Colour floods back across the desert like one big, happy rainbow!*"
+  },
+  {
+   "who": "baby",
+   "text": "I'M BLUE AGAIN!! *happy tantrum*"
+  },
+  {
+   "who": "bleach",
+   "text": "*sniff* I just wanted everything to be... clean. The Demon promised a world with no mess. No odd socks. No ketchup."
+  },
+  {
+   "who": "hero",
+   "text": "There's more to life than being spotless, Baron. Sometimes the stains are where the stories are."
+  },
+  {
+   "who": "bleach",
+   "text": "...Did you get that from a fortune cookie?"
+  },
+  {
+   "who": "hero",
+   "text": "I got it from a fortune cookie I found in my own heel. Don't ask."
+  },
+  {
+   "who": "fishnet",
+   "text": "Next stop: the Ironing Fortress. Pack a jumper. It gets STEAMY."
+  }
+ ],
+ "CH4_INTRO": [
+  {
+   "who": "narr",
+   "text": "*THE IRONING FORTRESS. A giant steaming castle shaped like an iron. Everything hisses. Somewhere, a kettle is screaming.*"
+  },
+  {
+   "who": "gran",
+   "text": "Oh good, you're here. Took your time."
+  },
+  {
+   "who": "hero",
+   "text": "GRAN?! How did you even get here?!"
+  },
+  {
+   "who": "gran",
+   "text": "I took the stairs."
+  },
+  {
+   "who": "hero",
+   "text": "There are no stairs to another dimension!"
+  },
+  {
+   "who": "gran",
+   "text": "There are if you're old enough, dear. *CRACK* ...Ooh. That was my back. Or the stairs. Hard to tell."
+  },
+  {
+   "who": "fishnet",
+   "text": "Ma'am, with respect... how old ARE you?"
+  },
+  {
+   "who": "gran",
+   "text": "Old enough to have knitted the very first sock. Young enough to kick your fishnets into next Tuesday."
+  },
+  {
+   "who": "steel",
+   "text": "HALT! SAFETY INSPECTION! NOBODY enters the Fortress without a HARD HAT!"
+  },
+  {
+   "who": "gran",
+   "text": "Young man, I've survived ninety-five winters without a hard hat."
+  },
+  {
+   "who": "steel",
+   "text": "THEN YOU ARE NINETY-FIVE WINTERS OVERDUE! SAFETY FIRST! ...THEN FIGHTING!"
+  }
+ ],
+ "CH4_MID": [
+  {
+   "who": "king",
+   "text": "KNEEL! KNEEL before KING KNEE-SOCK, ruler of the sock drawer AND the top shelf!"
+  },
+  {
+   "who": "fishnet",
+   "text": "His eyes are swirly too! He's been hypnotised, just like Cling Queen!"
+  },
+  {
+   "who": "gran",
+   "text": "Young man, if I kneel, I'm not getting back up. You'll have to rule around me."
+  },
+  {
+   "who": "king",
+   "text": "KNEEL... for the... DEMON... *twitch* ...and also for ME. Mostly the Demon."
+  },
+  {
+   "who": "hero",
+   "text": "We're socks. We don't HAVE knees."
+  },
+  {
+   "who": "king",
+   "text": "EXACTLY! That is why I, with my MAGNIFICENT knees, am KING!"
+  },
+  {
+   "who": "gran",
+   "text": "Knock the swirl out of him, dear. Gently. He was a lovely boy once."
+  },
+  {
+   "who": "king",
+   "text": "GUARDS! ...Oh. I sent the guards out for snacks. ...Then I shall fight you MYSELF!"
+  }
+ ],
+ "CH4_KING_WAKE": [
+  {
+   "who": "narr",
+   "text": "*King Knee-Sock wobbles. His swirly eyes spin... slower... and slower...*"
+  },
+  {
+   "who": "narr",
+   "text": "*POP! The swirls fade from King Knee-Sock's eyes.*"
+  },
+  {
+   "who": "king",
+   "text": "*blinks* ...Why am I in a FORTRESS? And why is everybody glaring at me?"
+  },
+  {
+   "who": "gran",
+   "text": "You were being a minion, dear."
+  },
+  {
+   "who": "king",
+   "text": "A MINION?! I am a KING! The last thing I remember... it was two weeks ago..."
+  }
+ ],
+ "CH4_FLASHBACK": [
+  {
+   "who": "narr",
+   "text": "*FLASHBACK. The Ironing Fortress, two weeks ago. The King is here to get his cape pressed.*"
+  },
+  {
+   "who": "king",
+   "text": "KNEEL! ...Nobody is here. I shall kneel to MYSELF. ...No. That is not how kneeling works."
+  },
+  {
+   "who": "narr",
+   "text": "*A tiny figure in a tiara toddles in through the steam.*"
+  },
+  {
+   "who": "fake",
+   "text": "Uncle King! Uncle King! Goo goo!"
+  },
+  {
+   "who": "king",
+   "text": "PRINCESS BABY BOOTIE! My favourite little royal! Have you come to KNEEL?"
+  },
+  {
+   "who": "fake",
+   "text": "No, Uncle King. Look at my pwetty spinning rattle..."
+  },
+  {
+   "who": "king",
+   "text": "A KING does not look at rattles. ...Oh. Ooh. It goes round... and round..."
+  },
+  {
+   "who": "fake",
+   "text": "*in a deep, smoky voice* Now guard this fortress... and make everyone KNEEL for the DEMON."
+  },
+  {
+   "who": "king",
+   "text": "Kneel... for... the Demon... *twitch* ...and also for me?"
+  },
+  {
+   "who": "fake",
+   "text": "...Fine. Also for you."
+  },
+  {
+   "who": "narr",
+   "text": "*Under the tiara: two little horns. Its tiny booties are smouldering.*"
+  },
+  {
+   "who": "narr",
+   "text": "*END OF FLASHBACK.*"
+  }
+ ],
+ "CH4_KING_AFTER": [
+  {
+   "who": "hero",
+   "text": "That was the Dryer Demon in disguise! He fooled Cling Queen the same way!"
+  },
+  {
+   "who": "king",
+   "text": "He made me shout KNEEL at everybody!"
+  },
+  {
+   "who": "fishnet",
+   "text": "...You shouted that before, though."
+  },
+  {
+   "who": "king",
+   "text": "...Yes. But this time it was against my WILL."
+  },
+  {
+   "who": "gran",
+   "text": "Off you pop. The Shogun's waiting. I'll put the kettle on."
+  }
+ ],
+ "CH4_BOSS": [
+  {
+   "who": "iron",
+   "text": "I am IRON SHOGUN. I press. I flatten. I remove all WRINKLES."
+  },
+  {
+   "who": "iron",
+   "text": "Your wrinkles are... unacceptable. Prepare to be CRISP."
+  },
+  {
+   "who": "gran",
+   "text": "Young man, I have been wrinkly since before you were a CAST-IRON TODDLER."
+  },
+  {
+   "who": "iron",
+   "text": "...The grandmother. Even I fear... the grandmother."
+  },
+  {
+   "who": "gran",
+   "text": "Go on then, {HERO}. Iron him out. I'll hold your snacks."
+  },
+  {
+   "who": "hero",
+   "text": "I DIDN'T BRING SNACKS!"
+  },
+  {
+   "who": "gran",
+   "text": "That's why I'm holding them, dear."
+  }
+ ],
+ "CH4_END": [
+  {
+   "who": "iron",
+   "text": "*hisssss* You fight with honour. The Demon waits at the Tumble Throne, deep beneath the Rinse Sea."
+  },
+  {
+   "who": "iron",
+   "text": "But know this: he does not steal socks out of evil."
+  },
+  {
+   "who": "hero",
+   "text": "Then WHY?"
+  },
+  {
+   "who": "iron",
+   "text": "*a long, sad puff of steam* ...Out of heartbreak."
+  },
+  {
+   "who": "gran",
+   "text": "Heartbreak. Oh dear. That is the worst kind of wrinkle."
+  },
+  {
+   "who": "fishnet",
+   "text": "...Is anyone else crying? No? Just me? My holes are leaking."
+  }
+ ],
+ "CH5_INTRO": [
+  {
+   "who": "narr",
+   "text": "*THE TUMBLE THRONE. Deep beneath the Rinse Sea, a giant drum spins, scorching hot. A throne made of thousands of odd socks.*"
+  },
+  {
+   "who": "queen",
+   "text": "Stay close, Knight. And do NOT touch anything. ESPECIALLY Us."
+  },
+  {
+   "who": "hero",
+   "text": "Look! That's the sock the Demon stole from the laundromat on day one!"
+  },
+  {
+   "who": "stinky",
+   "text": "*growls* Who goes there?!"
+  },
+  {
+   "who": "hero",
+   "text": "...Wait. That's not him. That's somebody's GYM sock."
+  },
+  {
+   "who": "stinky",
+   "text": "I've been tumbling in here for SIX MONTHS. I'm not a sock any more. I'm a LIFESTYLE."
+  },
+  {
+   "who": "queen",
+   "text": "The smell. The SMELL. Guards! ...Oh. We did not bring guards."
+  },
+  {
+   "who": "fishnet",
+   "text": "I'd help, but my holes let the smell straight in."
+  }
+ ],
+ "CH5_BOSS": [
+  {
+   "who": "demon",
+   "text": "WHO DARES ENTER... THE TUMBLE THRONE?!"
+  },
+  {
+   "who": "hero",
+   "text": "It's over, Demon! We know YOU were Princess Baby Bootie!"
+  },
+  {
+   "who": "demon",
+   "text": "HAHAHAHA! Nobody says no to a baby in a tiara! I hypnotised CLING QUEEN! I hypnotised KING KNEE-SOCK!"
+  },
+  {
+   "who": "demon",
+   "text": "With the royals as my puppets, I would march on Nylonia... and spin the whole kingdom into DOOM! ETERNAL TUMBLE DRY!"
+  },
+  {
+   "who": "queen",
+   "text": "And Our stockings! Give them back this INSTANT, you overheated toaster!"
+  },
+  {
+   "who": "demon",
+   "text": "I AM A DRYER! TOASTERS ARE COMPLETELY DIFFERENT!"
+  },
+  {
+   "who": "hero",
+   "text": "{HERO}'s here now. And I want everybody's socks back!"
+  },
+  {
+   "who": "demon",
+   "text": "...*long pause*... I am looking for someone."
+  },
+  {
+   "who": "fishnet",
+   "text": "Uh... are we sure we should fight the sad one?"
+  },
+  {
+   "who": "demon",
+   "text": "I AM NOT SAD! I AM FURIOUS! AND ALSO A LITTLE BIT SAD! LOOK INTO MY SPIRAL AND FIGHT ME!"
+  }
+ ],
+ "CH5_END": [
+  {
+   "who": "narr",
+   "text": "*The Demon's flames flicker down to a tiny, sad pilot light.*"
+  },
+  {
+   "who": "demon",
+   "text": "A thousand years ago... I was just a sock. A plain black sock. I had a partner. Then, one laundry day... she was gone."
+  },
+  {
+   "who": "hero",
+   "text": "So you've been taking EVERY sock... looking for your pair?"
+  },
+  {
+   "who": "demon",
+   "text": "Every. Single. One. And none of them are HER."
+  },
+  {
+   "who": "narr",
+   "text": "*A ghostly shimmer. THE LOST SOCK floats in.*"
+  },
+  {
+   "who": "ghost",
+   "text": "...Hi."
+  },
+  {
+   "who": "demon",
+   "text": "...*Darling?*"
+  },
+  {
+   "who": "ghost",
+   "text": "I fell down the back of the drawer."
+  },
+  {
+   "who": "demon",
+   "text": "FOR A THOUSAND YEARS?!"
+  },
+  {
+   "who": "ghost",
+   "text": "...It was cozy."
+  },
+  {
+   "who": "narr",
+   "text": "*Silence. Then everybody cheers! The Throne of Odd Socks bursts into a shower of reunited pairs!*"
+  },
+  {
+   "who": "queen",
+   "text": "*dabbing her eyes* This is the most beautiful thing We have ever seen. *gasp* ...Oh no."
+  },
+  {
+   "who": "hero",
+   "text": "What? What is it?"
+  },
+  {
+   "who": "queen",
+   "text": "We cried so hard... WE HAVE A RUN!"
+  }
+ ],
+ "ROSTER": [
+  [
+   "stinky",
+   "STINKY TABI"
+  ],
+  [
+   "argyle",
+   "ARGYLE-SAN"
+  ],
+  [
+   "shinobi",
+   "TOE-SHINOBI"
+  ],
+  [
+   "gran",
+   "STOCKING GRAN"
+  ],
+  [
+   "baby",
+   "BABY BOOTIE"
+  ],
+  [
+   "kneehi",
+   "KNEE-HI KAZUO"
+  ],
+  [
+   "robo",
+   "MECHA-SOCK X"
+  ],
+  [
+   "ghost",
+   "THE LOST SOCK"
+  ],
+  [
+   "lint",
+   "LINT BUNNY"
+  ],
+  [
+   "socklet",
+   "SOCKLET"
+  ],
+  [
+   "holey",
+   "HOLEY MOLEY"
+  ],
+  [
+   "steel",
+   "STEEL TOE"
+  ],
+  [
+   "king",
+   "KING KNEE-SOCK"
+  ],
+  [
+   "demon",
+   "THE DRYER DEMON"
+  ],
+  [
+   "bleach",
+   "BLEACH BARON"
+  ],
+  [
+   "cling",
+   "CLING QUEEN"
+  ],
+  [
+   "iron",
+   "IRON SHOGUN"
+  ]
+ ]
+}

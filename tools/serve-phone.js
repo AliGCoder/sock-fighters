@@ -1,4 +1,5 @@
-// Serves ONLY the game (index.html) on your home Wi-Fi so a phone on the same Wi-Fi can play it.
+// Serves ONLY the game (index.html and its story voice files in voices/) on your home Wi-Fi so a phone on the
+// same Wi-Fi can play it.
 // Nothing else on this PC is shared. Start it by double-clicking "Play on phone.bat" in the main folder.
 const http = require('http');
 const fs = require('fs');
@@ -18,6 +19,17 @@ const server = http.createServer((req, res) => {
         return;
       }
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' });
+      res.end(data);
+    });
+  } else if (/^\/voices\/[a-z0-9-]+\.js$/.test(url)) {
+    // the story-mode voice files (voices/story.js, voices/hero-<id>.js), and nothing else
+    fs.readFile(path.join(__dirname, '..', url.slice(1)), (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        res.end('Not found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'no-cache' });
       res.end(data);
     });
   } else {

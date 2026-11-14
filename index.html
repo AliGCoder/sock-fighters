@@ -10187,92 +10187,192 @@
       }
 
       /* --- The Lint Plains (story only): soft grey fluff hills, the Demon's flame flags, tumbling lint --- */
+      /* --- The Lint Plains: the LINT ARENA, a stadium in the middle of the fluffy plains, its stands packed
+         with the Lint Gang. They cheer all fight long and go wild on big hits (game.cheer). --- */
+      const ARENA_ROWS = [170, 218, 266, 314]; // bench tops, back row first
       function buildPlains(b) {
-        let g = b.createLinearGradient(0, 0, 0, 400);
-        g.addColorStop(0, '#6f6496');
-        g.addColorStop(0.6, '#b9b0d6');
-        g.addColorStop(1, '#d9d2ea');
+        // dusk sky over the plains
+        let g = b.createLinearGradient(0, 0, 0, 220);
+        g.addColorStop(0, '#5a4f86');
+        g.addColorStop(1, '#a99fcf');
         b.fillStyle = g;
-        b.fillRect(0, 0, W, 400);
+        b.fillRect(0, 0, W, 220);
         // the Demon's smoke far away
         b.fillStyle = 'rgba(60,30,50,0.35)';
         for (let i = 0; i < 6; i++) {
           b.beginPath();
-          b.arc(800 + i * 6, 220 - i * 28, 14 + i * 7, 0, 7);
+          b.arc(800 + i * 6, 120 - i * 18, 10 + i * 5, 0, 7);
           b.fill();
         }
-        // three rows of fluffy hills, far to near
-        const rnd = seededRandom(5);
-        for (const [y, col, r] of [[300, '#a9a0c6', 90], [340, '#c3bcd6', 110], [380, '#d6d0e4', 130]]) {
-          b.fillStyle = col;
-          b.strokeStyle = 'rgba(30,20,50,0.25)';
+        // the stadium bowl
+        g = b.createLinearGradient(0, 120, 0, 400);
+        g.addColorStop(0, '#3b3160');
+        g.addColorStop(1, '#2a2346');
+        b.fillStyle = g;
+        b.beginPath();
+        b.moveTo(0, 150);
+        b.quadraticCurveTo(W / 2, 112, W, 150);
+        b.lineTo(W, 400);
+        b.lineTo(0, 400);
+        b.closePath();
+        b.fill();
+        b.strokeStyle = INK;
+        b.lineWidth = 4;
+        b.beginPath();
+        b.moveTo(0, 150);
+        b.quadraticCurveTo(W / 2, 112, W, 150);
+        b.stroke();
+        // rows of benches, with steps between the blocks of seats
+        ARENA_ROWS.forEach((y, r) => {
+          b.fillStyle = r % 2 ? '#9d93c2' : '#8a7fb0';
+          b.fillRect(0, y, W, 12);
+          b.fillStyle = '#4a4070';
+          b.fillRect(0, y + 12, W, 30);
+          b.strokeStyle = 'rgba(0,0,0,0.35)';
+          b.lineWidth = 2;
+          b.beginPath();
+          b.moveTo(0, y);
+          b.lineTo(W, y);
+          b.stroke();
+        });
+        b.fillStyle = '#6a5f94';
+        for (const x of [236, 480, 724]) b.fillRect(x - 14, 160, 28, 196); // aisles
+        // light towers
+        for (const x of [42, W - 42]) {
+          b.fillStyle = '#2a2346';
+          b.fillRect(x - 5, 20, 10, 140);
+          roundRectPath(b, x - 30, 6, 60, 30, 5);
+          b.fillStyle = '#1c1733';
+          b.fill();
+          b.strokeStyle = INK;
           b.lineWidth = 3;
-          for (let x = -60; x < W + 60; x += r * 1.1) {
-            const rr = r * (0.7 + rnd() * 0.5);
+          b.stroke();
+          b.fillStyle = '#fff6c8';
+          for (let k = 0; k < 4; k++) {
             b.beginPath();
-            b.ellipse(x, y, rr, rr * 0.55, 0, Math.PI, 0);
+            b.arc(x - 18 + k * 12, 21, 4.5, 0, 7);
             b.fill();
-            b.stroke();
           }
-          b.fillRect(0, y, W, 400 - y);
         }
+        // the barrier around the ring, with ad boards
+        b.fillStyle = '#1c1733';
+        b.fillRect(0, 352, W, 44);
+        const ads = [['ACHOO COLA', '#ff4fa3'], ['POMF!', '#3fd0ff'], ['LINT ARENA', '#ffe234'], ['NO DRYERS', '#a6ff3a'], ['LINT GANG', '#c6a4ff']];
+        ads.forEach(([txt, col], i) => {
+          const x = 14 + i * 190;
+          roundRectPath(b, x, 358, 170, 32, 6);
+          b.fillStyle = '#2f2752';
+          b.fill();
+          b.strokeStyle = col;
+          b.lineWidth = 2.5;
+          b.stroke();
+          drawText(txt, x + 85, 375, 16, FONT_COMIC, col, INK, 3, 'center', b);
+        });
+        // the ring floor: packed fluff
         perspectiveFloor(b, '#9a92b6', '#a49cbf', '#b3abcc');
         b.fillStyle = '#5a5278';
         b.fillRect(0, 396, W, 6);
         floorShade(b);
       }
+
+      /** One Lint Gang fan in the stands: a fuzzy ball with eyes, arms up when cheering, sometimes holding a sign. */
+      function drawLintFan(x, y, sc, col, cheer, wave, sign) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(sc, sc);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.5;
+        // arms
+        const up = cheer ? -20 : -6 + wave * 6;
+        ctx.beginPath();
+        ctx.moveTo(-10, -2);
+        ctx.lineTo(-19, up);
+        ctx.moveTo(10, -2);
+        ctx.lineTo(19, cheer ? up : 2);
+        ctx.stroke();
+        if (sign) {
+          // a little sign held up high
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(-26, up - 22, 52, 20);
+          ctx.strokeRect(-26, up - 22, 52, 20);
+          drawText(sign, 0, up - 12, 10, FONT_COMIC, '#e8333a', INK, 0, 'center');
+        }
+        // fuzzy body
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        for (let k = 0; k < 14; k++) {
+          const ang = (k / 14) * Math.PI * 2,
+            r = k % 2 ? 13 : 16;
+          ctx.lineTo(Math.cos(ang) * r, Math.sin(ang) * r);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        // eyes and a cheering mouth
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(-5, -3, 4.5, 0, 7);
+        ctx.arc(5, -3, 4.5, 0, 7);
+        ctx.fill();
+        ctx.fillStyle = INK;
+        ctx.beginPath();
+        ctx.arc(-4, -3, 2, 0, 7);
+        ctx.arc(6, -3, 2, 0, 7);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(0, 6, cheer ? 4 : 3, cheer ? 5 : 2, 0, 0, 7);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      const ARENA_FAN_COLORS = ['#cfc6e2', '#e6e0f0', '#b9b0d6', '#f2d6e8', '#d6e6f2'];
+      const ARENA_SIGNS = ['GO LINT!', 'POMF!', 'ACHOO!', 'FLUFF!', '♥ LINT'];
       function drawPlains(t) {
-        // drifting fluff in the sky
-        for (let i = 0; i < 6; i++) {
-          const x = ((t * (0.15 + i * 0.05) + i * 190) % (W + 200)) - 100,
-            y = 60 + (i % 3) * 40;
-          ctx.fillStyle = 'rgba(255,255,255,0.55)';
-          for (const [dx, dy, r] of [[0, 0, 18], [18, -6, 14], [-16, 4, 12]]) {
-            ctx.beginPath();
-            ctx.arc(x + dx, y + dy, r, 0, 7);
+        const cheer = game.cheer > 0;
+        // spotlights sweeping over the crowd
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (const [x, ph] of [[42, 0], [W - 42, 2.1]]) {
+          const ang = Math.PI / 2 + Math.sin(t * 0.012 + ph) * 0.55 + (x < W / 2 ? -0.35 : 0.35);
+          const g = ctx.createLinearGradient(x, 22, x + Math.cos(ang) * 420, 22 + Math.sin(ang) * 420);
+          g.addColorStop(0, 'rgba(255,246,200,0.22)');
+          g.addColorStop(1, 'rgba(255,246,200,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.moveTo(x, 22);
+          ctx.lineTo(x + Math.cos(ang - 0.12) * 460, 22 + Math.sin(ang - 0.12) * 460);
+          ctx.lineTo(x + Math.cos(ang + 0.12) * 460, 22 + Math.sin(ang + 0.12) * 460);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+        // the Lint Gang in the stands, back row (small) to front row (big)
+        ARENA_ROWS.forEach((y, r) => {
+          const sc = 0.55 + r * 0.1;
+          const step = 50 + r * 8;
+          for (let k = 0, x = 18 + (r % 2) * (step / 2); x < W; k++, x += step) {
+            if ([236, 480, 724].some(ax => Math.abs(x - ax) < 22)) continue; // nobody sits in the aisles
+            const id = r * 31 + k;
+            const hop = cheer ? Math.abs(Math.sin(t * 0.32 + id * 1.3)) * 18 : Math.abs(Math.sin(t * 0.09 + id * 0.9)) * 4;
+            const wave = Math.sin(t * 0.15 + id);
+            const sign = id % 9 === 4 ? ARENA_SIGNS[id % ARENA_SIGNS.length] : null;
+            drawLintFan(x, y - 6 * sc - hop, sc, ARENA_FAN_COLORS[id % ARENA_FAN_COLORS.length], cheer || id % 7 === 0, wave, sign);
+          }
+        });
+        // camera flashes in the crowd
+        for (let i = 0; i < 3; i++) {
+          const k = (t * 0.7 + i * 53) % 90;
+          if (k < 4) {
+            const fx = ((i * 337 + Math.floor(t / 90) * 211) % (W - 80)) + 40,
+              fy = ARENA_ROWS[(i + Math.floor(t / 90)) % 4] - 14;
+            starPath(ctx, fx, fy, 10 - k * 2, 0);
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.fill();
           }
         }
-        // the Demon's flame flags
-        for (const [x, ph] of [[150, 0], [810, 1.7]]) {
-          ctx.strokeStyle = INK;
-          ctx.lineWidth = 4;
-          ctx.beginPath();
-          ctx.moveTo(x, 372);
-          ctx.lineTo(x, 250);
-          ctx.stroke();
-          const wave = Math.sin(t * 0.12 + ph) * 6;
-          ctx.fillStyle = '#d1452a';
-          ctx.beginPath();
-          ctx.moveTo(x, 252);
-          ctx.quadraticCurveTo(x + 30, 256 + wave, x + 62, 264 + wave);
-          ctx.quadraticCurveTo(x + 30, 274 + wave, x, 290);
-          ctx.closePath();
-          ctx.fill();
-          ctx.lineWidth = 3;
-          ctx.stroke();
-          ctx.fillStyle = '#ffde6b';
-          ctx.beginPath();
-          ctx.arc(x + 22, 270 + wave * 0.5, 7, 0, 7);
-          ctx.fill();
-        }
-        // a lint tumbleweed rolling across now and then
-        const k = (t % 600) / 600;
-        if (k < 0.5) {
-          const x = -60 + k * 2 * (W + 120);
-          ctx.save();
-          ctx.translate(x, 372 - Math.abs(Math.sin(t * 0.15)) * 14);
-          ctx.rotate(t * 0.15);
-          ctx.strokeStyle = '#8c84a3';
-          ctx.lineWidth = 3;
-          for (let i = 0; i < 6; i++) {
-            ctx.beginPath();
-            ctx.arc(0, 0, 10 + i * 3, i, i + 3.4);
-            ctx.stroke();
-          }
-          ctx.restore();
-        }
-        drawLintCrowd(t, [250, 400, 560, 700], 384, '#cfc6e2');
+        // fluff thrown in the air when they go wild
+        if (cheer && t % 4 === 0)
+          addParticle({ type: 'confetti', x: rand(0, W), y: rand(150, 300), vx: rand(-1, 1), vy: -rand(2, 4), g: 0.12, life: 60, size: rand(5, 9), rot: rand(0, 6), vr: rand(-0.3, 0.3), color: pick(ARENA_FAN_COLORS) });
       }
 
       /* --- The Static Swamp (story only): purple fog, crackling sparks, socks stuck to dead trees --- */
@@ -13626,7 +13726,8 @@
 
       /* ---- the Hosiery: two-legged pantyhose characters ---- */
       const HOSIERY = {
-        queen: { name: 'QUEEN NYLONIA', jp: 'ナイロニア女王', color: '#c6a4ff', band: '#7a4fc9', sheer: 0.82, crown: true, lashes: true, train: true, gloves: '#f6eeff', sceptre: true, blush: true },
+        queen: { name: 'QUEEN NYLONIA', jp: 'ナイロニア女王', color: '#f6bccd', band: '#c46a86', sheer: 0.82, crown: true, lashes: true, train: true, gloves: '#f6eeff', sceptre: true, blush: true,
+          trainCol: '#a8395f', jewel: '#ffd23f', tiara: true, earrings: true, ermine: true, shimmer: true },
         fishnet: { name: 'FISHNET SCOUT', jp: '網タイツ斥候', color: '#3a2a44', band: '#1d141d', net: true, gloves: '#3a2a44', bandana: true },
         sheer: { name: 'SHEER SPY', jp: 'シアー密偵', color: '#e9c7b0', band: '#c9a088', sheer: 0.45, gloves: '#e9c7b0' },
         control: { name: 'CONTROL-TOP GUARD', jp: '補正部隊', color: '#5a3f6e', band: '#3a2650', big: true, gloves: '#5a3f6e' },
@@ -13646,9 +13747,10 @@
         const walking = !!o.walk;
         const swing = walking ? Math.sin(t * 0.3) * 0.32 : 0;
         const bob = walking ? Math.abs(Math.sin(t * 0.3)) * 4 : Math.sin(t * 0.08) * 1.5;
-        const bodyW = H.big ? 70 : 54,
-          top = H.big ? -190 : -178, // long pantyhose legs: as tall as a sock
-          hip = -112;
+        const bodyW = H.big ? 70 : 54;
+        const SIT = o.sit ? 52 : 0; // seated: the whole body drops onto the seat, the legs bend at the knee
+        const top = (H.big ? -190 : -178) + SIT, // long pantyhose legs: as tall as a sock
+          hip = -112 + SIT;
         c.save();
         c.translate(x, y);
         // shadow
@@ -13670,23 +13772,61 @@
           c.lineTo(-40, 4);
           c.quadraticCurveTo(-30, -60, 10, top + 14);
           c.closePath();
-          c.fillStyle = '#9b6fe0';
+          c.fillStyle = H.trainCol || '#9b6fe0';
           c.fill();
           c.strokeStyle = INK;
           c.lineWidth = 4;
           c.stroke();
+          if (H.ermine) {
+            // white fur trim along the hem, with little black tails
+            c.strokeStyle = INK;
+            c.lineWidth = 13;
+            c.beginPath();
+            c.moveTo(-122, 2);
+            c.lineTo(-38, 2);
+            c.stroke();
+            c.strokeStyle = '#fbf8f2';
+            c.lineWidth = 9;
+            c.stroke();
+            c.fillStyle = INK;
+            for (let k = -112; k < -40; k += 14) {
+              c.beginPath();
+              c.ellipse(k, 2, 1.6, 3, 0, 0, 7);
+              c.fill();
+            }
+          }
         }
         // legs: two tapered tubes from the hips down to the feet
-        const legs = [
-          [-13, swing],
-          [13, -swing]
-        ].map(([lx, a]) => {
+        const legs = (o.sit ? [[13, 0], [-13, 0]] : [[-13, swing], [13, -swing]]).map(([lx, a]) => {
+          if (o.sit)
+            return lx > 0
+              ? { lx, kx: 18, ky: hip + 24, ax: 16, ay: -12 } // the leg underneath: knee, then straight down to the floor
+              : { lx, kx: 28, ky: hip + 14, ax: 40, ay: -20, crossed: true }; // crossed over the top, toe pointed
           const ax = lx + Math.sin(a) * 30,
             ay = -12 + (1 - Math.cos(a)) * 6;
           return { lx, ax, ay };
         });
         const legPath = L => {
           c.beginPath();
+          if (o.sit) {
+            // a smooth tube: hip -> knee -> ankle, thick at the thigh and slim at the ankle
+            const P = [[L.lx, hip - 2, 12], [L.kx, L.ky, 10], [L.ax, L.ay, 6.5]];
+            const side = sgn =>
+              P.map(([px, py, w], i) => {
+                const [x0, y0] = P[Math.max(0, i - 1)],
+                  [x1, y1] = P[Math.min(2, i + 1)];
+                const len = Math.hypot(x1 - x0, y1 - y0) || 1;
+                return [px - ((y1 - y0) / len) * w * sgn, py + ((x1 - x0) / len) * w * sgn];
+              });
+            const a = side(1),
+              b = side(-1).reverse();
+            c.moveTo(a[0][0], a[0][1]);
+            c.quadraticCurveTo(a[1][0], a[1][1], a[2][0], a[2][1]);
+            c.lineTo(b[0][0], b[0][1]);
+            c.quadraticCurveTo(b[1][0], b[1][1], b[2][0], b[2][1]);
+            c.closePath();
+            return;
+          }
           c.moveTo(L.lx - 11, hip);
           c.lineTo(L.lx + 11, hip);
           c.lineTo(L.ax + 7, L.ay);
@@ -13708,7 +13848,8 @@
           // feet first (behind the leg's end)
           if (!H.footless) {
             c.beginPath();
-            c.ellipse(L.ax + 8, L.ay + 2, 15, 8, 0, 0, 7);
+            if (L.crossed) c.ellipse(L.ax + 6, L.ay + 7, 13, 6.5, 1.05, 0, 7);
+            else c.ellipse(L.ax + 8, L.ay + 2, 15, 8, 0, 0, 7);
             c.fillStyle = H.color;
             c.globalAlpha = (o.alpha === undefined ? 1 : o.alpha) * Math.min(1, fillAlpha + 0.25);
             c.fill();
@@ -13729,8 +13870,13 @@
           c.strokeStyle = 'rgba(255,255,255,0.35)';
           c.lineWidth = 3;
           c.beginPath();
-          c.moveTo(L.lx + 4, hip + 8);
-          c.lineTo(L.ax + 3, L.ay - 12);
+          if (o.sit) {
+            c.moveTo(L.lx + 3, hip + 2);
+            c.quadraticCurveTo(L.kx + 3, L.ky - 3, L.ax + 2, L.ay - 8);
+          } else {
+            c.moveTo(L.lx + 4, hip + 8);
+            c.lineTo(L.ax + 3, L.ay - 12);
+          }
           c.stroke();
           if (H.footless) {
             c.fillStyle = H.band;
@@ -14002,7 +14148,71 @@
           c.fill();
           c.stroke();
         }
-        if (H.crown) {
+        if (H.shimmer) {
+          for (let k = 0; k < 4; k++) {
+            const tw = Math.abs(Math.sin(t * 0.06 + k * 1.9));
+            if (tw < 0.6) continue;
+            const L = legs[k % 2];
+            const f = 0.3 + 0.18 * k;
+            starPath(c, L.lx + (L.ax - L.lx) * f + 2, hip + (L.ay - hip) * f, 2 + tw * 3, t * 0.03 + k);
+            c.fillStyle = 'rgba(255,255,255,' + tw + ')';
+            c.fill();
+          }
+        }
+        if (H.earrings) {
+          for (const ex of [-bodyW / 2 - 1, bodyW / 2 + 1]) {
+            const sw = Math.sin(t * 0.07 + ex) * 2;
+            c.strokeStyle = '#d4a017';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(ex, top + 34);
+            c.lineTo(ex + sw, top + 42);
+            c.stroke();
+            c.fillStyle = H.jewel || '#ff4fa3';
+            c.strokeStyle = INK;
+            c.lineWidth = 2;
+            c.beginPath();
+            c.ellipse(ex + sw, top + 47, 3.5, 5, 0, 0, 7);
+            c.fill();
+            c.stroke();
+          }
+        }
+        if (H.tiara) {
+          // a tall, fine tiara: gold arches, pearls on every point, one big jewel in the middle
+          const pts = [[-22, -10], [-14, -20], [-7, -15], [0, -30], [7, -15], [14, -20], [22, -10]];
+          c.beginPath();
+          c.moveTo(-24, top - 1);
+          for (const [px, py] of pts) c.lineTo(px, top + py);
+          c.lineTo(24, top - 1);
+          c.closePath();
+          c.fillStyle = '#ffd23f';
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.stroke();
+          c.fillStyle = '#fffdf6';
+          for (const [px, py] of pts) {
+            c.beginPath();
+            c.arc(px, top + py - 2, 2.8, 0, 7);
+            c.fill();
+            c.lineWidth = 1.5;
+            c.stroke();
+          }
+          c.fillStyle = H.jewel || '#ff4fa3';
+          c.beginPath();
+          c.moveTo(0, top - 20);
+          c.lineTo(5, top - 12);
+          c.lineTo(0, top - 5);
+          c.lineTo(-5, top - 12);
+          c.closePath();
+          c.fill();
+          c.lineWidth = 2;
+          c.stroke();
+          c.fillStyle = 'rgba(255,255,255,0.8)';
+          c.beginPath();
+          c.arc(-1.5, top - 14, 1.5, 0, 7);
+          c.fill();
+        } else if (H.crown) {
           c.beginPath();
           c.moveTo(-20, top - 2);
           for (let k = 0; k <= 4; k++) {
@@ -14070,6 +14280,7 @@
       function startAdventure() {
         game.story = null;
         const A = advData();
+        StoryVoices.loadFor(A.prologue ? advHero().id : null);
         game.adv = { scene: null };
         if (!A.prologue) startPrologue();
         else openHub();
@@ -14100,6 +14311,116 @@
         } catch (e) {}
       }
 
+      /**
+       * Spoken story lines. Every line is recorded in its speaker's voice (tools/story makes them) and kept OUTSIDE this
+       * file, in voices/story.js (everyone) and voices/hero-<id>.js (the lines your hero says), so the game stays small
+       * and a phone only downloads what it needs. Each file adds { key: base64 MP3 } to window.SOCK_STORY_VOICES;
+       * key = storyVoiceKey(speaker, the text as shown). If a file hasn't arrived, lines fall back to sceneVoice's grunts.
+       */
+      function storyVoiceKey(speaker, text) {
+        const str = speaker + '|' + text;
+        let h = 0x811c9dc5;
+        for (let i = 0; i < str.length; i++) {
+          h ^= str.charCodeAt(i);
+          h = Math.imul(h, 0x01000193) >>> 0;
+        }
+        return ('0000000' + h.toString(16)).slice(-8);
+      }
+      const StoryVoices = {
+        files: {}, // file name -> 'loading' | 'ready' | 'failed'
+        buffers: {}, // key -> { buffer, offset }
+        source: null,
+        token: 0, // bumps on every new line / stop, so a slow decode never plays over a later line
+
+        /** Start downloading a voice file (once). */
+        load(file) {
+          if (this.files[file]) return;
+          this.files[file] = 'loading';
+          try {
+            const tag = document.createElement('script');
+            tag.src = 'voices/' + file + '.js';
+            tag.async = true;
+            tag.onload = () => {
+              this.files[file] = 'ready';
+              // the line on screen started before its voice arrived: say it now, if it only just started
+              const S = game.adv && game.adv.scene;
+              if (S && S.i >= 0 && S.i < S.lines.length && !this.source && S.t - (S.lineAt || 0) < 90) sceneVoice(S.lines[S.i], S);
+            };
+            tag.onerror = () => (this.files[file] = 'failed');
+            document.head.appendChild(tag);
+          } catch (e) {
+            this.files[file] = 'failed';
+          }
+        },
+        /** The story voices everyone hears, plus the ones for this hero. */
+        loadFor(heroId) {
+          this.load('story');
+          if (heroId) this.load('hero-' + heroId);
+        },
+        has(key) {
+          return !!(window.SOCK_STORY_VOICES && window.SOCK_STORY_VOICES[key]);
+        },
+        stop() {
+          this.token++;
+          if (this.source) {
+            try {
+              this.source.stop();
+            } catch (e) {}
+          }
+          this.source = null;
+        },
+        /** Say the recorded line with this key. Returns false if there is no recording (yet). */
+        play(key, side) {
+          this.stop();
+          const ac = Sound.context;
+          if (!this.has(key) || !ac) return false;
+          if (Sound.muted) return true;
+          const token = this.token;
+          const start = clip => {
+            if (token !== this.token || !clip) return;
+            const source = ac.createBufferSource();
+            source.buffer = clip.buffer;
+            const gain = ac.createGain();
+            gain.gain.value = 0.95;
+            source.connect(gain);
+            let output = gain;
+            if (ac.createStereoPanner) {
+              const pan = ac.createStereoPanner();
+              pan.pan.value = side < 0 ? -0.25 : side > 0 ? 0.25 : 0;
+              gain.connect(pan);
+              output = pan;
+            }
+            output.connect(Sound.sfxBus);
+            source.start(ac.currentTime + 0.03, clip.offset);
+            this.source = source;
+          };
+          if (this.buffers[key]) {
+            start(this.buffers[key]);
+            return true;
+          }
+          try {
+            const binary = atob(window.SOCK_STORY_VOICES[key]);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            // callback form: older Safari has no promise version of decodeAudioData
+            ac.decodeAudioData(
+              bytes.buffer,
+              buffer => {
+                const samples = buffer.getChannelData(0);
+                let i = 0;
+                while (i < samples.length && Math.abs(samples[i]) < 0.004) i++; // skip the MP3 lead-in
+                this.buffers[key] = { buffer, offset: Math.max(0, i - 24) / buffer.sampleRate };
+                start(this.buffers[key]);
+              },
+              () => {}
+            );
+          } catch (e) {
+            return false;
+          }
+          return true;
+        }
+      };
+
       // The Queen and the Fishnet Scout have no recorded voice of their own: they borrow one, pitched to suit them.
       const BORROWED_VOICES = { queen: { id: 'cling', rate: 1.12 }, fishnet: { id: 'socklet', rate: 0.9 }, fake: { id: 'baby', rate: 0.72 } }; // the Demon doing a baby voice: a bit too deep
 
@@ -14108,6 +14429,12 @@
       function sceneVoice(line, S) {
         FighterVoice.stopCatchphrase(0);
         FighterVoice.stopCatchphrase(1);
+        const hero = advHero();
+        StoryVoices.loadFor(hero.id);
+        const speaker = line.who === 'hero' ? hero.id : line.who;
+        const shown = line.text.replace(/\{HERO\}/g, hero.name);
+        const pan = line.who === 'narr' ? 0 : ['hero', 'fishnet', 'queen'].includes(line.who) ? -1 : 1;
+        if (StoryVoices.play(storyVoiceKey(speaker, shown), pan)) return;
         if (line.who === 'narr') return;
         const borrowed = BORROWED_VOICES[line.who];
         const def = line.who === 'hero' ? advHero() : findCharacter(borrowed ? borrowed.id : line.who);
@@ -14140,11 +14467,13 @@
         if (S.i >= S.lines.length) {
           FighterVoice.stopCatchphrase(0);
           FighterVoice.stopCatchphrase(1);
+          StoryVoices.stop();
           game.adv.scene = null;
           if (S.onDone) S.onDone();
           return;
         }
         const line = S.lines[S.i];
+        S.lineAt = S.t;
         if (line.fx) line.fx(S.state);
         // a speech mark over the speaker, and a shake when they SHOUT
         const spoken = line.text.replace(/\*[^*]*\*/g, '');
@@ -14385,6 +14714,7 @@
           if (++S.locked > 75) {
             const A = advData();
             A.hero = S.c;
+            StoryVoices.loadFor(ROSTER[S.c].id); // this hero's spoken lines
             A.look = skinOptions(ROSTER[S.c])[wrapIndex(S.k, skinOptions(ROSTER[S.c]).length)];
             Progress.save();
             if (S.from === 'prologue') openPortal();
@@ -15113,7 +15443,8 @@
         drawHosiery(ctx, 'seamed', 382, 472, 0.9, 1, t, { arms: guards[0] });
       }
 
-      /** The Queen's throne on a raised dais: a tall crown-topped back with velvet inside. */
+      /** The Queen's throne on a raised dais, turned 45 degrees toward the Fishnet Scout (three-quarter view):
+       *  the front of the throne narrows away from us, and we see its right side and the depth of the seat. */
       function drawThrone() {
         // the dais: two broad steps
         roundRectPath(ctx, 690, 450, 200, 22, 6);
@@ -15125,37 +15456,91 @@
         ctx.fillStyle = '#d4a017';
         ctx.fillRect(690, 450, 200, 3);
         ctx.fillRect(708, 434, 164, 3);
-        // the throne back, topped with a crown shape
-        ctx.beginPath();
-        ctx.moveTo(724, 440);
-        ctx.lineTo(724, 250);
-        ctx.lineTo(748, 222);
-        ctx.lineTo(768, 244);
-        ctx.lineTo(790, 206);
-        ctx.lineTo(812, 244);
-        ctx.lineTo(832, 222);
-        ctx.lineTo(856, 250);
-        ctx.lineTo(856, 440);
-        ctx.closePath();
-        ctx.fillStyle = '#ffd23f';
-        ctx.fill();
-        ctx.strokeStyle = INK;
-        ctx.lineWidth = 4;
-        ctx.stroke();
-        roundRectPath(ctx, 740, 258, 100, 176, 14);
-        const g = ctx.createLinearGradient(740, 0, 840, 0);
-        g.addColorStop(0, '#5a0a6e');
-        g.addColorStop(0.5, '#8a2aa8');
-        g.addColorStop(1, '#5a0a6e');
-        ctx.fillStyle = g;
-        ctx.fill();
+        // turned: x squeezed toward the middle; the near (right) side a little taller than the far (left) side
+        const CX = 790,
+          BASE = 440;
+        const P = (x, y) => {
+          const k = (x - CX) / 66; // -1 (far, left) .. +1 (near, right)
+          return [CX + (x - CX) * 0.56, BASE + (y - BASE) * (1 + 0.1 * k)];
+        };
+        const D = [40, -16]; // the throne's depth, receding to the back right
+        const poly = (pts, fill, stroke = true, lw = 4) => {
+          ctx.beginPath();
+          pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+          ctx.closePath();
+          ctx.fillStyle = fill;
+          ctx.fill();
+          if (stroke) {
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = lw;
+            ctx.stroke();
+          }
+        };
+        const add = ([x, y], [dx, dy]) => [x + dx, y + dy];
+        // the back: its right side (depth) first, then the crown-topped front
+        const outline = [[724, 440], [724, 250], [748, 222], [768, 244], [790, 206], [812, 244], [832, 222], [856, 250], [856, 440]].map(([x, y]) => P(x, y));
+        poly([outline[7], add(outline[7], D), add(outline[8], D), outline[8]], '#b8860b');
+        poly([outline[6], add(outline[6], D), add(outline[7], D), outline[7]], '#c99a1a');
+        poly(outline, '#ffd23f');
+        const v = [P(740, 262), P(840, 262), P(840, 434), P(740, 434)];
+        const g = ctx.createLinearGradient(v[0][0], 0, v[1][0], 0);
+        g.addColorStop(0, '#4a0858');
+        g.addColorStop(0.55, '#8a2aa8');
+        g.addColorStop(1, '#6a0f80');
+        poly(v, g, false);
         // jewels on the crown points
         for (const [x, y, c] of [[748, 230, '#3fd0ff'], [790, 214, '#ff4fa3'], [832, 230, '#3fd0ff']]) {
+          const [px, py] = P(x, y);
           ctx.fillStyle = c;
           ctx.beginPath();
-          ctx.arc(x, y, 5, 0, 7);
+          ctx.arc(px, py, 4.5, 0, 7);
           ctx.fill();
         }
+        // the seat: a gold box with a velvet cushion on top, coming forward toward us
+        const SD = [-44, 18]; // the seat comes out toward the front left (toward the Scout)
+        const s0 = P(724, 396),
+          s1 = P(856, 396);
+        const box = (y0, y1, col, side) => {
+          const a0 = P(724, y0),
+            a1 = P(856, y0),
+            b0 = P(724, y1),
+            b1 = P(856, y1);
+          poly([a1, b1, add(b1, SD), add(a1, SD)], side); // right side
+          poly([add(a0, SD), add(a1, SD), add(b1, SD), add(b0, SD)], col); // front
+          return [a0, a1];
+        };
+        box(396, 436, '#e8b72e', '#b8860b');
+        // velvet cushion on top
+        const c0 = P(722, 386),
+          c1 = P(858, 386);
+        poly([c0, c1, add(c1, SD), add(c0, SD)], '#9a2fbf');
+        ctx.fillStyle = '#ffd23f';
+        for (const f of [0.25, 0.5, 0.75]) {
+          const x = c0[0] + (c1[0] - c0[0]) * f + SD[0] * 0.5,
+            y = c0[1] + (c1[1] - c0[1]) * f + SD[1] * 0.5;
+          ctx.beginPath();
+          ctx.arc(x, y, 2.6, 0, 7); // tufted buttons
+          ctx.fill();
+        }
+        // armrests ending in golden scrolls, front one nearer to us
+        for (const [x, near] of [[724, 0], [856, 1]]) {
+          const [ax, ay] = add(P(x, 352), [SD[0] * 0.7, SD[1] * 0.7]);
+          roundRectPath(ctx, ax - 7, ay, 14, 40, 6);
+          ctx.fillStyle = near ? '#ffd23f' : '#e8b72e';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3.5;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(ax, ay, near ? 10 : 9, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = '#ff4fa3';
+          ctx.beginPath();
+          ctx.arc(ax, ay, 3.5, 0, 7);
+          ctx.fill();
+        }
+        return { seatX: (s0[0] + s1[0]) / 2 + SD[0] * 0.5 };
       }
 
       function drawAdvHub() {
@@ -15165,7 +15550,8 @@
         const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         // the throne and the Queen
         drawThrone();
-        drawHosiery(ctx, 'queen', 790, 444, 0.86, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        // the Queen, seated on her throne like the highest of queens
+        drawHosiery(ctx, 'queen', 776, 442, 0.9, -1, t, { sit: true, mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
         // your hero and the scout
         const def = advHeroLook();
         const p = idleAnim(basePose(), t);
@@ -17208,6 +17594,8 @@
         FighterVoice,
         hubItems: () => HUB_ITEMS(),
         startChapter,
+        StoryVoices,
+        storyVoiceKey,
         /** tests: jump straight to step i of chapter ch */
         storyJump(ch, i) {
           startChapter(ch);

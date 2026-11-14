@@ -23,3 +23,11 @@ tools/announcer/fighter_clips_before_*.json
 # itch.io upload pack: the zip and its index.html copy are rebuilt from index.html
 itch/*.zip
 itch/index.html
+
+# Story voices: audition reels and the raw recordings (the packed copies live in voices/)
+tools/story/samples/
+tools/story/story_clips.json
+tools/story/story_clips_qwen.json
+tools/announcer/.venv-vox/
+tools/story/story_clips_english_partial.json
+tools/story/refs/unused/

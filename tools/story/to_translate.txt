@@ -1,0 +1,260 @@
+narr	The coin laundry. Midnight. Somewhere, a sock is about to go missing...
+narr	*Dryer No. 7 starts spinning by itself. A sock is sucked toward the door!*
+stinky	HEY! THAT'S MY OTHER HALF!
+gran	In my day, socks went missing the honest way. Behind the radiator! ...Oh, my back.
+narr	*The dryer window glows purple. A glamorous face appears in the glass...*
+queen	Greetings, single-leggers. We are QUEEN NYLONIA, ruler of the Hosiery and of the beautiful Island of Nylonia.
+argyle	Why is she saying "we"? There is one of her.
+queen	We have TWO LEGS, darling. We are ALWAYS a "we".
+queen	Listen carefully, for We will only say this once. ...Twice if you are slow.
+queen	The DRYER DEMON has awoken. He steals your socks. He steals Our stockings. Soon there will be nothing left in any drawer, in any world.
+queen	We need... a HERO.
+narr	*Everyone looks at Stinky Tabi. Stinky Tabi looks behind himself.*
+stinky	...Me?
+queen	We asked for a hero. Not a... *sniff* ...gym bag.
+stinky	He took my other half, lady. I'm going.
+argyle	Then we all go. The way of the sock is never to walk alone.
+queen	Very well. Choose who answers Our call. Bring snacks. Do NOT touch Our curtains.
+queen	Welcome to Nylonia. Please wipe your... *looks at your foot* ...everything.
+queen	See that smoke over the sea? That is the TUMBLE THRONE, where the Demon sits.
+queen	To reach it, you must defeat his four generals. We shall send Our finest Hosiery with you.
+fishnet	Reporting for duty, Your Majesty!
+queen	...And this is Our finest?
+fishnet	I've got lots of holes, so I'm very breathable on long trips.
+queen	First, the LINT PLAINS. Go, Knight. And if anything touches Our curtains, We will KNOW.
+queen	We watched the whole thing through Our royal telescope. Magnificent. Mostly.
+queen	You did trip over a lint bunny.
+hero	It tripped ME.
+queen	Next: the STATIC SWAMP. Our royal engineers have FINALLY finished the bridge. It only took them three years.
+fishnet	It's a very nice bridge.
+queen	Go when you are ready, Knight. And for goodness’ sake... have a WASH first.
+queen	We hear the Demon has been going about disguised as... a PRINCESS?
+hero	Princess Baby Bootie. With a tiara. And a spinning rattle.
+queen	A PRINCESS?! Without Our royal permission?! We have not even APPROVED that tiara!
+queen	...We also hear Cling Queen said something about Our sheen.
+hero	She said it was... last season. That part wasn't the hypnosis.
+queen	...
+queen	We are going to need a moment.
+narr	*The Queen stares out of the window for a very long, very dramatic moment.*
+fishnet	Should we... say something?
+queen	The BLEACH BADLANDS are next. Go, Knight. We shall be over here. Being TIMELESS.
+queen	The Bleach Baron, defeated! The fish of the Rinse Sea have their colours back.
+queen	One of them sent Us a thank-you note. It is VERY wet.
+fishnet	It's mostly just a drawing of a fish. Signed: 'a fish'.
+queen	Next: the IRONING FORTRESS, where the Iron Shogun flattens anything with a wrinkle.
+queen	...Knight. We have noticed you are EXTREMELY wrinkly. Do be careful.
+hero	I'm a sock! I'm SUPPOSED to be wrinkly!
+queen	That is exactly what a wrinkle would say.
+queen	Heartbreak? *quietly* ...We know a little about that.
+fishnet	Your Majesty?
+queen	*VERY loudly* ANYWAY! The Tumble Throne lies beneath the sea. This time, WE are coming with you.
+queen	We do not normally go places that are this... DAMP. But for Our people, We shall make an exception.
+queen	Somebody fetch Our waterproof crown.
+fishnet	Your Majesty, that is just a crown with a shower cap on it.
+queen	It is FASHION.
+narr	*THE ROYAL LAUNDRY BALL. Socks and Hosiery dance together. The Demon is running the cloakroom.*
+queen	For saving both Our worlds, We name you... KNIGHT OF THE ROYAL DRAWER!
+hero	Do I get a crown?
+queen	You get a WASHING. Immediately.
+demon	Welcome to the cloakroom. Lost socks are returned within one thousand years. ...We are working on that.
+cling	Love the ball, Nylonia. Shame about the sheen.
+queen	...GUARDS.
+king	Lovely party! Everybody KNEEL! ...Sorry. The hypnosis wore off. The bossiness did not.
+demon	And no more disguises. I promise. *briefly turns into a coat rack* ...Old habits.
+gran	Now can somebody help me down from this chandelier? I don't know how I got up here either.
+fishnet	Best. Mission. EVER.
+hero	Ugh. It's like walking on a sweater that gave up.
+fishnet	The LINT PLAINS, Sir Knight! The Demon's Lint Gang guards the way to the Static Swamp.
+lint	HALT! You are entering the land of the... *ACHOO!* ...LINT GANG!
+narr	*Three tiny Lint Gang members tumble out of the sneeze.*
+hero	Bless you.
+lint	*sniffles* Nobody ever says bless you.
+hero	...Did you just sneeze out your whole GANG?
+lint	Every Lint Gang member is born from a sneeze. It's beautiful, actually.
+lint	We are FOUR THOUSAND strong!
+hero	There are four of you.
+lint	Then watch me make MORE! *Ah... AH...*
+narr	*...Nothing comes out.*
+lint	...That was a practice one.
+lint	*Ah... AHH... AHHHHHH...* BIG ONE!
+narr	*A MASSIVE sneeze-wind blasts across the plains! Everybody is covered in fluff. The Lint Gang runs for it!*
+fishnet	I'm FUZZY! There's lint in ALL my holes!
+hero	...I'm a sweater now.
+lint	My gang... ran away. *sniff* ...FINE! I'll fight you MYSELF!
+fishnet	Go get him, Sir Knight! I'd help, but I'm mostly holes.
+socklet	HEY! You beat up my cousin!
+hero	You're related to the Lint Gang?
+socklet	We're ALL related to the Lint Gang. It's a whole sneeze thing.
+fishnet	This is the weirdest family tree I have ever seen.
+socklet	I may be tiny, but these ankles are FAST. Try to keep up!
+holey	Nobody passes! The Demon made ME guardian of the plains!
+hero	You're more hole than sock.
+holey	I'm *breathable*.
+fishnet	Hey. That's MY thing.
+holey	The Demon said if I guarded the plains, he'd fix my holes. *a moth flies out of his mouth* ...He hasn't fixed my holes.
+hero	Why does he even want all these socks?
+holey	Nobody knows. He just keeps muttering... 'Not her. Not her. NOT HER.'
+fishnet	Spooky. Let's report back to the Queen!
+narr	*Purple fog. Crackling sparks. Everything sticks to everything. A balloon floats past, covered in socks.*
+hero	My everything is standing on end.
+fishnet	The STATIC SWAMP, Sir Knight. Cling Queen rules here. Watch your fibres.
+robo	GREETINGS. I AM HERE ON A RESCUE MISSION.
+hero	You're stuck to a tree.
+robo	THE RESCUE MISSION IS NOW FOR ME.
+narr	*{HERO} peels him off the tree. ZAP! All the static goes straight into his circuits.*
+robo	COMPRESSION LEVEL... OVERLOAD. TARGET ACQUIRED: YOU. *beep* ...SORRY IN ADVANCE.
+fishnet	He's static-scrambled! Knock the fuzz out of his circuits!
+robo	REBOOT COMPLETE. COMPRESSION LEVEL: GRATEFUL. ALSO: EMBARRASSED.
+shinobi	Halt. Nobody crosses the swamp without passing ME.
+hero	Toe-Shinobi? Since when do you work for the Demon?
+shinobi	I don't. I've been standing in this static so long, I'm stuck to the path. Fighting is the only way I can move.
+fishnet	That's the saddest ninja story I've ever heard.
+shinobi	Then make it quick. And aim for the feet. I have five toes, so there is plenty of choice.
+cling	So. NYLONIA sent a little errand sock. How sweet.
+fishnet	Sir Knight... why are her eyes doing that swirly thing?
+cling	Swirly? Darling, these are my FABULOUS eyes. I serve the Demon. I serve the Demon. I serve the... *twitch* ...the Demon.
+hero	She said that three times. That is NOT normal.
+cling	There's only room for ONE queen, sweetie. And she's wearing last season's sheen.
+fishnet	Okay. THAT part sounded exactly like her.
+cling	Now hold still, darling. The Demon wants you... STUCK!
+narr	*Cling Queen wobbles. Her swirly eyes spin... slower... and slower...*
+narr	*POP! The swirls fade from Cling Queen's eyes.*
+cling	*blinks* ...Why am I in a fight? Why is my lily crown on BACKWARDS?
+hero	You've been working for the Dryer Demon!
+cling	ME? WORK? Darling, I have never worked a day in my life.
+cling	The last thing I remember... it was a month ago...
+narr	*FLASHBACK. The Static Swamp, one month ago...*
+cling	Another day of being FABULOUS in a swamp. Alone. As usual. *sigh*
+narr	*A tiny figure in a tiara toddles out of the purple fog.*
+fake	*sniff* Auntie Cling... I'm LOST...
+cling	PRINCESS BABY BOOTIE?! Oh, sweetie, come here! Who let a princess wander about a SWAMP?
+fake	Look at my pwetty spinning rattle, Auntie Cling...
+cling	Ooh, it IS pretty. It goes round... and round... and round...
+fake	*in a deep, smoky voice* You serve... the DEMON now.
+cling	I serve... the Demon. I serve the Demon. I serve the...
+narr	*Under the tiara: two little horns. In the air: a smell of burning lint.*
+narr	*END OF FLASHBACK.*
+fishnet	Princess? Baby Bootie isn't a princess. He's a BABY. He doesn't even have a kingdom. He has a COT.
+cling	...Then it was never him. It was the Dryer Demon. In a TIARA. And I said "sweetie" to it.
+hero	The Demon can change shape?!
+cling	And hypnotise, sweetie. He is turning the royals into his puppets. Then he marches on Nylonia and drags the whole kingdom to its DOOM.
+cling	Next stop, the Bleach Badlands. *looks you up and down* Your colours will FADE out there, sweetie.
+fishnet	Rude. Accurate, maybe. But rude.
+narr	*THE BLEACH BADLANDS. A blinding white desert. Signs everywhere: "NO STAINS." "NO SPILLS." "NO FUN."*
+hero	Is it just me, or am I getting... beige?
+fishnet	Keep moving! Anything that stands still gets bleached. I stood still for ONE second once and lost a whole shade.
+fishnet	I used to be BLACK fishnet. ...Okay, I'm still black. But I FEEL lighter.
+baby	WAAAAAH! I was BLUE! I was SO BLUE! Now I'm... *sniff* ...EGGSHELL!
+hero	Hey, little buddy. Eggshell is very in this year.
+baby	*stops crying* ...Really?
+hero	No.
+baby	WAAAAAAAAH! TANTRUM TIIIIIME!
+fishnet	Oh no. He's doing the floppy-arm thing. NOBODY survives the floppy-arm thing!
+baby	*hiccup* ...I feel better now. I still look like a boiled egg, though.
+baby	Also, why does everyone keep calling me PRINCESS? And telling me to stop spinning my rattle at them? I don't even HAVE a rattle!
+fishnet	...Suspicious.
+kneehi	HALT! Nobody crosses this dune without bowing to the sumo master!
+hero	Knee-Hi? You're... completely white.
+kneehi	The Baron bleached me! Now I think I am a BEGINNER! A WHITE BELT! I must challenge EVERYONE!
+fishnet	That's... not how belts work.
+kneehi	Sumo has no belts! ...Wait. Does it? I DO NOT REMEMBER ANYTHING!
+baby	He just challenged a cactus. The cactus won.
+kneehi	BEHOLD! STRETCHY... *checks notes written on his own foot* ...BEGINNER SUMO!
+bleach	HALT, you STAINED creature! You are tracking COLOUR all over my lovely desert!
+hero	It's not a stain. It's CHARACTER.
+bleach	That's what EVERY stain says!
+fishnet	He bleached half the Rinse Sea. The fish are see-through now. You can see what they had for lunch.
+bleach	And they have never been more HYGIENIC.
+bleach	Prepare to be WHITENED! BRIGHTENED! And slightly LEMON-SCENTED!
+narr	*Colour floods back across the desert like one big, happy rainbow!*
+baby	I'M BLUE AGAIN!! *happy tantrum*
+bleach	*sniff* I just wanted everything to be... clean. The Demon promised a world with no mess. No odd socks. No ketchup.
+hero	There's more to life than being spotless, Baron. Sometimes the stains are where the stories are.
+bleach	...Did you get that from a fortune cookie?
+hero	I got it from a fortune cookie I found in my own heel. Don't ask.
+fishnet	Next stop: the Ironing Fortress. Pack a jumper. It gets STEAMY.
+narr	*THE IRONING FORTRESS. A giant steaming castle shaped like an iron. Everything hisses. Somewhere, a kettle is screaming.*
+gran	Oh good, you're here. Took your time.
+hero	GRAN?! How did you even get here?!
+gran	I took the stairs.
+hero	There are no stairs to another dimension!
+gran	There are if you're old enough, dear. *CRACK* ...Ooh. That was my back. Or the stairs. Hard to tell.
+fishnet	Ma'am, with respect... how old ARE you?
+gran	Old enough to have knitted the very first sock. Young enough to kick your fishnets into next Tuesday.
+steel	HALT! SAFETY INSPECTION! NOBODY enters the Fortress without a HARD HAT!
+gran	Young man, I've survived ninety-five winters without a hard hat.
+steel	THEN YOU ARE NINETY-FIVE WINTERS OVERDUE! SAFETY FIRST! ...THEN FIGHTING!
+king	KNEEL! KNEEL before KING KNEE-SOCK, ruler of the sock drawer AND the top shelf!
+fishnet	His eyes are swirly too! He's been hypnotised, just like Cling Queen!
+gran	Young man, if I kneel, I'm not getting back up. You'll have to rule around me.
+king	KNEEL... for the... DEMON... *twitch* ...and also for ME. Mostly the Demon.
+hero	We're socks. We don't HAVE knees.
+king	EXACTLY! That is why I, with my MAGNIFICENT knees, am KING!
+gran	Knock the swirl out of him, dear. Gently. He was a lovely boy once.
+king	GUARDS! ...Oh. I sent the guards out for snacks. ...Then I shall fight you MYSELF!
+narr	*King Knee-Sock wobbles. His swirly eyes spin... slower... and slower...*
+narr	*POP! The swirls fade from King Knee-Sock's eyes.*
+king	*blinks* ...Why am I in a FORTRESS? And why is everybody glaring at me?
+gran	You were being a minion, dear.
+king	A MINION?! I am a KING! The last thing I remember... it was two weeks ago...
+narr	*FLASHBACK. The Ironing Fortress, two weeks ago. The King is here to get his cape pressed.*
+king	KNEEL! ...Nobody is here. I shall kneel to MYSELF. ...No. That is not how kneeling works.
+narr	*A tiny figure in a tiara toddles in through the steam.*
+fake	Uncle King! Uncle King! Goo goo!
+king	PRINCESS BABY BOOTIE! My favourite little royal! Have you come to KNEEL?
+fake	No, Uncle King. Look at my pwetty spinning rattle...
+king	A KING does not look at rattles. ...Oh. Ooh. It goes round... and round...
+fake	*in a deep, smoky voice* Now guard this fortress... and make everyone KNEEL for the DEMON.
+king	Kneel... for... the Demon... *twitch* ...and also for me?
+fake	...Fine. Also for you.
+narr	*Under the tiara: two little horns. Its tiny booties are smouldering.*
+hero	That was the Dryer Demon in disguise! He fooled Cling Queen the same way!
+king	He made me shout KNEEL at everybody!
+fishnet	...You shouted that before, though.
+king	...Yes. But this time it was against my WILL.
+gran	Off you pop. The Shogun's waiting. I'll put the kettle on.
+iron	I am IRON SHOGUN. I press. I flatten. I remove all WRINKLES.
+iron	Your wrinkles are... unacceptable. Prepare to be CRISP.
+gran	Young man, I have been wrinkly since before you were a CAST-IRON TODDLER.
+iron	...The grandmother. Even I fear... the grandmother.
+gran	Go on then, {HERO}. Iron him out. I'll hold your snacks.
+hero	I DIDN'T BRING SNACKS!
+gran	That's why I'm holding them, dear.
+iron	*hisssss* You fight with honour. The Demon waits at the Tumble Throne, deep beneath the Rinse Sea.
+iron	But know this: he does not steal socks out of evil.
+hero	Then WHY?
+iron	*a long, sad puff of steam* ...Out of heartbreak.
+gran	Heartbreak. Oh dear. That is the worst kind of wrinkle.
+fishnet	...Is anyone else crying? No? Just me? My holes are leaking.
+narr	*THE TUMBLE THRONE. Deep beneath the Rinse Sea, a giant drum spins, scorching hot. A throne made of thousands of odd socks.*
+queen	Stay close, Knight. And do NOT touch anything. ESPECIALLY Us.
+hero	Look! That's the sock the Demon stole from the laundromat on day one!
+stinky	*growls* Who goes there?!
+hero	...Wait. That's not him. That's somebody's GYM sock.
+stinky	I've been tumbling in here for SIX MONTHS. I'm not a sock any more. I'm a LIFESTYLE.
+queen	The smell. The SMELL. Guards! ...Oh. We did not bring guards.
+fishnet	I'd help, but my holes let the smell straight in.
+demon	WHO DARES ENTER... THE TUMBLE THRONE?!
+hero	It's over, Demon! We know YOU were Princess Baby Bootie!
+demon	HAHAHAHA! Nobody says no to a baby in a tiara! I hypnotised CLING QUEEN! I hypnotised KING KNEE-SOCK!
+demon	With the royals as my puppets, I would march on Nylonia... and spin the whole kingdom into DOOM! ETERNAL TUMBLE DRY!
+queen	And Our stockings! Give them back this INSTANT, you overheated toaster!
+demon	I AM A DRYER! TOASTERS ARE COMPLETELY DIFFERENT!
+hero	{HERO}'s here now. And I want everybody's socks back!
+demon	...*long pause*... I am looking for someone.
+fishnet	Uh... are we sure we should fight the sad one?
+demon	I AM NOT SAD! I AM FURIOUS! AND ALSO A LITTLE BIT SAD! LOOK INTO MY SPIRAL AND FIGHT ME!
+narr	*The Demon's flames flicker down to a tiny, sad pilot light.*
+demon	A thousand years ago... I was just a sock. A plain black sock. I had a partner. Then, one laundry day... she was gone.
+hero	So you've been taking EVERY sock... looking for your pair?
+demon	Every. Single. One. And none of them are HER.
+narr	*A ghostly shimmer. THE LOST SOCK floats in.*
+ghost	...Hi.
+demon	...*Darling?*
+ghost	I fell down the back of the drawer.
+demon	FOR A THOUSAND YEARS?!
+ghost	...It was cozy.
+narr	*Silence. Then everybody cheers! The Throne of Odd Socks bursts into a shower of reunited pairs!*
+queen	*dabbing her eyes* This is the most beautiful thing We have ever seen. *gasp* ...Oh no.
+hero	What? What is it?
+queen	We cried so hard... WE HAVE A RUN!
