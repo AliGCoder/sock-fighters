@@ -14509,8 +14509,8 @@
       const PALACE_AFTER = { 1: PALACE_AFTER_CH1, 2: PALACE_AFTER_CH2 };
 
       // what a palace guard can carry; each visit, each guard gets a different random set
-      // the palace guards: one carries a sword and shield, the other a spear (which guard gets which is random)
-      const GUARD_WEAPONS = [{ sword: true, shield: true }, { spear: true }];
+      // the palace guards all carry a shield: one with a sword, the other with a spear (which guard gets which is random)
+      const GUARD_WEAPONS = [{ sword: true, shield: true }, { spear: true, shield: true }];
       function pickGuardWeapons() {
         return Math.random() < 0.5 ? [GUARD_WEAPONS[0], GUARD_WEAPONS[1]] : [GUARD_WEAPONS[1], GUARD_WEAPONS[0]];
       }
@@ -14768,8 +14768,8 @@
         }
         // the palace guards: all sizes (the short one stands a little further back)
         const guards = (game.adv && game.adv.hub && game.adv.hub.guards) || [GUARD_WEAPONS[0], GUARD_WEAPONS[1]];
-        drawHosiery(ctx, 'seamed', 418, 458, 0.7, 1, t + 25, { arms: guards[1] });
-        drawHosiery(ctx, 'seamed', 372, 472, 0.9, 1, t, { arms: guards[0] });
+        drawHosiery(ctx, 'seamed', 452, 458, 0.7, 1, t + 25, { arms: guards[1] });
+        drawHosiery(ctx, 'seamed', 382, 472, 0.9, 1, t, { arms: guards[0] });
       }
 
       /** The Queen's throne on a raised dais: a tall crown-topped back with velvet inside. */
@@ -14832,8 +14832,8 @@
           p.mouth = t % 10 < 5 ? 'yell' : 'grin';
           p.yOff = -Math.abs(Math.sin(t * 0.25)) * 8;
         }
-        drawSock(ctx, def, p, 500, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
-        if (Hb.scout) drawHosiery(ctx, 'fishnet', 640, 474, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
+        drawSock(ctx, def, p, 518, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
+        if (Hb.scout) drawHosiery(ctx, 'fishnet', 656, 474, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
         if (game.adv.scene) return drawSceneBox();
         // menu
         drawText('PALACE OF NYLONIA', 174, 80, 26, FONT_COMIC, '#ffe234', INK, 7);
