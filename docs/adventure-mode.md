@@ -3,17 +3,13 @@
 
 ---
 
-## 1. What it plays like
-- **Hero select (the League-style part):** a big, dramatic screen. Hero portraits run along the side; the chosen hero stands huge in the middle with their name, title and a funny one-liner. Their abilities are shown as icons you can tap to read. Skins (including your Dryer styles) sit along the bottom, and there's a big **LOCK IN** button. Locking in plays the hero's catchphrase and a dramatic whoosh.
-- **Exploring:** the camera looks down at an angle at the hero. You **tap or click where to walk**, and tap enemies to attack them.
-- **Abilities:** every hero has a **basic attack** (tap or click an enemy) plus **3 different special abilities** on buttons **1 2 3** (keyboard) or big round buttons (phone), each with its own cooldown. On top of that there's an **ULT** that charges as you fight.
-- **Story chapters:** each chapter is a new place with silly enemies, a few secrets, funny story scenes, and a **boss** at the end. Bosses have attacks you can see coming and dodge.
-- **Level ups:** you level up during a chapter, and each level makes one special stronger (you pick which).
-- **Saving:** chapters you've cleared, and their rewards, save on your device, just like trophies.
-- **No** lanes, minion waves or towers. This isn't a League match; it borrows the hero select and the controls.
-- Later: **co-op**, with a friend joining online as a second hero.
-
----
+## 1. How it plays
+**It's the original fighting game, with the story around it.** No exploring, no top-down gameplay.
+- **Main menu → ADVENTURE.** The prologue plays, then you choose your hero on a big League-style hero select (portraits, the hero's moves, skins, a **DRYER** button to style them, and **LOCK IN**).
+- Your hero jumps through the **dryer portal** to Queen Nylonia's palace, the hub where you pick chapters and change hero.
+- **Each chapter is a run of normal 1-on-1 fights** with funny story scenes before, between and after them. Lose a fight and you just try it again.
+- Chapter 1, The Lint Plains: Lint Bunny → Socklet → boss **Holey Moley**, fought on the new Lint Plains arena. Chapters 2–5 come next, each with its own arena.
+- Wins in the story count towards trophies, like any other fight.
 
 ## 2. The characters
 

@@ -30,8 +30,7 @@ Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N p
 
 ## Adventure mode: *Lost in the Spin Cycle*
 Main menu → **ADVENTURE**. Queen Nylonia of the Hosiery (a two-legged pantyhose people from the Island of Nylonia) appears in Dryer No. 7 and asks for a hero to stop the Dryer Demon. You pick your hero on a big hero select screen, jump through the dryer portal, and fight from the Queen's palace.
-- Tap or click to walk, tap enemies to attack. Every hero has **3 special abilities** (1 2 3) and an **ULT** (R), and levels up during a chapter.
-- **Chapter 1, The Lint Plains,** is playable: smash three Lint Gang camps, then beat Holey Moley. Chapters 2–5 are coming.
+- Each chapter is a run of normal fights with story scenes in between. **Chapter 1, The Lint Plains,** is playable: Lint Bunny, Socklet, then the boss Holey Moley. Chapters 2–5 are coming.
 - The whole story script is in [docs/adventure-mode.md](docs/adventure-mode.md).
 
 ## Modes
