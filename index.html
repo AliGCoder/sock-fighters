@@ -8801,6 +8801,13 @@
             ctx.arc(p.x, p.y, p.size * (1.5 - k * 0.6), 0, 7);
             ctx.fill();
             break;
+          case 'confetti':
+            ctx.globalAlpha = Math.min(1, k * 3);
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rot);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+            break;
           case 'star':
             ctx.globalAlpha = Math.min(1, k * 2);
             ctx.fillStyle = '#ffe234';
@@ -10352,6 +10359,187 @@
         drawLintCrowd(t, [200, 470, 760], 384, '#b9a3d8');
       }
 
+      /* --- The Bleach Badlands (story only): a blinding white desert of dunes, giant bleach bottles, "NO STAINS" signs --- */
+      function buildBadlands(b) {
+        let g = b.createLinearGradient(0, 0, 0, 400);
+        g.addColorStop(0, '#bfe9ff');
+        g.addColorStop(0.6, '#f4fbff');
+        g.addColorStop(1, '#ffffff');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // a hard white sun
+        g = b.createRadialGradient(200, 90, 10, 200, 90, 150);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        b.fillStyle = g;
+        b.fillRect(40, 0, 330, 250);
+        // dunes, far to near
+        for (const [y, col] of [[300, '#e3f1f8'], [340, '#eef7fb'], [376, '#fbfdff']]) {
+          b.fillStyle = col;
+          b.strokeStyle = 'rgba(120,160,190,0.35)';
+          b.lineWidth = 3;
+          b.beginPath();
+          b.moveTo(0, 400);
+          for (let x = 0; x <= W; x += 40) b.lineTo(x, y + Math.sin(x * 0.012 + y) * 22);
+          b.lineTo(W, 400);
+          b.closePath();
+          b.fill();
+          b.stroke();
+        }
+        // giant bleach bottles standing in the sand like rock towers
+        for (const [x, s] of [[130, 1], [800, 1.25]]) {
+          b.save();
+          b.translate(x, 384);
+          b.scale(s, s);
+          roundRectPath(b, -38, -150, 76, 150, 14);
+          b.fillStyle = '#ffffff';
+          b.fill();
+          b.strokeStyle = INK;
+          b.lineWidth = 3.5;
+          b.stroke();
+          roundRectPath(b, -16, -182, 32, 36, 6);
+          b.fillStyle = '#3f9be0';
+          b.fill();
+          b.stroke();
+          b.fillStyle = '#3f9be0';
+          b.fillRect(-38, -104, 76, 44);
+          drawText('BLEACH', 0, -82, 15, FONT_COMIC, '#fff', INK, 0, 'center', b);
+          b.restore();
+        }
+        // a sign
+        b.fillStyle = '#8a6a4a';
+        b.fillRect(486, 300, 8, 90);
+        roundRectPath(b, 420, 250, 140, 58, 8);
+        b.fillStyle = '#fff';
+        b.fill();
+        b.strokeStyle = INK;
+        b.lineWidth = 3;
+        b.stroke();
+        drawText('NO STAINS', 490, 268, 16, FONT_COMIC, '#e8333a', INK, 0, 'center', b);
+        drawText('NO SPILLS  •  NO FUN', 490, 292, 7, FONT_PIXEL, INK, INK, 0, 'center', b);
+        perspectiveFloor(b, '#eef4f8', '#f7fbfd', '#e2edf3');
+        b.fillStyle = '#9fc4d8';
+        b.fillRect(0, 396, W, 6);
+        floorShade(b);
+      }
+      function drawBadlands(t) {
+        // heat shimmer
+        for (let i = 0; i < 5; i++) {
+          ctx.fillStyle = 'rgba(255,255,255,0.22)';
+          ctx.beginPath();
+          const y = 300 + i * 18;
+          ctx.moveTo(0, y);
+          for (let x = 0; x <= W; x += 30) ctx.lineTo(x, y + Math.sin(x * 0.03 + t * 0.06 + i) * 4);
+          ctx.lineTo(W, y + 8);
+          ctx.lineTo(0, y + 8);
+          ctx.closePath();
+          ctx.fill();
+        }
+        // squeaky-clean gleams
+        for (let i = 0; i < 9; i++) {
+          const tw = Math.abs(Math.sin(t * 0.07 + i * 1.7));
+          if (tw < 0.5) continue;
+          starPath(ctx, 60 + i * 105, 120 + ((i * 67) % 210), 3 + tw * 6, t * 0.02 + i);
+          ctx.fillStyle = 'rgba(255,255,255,' + tw + ')';
+          ctx.fill();
+        }
+        drawLintCrowd(t, [300, 610, 700], 384, '#ffffff');
+      }
+
+      /* --- The Ironing Fortress (story only): a hissing steel hall of giant irons, steam vents and a conveyor of flat socks --- */
+      function buildFortress(b) {
+        let g = b.createLinearGradient(0, 0, 0, 400);
+        g.addColorStop(0, '#14161f');
+        g.addColorStop(1, '#3a3f4f');
+        b.fillStyle = g;
+        b.fillRect(0, 0, W, 400);
+        // giant iron soleplates as wall panels, with rows of steam holes
+        for (const x of [150, 480, 810]) {
+          b.beginPath();
+          b.moveTo(x, 40);
+          b.quadraticCurveTo(x + 120, 150, x + 100, 330);
+          b.lineTo(x - 100, 330);
+          b.quadraticCurveTo(x - 120, 150, x, 40);
+          b.closePath();
+          g = b.createLinearGradient(x - 110, 0, x + 110, 0);
+          g.addColorStop(0, '#6f7688');
+          g.addColorStop(0.5, '#aab2c4');
+          g.addColorStop(1, '#5a6072');
+          b.fillStyle = g;
+          b.fill();
+          b.strokeStyle = INK;
+          b.lineWidth = 4;
+          b.stroke();
+          b.fillStyle = '#23262f';
+          for (let r = 0; r < 5; r++)
+            for (let c = -r - 1; c <= r + 1; c++) {
+              b.beginPath();
+              b.arc(x + c * 22, 110 + r * 42, 5, 0, 7);
+              b.fill();
+            }
+        }
+        // a red-hot temperature strip
+        g = b.createLinearGradient(0, 340, 0, 372);
+        g.addColorStop(0, '#b3202a');
+        g.addColorStop(1, '#5a0f14');
+        b.fillStyle = g;
+        b.fillRect(0, 340, W, 32);
+        b.fillStyle = '#d4a017';
+        b.fillRect(0, 336, W, 5);
+        // the conveyor belt base
+        b.fillStyle = '#1b1d26';
+        b.fillRect(0, 372, W, 28);
+        perspectiveFloor(b, '#2c303c', '#343946', '#3e4453');
+        b.fillStyle = '#d4a017';
+        b.fillRect(0, 396, W, 6);
+        floorShade(b);
+      }
+      function drawFortress(t) {
+        // the conveyor: rollers turning and flattened socks riding along
+        for (let x = -40 + ((t * 1.2) % 60); x < W + 40; x += 60) {
+          ctx.fillStyle = '#4a5060';
+          ctx.beginPath();
+          ctx.arc(x, 386, 8, 0, 7);
+          ctx.fill();
+        }
+        for (let i = 0; i < 5; i++) {
+          const x = ((t * 1.2 + i * 230) % (W + 200)) - 100;
+          ctx.save();
+          ctx.translate(x, 372);
+          ctx.fillStyle = FX_COLORS[i % FX_COLORS.length];
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2.5;
+          roundRectPath(ctx, -34, -7, 56, 9, 4);
+          ctx.fill();
+          ctx.stroke();
+          roundRectPath(ctx, 14, -7, 24, 9, 4);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
+        // steam puffing out of the irons
+        for (let i = 0; i < 12; i++) {
+          const k = ((t * 0.9 + i * 31) % 120) / 120;
+          const x = [150, 480, 810][i % 3] + Math.sin(i * 2.2) * 60;
+          ctx.fillStyle = 'rgba(235,240,250,' + 0.5 * (1 - k) + ')';
+          ctx.beginPath();
+          ctx.arc(x + Math.sin(k * 5 + i) * 10, 300 - k * 190, 8 + k * 26, 0, 7);
+          ctx.fill();
+        }
+        // a glowing dial
+        const hot = 0.6 + 0.4 * Math.sin(t * 0.1);
+        ctx.save();
+        ctx.shadowColor = '#ff5a1f';
+        ctx.shadowBlur = 18 * hot;
+        ctx.fillStyle = 'rgba(255,90,31,' + hot + ')';
+        ctx.beginPath();
+        ctx.arc(318, 356, 9, 0, 7);
+        ctx.arc(642, 356, 9, 0, 7);
+        ctx.fill();
+        ctx.restore();
+        drawLintCrowd(t, [240, 400, 560, 720], 384, '#aab2c4');
+      }
+
       // All arenas: name and Japanese name (shown on the VS screen), painter and animator.
       const STAGES = {
         laundry: { name: 'COIN LAUNDRY', jp: 'コインランドリー', build: buildLaundry, draw: drawLaundry },
@@ -10360,7 +10548,9 @@
         dojo: { name: 'SAKURA DOJO', jp: '桜の道場', build: buildDojo, draw: drawDojo },
         dryer: { name: 'INSIDE THE DRYER', jp: '乾燥機の中', build: buildDryer, draw: drawDryer },
         plains: { name: 'THE LINT PLAINS', jp: 'リント平原', build: buildPlains, draw: drawPlains, storyOnly: true },
-        swamp: { name: 'THE STATIC SWAMP', jp: '静電気の沼', build: buildSwamp, draw: drawSwamp, storyOnly: true }
+        swamp: { name: 'THE STATIC SWAMP', jp: '静電気の沼', build: buildSwamp, draw: drawSwamp, storyOnly: true },
+        badlands: { name: 'THE BLEACH BADLANDS', jp: '漂白荒野', build: buildBadlands, draw: drawBadlands, storyOnly: true },
+        fortress: { name: 'THE IRONING FORTRESS', jp: 'アイロン要塞', build: buildFortress, draw: drawFortress, storyOnly: true }
       };
       const STAGE_IDS = Object.keys(STAGES);
       const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder', 'awards'];
@@ -13896,6 +14086,15 @@
         }
         const line = S.lines[S.i];
         if (line.fx) line.fx(S.state);
+        // a speech mark over the speaker, and a shake when they SHOUT
+        const spoken = line.text.replace(/\*[^*]*\*/g, '');
+        const letters = spoken.replace(/[^A-Za-z]/g, '');
+        const caps = letters.replace(/[^A-Z]/g, '').length;
+        const shout = letters.length >= 10 && caps / letters.length > 0.6;
+        const mark = /^\s*\.\.\./.test(line.text) ? '...' : /\?\s*$/.test(spoken.trim()) ? '?' : /!/.test(spoken) ? '!' : '';
+        S.emote = line.who !== 'narr' && mark ? { who: line.who, mark, at: S.t } : null;
+        S.shake = shout ? 9 : 0;
+        if (shout) SFX.thoom();
         sceneVoice(line, S);
       }
       const SCENE_SKIP = { x: 832, y: 370, w: 112, h: 28 };
@@ -14544,9 +14743,38 @@
         { who: 'queen', text: 'We are going to need a moment.' },
         { who: 'narr', text: '*The Queen stares out of the window for a very long, very dramatic moment.*' },
         { who: 'fishnet', text: "Should we... say something?" },
-        { who: 'queen', text: 'The BLEACH BADLANDS are next. The bridge is still being built. Rest, Knight. We shall be over here. Being TIMELESS.' }
+        { who: 'queen', text: 'The BLEACH BADLANDS are next. Go, Knight. We shall be over here. Being TIMELESS.' }
       ];
-      const PALACE_AFTER = { 1: PALACE_AFTER_CH1, 2: PALACE_AFTER_CH2 };
+      const PALACE_AFTER_CH3 = [
+        { who: 'queen', text: 'The Bleach Baron, defeated! The fish of the Rinse Sea have their colours back.' },
+        { who: 'queen', text: 'One of them sent Us a thank-you note. It is VERY wet.' },
+        { who: 'fishnet', text: "It's mostly just a drawing of a fish. Signed: 'a fish'." },
+        { who: 'queen', text: 'Next: the IRONING FORTRESS, where the Iron Shogun flattens anything with a wrinkle.' },
+        { who: 'queen', text: '...Knight. We have noticed you are EXTREMELY wrinkly. Do be careful.' },
+        { who: 'hero', text: "I'm a sock! I'm SUPPOSED to be wrinkly!" },
+        { who: 'queen', text: 'That is exactly what a wrinkle would say.' }
+      ];
+      const PALACE_AFTER_CH4 = [
+        { who: 'queen', text: 'Heartbreak? *quietly* ...We know a little about that.' },
+        { who: 'fishnet', text: 'Your Majesty?' },
+        { who: 'queen', text: '*VERY loudly* ANYWAY! The Tumble Throne lies beneath the sea. This time, WE are coming with you.' },
+        { who: 'queen', text: 'We do not normally go places that are this... DAMP. But for Our people, We shall make an exception.' },
+        { who: 'queen', text: 'Somebody fetch Our waterproof crown.' },
+        { who: 'fishnet', text: 'Your Majesty, that is just a crown with a shower cap on it.' },
+        { who: 'queen', text: 'It is FASHION.' }
+      ];
+      const PALACE_AFTER_CH5 = [
+        { who: 'narr', text: '*THE ROYAL LAUNDRY BALL. Socks and Hosiery dance together. The Demon is running the cloakroom.*' },
+        { who: 'queen', text: 'For saving both Our worlds, We name you... KNIGHT OF THE ROYAL DRAWER!' },
+        { who: 'hero', text: 'Do I get a crown?' },
+        { who: 'queen', text: 'You get a WASHING. Immediately.' },
+        { who: 'demon', text: 'Welcome to the cloakroom. Lost socks are returned within one thousand years. ...We are working on that.' },
+        { who: 'cling', text: 'Love the ball, Nylonia. Shame about the sheen.' },
+        { who: 'queen', text: '...GUARDS.' },
+        { who: 'gran', text: "Now can somebody help me down from this chandelier? I don't know how I got up here either." },
+        { who: 'fishnet', text: 'Best. Mission. EVER.' }
+      ];
+      const PALACE_AFTER = { 1: PALACE_AFTER_CH1, 2: PALACE_AFTER_CH2, 3: PALACE_AFTER_CH3, 4: PALACE_AFTER_CH4, 5: PALACE_AFTER_CH5 };
 
       // what a palace guard can carry; each visit, each guard gets a different random set
       // the palace guards all carry a shield: one with a sword, the other with a spear (which guard gets which is random)
@@ -14582,7 +14810,15 @@
       function updateAdvHub() {
         const Hb = game.adv.hub;
         Hb.t++;
-        if (updateScene()) return;
+        if (updateScene()) {
+          Hb.sceneEnded = Hb.t;
+          return;
+        }
+        if (Hb.t - (Hb.sceneEnded || -99) < 20) {
+          wasPressed(...CONFIRM_KEYS, 'Escape', 'Backspace');
+          game.click = null;
+          return;
+        }
         const items = HUB_ITEMS();
         if (backWasPressed()) return toModeMenu();
         if (wasPressed('KeyW', 'ArrowUp')) {
@@ -14910,18 +15146,28 @@
       const CH1_INTRO = [
         { who: 'hero', text: "Ugh. It's like walking on a sweater that gave up." },
         { who: 'fishnet', text: "The LINT PLAINS, Sir Knight! The Demon's Lint Gang guards the way to the Static Swamp." },
-        { who: 'lint', text: 'HALT! You are entering the land of the... *sneezes* ...LINT GANG!' },
+        { who: 'lint', text: 'HALT! You are entering the land of the... *ACHOO!* ...LINT GANG!', fx: s => (s.sneeze = { t: 0, x: 700, kind: 'gang', babies: 3 }) },
+        { who: 'narr', text: '*Three tiny Lint Gang members tumble out of the sneeze.*' },
         { who: 'hero', text: 'Bless you.' },
-        { who: 'lint', text: '*sniffles* Nobody ever says bless you. *sneezes again*' },
-        { who: 'narr', text: '*Three more lint bunnies fall out of the sneeze.*' },
-        { who: 'hero', text: '...Did you just sneeze out your FAMILY?' },
-        { who: 'lint', text: "Every lint bunny is born from a sneeze. It's beautiful, actually. ...Now FIGHT ME!" },
+        { who: 'lint', text: '*sniffles* Nobody ever says bless you.' },
+        { who: 'hero', text: '...Did you just sneeze out your whole GANG?' },
+        { who: 'lint', text: "Every Lint Gang member is born from a sneeze. It's beautiful, actually." },
+        { who: 'lint', text: 'We are FOUR THOUSAND strong!' },
+        { who: 'hero', text: 'There are four of you.' },
+        { who: 'lint', text: 'Then watch me make MORE! *Ah... AH...*', fx: s => (s.sneeze = { t: 0, x: 700, kind: 'dud' }) },
+        { who: 'narr', text: '*...Nothing comes out.*' },
+        { who: 'lint', text: '...That was a practice one.' },
+        { who: 'lint', text: '*Ah... AHH... AHHHHHH...* BIG ONE!', fx: s => (s.sneeze = { t: 0, x: 700, kind: 'big' }) },
+        { who: 'narr', text: '*A MASSIVE sneeze-wind blasts across the plains! Everybody is covered in fluff. The Lint Gang runs for it!*' },
+        { who: 'fishnet', text: "I'm FUZZY! There's lint in ALL my holes!" },
+        { who: 'hero', text: "...I'm a sweater now." },
+        { who: 'lint', text: "My gang... ran away. *sniff* ...FINE! I'll fight you MYSELF!" },
         { who: 'fishnet', text: "Go get him, Sir Knight! I'd help, but I'm mostly holes." }
       ];
       const CH1_MID = [
         { who: 'socklet', text: 'HEY! You beat up my cousin!' },
-        { who: 'hero', text: "You're related to a lint bunny?" },
-        { who: 'socklet', text: "We're ALL related to a lint bunny. It's a whole sneeze thing." },
+        { who: 'hero', text: "You're related to the Lint Gang?" },
+        { who: 'socklet', text: "We're ALL related to the Lint Gang. It's a whole sneeze thing." },
         { who: 'fishnet', text: 'This is the weirdest family tree I have ever seen.' },
         { who: 'socklet', text: 'I may be tiny, but these ankles are FAST. Try to keep up!' }
       ];
@@ -14961,6 +15207,8 @@
         { who: 'hero', text: 'You know the Queen?' },
         { who: 'cling', text: 'Know her? Darling, we were the two most fabulous royals in the Rinse Sea. Then she got an ISLAND and I got... *gestures at the swamp* ...THIS.' },
         { who: 'cling', text: "There's only room for ONE queen, sweetie. And she's wearing last season's sheen." },
+        { who: 'hero', text: 'You seem... upset.' },
+        { who: 'cling', text: "I'm not upset, darling. I'm just a little... STATIC." },
         { who: 'fishnet', text: "Ooh. I'm telling her you said that." }
       ];
       const CH2_END = [
@@ -14970,9 +15218,124 @@
         { who: 'cling', text: 'Past the Bleach Badlands. *looks you up and down* You won\'t make it, sweetie. Your colours will FADE.' },
         { who: 'fishnet', text: 'Rude. Accurate, maybe. But rude.' }
       ];
+      const CH3_INTRO = [
+        { who: 'narr', text: '*THE BLEACH BADLANDS. A blinding white desert. Signs everywhere: "NO STAINS." "NO SPILLS." "NO FUN."*' },
+        { who: 'hero', text: "Is it just me, or am I getting... beige?" },
+        { who: 'fishnet', text: 'Keep moving! Anything that stands still gets bleached. I stood still for ONE second once and lost a whole shade.' },
+        { who: 'fishnet', text: "I used to be BLACK fishnet. ...Okay, I'm still black. But I FEEL lighter." },
+        { who: 'baby', text: 'WAAAAAH! I was BLUE! I was SO BLUE! Now I\'m... *sniff* ...EGGSHELL!' },
+        { who: 'hero', text: 'Hey, little buddy. Eggshell is very in this year.' },
+        { who: 'baby', text: '*stops crying* ...Really?' },
+        { who: 'hero', text: 'No.' },
+        { who: 'baby', text: 'WAAAAAAAAH! TANTRUM TIIIIIME!' },
+        { who: 'fishnet', text: "Oh no. He's doing the floppy-arm thing. NOBODY survives the floppy-arm thing!" }
+      ];
+      const CH3_MID = [
+        { who: 'baby', text: '*hiccup* ...I feel better now. I still look like a boiled egg, though.' },
+        { who: 'kneehi', text: 'HALT! Nobody crosses this dune without bowing to the sumo master!' },
+        { who: 'hero', text: "Knee-Hi? You're... completely white." },
+        { who: 'kneehi', text: 'The Baron bleached me! Now I think I am a BEGINNER! A WHITE BELT! I must challenge EVERYONE!' },
+        { who: 'fishnet', text: "That's... not how belts work." },
+        { who: 'kneehi', text: 'Sumo has no belts! ...Wait. Does it? I DO NOT REMEMBER ANYTHING!' },
+        { who: 'baby', text: 'He just challenged a cactus. The cactus won.' },
+        { who: 'kneehi', text: 'BEHOLD! STRETCHY... *checks notes written on his own foot* ...BEGINNER SUMO!' }
+      ];
+      const CH3_BOSS = [
+        { who: 'bleach', text: 'HALT, you STAINED creature! You are tracking COLOUR all over my lovely desert!' },
+        { who: 'hero', text: "It's not a stain. It's CHARACTER." },
+        { who: 'bleach', text: "That's what EVERY stain says!" },
+        { who: 'fishnet', text: 'He bleached half the Rinse Sea. The fish are see-through now. You can see what they had for lunch.' },
+        { who: 'bleach', text: 'And they have never been more HYGIENIC.' },
+        { who: 'bleach', text: 'Prepare to be WHITENED! BRIGHTENED! And slightly LEMON-SCENTED!' }
+      ];
+      const CH3_END = [
+        { who: 'narr', text: '*Colour floods back across the desert like one big, happy rainbow!*', fx: s => (s.rainbow = 1) },
+        { who: 'baby', text: "I'M BLUE AGAIN!! *happy tantrum*", fx: s => (s.confetti = 1) },
+        { who: 'bleach', text: '*sniff* I just wanted everything to be... clean. The Demon promised a world with no mess. No odd socks. No ketchup.' },
+        { who: 'hero', text: "There's more to life than being spotless, Baron. Sometimes the stains are where the stories are." },
+        { who: 'bleach', text: '...Did you get that from a fortune cookie?' },
+        { who: 'hero', text: "I got it from a fortune cookie I found in my own heel. Don't ask." },
+        { who: 'fishnet', text: 'Next stop: the Ironing Fortress. Pack a jumper. It gets STEAMY.' }
+      ];
+      const CH4_INTRO = [
+        { who: 'narr', text: '*THE IRONING FORTRESS. A giant steaming castle shaped like an iron. Everything hisses. Somewhere, a kettle is screaming.*' },
+        { who: 'gran', text: "Oh good, you're here. Took your time." },
+        { who: 'hero', text: 'GRAN?! How did you even get here?!' },
+        { who: 'gran', text: 'I took the stairs.' },
+        { who: 'hero', text: 'There are no stairs to another dimension!' },
+        { who: 'gran', text: "There are if you're old enough, dear. *CRACK* ...Ooh. That was my back. Or the stairs. Hard to tell." },
+        { who: 'fishnet', text: "Ma'am, with respect... how old ARE you?" },
+        { who: 'gran', text: 'Old enough to have knitted the very first sock. Young enough to kick your fishnets into next Tuesday.' },
+        { who: 'steel', text: 'HALT! SAFETY INSPECTION! NOBODY enters the Fortress without a HARD HAT!' },
+        { who: 'gran', text: "Young man, I've survived ninety-five winters without a hard hat." },
+        { who: 'steel', text: 'THEN YOU ARE NINETY-FIVE WINTERS OVERDUE! SAFETY FIRST! ...THEN FIGHTING!' }
+      ];
+      const CH4_MID = [
+        { who: 'king', text: 'KNEEL! KNEEL before KING KNEE-SOCK, ruler of the sock drawer AND the top shelf!' },
+        { who: 'gran', text: "Young man, if I kneel, I'm not getting back up. You'll have to rule around me." },
+        { who: 'king', text: '...Fine. The REST of you, kneel!' },
+        { who: 'hero', text: "We're socks. We don't HAVE knees." },
+        { who: 'king', text: 'EXACTLY! That is why I, with my MAGNIFICENT knees, am KING!' },
+        { who: 'fishnet', text: "I've got two knees and I'm still not kneeling." },
+        { who: 'king', text: 'GUARDS! ...Oh. I sent the guards out for snacks. ...Then I shall fight you MYSELF!' }
+      ];
+      const CH4_BOSS = [
+        { who: 'iron', text: 'I am IRON SHOGUN. I press. I flatten. I remove all WRINKLES.' },
+        { who: 'iron', text: 'Your wrinkles are... unacceptable. Prepare to be CRISP.' },
+        { who: 'gran', text: 'Young man, I have been wrinkly since before you were a CAST-IRON TODDLER.' },
+        { who: 'iron', text: '...The grandmother. Even I fear... the grandmother.' },
+        { who: 'gran', text: "Go on then, {HERO}. Iron him out. I'll hold your snacks." },
+        { who: 'hero', text: "I DIDN'T BRING SNACKS!" },
+        { who: 'gran', text: "That's why I'm holding them, dear." }
+      ];
+      const CH4_END = [
+        { who: 'iron', text: '*hisssss* You fight with honour. The Demon waits at the Tumble Throne, deep beneath the Rinse Sea.' },
+        { who: 'iron', text: 'But know this: he does not steal socks out of evil.' },
+        { who: 'hero', text: 'Then WHY?' },
+        { who: 'iron', text: '*a long, sad puff of steam* ...Out of heartbreak.' },
+        { who: 'gran', text: 'Heartbreak. Oh dear. That is the worst kind of wrinkle.' },
+        { who: 'fishnet', text: '...Is anyone else crying? No? Just me? My holes are leaking.' }
+      ];
+      const CH5_INTRO = [
+        { who: 'narr', text: '*THE TUMBLE THRONE. Deep beneath the Rinse Sea, a giant drum spins, scorching hot. A throne made of thousands of odd socks.*', fx: s => (s.embers = 1) },
+        { who: 'queen', text: 'Stay close, Knight. And do NOT touch anything. ESPECIALLY Us.' },
+        { who: 'hero', text: "Look! That's the sock the Demon stole from the laundromat on day one!" },
+        { who: 'stinky', text: '*growls* Who goes there?!' },
+        { who: 'hero', text: "...Wait. That's not him. That's somebody's GYM sock." },
+        { who: 'stinky', text: "I've been tumbling in here for SIX MONTHS. I'm not a sock any more. I'm a LIFESTYLE." },
+        { who: 'queen', text: 'The smell. The SMELL. Guards! ...Oh. We did not bring guards.' },
+        { who: 'fishnet', text: "I'd help, but my holes let the smell straight in." }
+      ];
+      const CH5_BOSS = [
+        { who: 'demon', text: 'WHO DARES ENTER... THE TUMBLE THRONE?!', fx: s => (s.embers = 1) },
+        { who: 'hero', text: "{HERO}! And I want everybody's socks back!" },
+        { who: 'demon', text: 'HAHAHAHA! I have taken a sock from EVERY laundry day for a THOUSAND YEARS!' },
+        { who: 'queen', text: 'And Our stockings! Give them back this INSTANT, you overheated toaster!' },
+        { who: 'demon', text: 'I AM A DRYER! TOASTERS ARE COMPLETELY DIFFERENT!' },
+        { who: 'demon', text: '...*long pause*... I am looking for someone.' },
+        { who: 'fishnet', text: 'Uh... are we sure we should fight the sad one?' },
+        { who: 'demon', text: 'I AM NOT SAD! I AM FURIOUS! AND ALSO A LITTLE BIT SAD! FIGHT ME!' }
+      ];
+      const CH5_END = [
+        { who: 'narr', text: "*The Demon's flames flicker down to a tiny, sad pilot light.*", fx: s => (s.embers = 0) },
+        { who: 'demon', text: 'A thousand years ago... I was just a sock. A plain black sock. I had a partner. Then, one laundry day... she was gone.' },
+        { who: 'hero', text: "So you've been taking EVERY sock... looking for your pair?" },
+        { who: 'demon', text: 'Every. Single. One. And none of them are HER.' },
+        { who: 'narr', text: '*A ghostly shimmer. THE LOST SOCK floats in.*', fx: s => (s.flash = 14) },
+        { who: 'ghost', text: '...Hi.' },
+        { who: 'demon', text: '...*Darling?*' },
+        { who: 'ghost', text: 'I fell down the back of the drawer.' },
+        { who: 'demon', text: 'FOR A THOUSAND YEARS?!' },
+        { who: 'ghost', text: '...It was cozy.' },
+        { who: 'narr', text: '*Silence. Then everybody cheers! The Throne of Odd Socks bursts into a shower of reunited pairs!*', fx: s => (s.confetti = 1) },
+        { who: 'queen', text: '*dabbing her eyes* This is the most beautiful thing We have ever seen. *gasp* ...Oh no.' },
+        { who: 'hero', text: 'What? What is it?' },
+        { who: 'queen', text: 'We cried so hard... WE HAVE A RUN!' }
+      ];
       const STORY_CHAPTERS = {
         1: {
           name: 'THE LINT PLAINS',
+          jp: 'リント平原',
           stage: 'plains',
           tier: 'easy',
           steps: [
@@ -14982,7 +15345,7 @@
             { scene: CH1_MID, cast: ['socklet'] },
             { fight: 'socklet' },
             { walk: true },
-            { scene: CH1_BOSS, cast: ['holey'] },
+            { scene: CH1_BOSS, cast: ['holey'], boss: true },
             { fight: 'holey' },
             { scene: CH1_END, cast: ['holey'] },
             { walk: true },
@@ -14991,6 +15354,7 @@
         },
         2: {
           name: 'THE STATIC SWAMP',
+          jp: '静電気の沼',
           stage: 'swamp',
           tier: 'medium',
           steps: [
@@ -14999,10 +15363,64 @@
             { scene: CH2_MID, cast: ['robo', 'shinobi'] },
             { fight: 'shinobi' },
             { walk: true },
-            { scene: CH2_BOSS, cast: ['cling'] },
+            { scene: CH2_BOSS, cast: ['cling'], boss: true },
             { fight: 'cling' },
             { scene: CH2_END, cast: ['cling'] },
             { walk: true },
+            { clear: true }
+          ]
+        },
+        3: {
+          name: 'THE BLEACH BADLANDS',
+          jp: '漂白荒野',
+          stage: 'badlands',
+          tier: 'medium',
+          steps: [
+            { scene: CH3_INTRO, cast: ['baby'] },
+            { fight: 'baby' },
+            { scene: CH3_MID, cast: ['baby', 'kneehi'] },
+            { fight: 'kneehi' },
+            { walk: true },
+            { scene: CH3_BOSS, cast: ['bleach'], boss: true },
+            { fight: 'bleach' },
+            { scene: CH3_END, cast: ['bleach', 'baby'] },
+            { walk: true },
+            { clear: true }
+          ]
+        },
+        4: {
+          name: 'THE IRONING FORTRESS',
+          jp: 'アイロン要塞',
+          stage: 'fortress',
+          tier: 'hard',
+          steps: [
+            { scene: CH4_INTRO, cast: ['steel', 'gran'] },
+            { fight: 'steel' },
+            { walk: true },
+            { scene: CH4_MID, cast: ['king', 'gran'] },
+            { fight: 'king' },
+            { walk: true },
+            { scene: CH4_BOSS, cast: ['iron', 'gran'], boss: true },
+            { fight: 'iron' },
+            { scene: CH4_END, cast: ['iron', 'gran'] },
+            { walk: true },
+            { clear: true }
+          ]
+        },
+        5: {
+          name: 'THE TUMBLE THRONE',
+          jp: '回転の玉座',
+          stage: 'dryer',
+          tier: 'hard',
+          steps: [
+            { scene: CH5_INTRO, cast: ['stinky'], allies: ['queen'] },
+            { fight: 'stinky' },
+            { walk: true },
+            { scene: CH5_BOSS, cast: ['demon'], allies: ['queen'], boss: true, final: true },
+            { fight: 'demon' },
+            { scene: CH5_END, cast: ['demon', 'ghost'], allies: ['queen'] },
+            { walk: true },
+            { credits: true },
             { clear: true }
           ]
         }
@@ -15010,7 +15428,10 @@
 
       function startChapter(n) {
         game.story = { chapter: n, step: -1 };
-        nextStoryStep();
+        particles.length = 0;
+        floatingTexts.length = 0;
+        game.adv.title = { t: 0, chapter: n };
+        game.screen = 'advTitle';
       }
 
       /** Go on to the next part of the chapter: a scene, a fight, or the end. */
@@ -15021,13 +15442,29 @@
         const step = ch.steps[S.step];
         if (!step) return leaveStory();
         if (step.scene) {
-          game.adv.stage = { t: 0, stageId: ch.stage, cast: step.cast || [] };
+          game.adv.stage = { t: 0, stageId: ch.stage, cast: step.cast || [], allies: step.allies || [], warning: step.boss ? 130 : 0, final: !!step.final };
+          particles.length = 0;
+          floatingTexts.length = 0;
           game.screen = 'advScene';
           playScene(step.scene, nextStoryStep, game.adv.stage);
+          if (step.boss) {
+            // the arcade announcer's boss warning
+            try {
+              Announcer.nextOpponent(findCharacter(step.cast[0]), !!step.final);
+            } catch (e) {}
+          }
         } else if (step.fight) startStoryFight();
-        else if (step.walk) {
+        else if (step.credits) {
+          particles.length = 0;
+          floatingTexts.length = 0;
+          game.adv.credits = { t: 0 };
+          game.screen = 'advCredits';
+          SFX.fanfare();
+        } else if (step.walk) {
           // the hero and the Scout walk off the edge of the arena; whoever they just beat lies dazed on the floor
           const prev = ch.steps[S.step - 1];
+          particles.length = 0;
+          floatingTexts.length = 0;
           game.adv.walk = { t: 0, stageId: ch.stage, foe: prev && prev.fight ? prev.fight : null };
           game.screen = 'advWalk';
         }
@@ -15079,16 +15516,93 @@
         openHub();
       }
 
-      // a story scene on the chapter's arena: your hero and the scout on the left, the villains on the right
+      // a story scene on the chapter's arena: your hero and the Scout (and sometimes the Queen) on the left, the
+      // villains on the right. Effects: speech marks pop over the speaker, shouting shakes the screen, and lines can
+      // set off a sneeze (the Lint Gang, a dud, or a big gust), a rainbow, confetti, embers or a flash (see the fx on the chapter lines).
+      const CONFETTI_COLORS = ['#ff4fa3', '#3fd0ff', '#ffe234', '#a6ff3a', '#c6a4ff', '#ff9d2e'];
+
+      // frames of 'Ah... AH...' before the ACHOO (the big one takes longer to build up)
+      const sneezeAt = z => (z.kind === 'big' ? 70 : 40);
+      const WIND_FRAMES = 110; // how long the big sneeze's gust blows
+
+      function drawFuzzBall(x, y, r, seed) {
+        ctx.fillStyle = seed % 3 === 1 ? '#d8cfe8' : '#e9e4f2';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = r > 10 ? 2.5 : 1.8;
+        ctx.beginPath();
+        for (let k = 0; k < 16; k++) {
+          const a = (k / 16) * Math.PI * 2 + seed,
+            rr = r * (k % 2 ? 0.8 : 1.08);
+          ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
       function updateAdvScene() {
-        game.adv.stage.t++;
+        const St = game.adv.stage;
+        St.t++;
+        updateFX();
+        if (St.warning > 0) St.warning--;
+        if (St.flash > 0) St.flash--;
+        if (St.rainbow) St.rainbow++;
+        if (St.sneeze) {
+          // gang: a burst of fluff and the Lint Gang tumbles out; dud: nothing; big: a gust that fuzzes everyone
+          const z = St.sneeze;
+          z.t++;
+          const at = sneezeAt(z);
+          const noseX = z.x - 58,
+            noseY = 330;
+          if (z.t === 2) addText(noseX + 10, 268, 'Ah...', '#fff', 22);
+          if (z.t === 22) addText(noseX - 10, 252, 'AH...!', '#fff', 28);
+          if (z.kind === 'big' && z.t === 46) addText(noseX - 30, 236, 'AHHHHH...!!', '#fff', 34);
+          if (z.t === at) {
+            if (z.kind === 'dud') {
+              addText(noseX - 10, 250, '...pff.', '#cfc6e2', 18);
+            } else {
+              SFX.pfft();
+              const big = z.kind === 'big';
+              game.adv.scene && (game.adv.scene.shake = big ? 16 : 7);
+              addText(noseX - 60, 226, big ? 'A-CHOOOOO!!' : 'ACHOO!', '#fff', big ? 58 : 46);
+              for (let i = 0; i < (big ? 60 : 30); i++)
+                addParticle({ type: 'puff', x: noseX, y: noseY, vx: -rand(2, big ? 16 : 10), vy: rand(-5, 3), life: rand(24, 46), size: rand(8, big ? 28 : 20), color: i % 2 ? '#e6e0f0' : '#cfc6e2' });
+              if (z.kind === 'gang') St.gang = { n: z.babies, born: St.t, x: z.x };
+              if (big) {
+                SFX.thoom();
+                St.linty = St.t; // the heroes start collecting fluff
+                if (St.gang) St.gang.flee = St.t + 8; // and the Lint Gang legs it
+              }
+            }
+          }
+          // the gust: fluff and wind streaks racing across the screen
+          if (z.kind === 'big' && z.t > at && z.t < at + WIND_FRAMES) {
+            if (z.t % 2 === 0) addParticle({ type: 'puff', x: W + 10, y: rand(180, 400), vx: -rand(14, 22), vy: rand(-1, 1), life: 70, size: rand(6, 16), color: '#e6e0f0' });
+            if (z.t % 12 === 0) addText(rand(80, 400), rand(200, 300), 'WHOOOSH!', '#dff4ff', 26);
+          }
+        }
+        if (St.confetti) {
+          St.confetti++;
+          if (St.confetti < 110 && St.t % 2 === 0)
+            for (let i = 0; i < 4; i++)
+              addParticle({ type: 'confetti', x: rand(0, W), y: -10, vx: rand(-1.5, 1.5), vy: rand(2, 5), g: 0.03, life: 130, size: rand(6, 11), rot: rand(0, 6), vr: rand(-0.3, 0.3), color: pick(CONFETTI_COLORS) });
+        }
+        if (St.embers && St.t % 3 === 0)
+          addParticle({ type: 'spark', x: rand(0, W), y: 400, vx: rand(-0.6, 0.6), vy: -rand(1.5, 4), life: rand(40, 70), color: pick(['#ff9d2e', '#ffde6b', '#ff5a1f']) });
         updateScene();
       }
+
       function drawAdvScene() {
         const St = game.adv.stage,
           t = St.t;
+        const S = game.adv.scene;
+        const speaking = S ? S.lines[S.i].who : '';
+        ctx.save();
+        if (S && S.shake > 0) {
+          S.shake *= 0.86;
+          ctx.translate(rand(-S.shake, S.shake), rand(-S.shake, S.shake) * 0.6);
+        }
         drawStage(0.2, St.stageId);
-        const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         const pose = (talking, k) => {
           const p = idleAnim(basePose(), t + k);
           if (talking) {
@@ -15097,16 +15611,334 @@
           }
           return p;
         };
+        // where everyone stands (the Queen comes along in the last chapter)
+        const withQueen = (St.allies || []).includes('queen');
+        const spots = { hero: { x: withQueen ? 330 : 270, top: 200 }, fishnet: { x: withQueen ? 196 : 140, top: 215 } };
+        if (withQueen) {
+          spots.queen = { x: 78, top: 205 };
+          drawHosiery(ctx, 'queen', 78, 400, 0.9, 1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        }
         const hero = advHeroLook();
-        drawSock(ctx, hero, pose(speaking === 'hero', 0), 270, 396, 1, fitScale(hero, 1.0), { x: 4, y: 0 });
-        drawHosiery(ctx, 'fishnet', 140, 400, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
+        // the big sneeze's gust tips them back on their heels
+        const z0 = St.sneeze;
+        let gust = 0;
+        if (z0 && z0.kind === 'big') {
+          const w = z0.t - sneezeAt(z0);
+          if (w > 0 && w < WIND_FRAMES) gust = Math.min(1, w / 8) * Math.min(1, (WIND_FRAMES - w) / 20);
+        }
+        const tilt = (x, y, a, draw) => {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(-a);
+          ctx.translate(-x, -y);
+          draw();
+          ctx.restore();
+        };
+        tilt(spots.fishnet.x, 400, gust * (0.22 + Math.sin(t * 0.9) * 0.04), () =>
+          drawHosiery(ctx, 'fishnet', spots.fishnet.x, 400, 0.95, 1, t, { mouth: gust > 0.2 ? 'open' : speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' })
+        );
+        const hp = pose(speaking === 'hero', 0);
+        if (gust > 0.2) {
+          hp.eyes = 'happy';
+          hp.mouth = 'yell';
+        }
+        tilt(spots.hero.x, 396, gust * (0.2 + Math.sin(t * 0.8 + 1) * 0.04), () => drawSock(ctx, hero, hp, spots.hero.x, 396, 1, fitScale(hero, 1.0), { x: 4, y: 0 }));
+        if (St.linty != null) {
+          // fluff sticking to both of them, a clump at a time
+          const age = St.t - St.linty;
+          const clumps = [
+            [spots.hero.x, 396, [[-22, -40], [18, -70], [-8, -110], [24, -140], [-26, -160], [4, -60], [-14, -180], [16, -100]]],
+            [spots.fishnet.x, 400, [[-14, -30], [12, -70], [-10, -110], [14, -140], [-4, -165], [8, -195], [-18, -60], [0, -90]]]
+          ];
+          clumps.forEach(([cx, cy, list], who) =>
+            list.forEach(([dx, dy], i) => {
+              const k = Math.min(1, Math.max(0, (age - 6 - i * 5 - who * 3) / 8));
+              if (k > 0) drawFuzzBall(cx + dx, cy + dy, (9 + ((i * 5) % 6)) * k, i);
+            })
+          );
+        }
         St.cast.forEach((id, i) => {
           const d = withSkin(findCharacter(id), id === hero.id ? 1 : 0); // same as your hero? another skin
           const p = pose(speaking === id, 30 + i * 20);
           p.eyes = 'angry';
-          drawSock(ctx, d, p, 700 + i * 120, 396, -1, fitScale(d, d.tall && d.tall > 1 ? 0.9 : 1.0), { x: -4, y: 0 });
+          const x = 700 + i * 120;
+          // villains hop in from the right when the scene starts
+          const enter = Math.min(1, Math.max(0, (t - i * 12) / 26));
+          const ex = x + (1 - ease(enter)) * 360;
+          if (enter < 1) p.yOff = -Math.abs(Math.sin(enter * Math.PI * 2)) * 30;
+          if (St.sneeze && id === 'lint' && St.sneeze.t < sneezeAt(St.sneeze) + 16) {
+            const z = St.sneeze,
+              at = sneezeAt(z);
+            if (z.t < at) {
+              // "Ah... AH...": leaning back further and further, eyes scrunched
+              p.lean = -0.06 - (z.t / at) * (z.kind === 'big' ? 0.34 : 0.22);
+              p.eyes = 'happy';
+              p.mouth = 'tongue';
+            } else if (z.kind === 'dud') {
+              // ...nothing. Awkward.
+              p.eyes = 'happy';
+              p.mouth = 'grin';
+            } else {
+              p.lean = 0.3;
+              p.mouth = 'yell';
+              p.eyes = 'x';
+            }
+          }
+          drawSock(ctx, d, p, ex, 396, -1, fitScale(d, d.tall && d.tall > 1 ? 0.9 : 1.0), { x: -4, y: 0 });
+          spots[id] = { x: ex - 20, top: 396 - 190 * Math.min(1.3, d.tall || 1) * (d.tall && d.tall < 1 ? 1 : 0.9) };
+          if (id === 'lint') spots.lint.top = 250;
         });
+        // the lint ball swelling on the tip of his nose
+        if (St.sneeze) {
+          const z = St.sneeze,
+            at = sneezeAt(z);
+          const noseX = z.x - 58,
+            noseY = 330;
+          const maxR = z.kind === 'big' ? 26 : 13;
+          let r = -1,
+            fly = 0;
+          if (z.t < at) r = 3 + (z.t / at) * maxR + Math.sin(z.t * 0.6) * 1.2;
+          else if (z.kind === 'dud') r = (3 + maxR) * Math.max(0, 1 - (z.t - at) / 12); // ...it shrinks back in
+          else if (z.t < at + 4) {
+            r = 3 + maxR;
+            fly = (z.t - at) * 14;
+          }
+          if (r > 0.5) drawFuzzBall(noseX - fly, noseY, r, 0);
+        }
+        // the Lint Gang: tumbling out of the sneeze, standing about, then running off when the big one hits
+        if (St.gang) {
+          const g = St.gang;
+          const lint = withSkin(findCharacter('lint'), 0);
+          const noseX = g.x - 58,
+            noseY = 330;
+          for (let i = 0; i < g.n; i++) {
+            const k = Math.min(1, Math.max(0, (St.t - g.born - 2 - i * 7) / 34));
+            if (k <= 0) continue;
+            const landX = g.x - 110 - i * 60;
+            let bx = lerp(noseX, landX, k),
+              by = lerp(noseY + 20, 396, k) - Math.sin(k * Math.PI) * (90 + i * 18);
+            const p = idleAnim(basePose(), t + i * 31);
+            if (k < 1) p.eyes = 'spiral';
+            else p.yOff = -Math.abs(Math.sin(t * 0.2 + i)) * 6;
+            let face = -1,
+              spin = k < 1 ? k * 9 : 0;
+            if (g.flee != null && St.t >= g.flee) {
+              // turn tail and run, hopping, off the right side of the screen
+              const r = St.t - g.flee - i * 4;
+              if (r > 0) {
+                face = 1;
+                p.eyes = 'x';
+                p.mouth = 'yell';
+                bx = landX + r * r * 0.06 + r * 3;
+                by = 396 - Math.abs(Math.sin(r * 0.22 + i)) * (40 + i * 10);
+                spin = Math.sin(r * 0.3) * 0.3;
+              }
+              if (bx > W + 60) continue;
+            }
+            ctx.save();
+            if (spin) {
+              ctx.translate(bx, by - 20);
+              ctx.rotate(spin);
+              ctx.translate(-bx, -(by - 20));
+            }
+            drawSock(ctx, lint, p, bx, by, face, fitScale(lint, 0.38), { x: -3 * face, y: 0 });
+            ctx.restore();
+          }
+        }
+        drawFX();
+        // a rainbow sweeping in
+        if (St.rainbow) {
+          const k = Math.min(1, St.rainbow / 70);
+          ctx.save();
+          ctx.globalAlpha = 0.75 * Math.min(1, (260 - Math.min(260, St.rainbow)) / 60 + 0.35);
+          ctx.lineWidth = 16;
+          ['#e8333a', '#ff9d2e', '#ffe234', '#4fdc6a', '#3fd0ff', '#7b5cff'].forEach((col, i) => {
+            ctx.strokeStyle = col;
+            ctx.beginPath();
+            ctx.arc(W / 2, 430, 400 - i * 16, Math.PI, Math.PI + Math.PI * k);
+            ctx.stroke();
+          });
+          ctx.restore();
+        }
+        // speech marks pop over whoever is talking
+        if (S && S.emote && spots[S.emote.who]) {
+          const age = S.t - S.emote.at;
+          if (age < 70) {
+            const spot = spots[S.emote.who];
+            const pop = age < 8 ? 0.4 + (age / 8) * 0.8 : 1 + Math.sin(age * 0.2) * 0.05;
+            ctx.save();
+            ctx.translate(spot.x + 30, spot.top - 18);
+            ctx.scale(pop, pop);
+            ctx.globalAlpha = age > 54 ? (70 - age) / 16 : 1;
+            ctx.fillStyle = '#fffdf2';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(0, 0, 21, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(-8, 17);
+            ctx.lineTo(-16, 32);
+            ctx.lineTo(2, 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            drawText(S.emote.mark, 0, 2, S.emote.mark.length > 1 ? 16 : 28, FONT_COMIC, S.emote.mark === '!' ? '#e8333a' : S.emote.mark === '?' ? '#3f7fff' : '#555', INK, 0);
+            ctx.restore();
+          }
+        }
+        ctx.restore();
+        if (St.flash > 0) {
+          ctx.fillStyle = 'rgba(255,255,255,' + St.flash / 14 + ')';
+          ctx.fillRect(0, 0, W, H);
+        }
+        // WARNING! before a boss
+        if (St.warning > 0) {
+          const k = Math.min(1, St.warning / 20);
+          const blink = Math.floor(t / 8) % 2;
+          ctx.save();
+          ctx.globalAlpha = k;
+          for (const y of [96, 300]) {
+            ctx.fillStyle = blink ? '#e8333a' : '#7a0e14';
+            ctx.fillRect(0, y, W, 34);
+            ctx.fillStyle = '#ffe234';
+            for (let x = -40 + ((t * 4) % 80); x < W + 40; x += 80) {
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(x + 30, y);
+              ctx.lineTo(x + 10, y + 34);
+              ctx.lineTo(x - 20, y + 34);
+              ctx.closePath();
+              ctx.fill();
+            }
+          }
+          drawText('WARNING!', W / 2, 190, 110, FONT_COMIC, blink ? '#ffe234' : '#ff3d5a', INK, 14);
+          drawText(St.final ? 'THE FINAL BOSS' : 'A BOSS APPROACHES', W / 2, 262, 22, FONT_PIXEL, '#fff', INK, 6);
+          ctx.restore();
+        }
         drawSceneBox();
+      }
+
+      // the chapter's title card
+      function updateAdvTitle() {
+        const T = game.adv.title;
+        T.t++;
+        if (T.t === 8) SFX.whoosh();
+        if (T.t === 30) SFX.crash();
+        const skip = wasPressed(...CONFIRM_KEYS, 'Escape') || game.click;
+        game.click = null;
+        if (T.t >= 170 || (skip && T.t > 20)) nextStoryStep();
+      }
+      function drawAdvTitle() {
+        const T = game.adv.title,
+          t = T.t;
+        const ch = STORY_CHAPTERS[T.chapter];
+        drawStage(0.55, ch.stage);
+        const k = ease(t / 26),
+          out = t > 145 ? ease((t - 145) / 25) : 0;
+        ctx.save();
+        ctx.translate(-W * (1 - k) + W * out, 0);
+        // a slanted banner across the screen
+        ctx.fillStyle = 'rgba(16,8,30,0.9)';
+        ctx.beginPath();
+        ctx.moveTo(0, 190);
+        ctx.lineTo(W, 150);
+        ctx.lineTo(W, 350);
+        ctx.lineTo(0, 390);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#ff4fa3';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(0, 190);
+        ctx.lineTo(W, 150);
+        ctx.moveTo(0, 390);
+        ctx.lineTo(W, 350);
+        ctx.stroke();
+        ctx.translate(W / 2, 270);
+        ctx.rotate(-0.04);
+        drawText('CHAPTER ' + T.chapter, 0, -52, 30, FONT_PIXEL, '#3ff0ff', INK, 6);
+        drawText(ch.name, 0, 4, ch.name.length > 18 ? 62 : 74, FONT_COMIC, '#ffe234', INK, 12);
+        drawText(ch.jp || '', 0, 58, 24, FONT_JAPANESE, '#fff', INK, 6);
+        ctx.restore();
+        if (t > 30 && t < 150)
+          for (let i = 0; i < 8; i++) {
+            const a = t * 0.05 + i;
+            starPath(ctx, W / 2 + Math.cos(a) * 420, 270 + Math.sin(a * 1.3) * 130, 6 + (i % 3) * 3, a);
+            ctx.fillStyle = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+            ctx.fill();
+          }
+        if (t > 20) drawText(IS_TOUCH ? 'TAP TO SKIP' : 'SPACE / TAP TO SKIP', W - 80, H - 16, 7, FONT_PIXEL, '#ccc', INK, 0);
+      }
+
+      // THE END: the credits roll, then a little post-credits tease
+      const CREDITS = [
+        ['{HERO}', 'as the Hero'],
+        ['QUEEN NYLONIA', 'as Herself (We insisted)'],
+        ['THE FISHNET SCOUT', 'as Mostly Holes'],
+        ['STOCKING GRAN', 'as Somehow Everywhere'],
+        ['LINT BUNNY', 'and all 4,000 of his family'],
+        ['SOCKLET', 'as Fast Ankles'],
+        ['HOLEY MOLEY', 'as Breathable'],
+        ['MECHA-SOCK X', 'as COMPRESSION LEVEL: GRATEFUL'],
+        ['TOE-SHINOBI', 'as Stuck to the Path'],
+        ['CLING QUEEN', "as Last Season's Sheen (her words)"],
+        ['BABY BOOTIE', 'as Eggshell'],
+        ['KNEE-HI KAZUO', 'as a White Belt (allegedly)'],
+        ['BLEACH BARON', 'as Lemon-Scented'],
+        ['STEEL TOE', 'as Safety First'],
+        ['KING KNEE-SOCK', 'as the Only One with Knees'],
+        ['IRON SHOGUN', 'as Afraid of the Grandmother'],
+        ['A GYM SOCK', 'as a Lifestyle'],
+        ['THE DRYER DEMON', 'as a Big Softie'],
+        ['THE LOST SOCK', 'as Behind the Drawer'],
+        ['', ''],
+        ['NO SOCKS WERE LOST', 'in the making of this story'],
+        ['', '(for longer than a thousand years)']
+      ];
+      const CREDITS_FRAMES = 1150;
+      function updateAdvCredits() {
+        const C = game.adv.credits;
+        C.t++;
+        updateFX();
+        if (C.t % 3 === 0 && C.t < 900)
+          addParticle({ type: 'confetti', x: rand(0, W), y: -10, vx: rand(-1, 1), vy: rand(1.5, 3.5), g: 0.02, life: 190, size: rand(5, 10), rot: rand(0, 6), vr: rand(-0.2, 0.2), color: pick(CONFETTI_COLORS) });
+        const skip = wasPressed(...CONFIRM_KEYS, 'Escape') || game.click;
+        game.click = null;
+        if (C.t >= CREDITS_FRAMES || (skip && C.t > 40)) nextStoryStep();
+      }
+      function drawAdvCredits() {
+        const t = game.adv.credits.t;
+        const g = ctx.createLinearGradient(0, 0, 0, H);
+        g.addColorStop(0, '#0b0420');
+        g.addColorStop(1, '#2a0f45');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+        drawFX();
+        const scroll = t * 0.85;
+        const y0 = H + 40 - scroll;
+        drawText('THE END', W / 2, y0, 110, FONT_COMIC, '#ffe234', INK, 14);
+        drawText('おしまい', W / 2, y0 + 70, 26, FONT_JAPANESE, '#fff', INK, 6);
+        drawText('LOST IN THE SPIN CYCLE', W / 2, y0 + 120, 16, FONT_PIXEL, '#3ff0ff', INK, 5);
+        const heroName = advHeroLook().name;
+        CREDITS.forEach(([name, role], i) => {
+          const y = y0 + 210 + i * 54;
+          if (y < -40 || y > H + 40) return;
+          drawText(name.replace('{HERO}', heroName), W / 2, y, 30, FONT_COMIC, '#fff', INK, 6);
+          drawText(role, W / 2, y + 24, 9, FONT_PIXEL, '#ff9dd0', INK, 0);
+        });
+        // after the credits: the tease
+        if (t > 930) {
+          const k = Math.min(1, (t - 930) / 40);
+          ctx.fillStyle = 'rgba(0,0,0,' + k + ')';
+          ctx.fillRect(0, 0, W, H);
+          ctx.globalAlpha = k;
+          drawText('*Somewhere, a single glove vanishes from a coat pocket...*', W / 2, 230, 18, FONT_COMIC, '#bbb', INK, 4);
+          if (t > 1010) drawText('"...Gloves are next."', W / 2, 300, 44, FONT_COMIC, '#c6a4ff', INK, 8);
+          ctx.globalAlpha = 1;
+        }
+        if (t > 40) drawText(IS_TOUCH ? 'TAP TO SKIP' : 'SPACE / TAP TO SKIP', W - 80, H - 16, 7, FONT_PIXEL, '#888', INK, 0);
       }
 
       // walking on to the next part of the story (tap to skip)
@@ -15115,6 +15947,11 @@
         const Wk = game.adv.walk;
         Wk.t++;
         if (Wk.t === 30 || Wk.t === 90) SFX.jump();
+        updateFX();
+        if (Wk.t > 20 && Wk.t % 7 === 0) {
+          const k = Math.max(0, (Wk.t - 20) / (WALK_FRAMES - 40));
+          for (const x of [300 + k * 860, 150 + k * 860]) addParticle({ type: 'puff', x: x - 20, y: GROUND - 4, vx: -rand(0.5, 2), vy: -rand(0.2, 1.2), life: 22, size: rand(6, 12), color: '#e6e0f0' });
+        }
         const skip = wasPressed(...CONFIRM_KEYS, 'Escape') || game.click;
         game.click = null;
         if (Wk.t >= WALK_FRAMES || (skip && Wk.t > 15)) nextStoryStep();
@@ -15157,6 +15994,7 @@
         p.mouth = 'grin';
         drawSock(ctx, hero, p, heroX, GROUND, 1, fitScale(hero, 1.0), { x: 4, y: 0 });
         drawHosiery(ctx, 'fishnet', scoutX, GROUND + 4, 0.95, 1, t, { walk: true });
+        drawFX();
         if (t < 70) drawText('ONWARD!', 300, 150, 40, FONT_COMIC, '#ffe234', INK, 8);
         if (t > WALK_FRAMES - 25) {
           ctx.fillStyle = 'rgba(8,4,18,' + Math.min(1, (t - (WALK_FRAMES - 25)) / 25) + ')';
@@ -15973,7 +16811,9 @@
         advHub: { update: updateAdvHub, draw: drawAdvHub },
         advScene: { update: updateAdvScene, draw: drawAdvScene },
         advClear: { update: updateAdvClear, draw: drawAdvClear },
-        advWalk: { update: updateAdvWalk, draw: drawAdvWalk }
+        advWalk: { update: updateAdvWalk, draw: drawAdvWalk },
+        advTitle: { update: updateAdvTitle, draw: drawAdvTitle },
+        advCredits: { update: updateAdvCredits, draw: drawAdvCredits }
       };
 
       function updateGame() {
