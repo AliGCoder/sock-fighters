@@ -24,8 +24,8 @@ To get an app icon, tap **Share → Add to Home Screen**. The icon then opens th
 Esc pauses the game, M mutes the sound, V turns the announcer on or off, and N plays a voice test.
 
 ## Trophies, skins and unlockable heroes
-- **16 trophies** (main menu → TROPHIES). Clearing **Easy** unlocks the Lint Gang as playable heroes, **Hard** unlocks Steel Toe, King Knee-Sock and the Dryer Demon, and **Nightmare** unlocks Bleach Baron, Cling Queen and Iron Shogun.
-- **Every hero has their own unique items**, nothing shared: 2 hero skins (e.g. Stinky's TOXIC WASTE and GYM GOLD) and 1 accessory (Stinky's pine air freshener, Argyle's katana, Gran's pearl necklace, the Demon's devil tail…). Unlock them by fighting with that hero: **3 wins** → skin 1, **8 wins** → accessory, **clear a ladder or story chapter** with them → skin 2. No two heroes share a hat, skin or accessory.
+- **29 trophies** on two pages (main menu → TROPHIES; ◀ ▶ to turn the page), from FIRST WASH to beating the story, a 10-hit combo, a comeback win, winning with every villain, and beating a random player in Quick Match. Clearing **Easy** unlocks the Lint Gang as playable heroes, **Hard** unlocks Steel Toe, King Knee-Sock and the Dryer Demon, and **Nightmare** unlocks Bleach Baron, Cling Queen and Iron Shogun.
+- **Every hero has their own unique items**, nothing shared: 2 hero skins (e.g. Stinky's TOXIC WASTE and GYM GOLD) and 2 accessories (Stinky's pine air freshener and gym towel, Gran's pearl necklace and knitting yarn, the Demon's devil tail and bat wings, Baby Bootie's ducky bib and balloon…), each in any colour. Unlock them by fighting with that hero: **3 wins** → skin 1, **8 wins** → accessory 1, **clear a ladder or story chapter** with them → skin 2, **15 wins or beat the whole story** with them → accessory 2. No two heroes share a hat, skin or accessory.
 - **The Dryer:** on the character select screen, tap **DRYER: STYLE IT** (or press **C**). Your sock hops into the dryer, where you pick a skin, tune the colour, vividness and brightness, and put on the hero's accessory in any colour. Save it as **MY STYLE**.
 - Progress is saved on your device. Online, your friend sees your custom style too.
 
@@ -39,7 +39,8 @@ Main menu → **STORY MODE**. Queen Nylonia of the Hosiery (a two-legged pantyho
 ## Modes
 - **Arcade:** pick Easy, Medium, Hard or **Nightmare**. Each ladder starts gentler and builds up to its final boss.
 - **2 Players:** two players on one keyboard.
-- **Online:** fight a friend on another phone or computer. One player picks **Host** and shares the 4-letter room code (or taps **Send invite link**); the other picks **Join** and types the code, or just opens the link. The two players can't choose the same sock.
+- **Online QUICK MATCH:** fight a random player from anywhere, with no code: tap ⚡ QUICK MATCH and you are paired with the next player who searches (players in a match are skipped; both must have the same version of the game).
+- **Online with a friend:** fight a friend on another phone or computer. One player picks **Host** and shares the 4-letter room code (or taps **Send invite link**); the other picks **Join** and types the code, or just opens the link. The two players can't choose the same sock.
   It uses [PeerJS](https://peerjs.com) (MIT) to find each other. After that, the two devices connect directly and exchange only button presses. Both devices run the same fight in lockstep and check every second that they still match.
 
 ![Fight](itch/screenshot-3-fight.png)

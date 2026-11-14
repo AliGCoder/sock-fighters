@@ -4228,8 +4228,8 @@
           hat: base.hat,
           stache: base.stache,
           shades: base.shades,
-          acc: style.acc && style.acc === def.id && ACCESSORIES[style.acc] ? style.acc : null,
-          accColor: style.accColor || (ACCESSORIES[def.id] ? ACCESSORIES[def.id].color : '#e8333a'),
+          acc: style.acc && accOwner(style.acc) === def.id && ACCESSORIES[style.acc] ? style.acc : null,
+          accColor: style.accColor || (ACCESSORIES[style.acc] || ACCESSORIES[def.id] || { color: '#e8333a' }).color,
           skin: style,
           skinName: style.name || (style.fx && SKIN_FX[style.fx] ? SKIN_FX[style.fx].name : 'MY STYLE')
         });
@@ -4302,7 +4302,21 @@
         { id: 'online1', name: 'BEST FRIENDS', desc: 'Win an online match' },
         { id: 'online5', name: 'GOOD SPORT', desc: 'Play 5 online matches', goal: 5, stat: 'online' },
         { id: 'stylist', name: 'FASHION SOCK', desc: 'Save your own style in the dryer' },
-        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins' }
+        { id: 'allheroes', name: 'FULL DRAWER', desc: 'Win with all 8 starting heroes', goal: 8, stat: 'heroWins' },
+        // ---- page 2 ----
+        { id: 'storyclear', name: 'KNIGHT OF THE DRAWER', desc: 'Beat story mode: all 5 chapters' },
+        { id: 'mismatch', name: 'SORTED!', desc: 'Defeat MISMATCH, the Odd-Sock Golem' },
+        { id: 'demonsuper', name: 'TUMBLE DRY THIS!', desc: 'K.O. the Dryer Demon with a super move' },
+        { id: 'wideawake', name: 'WIDE AWAKE', desc: 'Win a fight after getting hypnotised' },
+        { id: 'combo10', name: 'COMBO EMPEROR', desc: 'Land a 10-hit combo' },
+        { id: 'comeback', name: 'COMEBACK SOCK', desc: 'Win a round with almost no health left' },
+        { id: 'speedy', name: 'SPIN CYCLE', desc: 'Win a round in under 20 seconds' },
+        { id: 'throws10', name: 'THROW-RIFIC', desc: 'Throw your opponent 10 times', goal: 10, stat: 'throws' },
+        { id: 'wins50', name: 'SOCK LEGEND', desc: 'Win 50 fights', goal: 50, stat: 'wins' },
+        { id: 'wins100', name: 'HALL OF FAME', desc: 'Win 100 fights', goal: 100, stat: 'wins' },
+        { id: 'villains', name: 'VILLAIN LEAGUE', desc: 'Win with all 9 villain heroes', goal: 9, stat: 'villainWins' },
+        { id: 'quick1', name: 'STRANGER DANGER', desc: 'Win a QUICK MATCH against a random player' },
+        { id: 'online10', name: 'ONLINE REGULAR', desc: 'Play 10 online matches', goal: 10, stat: 'online' }
       ];
       const ACHIEVEMENT_BY_ID = Object.fromEntries(ACHIEVEMENTS.map(a => [a.id, a]));
 
@@ -4337,14 +4351,34 @@
         demon: { name: 'DEVIL TAIL', color: '#c8202f' },
         bleach: { name: 'MONOCLE', color: '#d4a017' },
         cling: { name: 'FEATHER BOA', color: '#ff4fa3' },
-        iron: { name: 'WAR FAN', color: '#c8202f' }
+        iron: { name: 'WAR FAN', color: '#c8202f' },
+        // each hero's SECOND accessory (key = hero id + '2'): 15 wins with them, or beat the story with them
+        stinky2: { name: 'GYM TOWEL', color: '#f4f1ea' },
+        argyle2: { name: 'LUCKY CHARM', color: '#e8333a' },
+        shinobi2: { name: 'SMOKE BOMB BELT', color: '#3a3d48' },
+        gran2: { name: 'KNITTING YARN', color: '#ff6fb5' },
+        baby2: { name: 'BALLOON', color: '#ff4fa3' },
+        kneehi2: { name: 'WATER GOURD', color: '#d4a017' },
+        robo2: { name: 'RADAR DISH', color: '#c9d1de' },
+        ghost2: { name: 'WILL-O-WISPS', color: '#9fe8ff' },
+        lint2: { name: 'TISSUE BOX', color: '#3fd0ff' },
+        socklet2: { name: 'SPEED RIBBONS', color: '#ffe234' },
+        holey2: { name: 'PET MOTH', color: '#f2e6c9' },
+        steel2: { name: 'TOOL BELT', color: '#8a5a2a' },
+        king2: { name: 'ROYAL SCEPTRE', color: '#ffd23f' },
+        demon2: { name: 'BAT WINGS', color: '#8a2a5a' },
+        bleach2: { name: 'SILK BOW TIE', color: '#7fe3ff' },
+        cling2: { name: 'LILY PARASOL', color: '#4fae3a' },
+        iron2: { name: 'STARCH SPRAY', color: '#3f9be0' }
       };
+      /** Which hero an accessory belongs to ('stinky2' -> 'stinky'). Only that hero can wear it. */
+      const accOwner = id => String(id).replace(/2$/, '');
       const ACC_COLORS = ['#e8333a', '#ff9d2e', '#ffe234', '#4fdc6a', '#3fd0ff', '#7b5cff', '#ff4fa3', '#ffffff', '#2a2a2a', '#d4a017'];
 
       /** Draw a hero's own accessory. layer: 'behind' (behind the sock), 'mask' (on the body/head), 'face'. */
       function drawAccessory(c, spine, pose, def, layer) {
         const acc = def.acc;
-        if (!acc || acc !== def.id) return; // only its own hero can wear it
+        if (!acc || accOwner(acc) !== def.id) return; // only its own hero can wear it
         const col = def.accColor || ACCESSORIES[acc].color;
         const dark = shadeColor(col, -0.35);
         const t = game.time;
@@ -4360,6 +4394,13 @@
           c.rotate(Math.atan2(-a.nx, a.ny));
         };
         const k = ankleBand(spine);
+        if (/2$/.test(acc)) {
+          // second accessories are drawn a bit bigger, grown out from where they sit (the back or the ankle)
+          const at = layer === 'behind' ? sh : k.mid;
+          c.translate(at.x, at.y);
+          c.scale(1.3, 1.3);
+          c.translate(-at.x, -at.y);
+        }
         if (layer === 'behind') {
           if (acc === 'argyle') {
             // a katana slung across the back
@@ -4457,6 +4498,163 @@
             c.fill();
           } else if (acc === 'cling') {
             drawBandTailsAt(c, k.back.x, k.back.y, col, t);
+          } else if (acc === 'gran2') {
+            // a ball of yarn with two knitting needles stuck through it
+            const x = -34,
+              y = -28;
+            c.fillStyle = col;
+            c.beginPath();
+            c.arc(x, y, 14, 0, 7);
+            c.fill();
+            c.stroke();
+            c.strokeStyle = dark;
+            c.lineWidth = 2;
+            for (const a of [0.4, 1.2, 2.1]) {
+              c.beginPath();
+              c.arc(x, y, 9, a, a + 2);
+              c.stroke();
+            }
+            c.strokeStyle = '#c9d1de';
+            c.lineWidth = 3;
+            for (const [a, b] of [[[-52, -48], [-18, -14]], [[-50, -10], [-16, -44]]]) {
+              c.beginPath();
+              c.moveTo(a[0], a[1]);
+              c.lineTo(b[0], b[1]);
+              c.stroke();
+            }
+          } else if (acc === 'baby2') {
+            // a balloon on a string, bobbing above
+            const bob = Math.sin(t * 0.06) * 5;
+            const bx = sh.x - 46,
+              by = sh.y - 80 + bob;
+            c.strokeStyle = '#ddd';
+            c.lineWidth = 1.5;
+            c.beginPath();
+            c.moveTo(sh.x - 8, sh.y + 14);
+            c.quadraticCurveTo(sh.x - 30, sh.y - 20, bx, by + 22);
+            c.stroke();
+            c.fillStyle = col;
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.ellipse(bx, by, 17, 21, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = 'rgba(255,255,255,0.6)';
+            c.beginPath();
+            c.ellipse(bx - 6, by - 7, 4, 6, -0.4, 0, 7);
+            c.fill();
+          } else if (acc === 'kneehi2') {
+            // a water gourd hanging on his back
+            const x = sh.x - 30,
+              y = sh.y + 36;
+            c.strokeStyle = '#8a5a2a';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(sh.x - 4, sh.y);
+            c.lineTo(x, y - 22);
+            c.stroke();
+            c.fillStyle = col;
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.arc(x, y - 12, 9, 0, 7);
+            c.fill();
+            c.stroke();
+            c.beginPath();
+            c.arc(x, y + 8, 14, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#c8202f';
+            c.fillRect(x - 6, y - 3, 12, 4);
+          } else if (acc === 'robo2') {
+            // a little radar dish turning on his back
+            const x = sh.x - 26,
+              y = sh.y - 30;
+            c.lineWidth = 4;
+            c.beginPath();
+            c.moveTo(sh.x - 10, sh.y + 6);
+            c.lineTo(x, y);
+            c.stroke();
+            const w = Math.abs(Math.cos(t * 0.05)) * 18 + 4;
+            c.fillStyle = col;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.ellipse(x, y - 8, w, 14, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = t % 40 < 20 ? '#ff3a3a' : '#5a1010';
+            c.beginPath();
+            c.arc(x, y - 8, 3.5, 0, 7);
+            c.fill();
+          } else if (acc === 'socklet2') {
+            // speed ribbons streaming out behind
+            for (let i = 0; i < 3; i++) {
+              const y0 = sh.y - 10 + i * 14;
+              c.strokeStyle = INK;
+              c.lineWidth = 7;
+              c.beginPath();
+              c.moveTo(sh.x - 4, y0);
+              for (let k2 = 1; k2 <= 4; k2++) c.lineTo(sh.x - 4 - k2 * 16, y0 + Math.sin(t * 0.3 + k2 + i) * 5);
+              c.stroke();
+              c.strokeStyle = [col, '#ff4fa3', '#3fd0ff'][i];
+              c.lineWidth = 4;
+              c.stroke();
+            }
+          } else if (acc === 'king2') {
+            // a golden sceptre slung across his back, orb on top
+            c.translate(sh.x - 30, sh.y + 40);
+            c.rotate(-0.6);
+            c.fillStyle = col;
+            roundRectPath(c, -4, -80, 8, 84, 3);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#c8202f';
+            c.beginPath();
+            c.arc(0, -88, 10, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = col;
+            c.fillRect(-2, -104, 4, 10);
+          } else if (acc === 'demon2') {
+            // bat wings, flapping
+            const flap = Math.sin(t * 0.15) * 0.25;
+            for (const side of [-1, 1]) {
+              c.save();
+              c.translate(sh.x - 12, sh.y - 6);
+              c.rotate(side * (0.5 + flap));
+              c.scale(1.5, 1.5);
+              c.fillStyle = col;
+              c.beginPath();
+              c.moveTo(0, 0);
+              c.quadraticCurveTo(-30 * side, -50, -70 * side, -40);
+              c.lineTo(-58 * side, -22);
+              c.lineTo(-46 * side, -30);
+              c.lineTo(-36 * side, -10);
+              c.lineTo(-22 * side, -18);
+              c.closePath();
+              c.fill();
+              c.stroke();
+              c.restore();
+            }
+          } else if (acc === 'cling2') {
+            // a lily-pad parasol held up behind her
+            c.lineWidth = 4;
+            c.beginPath();
+            c.moveTo(sh.x - 6, sh.y + 20);
+            c.lineTo(sh.x - 30, sh.y - 70);
+            c.stroke();
+            c.fillStyle = col;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.ellipse(sh.x - 32, sh.y - 74, 46, 20, -0.25, Math.PI, 0);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#ffb7d0';
+            c.beginPath();
+            c.arc(sh.x - 32, sh.y - 92, 6, 0, 7);
+            c.fill();
           }
           c.restore();
           return;
@@ -4480,7 +4678,208 @@
           return;
         }
         // layer 'mask': things on the body or the head
+        const along = (u, w) => {
+          // a point along the ankle band
+          return {
+            x: (1 - u) * (1 - u) * k.back.x + 2 * u * (1 - u) * k.ctrl.x + u * u * k.front.x,
+            y: (1 - u) * (1 - u) * k.back.y + 2 * u * (1 - u) * k.ctrl.y + u * u * k.front.y
+          };
+        };
+        const band = (w, cc) => {
+          // a thick strap round the ankle
+          for (const [sc, sw] of [[INK, w + 5], [cc, w]]) {
+            c.strokeStyle = sc;
+            c.lineWidth = sw;
+            c.beginPath();
+            c.moveTo(k.back.x, k.back.y);
+            c.quadraticCurveTo(k.ctrl.x, k.ctrl.y, k.front.x, k.front.y);
+            c.stroke();
+          }
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+        };
         switch (acc) {
+          case 'stinky2': {
+            // a gym towel round the ankle, one end hanging down
+            band(12, col);
+            c.fillStyle = col;
+            roundRectPath(c, k.back.x - 8, k.back.y, 18, 30, 3);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#3fd0ff';
+            c.fillRect(k.back.x - 8, k.back.y + 20, 18, 4);
+            break;
+          }
+          case 'argyle2': {
+            // a little lucky charm pouch on a cord
+            const x = k.front.x + 2,
+              y = k.front.y + 16 + Math.sin(t * 0.1) * 1.5;
+            c.strokeStyle = '#ffd23f';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(k.front.x, k.front.y);
+            c.lineTo(x, y - 4);
+            c.stroke();
+            c.fillStyle = col;
+            c.strokeStyle = INK;
+            c.lineWidth = 2.5;
+            roundRectPath(c, x - 7, y - 4, 14, 20, 3);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#fff';
+            c.fillRect(x - 4, y + 2, 8, 8);
+            break;
+          }
+          case 'shinobi2':
+            // a belt of little smoke bombs
+            band(7, col);
+            for (const u of [0.25, 0.5, 0.75]) {
+              const p = along(u);
+              c.fillStyle = '#6a6f7e';
+              c.beginPath();
+              c.arc(p.x, p.y + 6, 6, 0, 7);
+              c.fill();
+              c.stroke();
+              c.strokeStyle = '#ffd23f';
+              c.lineWidth = 1.5;
+              c.beginPath();
+              c.moveTo(p.x, p.y);
+              c.lineTo(p.x + 3, p.y - 5);
+              c.stroke();
+              c.strokeStyle = INK;
+              c.lineWidth = 3;
+            }
+            break;
+          case 'lint2': {
+            // a tissue box tucked at the ankle (for all the sneezing)
+            const x = k.front.x - 4,
+              y = k.front.y + 2;
+            c.fillStyle = col;
+            roundRectPath(c, x - 13, y, 26, 16, 3);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#fff';
+            c.beginPath();
+            c.moveTo(x - 6, y + 1);
+            c.quadraticCurveTo(x - 2, y - 12 + Math.sin(t * 0.1) * 2, x + 2, y - 4);
+            c.quadraticCurveTo(x + 6, y - 14, x + 7, y + 1);
+            c.closePath();
+            c.fill();
+            c.lineWidth = 2;
+            c.stroke();
+            break;
+          }
+          case 'ghost2':
+            // two blue will-o'-wisp flames circling round
+            for (const ph of [0, Math.PI]) {
+              const a = t * 0.05 + ph;
+              const x = sh.x - 6 + Math.cos(a) * 58,
+                y = sh.y - 24 + Math.sin(a) * 24;
+              c.save();
+              c.shadowColor = col;
+              c.shadowBlur = 16;
+              c.fillStyle = col;
+              c.strokeStyle = INK;
+              c.lineWidth = 2.5;
+              c.beginPath();
+              c.moveTo(x, y - 24);
+              c.quadraticCurveTo(x + 14, y - 2, x, y + 12);
+              c.quadraticCurveTo(x - 14, y - 2, x, y - 24);
+              c.fill();
+              c.shadowBlur = 0;
+              c.stroke();
+              c.fillStyle = '#fff';
+              c.beginPath();
+              c.ellipse(x, y + 2, 4, 6, 0, 0, 7);
+              c.fill();
+              c.restore();
+            }
+            break;
+          case 'holey2': {
+            // a pet moth fluttering round him
+            const x = sh.x + 30 + Math.cos(t * 0.08) * 16,
+              y = sh.y - 40 + Math.sin(t * 0.16) * 10;
+            const flap = Math.abs(Math.sin(t * 0.5));
+            c.translate(x, y);
+            c.scale(1.7, 1.7);
+            c.translate(-x, -y);
+            c.fillStyle = col;
+            c.lineWidth = 2;
+            for (const side of [-1, 1]) {
+              c.beginPath();
+              c.ellipse(x + side * 7, y, 8, 5 + flap * 5, side * 0.5, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = '#8a6a4a';
+            c.beginPath();
+            c.ellipse(x, y, 3, 7, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            break;
+          }
+          case 'steel2': {
+            // a tool belt with a hammer and a wrench
+            band(9, col);
+            const p = along(0.6);
+            c.fillStyle = '#c9d1de';
+            c.fillRect(p.x - 2, p.y + 4, 4, 18);
+            c.strokeRect(p.x - 2, p.y + 4, 4, 18);
+            c.fillStyle = '#6a6f7e';
+            roundRectPath(c, p.x - 8, p.y + 20, 16, 7, 2);
+            c.fill();
+            c.stroke();
+            const q = along(0.3);
+            c.strokeStyle = INK;
+            c.lineWidth = 5;
+            c.beginPath();
+            c.moveTo(q.x, q.y + 4);
+            c.lineTo(q.x - 2, q.y + 22);
+            c.stroke();
+            c.strokeStyle = '#c9d1de';
+            c.lineWidth = 3;
+            c.stroke();
+            break;
+          }
+          case 'bleach2': {
+            // a silk bow tie
+            const p = k.mid;
+            c.fillStyle = col;
+            c.lineWidth = 2.5;
+            for (const side of [-1, 1]) {
+              c.beginPath();
+              c.moveTo(p.x, p.y + 4);
+              c.lineTo(p.x + side * 16, p.y - 4);
+              c.lineTo(p.x + side * 16, p.y + 12);
+              c.closePath();
+              c.fill();
+              c.stroke();
+            }
+            c.beginPath();
+            c.arc(p.x, p.y + 4, 4, 0, 7);
+            c.fill();
+            c.stroke();
+            break;
+          }
+          case 'iron2': {
+            // a starch spray bottle hanging at the back of the ankle
+            const x = k.back.x - 4,
+              y = k.back.y + 6;
+            c.fillStyle = col;
+            roundRectPath(c, x - 7, y, 14, 22, 4);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#fff';
+            c.fillRect(x - 7, y + 8, 14, 6);
+            c.fillStyle = '#2b2f38';
+            c.fillRect(x - 3, y - 7, 6, 8);
+            c.strokeRect(x - 3, y - 7, 6, 8);
+            c.beginPath();
+            c.moveTo(x + 3, y - 5);
+            c.lineTo(x + 9, y - 3);
+            c.stroke();
+            break;
+          }
           case 'stinky': {
             // a pine-tree air freshener hanging from the ankle (it is not helping)
             c.strokeStyle = '#ddd';
@@ -4745,7 +5144,10 @@
             accs: d.accs || {},
             adv: d.adv || {},
             looks: {},
-            stats: Object.assign({ wins: 0, online: 0, arenas: {}, heroWins: {}, winsBy: {}, clearedBy: {} }, d.stats || {}),
+            stats: Object.assign(
+              { wins: 0, online: 0, arenas: {}, heroWins: {}, winsBy: {}, clearedBy: {}, storyBy: {}, villainWins: {}, throws: 0, quickWins: 0 },
+              d.stats || {}
+            ),
             announced: d.announced || {}
           };
           for (const id in d.looks || {}) this.data.looks[id] = sanitizeStyle(d.looks[id]);
@@ -4762,15 +5164,21 @@
           const st = this.data.stats;
           return F.unlock === 0 ? (st.winsBy[F.hero] || 0) >= 3 : !!st.clearedBy[F.hero];
         },
-        /** A hero's own accessory: after 8 wins with them. */
+        /** A hero's own accessories: the first after 8 wins with them; the second after 15 wins, or beating the
+         *  whole story with them. */
         hasAcc(id) {
-          return !!ACCESSORIES[id] && (this.data.stats.winsBy[id] || 0) >= 8;
+          if (!ACCESSORIES[id]) return false;
+          const hero = accOwner(id),
+            st = this.data.stats;
+          if (id === hero) return (st.winsBy[hero] || 0) >= 8;
+          return (st.winsBy[hero] || 0) >= 15 || !!(st.storyBy || {})[hero];
         },
         /** How to unlock each of a hero's items, in words. */
         unlockHint(kind, def) {
           const wins = this.data.stats.winsBy[def.id] || 0;
           if (kind === 'skin1') return 'WIN 3 FIGHTS AS ' + def.name + ' (' + Math.min(3, wins) + '/3)';
           if (kind === 'skin2') return 'CLEAR A LADDER OR CHAPTER AS ' + def.name;
+          if (kind === 'acc2') return 'WIN 15 FIGHTS (' + Math.min(15, wins) + '/15) OR BEAT THE STORY AS ' + def.name;
           return 'WIN 8 FIGHTS AS ' + def.name + ' (' + Math.min(8, wins) + '/8)';
         },
         /** Pop-ups for any of this hero's items that just became unlocked. */
@@ -4779,7 +5187,8 @@
           const items = [
             [id + '1', () => this.hasSkin(id + '1'), 'NEW SKIN: ' + (SKIN_FX[id + '1'] || {}).name],
             [id + '2', () => this.hasSkin(id + '2'), 'NEW SKIN: ' + (SKIN_FX[id + '2'] || {}).name],
-            [id + 'acc', () => this.hasAcc(id), 'NEW ACCESSORY: ' + (ACCESSORIES[id] || {}).name]
+            [id + 'acc', () => this.hasAcc(id), 'NEW ACCESSORY: ' + (ACCESSORIES[id] || {}).name],
+            [id + 'acc2', () => this.hasAcc(id + '2'), 'NEW ACCESSORY: ' + (ACCESSORIES[id + '2'] || {}).name]
           ];
           for (const [key, has, text] of items)
             if (!this.data.announced[key] && has()) {
@@ -4791,7 +5200,7 @@
         heroUnlocked: id => !HERO_UNLOCKS[id] || !!Progress.data.heroes[id],
         statValue(a) {
           const st = this.data.stats;
-          if (a.stat === 'arenas' || a.stat === 'heroWins') return Object.keys(st[a.stat]).length;
+          if (a.stat === 'arenas' || a.stat === 'heroWins' || a.stat === 'villainWins') return Object.keys(st[a.stat] || {}).length;
           return st[a.stat] || 0;
         },
         /** Unlock an achievement (once) and hand out its reward, with a pop-up. */
@@ -7426,6 +7835,10 @@
               opponent.grab = null;
             }
             this.setState('throwing');
+            if ((game.mode === 'cpu' || game.mode === 'online') && isMine(this.side)) {
+              Progress.data.stats.throws = (Progress.data.stats.throws || 0) + 1;
+              Progress.check();
+            }
             this.lockO = opponent;
             opponent.setState('thrown');
             opponent.vx = 0;
@@ -11253,6 +11666,7 @@
         if (!isMine(attacker.side)) return;
         if (move === MOVES.kick3) Progress.award('socknado');
         if (victim.combo >= 5) Progress.award('combo5');
+        if (victim.combo >= 10) Progress.award('combo10');
       }
 
       /** At the end of a match: wins, online games, lucky random picks, wins per hero. */
@@ -11264,6 +11678,14 @@
           st.wins++;
           Progress.award('firstwin');
           if (CHARS.some(c => c.id === winner.def.id)) st.heroWins[winner.def.id] = 1;
+          if (winner.def.villainHero) (st.villainWins = st.villainWins || {})[winner.def.id] = 1;
+          if (winner.wasHypnotised) Progress.award('wideawake');
+          if (game.mode === 'online' && Net.quick) {
+            st.quickWins = (st.quickWins || 0) + 1;
+            Progress.award('quick1');
+          }
+          const loser = winner === f1 ? f2 : f1;
+          if (game.story && loser && loser.def.id === 'mismatch') Progress.award('mismatch');
           st.winsBy[winner.def.id] = (st.winsBy[winner.def.id] || 0) + 1;
           Progress.checkHeroUnlocks(winner.def);
           if (game.mode === 'online') Progress.award('online1');
@@ -11331,7 +11753,10 @@
         game.phaseTime = 0;
         game.winner = loser === f1 ? f2 : f1;
         const w = game.winner;
-        if (w.superAt !== undefined && game.time - w.superAt < 240 && isMine(w.side)) Progress.award('superko');
+        if (w.superAt !== undefined && game.time - w.superAt < 240 && isMine(w.side)) {
+          Progress.award('superko');
+          if (loser.def.id === 'demon') Progress.award('demonsuper');
+        }
         game.slowMotion = 55;
         showBanner('K.O.!', 'ノックアウト!', '#ff3d5a', 150, 150);
         SFX.ko();
@@ -11461,6 +11886,10 @@
             }
             const perfect = winner.hp >= winner.hpMax;
             if (perfect && isMine(winner.side)) Progress.award('perfect');
+            if (isMine(winner.side) && (game.mode === 'cpu' || game.mode === 'online')) {
+              if (winner.hp > 0 && winner.hp <= winner.hpMax * 0.1) Progress.award('comeback');
+              if (game.timer >= 79) Progress.award('speedy');
+            }
             showBanner(
               winner.def.name + ' WINS',
               perfect ? 'PERFECT!! パーフェクト' : '勝利!',
@@ -11542,6 +11971,7 @@
               target.setState('dizzy');
               target.t = 45; // a shorter daze than a real dizzy
               target.hypnoUntil = game.time + 420;
+              target.wasHypnotised = true;
               addText(target.x, target.y - 215, 'HYPNOTISED!', '#d9a6ff', 40);
               SFX.boing();
             }
@@ -13778,12 +14208,15 @@
         else if (row === 2) L.sat = clamp(Math.round((L.sat + dir * 0.1) * 10) / 10, 0, 2);
         else if (row === 3) L.light = clamp(Math.round((L.light + dir * 0.05) * 100) / 100, -0.3, 0.3);
         else if (row === 4) {
-          if (!Progress.hasAcc(D.def.id)) {
+          const opts = [null, D.def.id, D.def.id + '2'].filter(a => a === null || Progress.hasAcc(a));
+          if (opts.length === 1) {
             D.note = { text: Progress.unlockHint('acc', D.def), until: game.time + 150 };
             SFX.block();
             return;
           }
-          L.acc = L.acc ? null : D.def.id;
+          const next = opts[wrapIndex(Math.max(0, opts.indexOf(L.acc || null)) + dir, opts.length)];
+          if (next !== L.acc) L.accColor = next ? ACCESSORIES[next].color : L.accColor; // its own colour to start with
+          L.acc = next;
         } else if (row === 5) {
           if (!L.acc) {
             D.note = { text: 'PUT THE ACCESSORY ON FIRST!', until: game.time + 90 };
@@ -14002,6 +14435,7 @@
         if (!Progress.hasSkin(D.def.id + '1')) locked.push(Progress.unlockHint('skin1', D.def));
         if (!Progress.hasSkin(D.def.id + '2')) locked.push(Progress.unlockHint('skin2', D.def));
         if (!Progress.hasAcc(D.def.id)) locked.push(Progress.unlockHint('acc', D.def));
+        if (ACCESSORIES[D.def.id + '2'] && !Progress.hasAcc(D.def.id + '2')) locked.push(Progress.unlockHint('acc2', D.def));
         if (D.phase === 'edit' && locked.length) {
           drawText('🔒 STILL LOCKED FOR THIS HERO:', 250, 108, 8, FONT_PIXEL, '#ffe234', INK, 3);
           locked.forEach((l, i) => drawText(l, 250, 124 + i * 14, 7, FONT_PIXEL, '#fff', INK, 3));
@@ -14025,7 +14459,7 @@
         ctx.lineWidth = 3;
         ctx.stroke();
         const L = D.look;
-        const accName = ACCESSORIES[D.def.id] ? ACCESSORIES[D.def.id].name : 'NONE';
+        const accName = L.acc && ACCESSORIES[L.acc] ? ACCESSORIES[L.acc].name : 'NONE';
         const values = [
           L.fx ? SKIN_FX[L.fx].name : D.def.skins[wrapIndex(L.base, D.def.skins.length)].name,
           null,
@@ -14115,11 +14549,28 @@
       /* ---------------- TROPHIES ---------------- */
       // Every achievement with its reward, progress bars for the counted ones, and totals.
 
+      const AWARDS_PER_PAGE = 16;
+      const awardsPages = () => Math.ceil(ACHIEVEMENTS.length / AWARDS_PER_PAGE);
+      const AWARDS_ARROWS = { prev: { x: 6, y: 236, w: 34, h: 70 }, next: { x: W - 40, y: 236, w: 34, h: 70 } };
       function updateAwards() {
-        if (backWasPressed() || wasPressed(...CONFIRM_KEYS) || game.click) {
+        const pages = awardsPages();
+        game.awardsPage = clamp(game.awardsPage | 0, 0, pages - 1);
+        const turn = d => {
+          game.awardsPage = wrapIndex(game.awardsPage + d, pages);
+          SFX.select();
+        };
+        if (wasPressed('ArrowRight', 'KeyD')) turn(1);
+        if (wasPressed('ArrowLeft', 'KeyA')) turn(-1);
+        const c0 = game.click;
+        if (c0) {
           game.click = null;
-          goBack('mode');
+          const hit = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          if (hit(AWARDS_ARROWS.next)) return turn(1);
+          if (hit(AWARDS_ARROWS.prev)) return turn(-1);
+          if (c0.y < 90 || c0.y > 500) return goBack('mode'); // the BACK button area
+          return turn(1); // tapping the trophies turns the page
         }
+        if (backWasPressed() || wasPressed(...CONFIRM_KEYS)) goBack('mode');
       }
 
       function drawAwards() {
@@ -14129,12 +14580,22 @@
         drawText('TROPHIES', W / 2, 40, 46, FONT_COMIC, '#ffd23f', INK, 9);
         drawText('実績  ' + got + ' / ' + ACHIEVEMENTS.length, W / 2, 72, 13, FONT_JAPANESE, '#fff', INK, 4);
         drawBackButton('BACK');
-        ACHIEVEMENTS.forEach((a, i) => {
+        const page = clamp(game.awardsPage | 0, 0, awardsPages() - 1);
+        if (awardsPages() > 1) {
+          for (const [r, ch] of [[AWARDS_ARROWS.prev, '◀'], [AWARDS_ARROWS.next, '▶']]) {
+            roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+            ctx.fillStyle = 'rgba(20,12,36,0.85)';
+            ctx.fill();
+            drawText(ch, r.x + r.w / 2, r.y + r.h / 2, 18, FONT_PIXEL, '#ffe234', INK, 3);
+          }
+          drawText('PAGE ' + (page + 1) + ' / ' + awardsPages() + '  •  ◀ ▶ TO TURN', W / 2, 494, 8, FONT_PIXEL, '#ffe234', INK, 3);
+        }
+        ACHIEVEMENTS.slice(page * AWARDS_PER_PAGE, (page + 1) * AWARDS_PER_PAGE).forEach((a, i) => {
           const col = i % 4,
             row = (i / 4) | 0;
-          const x = 22 + col * 232,
-            y = 90 + row * 100,
-            w = 222,
+          const x = 46 + col * 218,
+            y = 96 + row * 100,
+            w = 210,
             h = 92;
           const done = !!Progress.data.ach[a.id];
           roundRectPath(ctx, x, y, w, h, 12);
@@ -16485,6 +16946,10 @@
           const A = advData();
           A.cleared[S.chapter] = true;
           Progress.data.stats.clearedBy[advHero().id] = true;
+          if (S.chapter === 5) {
+            (Progress.data.stats.storyBy = Progress.data.stats.storyBy || {})[advHero().id] = true;
+            Progress.award('storyclear');
+          }
           Progress.save();
           Progress.checkHeroUnlocks(advHero());
           game.adv.clear = { t: 0, chapter: S.chapter };
@@ -17142,6 +17607,11 @@
 
       const PEERJS_URL = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
       const ROOM_PREFIX = 'sockfighters-turbo-rinse-';
+      // Change NET_VERSION whenever fights could play out differently (moves, damage, characters): players on
+      // different versions would fall out of step, so Quick Match only pairs players on the same version.
+      const NET_VERSION = '2026-11-15';
+      const QUICK_PREFIX = 'sockfighters-quick-' + NET_VERSION + '-';
+      const QUICK_SLOTS = 8; // public queue spots
       const ROOM_LETTERS = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // no I or O (they look like 1 and 0)
       const ONLINE_VS_FRAMES = 170; // the VS screen starts the fight by itself
       const NET_BITS = {
@@ -17175,7 +17645,10 @@
         desyncs: 0,
         closing: false,
         pingTimer: 0,
-        connectTimer: 0
+        connectTimer: 0,
+        quick: false, // this match came from QUICK MATCH (a random player)
+        quickToken: 0, // bumps on every new search, so an old search stops
+        quickSlot: -1
       };
 
       /** A small seeded random-number generator (mulberry32): same seed, same numbers, on every device. */
@@ -17415,7 +17888,14 @@
             Net.rtt = Net.rtt * 0.7 + Math.max(10, performance.now() - msg.at) * 0.3;
             break;
           case 'hello':
+            if (msg.v && msg.v !== NET_VERSION) {
+              netSend({ t: 'ver', v: NET_VERSION });
+              return netLost('Your friend has a different version of the game. Both of you refresh the page, then try again.');
+            }
             if (Net.role === 'host' && game.screen === 'online') onConnected();
+            break;
+          case 'ver':
+            netLost('Your friend has a different version of the game. Both of you refresh the page, then try again.');
             break;
           case 'pick':
             if (typeof msg.c === 'number' && msg.c >= 0 && msg.c < ROSTER.length)
@@ -17570,6 +18050,9 @@
         Net.remoteSums = new Map();
         Net.remotePicks = {};
         Net.friendAway = false;
+        Net.quick = false;
+        Net.quickSlot = -1;
+        Net.quickToken++; // stops any search in progress
         Net.closing = false;
       }
 
@@ -17620,7 +18103,7 @@
         Net.conn = conn;
         conn.on('open', () => {
           if (Net.role === 'guest') {
-            netSend({ t: 'hello' });
+            netSend({ t: 'hello', v: NET_VERSION });
             onConnected();
           }
         });
@@ -17701,6 +18184,106 @@
         }, 20000);
       }
 
+      /** QUICK MATCH: find a random player. */
+      async function netQuick() {
+        netClose();
+        Net.quick = true;
+        Net.code = '';
+        const token = Net.quickToken;
+        showOnlinePanel('quick');
+        try {
+          await loadPeerJS();
+        } catch (e) {
+          return showOnlinePanel('menu', friendlyNetError(e));
+        }
+        quickSearch(token, 0);
+      }
+      const quickAlive = token => Net.quick && Net.quickToken === token && game.screen === 'online' && onlinePanelState === 'quick';
+
+      /** Is someone waiting in queue spot `slot`? Join them. Empty: wait there ourselves. Busy: try the next spot. */
+      function quickSearch(token, slot) {
+        if (!quickAlive(token)) return;
+        if (slot >= QUICK_SLOTS) {
+          // every spot is busy with a match: look again in a moment
+          showOnlinePanel('quick', 'Lots of players are busy right now. Still looking…');
+          return setTimeout(() => quickSearch(token, 0), 3000);
+        }
+        Net.role = 'guest';
+        const peer = new Peer();
+        Net.peer = peer;
+        let settled = false;
+        const next = then => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          try {
+            peer.destroy();
+          } catch (e) {}
+          if (Net.peer === peer) Net.peer = null;
+          then();
+        };
+        const timer = setTimeout(() => next(() => quickClaim(token, slot)), 8000);
+        peer.on('open', () => {
+          if (!quickAlive(token)) return next(() => {});
+          const conn = peer.connect(QUICK_PREFIX + slot, { reliable: true, serialization: 'json' });
+          conn.on('open', () => conn.send({ t: 'qhello', v: NET_VERSION }));
+          conn.on('data', msg => {
+            if (settled || !msg) return;
+            if (msg.t === 'qok') {
+              settled = true;
+              clearTimeout(timer);
+              if (!quickAlive(token)) return;
+              Net.role = 'guest';
+              attachConnection(conn);
+              onConnected();
+            } else if (msg.t === 'busy') next(() => quickSearch(token, slot + 1));
+          });
+        });
+        peer.on('error', err => {
+          if (err.type === 'peer-unavailable') next(() => quickClaim(token, slot)); // nobody waiting there
+          else if (!settled) next(() => quickAlive(token) && showOnlinePanel('menu', friendlyNetError(err)));
+        });
+      }
+
+      /** Wait in queue spot `slot` until another player searching finds us. */
+      function quickClaim(token, slot) {
+        if (!quickAlive(token)) return;
+        Net.role = 'host';
+        const peer = new Peer(QUICK_PREFIX + slot);
+        Net.peer = peer;
+        peer.on('open', () => {
+          Net.quickSlot = slot;
+          if (quickAlive(token)) showOnlinePanel('quick');
+        });
+        peer.on('disconnected', () => {
+          if (Net.peer === peer && !peer.destroyed && !Net.closing) peer.reconnect();
+        });
+        peer.on('connection', conn => {
+          conn.on('data', msg => {
+            if (!msg || msg.t !== 'qhello') return;
+            if (Net.conn || msg.v !== NET_VERSION || !quickAlive(token)) {
+              conn.send({ t: 'busy' });
+              setTimeout(() => conn.close(), 300);
+              return;
+            }
+            attachConnection(conn);
+            conn.send({ t: 'qok' });
+            onConnected();
+          });
+        });
+        peer.on('error', err => {
+          if (err.type === 'unavailable-id') {
+            // someone else just started waiting in this spot: join them instead
+            try {
+              peer.destroy();
+            } catch (e) {}
+            if (Net.peer === peer) Net.peer = null;
+            return quickSearch(token, slot);
+          }
+          if (Net.peer === peer && !Net.conn && quickAlive(token)) showOnlinePanel('menu', friendlyNetError(err));
+        });
+      }
+
       /* --- the lobby panel (HTML on top of the game, so phones can type the code) --- */
       const onlinePanel = document.getElementById('online');
       let onlinePanelState = 'menu';
@@ -17721,9 +18304,11 @@
         if (state === 'menu') {
           html +=
             msg +
+            '<button data-on="quick">⚡ QUICK MATCH</button>' +
+            '<p class="small">Fight a random player from anywhere. No code needed.</p>' +
             '<button data-on="host">HOST A GAME</button>' +
             '<button data-on="join">JOIN A GAME</button>' +
-            '<p class="small">Play a friend on another phone or computer. One of you hosts and shares the 4-letter code; the other joins with it.</p>' +
+            '<p class="small">Play a friend: one of you hosts and shares the 4-letter code; the other joins with it.</p>' +
             '<button class="alt" data-on="back">◀ BACK</button>';
         } else if (state === 'hosting') {
           html += Net.code
@@ -17738,6 +18323,15 @@
             `<input id="online-code" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${escapeHtml(Net.code || '')}">` +
             msg +
             '<button data-on="go">JOIN</button><button class="alt" data-on="cancel">◀ BACK</button>';
+        } else if (state === 'quick') {
+          html +=
+            '<p>⚡ QUICK MATCH</p>' +
+            '<div class="code" style="font-size:22px;letter-spacing:2px">SEARCHING…</div>' +
+            (Net.role === 'host' && Net.quickSlot >= 0
+              ? '<p>Waiting for another player to search. You will start as soon as someone does.</p>'
+              : '<p>Looking for a player…</p>') +
+            msg +
+            '<button class="alt" data-on="cancel">CANCEL</button>';
         } else if (state === 'connecting') {
           html += '<p>Connecting to ' + escapeHtml(Net.code) + '…</p><button class="alt" data-on="cancel">CANCEL</button>';
         } else if (state === 'lost') {
@@ -17760,7 +18354,8 @@
         Sound.init();
         SFX.select();
         const action = button.dataset.on;
-        if (action === 'host') netHost();
+        if (action === 'quick') netQuick();
+        else if (action === 'host') netHost();
         else if (action === 'join') {
           Net.code = '';
           showOnlinePanel('join');
