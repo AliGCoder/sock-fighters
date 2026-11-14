@@ -14670,8 +14670,9 @@
           ctx.arc(x, y, 1.6 + (i % 3) * 0.6, 0, 7);
           ctx.fill();
         }
-        // a guard standing to attention between the pillar and the curtain
-        drawHosiery(ctx, 'seamed', 418, 470, 0.95, 1, t, {});
+        // the palace guards: all sizes (the short one stands a little further back)
+        drawHosiery(ctx, 'seamed', 452, 458, 0.7, 1, t + 25, {});
+        drawHosiery(ctx, 'seamed', 398, 472, 0.9, 1, t, {});
       }
 
       /** The Queen's throne on a raised dais: a tall crown-topped back with velvet inside. */
@@ -14726,7 +14727,7 @@
         const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         // the throne and the Queen
         drawThrone();
-        drawHosiery(ctx, 'queen', 790, 444, 1.12, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
+        drawHosiery(ctx, 'queen', 790, 444, 0.86, -1, t, { mouth: speaking === 'queen' && t % 10 < 5 ? 'open' : 'smug' });
         // your hero and the scout
         const def = advHeroLook();
         const p = idleAnim(basePose(), t);
@@ -14734,8 +14735,8 @@
           p.mouth = t % 10 < 5 ? 'yell' : 'grin';
           p.yOff = -Math.abs(Math.sin(t * 0.25)) * 8;
         }
-        drawSock(ctx, def, p, 520, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
-        if (Hb.scout) drawHosiery(ctx, 'fishnet', 626, 474, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
+        drawSock(ctx, def, p, 540, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
+        if (Hb.scout) drawHosiery(ctx, 'fishnet', 652, 474, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
         if (game.adv.scene) return drawSceneBox();
         // menu
         drawText('PALACE OF NYLONIA', 174, 80, 26, FONT_COMIC, '#ffe234', INK, 7);
