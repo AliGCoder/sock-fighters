@@ -14509,19 +14509,10 @@
       const PALACE_AFTER = { 1: PALACE_AFTER_CH1, 2: PALACE_AFTER_CH2 };
 
       // what a palace guard can carry; each visit, each guard gets a different random set
-      const GUARD_WEAPONS = [
-        { spear: true, shield: true },
-        { sword: true, shield: true },
-        { spear: true },
-        { sword: true },
-        { spear: true, sword: true },
-        { spear: true, sword: true, shield: true }
-      ];
+      // the palace guards: one carries a sword and shield, the other a spear (which guard gets which is random)
+      const GUARD_WEAPONS = [{ sword: true, shield: true }, { spear: true }];
       function pickGuardWeapons() {
-        const a = Math.floor(Math.random() * GUARD_WEAPONS.length);
-        let b = Math.floor(Math.random() * (GUARD_WEAPONS.length - 1));
-        if (b >= a) b++;
-        return [GUARD_WEAPONS[a], GUARD_WEAPONS[b]];
+        return Math.random() < 0.5 ? [GUARD_WEAPONS[0], GUARD_WEAPONS[1]] : [GUARD_WEAPONS[1], GUARD_WEAPONS[0]];
       }
 
       function toModeMenu() {
