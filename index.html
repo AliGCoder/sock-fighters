@@ -1299,7 +1299,7 @@
       let announcerStyle = 'SPARKLE';
       try {
         const saved = localStorage.getItem('sf_ann4');
-        if (saved && saved in ANNOUNCER_STYLES) announcerStyle = saved;
+        if (saved) localStorage.removeItem('sf_ann4'); // the style option is gone: always SPARKLE
       } catch (e) {}
 
       let sayPriority = 0; // priority of the line currently speaking
@@ -1591,7 +1591,7 @@
         stinky: 'ジムバッグ・ギャラクシー',
         argyle: 'サウザンド・フォールド・フューリー',
         shinobi: 'ヒドゥン・トウ・テンペスト',
-        gran: 'ニッテッド・カルマ',
+        gran: 'ジャイアント・入れ歯・チョンプ',
         baby: 'ナップタイム・ノヴァ',
         kneehi: 'マキシマム・ストレッチ',
         robo: 'オーバークロック・オーバードライブ',
@@ -2848,11 +2848,13 @@
           color: '#ff8fab',
           glove: '#ff8fab',
           arm: '#d62839',
-          special: 'YARN LASSO',
-          special2: 'YARN BALL ROLL',
-          superName: 'KNITTED KARMA',
-          moveHint: 'Lassos foes, then bonks them',
-          moveHint2: 'Curls up and rolls over you',
+          special: 'ROLLING YARN',
+          special2: 'STICK SMACK',
+          superName: 'GIANT DENTURE CHOMP',
+          moveHint: 'Rolls a big ball of yarn along the floor',
+          moveHint2: 'Lunges in and SMACKS them with her walking stick',
+          proj: 'rollyarn', // her special: a ball of yarn that rolls along the floor (jump it or block low)
+          dentures: true, // her super: a giant set of false teeth chomps the opponent
           taunts: ['TSK TSK TSK', 'MANNERS!', 'SIT UP STRAIGHT!'],
           quotes: [
             'Now put on a sweater, dear.',
@@ -3351,7 +3353,7 @@
         stinky: 'proj',
         argyle: 'close',
         shinobi: 'tele',
-        gran: 'grab',
+        gran: 'proj',
         baby: 'proj',
         kneehi: 'close',
         robo: 'proj',
@@ -7316,10 +7318,14 @@
        * Stocking Gran's walking stick, held in the front glove. Arm reaching out (attacking): the stick points
        * along the arm like a weapon. Otherwise she leans on it, tip on the floor (y = 0 is the floor here).
        */
-      function drawWalkingStick(c, gloveX, gloveY, offset, flash) {
-        const swinging = offset.x > 60;
+      function drawWalkingStick(c, gloveX, gloveY, offset, flash, ang) {
+        const swinging = offset.x > 60 || typeof ang === 'number';
         let tipX, tipY;
-        if (swinging) {
+        if (typeof ang === 'number') {
+          // a set angle (the STICK SMACK): 0 = straight ahead, negative = up
+          tipX = gloveX + Math.cos(ang) * 80;
+          tipY = gloveY + Math.sin(ang) * 80;
+        } else if (swinging) {
           const length = Math.hypot(offset.x, offset.y) || 1;
           tipX = gloveX + (offset.x / length) * 74;
           tipY = gloveY + (offset.y / length) * 74;
@@ -7395,7 +7401,7 @@
           c.lineWidth = 2;
           c.stroke();
         }
-        if (cane) drawWalkingStick(c, gloveX, gloveY, offset, flash);
+        if (cane) drawWalkingStick(c, gloveX, gloveY, offset, flash, typeof cane === 'number' ? cane : undefined);
         // glove + thumb + shine
         c.fillStyle = flash ? '#fff' : isBack ? shadeColor(def.glove, -0.25) : def.glove;
         c.strokeStyle = INK;
@@ -7775,7 +7781,7 @@
         drawMouth(c, spine, pose.mouth);
         if (!flash && def.stache) drawStache(c, spine, def.stache);
         if (!flash && def.top) def.top(c, spine, pose);
-        drawArm(c, spine.sh, pose.front, def, false, pose.needle, flash, def.cane && !pose.needle);
+        drawArm(c, spine.sh, pose.front, def, false, pose.needle, flash, def.cane && !pose.needle && (typeof pose.caneAng === 'number' ? pose.caneAng : true));
         c.restore();
       }
 
@@ -8590,8 +8596,10 @@
       const CANE_POSES = { canejab: 'punch', canelow: 'cpunch', canewhack: 'upper', caneswipe: 'slap' };
       MOVES.canejab = Object.assign({}, MOVES.punch, { reach: MOVES.punch.reach + 22, dmg: 50, cane: true });
       MOVES.canelow = Object.assign({}, MOVES.cpunch, { reach: MOVES.cpunch.reach + 22, dmg: 41, cane: true });
-      MOVES.canewhack = Object.assign({}, MOVES.upper, { reach: MOVES.upper.reach + 18, dmg: 74, word: 'WHACK!', cane: true });
+      MOVES.canewhack = Object.assign({}, MOVES.upper, { reach: MOVES.upper.reach + 18, dmg: 74, word: 'SMACK!', cane: true, launch: -7, knock: 5, y1: -205 });
       MOVES.caneswipe = Object.assign({}, MOVES.slap, { reach: MOVES.slap.reach + 20, dmg: 18, slap: false });
+      // her ↓+SPECIAL: a lunging, two-handed STICK SMACK
+      MOVES.bigsmack = Object.assign({}, MOVES.canewhack, { start: 10, active: 6, rec: 24, dmg: 115, reach: MOVES.canewhack.reach + 12, lunge: 7, knock: 8, kd: true, launch: -9, word: 'STICK SMACK!!' });
 
       const AIR_MOVES = ['jkick', 'jpunch', 'buttdrop'];
 
@@ -8668,6 +8676,7 @@
         button: { dmg: 65, stun: 16, knock: 5, hit: 'mid' },
         snowball: { dmg: 85, stun: 22, knock: 7, hit: 'mid' },
         yarn: { dmg: 75, stun: 18, knock: 6, hit: 'mid' },
+        rollyarn: { dmg: 80, stun: 18, knock: 6, hit: 'low' }, // Gran's ROLLING YARN: jump over it or block low
         sandal: { dmg: 75, stun: 18, knock: 6, hit: 'mid' },
         splash: { dmg: 85, stun: 22, knock: 8, hit: 'mid' },
         note: { dmg: 65, stun: 16, knock: 5, hit: 'mid' },
@@ -8701,7 +8710,7 @@
         stinky: ['stink', 'aura'],
         argyle: ['spin', 'rising'],
         shinobi: ['vanish', 'shuriken'],
-        gran: ['lasso', 'roll'],
+        gran: ['shoot', 'smack'], // rolling yarn / stick smack
         baby: ['cry', 'tantrum'],
         kneehi: ['snap', 'sumo'],
         robo: ['rocketfire', 'zap'],
@@ -8725,6 +8734,7 @@
         button: { m: 'button', w: ['BOINK!', 'BUTTONED!', 'CUTE!'], c: '#ffd23f' },
         snowball: { m: 'snowball', w: ['SPLAT!', 'BRRR!', 'FROSTY!'], c: '#bfe9ff' },
         yarn: { m: 'yarn', w: ['TANGLED!', 'KNIT-WHACK!', 'YARN!'], c: '#ff8fab' },
+        rollyarn: { m: 'rollyarn', w: ['TRIPPED!', 'TANGLED UP!', 'ROLLED OVER!'], c: '#ff8fab' },
         sandal: { m: 'sandal', w: ['THWACK!', 'FLIP-FLOPPED!', 'BOGUS!'], c: '#1fb7a8' },
         splash: { m: 'splash', w: ['SPLOOSH!', 'SOAKED!', 'SQUISH!'], c: '#7fd0ff' },
         note: { m: 'note', w: ['TAP!', 'ENCORE!', 'JAZZ!'], c: '#ffd23f' },
@@ -9379,8 +9389,8 @@
             game.projectiles.push({
               type: pt,
               x: this.x + this.face * 65,
-              y: this.y - (pt === 'fluff' ? 55 : 95),
-              vx: this.face * ({ fluff: 4.5, moth: 5, fire: 7.5, bleach: 6.5, static: 5.2, steam: 7, oddsock: 6.2, button: 7, snowball: 5.6, yarn: 6, sandal: 7, splash: 5.4, note: 6.4, football: 8, mud: 5.2 }[pt] || 6),
+              y: this.y - (pt === 'fluff' ? 55 : pt === 'rollyarn' ? 24 : 95),
+              vx: this.face * ({ fluff: 4.5, moth: 5, fire: 7.5, bleach: 6.5, static: 5.2, steam: 7, oddsock: 6.2, button: 7, snowball: 5.6, yarn: 6, rollyarn: 6.4, sandal: 7, splash: 5.4, note: 6.4, football: 8, mud: 5.2 }[pt] || 6),
               owner: this,
               t: 0,
               y0: this.y - 95
@@ -9687,14 +9697,14 @@
             addText(
               o2.x + rand(-30, 30),
               o2.y - rand(150, 200),
-              pick(['SOCK!', 'SOCK-SOCK!', 'ドドド!', 'BAP!', 'SOCK!!']),
+              pick(this.def.dentures ? ['CHOMP!', 'NOM!', 'GNASH!', 'カプッ!', 'CHOMP!!'] : ['SOCK!', 'SOCK-SOCK!', 'ドドド!', 'BAP!', 'SOCK!!']),
               pick(FX_COLORS),
               34
             );
           }
           if (this.t === 48 && o2.state !== 'ko') {
             o2.takeHit(this, SPECIALS.superFinal, o2.x - this.face * 20, o2.y - 90);
-            addText(o2.x, o2.y - 200, 'KA-BLAMMO!!', '#ff4fa3', 62);
+            addText(o2.x, o2.y - 200, this.def.dentures ? 'MEGA CHOMP!!' : 'KA-BLAMMO!!', '#ff4fa3', 62);
             game.shake = 18;
             game.whiteFlash = 8;
           }
@@ -10074,6 +10084,12 @@
           }
           if (st === 'zap') {
             this.setState('aura');
+            return;
+          }
+          if (st === 'smack') {
+            // Stocking Gran's big walking-stick SMACK (a special move, so it lunges and hits hard)
+            this.setState('atk');
+            this.move = 'bigsmack';
             return;
           }
           this.setState(st);
@@ -10526,8 +10542,36 @@
           p.mouth = 'yell';
           p.eyes = 'angry';
         }
+        /** Stocking Gran's STICK SMACK: the walking stick goes up over her head, then SMACK! down on theirs. */
+        caneSmackPose(p, a) {
+          const m = MOVES[this.move],
+            s = m.start,
+            e = m.start + m.active;
+          if (a < s) {
+            const k = a / s;
+            p.lean = -0.18 * k;
+            p.front = { x: 8, y: -96 };
+            p.caneAng = -1.6 - 0.9 * k; // up, then back over her head
+            p.mouth = 'grit';
+            p.eyes = 'angry';
+          } else if (a < e) {
+            const k = Math.min(1, (a - s + 1) / 3);
+            p.lean = 0.3;
+            p.front = { x: 64, y: -74 + 20 * k };
+            p.caneAng = -2.5 + 3.0 * k; // swung down onto them
+            p.mouth = 'yell';
+            p.eyes = 'angry';
+            p.footAng = 0.05;
+          } else {
+            const k = 1 - (a - e) / m.rec;
+            p.lean = 0.3 * k;
+            p.front = { x: 18 + 46 * k, y: -30 - 24 * k };
+            if (k > 0.35) p.caneAng = 0.5 * k;
+          }
+        }
         /** Pose for a normal attack, from wind-up to recovery. */
         atkPose(p, a) {
+          if (this.move === 'canewhack' || this.move === 'bigsmack') return this.caneSmackPose(p, a);
           const chainKick = this.move === 'kick2' ? 2 : this.move === 'kick3' ? 3 : 0;
           const mv = CANE_POSES[this.move] || (chainKick ? 'kick' : this.move), // stick attacks use the punch poses
             m = MOVES[this.move],
@@ -10810,6 +10854,11 @@
           }
           if (this.state === 'lasso' && this.lassoLen > 4) this.drawLasso();
           drawSock(ctx, this.def, p, this.x, this.y, this.face, 1, { x: this.px, y: this.py });
+          if (this.def.dentures && (this.state === 'superdash' || this.state === 'superlock')) {
+            this.drawDentureSuper();
+            if (this.state === 'dizzy') this.drawBirds();
+            return;
+          }
           if (this.state === 'superlock') {
             for (let k = 0; k < 5; k++) {
               const gx = this.x + this.face * rand(50, 110),
@@ -10832,6 +10881,36 @@
             }
           }
           if (this.state === 'dizzy') this.drawBirds();
+        }
+        /** GIANT DENTURE CHOMP: Gran's false teeth fly out, grow huge and chomp the opponent (in time with the hits). */
+        drawDentureSuper() {
+          const t = this.t;
+          if (this.state === 'superdash') {
+            // chattering out in front of her
+            const grow = Math.min(1, t / 10);
+            drawDentures(ctx, this.x + this.face * (60 + 30 * grow), this.y - 120, 0.35 + 0.35 * grow, Math.abs(Math.sin(t * 0.7)), this.face, t);
+            return;
+          }
+          const o2 = this.lockO;
+          if (!o2) return;
+          const cx = o2.x,
+            cy = o2.y - 92;
+          if (t < 48) {
+            // a chomp every 6 frames: wide open, then SNAP shut on the hit
+            const ph = (t % 6) / 6;
+            const open = t < 6 ? 1 - ph * 0.2 : ph < 0.5 ? 1 - ph * 2 : (ph - 0.5) * 2;
+            drawDentures(ctx, cx, cy, 1.15, open, this.face, t);
+          } else if (t < 54) {
+            // the big one: open REALLY wide...
+            drawDentures(ctx, cx, cy - 6, 1.55, 1.3, this.face, t);
+          } else {
+            // ...MEGA CHOMP, then the dentures wobble and fade
+            const k = Math.min(1, (t - 54) / 8);
+            ctx.save();
+            ctx.globalAlpha = 1 - k * 0.8;
+            drawDentures(ctx, cx + Math.sin(t * 1.7) * 6 * (1 - k), cy, 1.55 - 0.4 * k, 0, this.face, t);
+            ctx.restore();
+          }
         }
         /** Little birds circling a dizzy fighter's head. */
         drawBirds() {
@@ -11539,6 +11618,44 @@
       }
 
       function drawProjectile(p) {
+        if (p.type === 'rollyarn') {
+          // Gran's big ball of yarn, rolling along the floor and unravelling a thread behind it
+          const col = (p.owner && p.owner.def.color) || '#ff8fab';
+          const r = 22,
+            dir = Math.sign(p.vx || 1);
+          ctx.save();
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y + r - 2);
+          ctx.quadraticCurveTo(p.x - dir * 40, p.y + r + 2, p.x - dir * Math.min(220, p.t * 6.4), p.y + r);
+          ctx.stroke();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.t * 6.4 * dir) / r); // rolls without slipping
+          ctx.fillStyle = col;
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.strokeStyle = shadeColor(col, -0.3);
+          ctx.lineWidth = 2;
+          for (const a of [0, 1, 2, 3]) {
+            ctx.beginPath();
+            ctx.ellipse(0, 0, r - 3, 7, a * 0.8, 0, 7);
+            ctx.stroke();
+          }
+          // a knitting needle stuck through it
+          ctx.strokeStyle = '#c9c9d6';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(-r - 8, -6);
+          ctx.lineTo(r + 8, 6);
+          ctx.stroke();
+          ctx.restore();
+          return;
+        }
         if (p.type === 'yarn') {
           // MY SOCK's ball of yarn, in its pattern colour, trailing a loose thread
           const col = (p.owner && p.owner.def.pal && p.owner.def.pal.s1) || '#ff8fab';
@@ -14628,8 +14745,6 @@
           SFX.select();
         }
         if (game.paused) {
-          if (wasPressed('KeyV')) cycleAnnouncer();
-          if (wasPressed('KeyN')) testVoice();
           if (wasPressed('KeyQ')) {
             game.paused = false;
             toTitle();
@@ -15167,25 +15282,11 @@
       }
 
       function updateTitle() {
-        if (wasPressed('KeyV')) {
-          cycleAnnouncer();
-          return;
-        }
-        if (wasPressed('KeyN')) {
-          testVoice();
-          return;
-        }
-        const c0 = game.click;
-        if (wasPressed('KeyH') || (c0 && c0.x > TITLE_HOWTO.x && c0.x < TITLE_HOWTO.x + TITLE_HOWTO.w && c0.y > TITLE_HOWTO.y && c0.y < TITLE_HOWTO.y + TITLE_HOWTO.h)) {
-          game.click = null;
-          Sound.init && Sound.init();
-          return openHowTo('title');
-        }
         if (wasPressed(...CONFIRM_KEYS, 'KeyK') || game.click) {
           SFX.confirm();
           Announcer.title();
           game.screen = 'mode';
-          game.menuIndex = 0;
+          setModeSub(null, 0);
         }
       }
 
@@ -15232,28 +15333,7 @@
         ctx.restore();
         drawText('靴下ファイターズ', W / 2, 300, 40, FONT_JAPANESE, '#ff4fa3', INK, 10);
         drawText('~ TURBO RINSE EDITION ~', W / 2, 346, 14, FONT_PIXEL, '#3ff0ff', INK, 5);
-        if (t % 60 < 40) drawText('PRESS ENTER  or  TAP', W / 2, 406, 18, FONT_PIXEL, '#fff', INK, 6);
-        roundRectPath(ctx, TITLE_HOWTO.x, TITLE_HOWTO.y, TITLE_HOWTO.w, TITLE_HOWTO.h, 9);
-        ctx.fillStyle = '#2a1d48';
-        ctx.fill();
-        ctx.strokeStyle = '#3ff0ff';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        drawText(IS_TOUCH ? '? HOW TO PLAY' : '? HOW TO PLAY  [H]', TITLE_HOWTO.x + TITLE_HOWTO.w / 2, TITLE_HOWTO.y + TITLE_HOWTO.h / 2 + 1, 10, FONT_PIXEL, '#fff', INK, 0);
-        drawText(
-          'V: ANNOUNCER STYLE (' +
-            (ANNOUNCER_STYLES[announcerStyle] ? ANNOUNCER_STYLES[announcerStyle].label : 'OFF') +
-            ')    N: TEST VOICE (' +
-            announcerVoiceLabel() +
-            ')',
-          W / 2,
-          482,
-          9,
-          FONT_PIXEL,
-          '#3ff0ff',
-          INK,
-          4
-        );
+        if (t % 60 < 40) drawText('PRESS ENTER  or  TAP', W / 2, 420, 18, FONT_PIXEL, '#fff', INK, 6);
         drawText(
           '© 2026 LINT-COM  •  INSERT SOCK',
           W / 2,
@@ -15268,11 +15348,23 @@
 
       /** Main menu entries: [title, subtitle, action]. A phone has one set of touch buttons, so two players can't
        *  share it: there, 2 PLAYERS means each player on their own phone (the online lobby). */
-      const MODE_MENU = IS_TOUCH
+      // VS BATTLE opens its own little list: 1 PLAYER, 2 PLAYERS (and ONLINE on a computer)
+      const VERSUS_MENU = IS_TOUCH
         ? [
-            ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
             ['1 PLAYER', 'VS CPU', 'cpu'],
             ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
+            ['◀ BACK', 'TO THE MAIN MENU', 'versusback']
+          ]
+        : [
+            ['1 PLAYER', 'VS CPU', 'cpu'],
+            ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
+            ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
+            ['◀ BACK', 'TO THE MAIN MENU', 'versusback']
+          ];
+      const MODE_MAIN = IS_TOUCH
+        ? [
+            ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
+            ['VS BATTLE', '1 PLAYER OR 2 PLAYERS', 'versus'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['SOCK MAKER', 'SKINS, ACCESSORIES & CUSTOM HERO', 'bag'],
             ['DAILY CHALLENGES', '3 NEW GOALS EVERY DAY', 'daily'],
@@ -15280,53 +15372,45 @@
           ]
         : [
             ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
-            ['1 PLAYER', 'VS CPU', 'cpu'],
-            ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
-            ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
+            ['VS BATTLE', '1 PLAYER, 2 PLAYERS OR ONLINE', 'versus'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['SOCK MAKER', 'SKINS, ACCESSORIES & CUSTOM HERO', 'bag'],
             ['DAILY CHALLENGES', '3 NEW GOALS EVERY DAY', 'daily'],
             ['HOW TO PLAY', 'CONTROLS, SPECIAL MOVES & TIPS', 'howto']
           ];
-      const ONLINE_MENU_INDEX = MODE_MENU.findIndex(item => item[2] === 'online');
+      /** The list the menu shows now (the main one, or VS BATTLE's). */
+      const modeMenuList = () => (game.modeSub === 'versus' ? VERSUS_MENU : MODE_MAIN);
+      const ONLINE_MENU_INDEX = VERSUS_MENU.findIndex(item => item[2] === 'online');
+      /** Open the VS BATTLE list (or leave it). */
+      function setModeSub(sub, index) {
+        game.modeSub = sub;
+        game.menuIndex = index !== undefined ? index : sub ? 0 : MODE_MAIN.findIndex(m => m[2] === 'versus');
+      }
 
       const MODE_ITEM_H = 34;
       const modeItemY = i => 104 + i * 39;
 
       function updateModeMenu() {
         if (backWasPressed()) {
+          if (game.modeSub) {
+            setModeSub(null);
+            SFX.select();
+            return;
+          }
           goBack('title');
           return;
         }
-        if (wasPressed('KeyV')) {
-          cycleAnnouncer();
-          return;
-        }
-        if (wasPressed('KeyN')) {
-          testVoice();
-          return;
-        }
-        if (game.click && game.click.y < 40 && game.click.x >= 470) {
-          testVoice();
-          game.click = null;
-          return;
-        }
-        if (game.click && game.click.y < 40 && game.click.x > 160 && game.click.x < 470) {
-          cycleAnnouncer();
-          game.click = null;
-          return;
-        }
         if (wasPressed('KeyW', 'ArrowUp')) {
-          game.menuIndex = (game.menuIndex + MODE_MENU.length - 1) % MODE_MENU.length;
+          game.menuIndex = (game.menuIndex + modeMenuList().length - 1) % modeMenuList().length;
           SFX.select();
         }
         if (wasPressed('KeyS', 'ArrowDown')) {
-          game.menuIndex = (game.menuIndex + 1) % MODE_MENU.length;
+          game.menuIndex = (game.menuIndex + 1) % modeMenuList().length;
           SFX.select();
         }
         let go = wasPressed(...CONFIRM_KEYS, 'KeyK');
         if (game.click) {
-          for (let i = 0; i < MODE_MENU.length; i++) {
+          for (let i = 0; i < modeMenuList().length; i++) {
             const y = modeItemY(i);
             if (game.click.x > 280 && game.click.x < 680 && game.click.y > y && game.click.y < y + MODE_ITEM_H) {
               game.menuIndex = i;
@@ -15336,7 +15420,9 @@
         }
         if (go) {
           SFX.confirm();
-          const action = MODE_MENU[game.menuIndex][2];
+          const action = modeMenuList()[game.menuIndex][2];
+          if (action === 'versus') return setModeSub('versus');
+          if (action === 'versusback') return setModeSub(null);
           if (action === 'online') {
             openOnlineLobby();
             return;
@@ -15388,22 +15474,9 @@
       function drawModeMenu() {
         drawStage(0.6);
         drawBackButton();
-        drawText(
-          'ANNOUNCER: ' +
-            (ANNOUNCER_STYLES[announcerStyle] ? ANNOUNCER_STYLES[announcerStyle].label : 'OFF') +
-            ' [V]',
-          300,
-          20,
-          9,
-          FONT_PIXEL,
-          '#3ff0ff',
-          INK,
-          4
-        );
-        drawText('VOICE: ' + announcerVoiceLabel() + ' [N]', 660, 20, 9, FONT_PIXEL, '#ffe234', INK, 4);
-        drawText('SELECT MODE', W / 2, 52, 50, FONT_COMIC, '#ffe234', INK, 10);
-        drawText('モード選択', W / 2, 86, 15, FONT_JAPANESE, '#fff', INK, 5);
-        MODE_MENU.forEach(([a, b], i) => {
+        drawText(game.modeSub ? 'VS BATTLE' : 'SELECT MODE', W / 2, 52, 50, FONT_COMIC, '#ffe234', INK, 10);
+        drawText(game.modeSub ? 'たいせん' : 'モード選択', W / 2, 86, 15, FONT_JAPANESE, '#fff', INK, 5);
+        modeMenuList().forEach(([a, b], i) => {
           const y = modeItemY(i),
             on = game.menuIndex === i;
           roundRectPath(ctx, 280, y, 400, MODE_ITEM_H, 12);
@@ -18465,6 +18538,53 @@
         }
       }
 
+      /** A set of false teeth: pink gums, big white teeth. open = 0 (shut) .. 1 (wide open); s = size. */
+      function drawDentures(c, x, y, s, open, face, t) {
+        c.save();
+        c.translate(x, y);
+        c.scale((face || 1) * s, s);
+        for (const dir of [1, -1]) {
+          // dir -1 = upper jaw (drawn last, on top), 1 = lower jaw
+          const oy = dir * (6 + open * 44);
+          c.save();
+          c.translate(0, oy);
+          c.rotate(dir * open * 0.12);
+          // the teeth hang off the flat edge, towards the bite
+          for (let i = -3; i <= 3; i++) {
+            const tw = 16,
+              th = Math.abs(i) <= 1 ? 22 : 17,
+              tx = i * 18 - tw / 2;
+            roundRectPath(c, tx, dir < 0 ? -2 : -th + 2, tw, th, 5);
+            c.fillStyle = '#fffdf2';
+            c.fill();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.stroke();
+          }
+          // gum: half an oval, flat side at the bite
+          c.beginPath();
+          c.ellipse(0, 0, 72, 34, 0, dir < 0 ? Math.PI : 0, dir < 0 ? Math.PI * 2 : Math.PI);
+          c.closePath();
+          c.fillStyle = '#ff7f9f';
+          c.fill();
+          c.strokeStyle = INK;
+          c.lineWidth = 4;
+          c.stroke();
+          c.fillStyle = 'rgba(255,255,255,0.35)';
+          c.beginPath();
+          c.ellipse(-26, dir * 16, 18, 6, 0, 0, 7);
+          c.fill();
+          c.restore();
+        }
+        // a glint
+        if (t % 20 < 4) {
+          c.fillStyle = '#fff';
+          starPath(c, 30, -12 - open * 44, 7, t * 0.2);
+          c.fill();
+        }
+        c.restore();
+      }
+
       /** The big dryer in the laundromat that the sock jumps into (cx, cy = centre of its round door). */
       function drawDryerMachine(cx, cy, doorOpen, shake) {
         ctx.save();
@@ -19615,7 +19735,7 @@
         stinky: "I'm not smelly. I'm *memorable*.",
         argyle: 'Discipline. Patterns. Diamonds.',
         shinobi: 'You never saw me. Neither did your feet.',
-        gran: 'I have fought for ninety-five years. My back has fought for ninety.',
+        gran: 'I have fought for ninety-eight years. My back has fought for ninety.',
         baby: 'Small sock. BIG feelings.',
         kneehi: 'Stretchy. Strong. Slightly sumo.',
         robo: 'COMPRESSION: ENGAGED.',
@@ -20637,7 +20757,7 @@
       function toModeMenu() {
         game.adv = null;
         game.screen = 'mode';
-        game.menuIndex = MODE_MENU.findIndex(m => m[2] === 'adventure');
+        setModeSub(null, MODE_MAIN.findIndex(m => m[2] === 'adventure'));
       }
 
       function openHub(arriving) {
@@ -24605,7 +24725,7 @@
         game.mode = '2p';
         game.paused = false;
         game.screen = 'mode';
-        game.menuIndex = ONLINE_MENU_INDEX;
+        setModeSub('versus', ONLINE_MENU_INDEX);
         SFX.select();
       }
 
@@ -24943,7 +25063,7 @@
         Net.role = null;
         hideOnlinePanel();
         game.screen = 'mode';
-        game.menuIndex = ONLINE_MENU_INDEX;
+        setModeSub('versus', ONLINE_MENU_INDEX);
       }
 
       function updateOnlineLobby() {
@@ -25148,7 +25268,7 @@
           drawMoveList(130, true);
           if (IS_TOUCH) drawBackButton('QUIT');
           drawText(
-            IS_TOUCH ? 'TAP ANYWHERE: RESUME    ◀ QUIT: BACK TO TITLE' : 'ESC / TAP: RESUME    Q: QUIT    V: STYLE  N: VOICE',
+            IS_TOUCH ? 'TAP ANYWHERE: RESUME    ◀ QUIT: BACK TO TITLE' : 'ESC / TAP: RESUME    Q: QUIT',
             W / 2,
             500,
             11,
