@@ -34,13 +34,14 @@ CAST = {
                dict(superv=['一刀両断!'], laugh=['ふっ…'], win=['成敗!'], light=['はっ!', 'せいっ!', 'とうっ!']), None),
     'shinobi': (FEMALE, 'A young Japanese woman, a cool and quick ninja (kunoichi). Calm, sharp and confident, breathy whisper at times.',
                 dict(superv=['影分身の術!'], laugh=['ふふっ…'], win=['任務完了。']), None),
-    'gran': (MALE, 'A 95-year-old Japanese grandfather (an old MAN, low male voice): extremely old, frail, wavering quavering voice, breathy '
-                     'and a little toothless and mumbly, speaks slowly, creaky and wheezy, groaning about his aching back, '
-                     'a grumpy but feisty old geezer.',
-             dict(light=['ほいっ!', 'ほれっ!', 'えいっ!'], heavy=['どっこいしょ!', 'ふんぬぬっ!'], special=['ほれ、くらいな!', 'いくぞい!'],
-                  superv=['じいちゃんをなめるでないぞ!'], throwv=['よいしょお!'], hurt=['あいたたた!', 'こ、腰が…!', 'おおっと!'],
+    'gran': (FEMALE, 'A 98-year-old Japanese great-grandmother (an extremely old WOMAN), almost a hundred years old: a very, '
+                     "very old woman's voice, thin, frail and papery, with a strong tremble and quaver in every word, breathy "
+                     'and wheezy, toothless and mumbly, speaks slowly with little gasps, creaky, groaning about her aching back, '
+                     'a grumpy but feisty old granny.',
+             dict(light=['ほいっ!', 'ほれっ!', 'えいっ!'], heavy=['どっこいしょ!', 'ふんぬぬっ!'], special=['ほれ、くらいな!', 'いくよっ!'],
+                  superv=['ばあちゃんをなめるでないよ!'], throwv=['よいしょお!'], hurt=['あいたたた!', 'こ、腰が…!', 'おおっと!'],
                   hurtBig=['あいたたたた!', 'ひいい、腰がぁ!'], ko=['あいたたた…腰が…もうダメじゃ…'], hup=['よっこらしょ!'],
-                  block=['ううっ…'], laugh=['ひぇっひぇっひぇ!'], win=['まだまだ若いもんには負けんわい…いたたた…'],
+                  block=['ううっ…'], laugh=['ひぇっひぇっひぇ!'], win=['まだまだ若いもんには負けんよ…いたたた…'],
                   dizzy=['あ〜れ〜…腰が…']), 'old'),
     'baby': (SMALL, 'A Japanese toddler girl, very squeaky, cute and bratty, babyish speech.',
              dict(superv=['おこったもん!'], laugh=['きゃはは!'], win=['やったー!']), None),

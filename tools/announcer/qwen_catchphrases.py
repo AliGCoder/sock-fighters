@@ -1,6 +1,6 @@
 """Each playable character's signature catchphrase (original lines), spoken in their own designed voice
 (same reference + effects as qwen_fighters.py). Stored as the word 'catchphrase' in fighter_clips.json.
-Usage: .venv-qwen/Scripts/python.exe qwen_catchphrases.py   then   node inject.js fighter"""
+Usage: .venv-qwen/Scripts/python.exe qwen_catchphrases.py [id ...]   then   node inject.js fighter"""
 import base64, json, os, sys, zlib
 import numpy as np, soundfile as sf, torch
 sys.stdout.reconfigure(encoding='utf-8')
@@ -13,7 +13,7 @@ CATCHPHRASES = {
     'stinky': 'においで勝負だ!',
     'argyle': '靴下の道、いざ参る!',
     'shinobi': '影から足元をすくうわ。',
-    'gran': 'じいちゃんをなめるでないぞ!…いたたた…',
+    'gran': 'ばあちゃんをなめるでないよ!…いたたた…',
     'baby': 'ちっちゃくても、つよいもん!',
     'kneehi': '伸びる相撲、見せてやる!',
     'robo': '圧縮率、百パーセント!',
@@ -25,7 +25,10 @@ base = Qwen3TTSModel.from_pretrained('Qwen/Qwen3-TTS-12Hz-1.7B-Base', device_map
 path = os.path.join(HERE, 'fighter_clips.json')
 clips = json.load(open(path, encoding='utf-8'))
 reel = []
+only = [a for a in sys.argv[1:] if not a.startswith('--')]  # e.g. 'gran' to redo just one
 for cid, text in CATCHPHRASES.items():
+    if only and cid not in only:
+        continue
     prompt = base.create_voice_clone_prompt(ref_audio=os.path.join(HERE, 'refs', f'fighter_{cid}.wav'), ref_text=QF.ref_line(cid))
     for attempt in range(4):
         torch.manual_seed(zlib.crc32(f'{cid}|catchphrase|{attempt}'.encode()))

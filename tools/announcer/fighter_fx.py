@@ -109,7 +109,7 @@ def ghost(y):
 
 
 def old(y):
-    """95 years old: slower, a quavering pitch wobble, a shaky volume tremble and a thin, fragile tone."""
+    """98 years old: slower, a quavering pitch wobble, a shaky volume tremble and a thin, fragile tone."""
     y = _peak1(y)
     y = resample(y, int(len(y) * 1.08))  # a touch slower (and slightly lower, as very old voices drop)
     n = np.arange(len(y))

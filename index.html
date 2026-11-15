@@ -903,7 +903,7 @@
         stinky: { pitch: 165, formant: 1.0, breath: 0.28 }, // gruff gym grunt
         argyle: { pitch: 135, formant: 0.95, breath: 0.1 }, // crisp samurai kiai
         shinobi: { pitch: 205, formant: 1.05, breath: 0.42 }, // hushed ninja
-        gran: { pitch: 120, formant: 0.95, breath: 0.24, volume: 0.85, vibrato: 0.045, vibratoRate: 6.5 }, // wobbly grandpa
+        gran: { pitch: 270, formant: 1.12, breath: 0.26, volume: 0.8, vibrato: 0.06, vibratoRate: 6.5 }, // wobbly 98-year-old granny
         baby: { pitch: 430, formant: 1.32, breath: 0.05, volume: 0.75 }, // squeaky baby
         kneehi: { pitch: 92, formant: 0.84, breath: 0.18 }, // big sumo boom
         robo: { pitch: 125, formant: 1.0, breath: 0.0, robot: true }, // ring-modulated robot
@@ -2842,9 +2842,9 @@
         {
           id: 'gran',
           name: 'STOCKING GRAN',
-          jp: 'くつしたじいちゃん',
+          jp: 'くつしたばあちゃん',
           title: 'The Knitted Menace',
-          cane: true, // fights with his walking stick (see CANE_MOVES)
+          cane: true, // fights with her walking stick (see CANE_MOVES)
           color: '#ff8fab',
           glove: '#ff8fab',
           arm: '#d62839',
@@ -5227,7 +5227,7 @@
         { name: 'TINY FLUFF', from: 'lint' },
         { name: 'CHEEKY KID', from: 'socklet' },
         { name: 'TODDLER', from: 'baby' },
-        { name: 'GRANDPA', from: 'gran' },
+        { name: 'GRANNY', from: 'gran' },
         { name: 'CHIPMUNK', from: 'stinky', rate: 1.45 },
         { name: 'MONSTER', from: 'kneehi', rate: 0.72 },
         { name: 'MY OWN VOICE', own: true },
@@ -5237,12 +5237,27 @@
       ];
       const MY_OWN_VOICE = MY_VOICES.findIndex(v => v.own);
       const MY_DEFAULT = { voice: 0, name: 0, body: 0, c2: 4, cuff: 4, heel: 3, glove: 1, pattern: 0, tall: 2, wide: 2, foot: 2, eyes: 0, iris: 0, style: 0, head: null, face: null, bod: null, hc: null, fc: null, bc: null };
+      /** A name the player typed: capitals, numbers and a little punctuation, at most 16 letters (or null). */
+      function cleanSockName(s) {
+        if (typeof s !== 'string') return null;
+        const t = s
+          .toUpperCase()
+          .replace(/[^A-Z0-9 .!?'&-]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 16)
+          .trim();
+        return t || null;
+      }
+      /** The sock's name: the one the player typed, or the funny one picked with ◀ ▶. */
+      const mySockName = m => (m && m.custom) || MY_NAMES[(m && m.name) | 0] || MY_NAMES[0];
       /** Clean up a design from storage or from the other phone. */
       function sanitizeMy(m) {
         const o = {},
           src = m && typeof m === 'object' ? m : {};
         const idx = (v, n, d) => (typeof v === 'number' && isFinite(v) ? clamp(v | 0, 0, n - 1) : d);
         o.name = idx(src.name, MY_NAMES.length, 0);
+        o.custom = cleanSockName(src.custom);
         for (const k of ['body', 'c2', 'cuff', 'heel', 'glove']) o[k] = idx(src[k], MY_COLORS.length, MY_DEFAULT[k]);
         o.pattern = idx(src.pattern, MY_PATTERNS.length, 0);
         o.tall = idx(src.tall, MY_TALL.length, 2);
@@ -5375,7 +5390,7 @@
         const st = MY_STYLES[m.style];
         out = Object.assign(Object.create(MYSOCK), {
           my: m,
-          name: MY_NAMES[m.name],
+          name: mySockName(m),
           pal: { base: col(m.body), s1: col(m.c2), s2: col(m.c2), heel: col(m.heel), cuff: col(m.cuff) },
           color: col(m.body) === '#2a2a2a' ? '#7a7f8c' : col(m.body),
           glove: col(m.glove),
@@ -5405,7 +5420,7 @@
           stache: null,
           shades: false,
           skin: { my: m },
-          skinName: MY_NAMES[m.name]
+          skinName: mySockName(m)
         });
         if (myCache.size > 200) myCache.clear();
         myCache.set(key, out);
@@ -8569,7 +8584,7 @@
       };
 
       // moves usable in the air
-      // Stocking Gran fights with his walking stick: his punches become stick attacks that reach a little
+      // Stocking Gran fights with her walking stick: her punches become stick attacks that reach a little
       // further but hit slightly softer, so she stays balanced. Same timing as the moves they replace.
       const CANE_MOVES = { punch: 'canejab', cpunch: 'canelow', upper: 'canewhack', slap: 'caneswipe' };
       const CANE_POSES = { canejab: 'punch', canelow: 'cpunch', canewhack: 'upper', caneswipe: 'slap' };
@@ -9729,7 +9744,7 @@
         }
         /** Start the normal attack named mv (see MOVES). */
         attack(mv) {
-          if (this.def.cane && CANE_MOVES[mv]) mv = CANE_MOVES[mv]; // Gran swings his stick instead
+          if (this.def.cane && CANE_MOVES[mv]) mv = CANE_MOVES[mv]; // Gran swings her stick instead
           this.setState('atk');
           this.move = mv;
           if (['punch', 'cpunch', 'jpunch', 'slap', 'canejab', 'canelow', 'caneswipe'].includes(mv)) {
@@ -15904,7 +15919,7 @@
         stinky: ['においで勝負だ!', "Let's settle this by smell!"],
         argyle: ['靴下の道、いざ参る!', 'The way of the sock — here I come!'],
         shinobi: ['影から足元をすくうわ。', "I'll sweep your feet from the shadows."],
-        gran: ['じいちゃんをなめるでないぞ!…いたたた…', 'Never underestimate grandpa! …ow ow ow…'],
+        gran: ['ばあちゃんをなめるでないよ!…いたたた…', 'Never underestimate granny! …ow ow ow…'],
         baby: ['ちっちゃくても、つよいもん!', 'Tiny, but STRONG!'],
         kneehi: ['伸びる相撲、見せてやる!', 'Behold — stretchy sumo!'],
         robo: ['圧縮率、百パーセント!', 'Compression: one hundred percent!'],
@@ -17158,7 +17173,7 @@
 
       /* ---------------- THE SOCK MAKER: design MY SOCK (body, colours, pattern, eyes, fighting style, items) ---------------- */
       const MAKER_ROWS = [
-        ['NAME', 'name'], ['BODY COLOUR', 'body'], ['PATTERN', 'pattern'], ['PATTERN COLOUR', 'c2'], ['CUFF', 'cuff'],
+        ['NAME  ✎ TAP', 'name'], ['BODY COLOUR', 'body'], ['PATTERN', 'pattern'], ['PATTERN COLOUR', 'c2'], ['CUFF', 'cuff'],
         ['TOE & HEEL', 'heel'], ['HANDS', 'glove'], ['HEIGHT', 'tall'], ['WIDTH', 'wide'], ['FOOT SIZE', 'foot'],
         ['EYES', 'eyes'], ['EYE COLOUR', 'iris'], ['FIGHT STYLE', 'style'], ['HEAD ITEM', 'head'], ['HEAD ITEM COLOUR', 'hc'],
         ['FACE ITEM', 'face'], ['FACE ITEM COLOUR', 'fc'], ['BODY ITEM', 'bod'], ['BODY ITEM COLOUR', 'bc'], ['VOICE', 'voice']
@@ -17190,6 +17205,49 @@
         game.screen = 'maker';
         SFX.select();
       }
+      /** The NAME box: type your sock's own name (an HTML box, so phones get their keyboard). */
+      function openNameBox() {
+        const M = game.maker;
+        M.naming = true;
+        onlinePanel.innerHTML =
+          '<h2>NAME YOUR SOCK</h2>' +
+          '<p>Type any name you like!</p>' +
+          '<input id="sock-name" maxlength="16" autocomplete="off" autocapitalize="characters" spellcheck="false" style="font-size:16px;letter-spacing:2px;width:92%" value="' +
+          escapeHtml(mySockName(M.my)) +
+          '">' +
+          '<p class="small">UP TO 16 LETTERS • A-Z, 0-9 and . ! ? \' & -</p>' +
+          '<button data-on="nameok">OK ✓</button>' +
+          '<button class="alt" data-on="namerand">GIVE ME A FUNNY NAME</button>' +
+          '<button class="alt" data-on="namecancel">CANCEL</button>';
+        onlinePanel.style.display = 'block';
+        const input = document.getElementById('sock-name');
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter') closeNameBox(true);
+          if (e.key === 'Escape') closeNameBox(false);
+        });
+        if (!IS_TOUCH) {
+          input.focus();
+          input.select();
+        }
+        SFX.select();
+      }
+      function closeNameBox(save) {
+        const M = game.maker;
+        const input = document.getElementById('sock-name');
+        if (M && save && input) {
+          const name = cleanSockName(input.value);
+          M.my.custom = name;
+          M.tumble = 22;
+          makerNote(name ? 'HELLO, ' + name + '! (SAVE TO KEEP IT)' : 'NO NAME TYPED — KEPT ' + MY_NAMES[M.my.name]);
+          SFX.confirm();
+        }
+        if (input) input.blur();
+        onlinePanel.innerHTML = '';
+        hideOnlinePanel();
+        if (M) M.naming = false;
+        // the keys pressed while typing don't count in the game
+        for (const code in keysPressed) keysPressed[code] = false;
+      }
       function makerNote(text) {
         game.maker.note = { text, until: game.time + 150 };
       }
@@ -17197,7 +17255,7 @@
       function makerChoices(key) {
         const n = list => list.map((_, i) => i);
         switch (key) {
-          case 'name': return { vals: n(MY_NAMES), show: v => MY_NAMES[v] };
+          case 'name': return { vals: n(MY_NAMES), show: v => (game.maker && game.maker.my.custom) || MY_NAMES[v] };
           case 'body': case 'c2': case 'cuff': case 'heel': case 'glove':
             return { vals: n(MY_COLORS), show: v => MY_COLOR_NAMES[v], swatch: v => MY_COLORS[v] };
           case 'pattern': return { vals: n(MY_PATTERNS), show: v => MY_PATTERNS[v] };
@@ -17230,6 +17288,7 @@
           SFX.block();
           return;
         }
+        if (key === 'name') M.my.custom = null;
         const at = Math.max(0, ch.vals.indexOf(M.my[key] === undefined ? null : M.my[key]));
         M.my[key] = ch.vals[wrapIndex(at + dir, ch.vals.length)];
         M.tumble = 22;
@@ -17353,6 +17412,11 @@
         const M = game.maker;
         M.t++;
         if (M.tumble > 0) M.tumble--;
+        if (M.naming) {
+          game.click = null;
+          return;
+        }
+        if (wasPressed('KeyT')) return openNameBox();
         if (backWasPressed()) return leaveMaker(-1);
         if (wasPressed('KeyW', 'ArrowUp')) {
           M.row = wrapIndex(M.row - 1, MAKER_ROWS.length);
@@ -17380,6 +17444,10 @@
             if (inside(makerArrow(i, -1))) {
               M.row = i;
               return makerChange(i, -1);
+            }
+            if (i === 0 && !inside(makerArrow(i, 1)) && inside(makerRowRect(i))) {
+              M.row = 0;
+              return openNameBox();
             }
             if (inside(makerArrow(i, 1)) || inside(makerRowRect(i))) {
               M.row = i;
@@ -17459,7 +17527,7 @@
         }
         const note = M.note && game.time < M.note.until ? M.note.text : '';
         if (note) drawText(note, 556, 444, 9, FONT_PIXEL, '#ffb03a', INK, 4);
-        else if (t % 80 < 60) drawText(IS_TOUCH ? 'TAP ◀ ▶ TO CHANGE' : 'W/S row • A/D change • Q/E designs • V voice • ENTER save', 556, 444, 8, FONT_PIXEL, '#ccc', INK, 0);
+        else if (t % 80 < 60) drawText(IS_TOUCH ? 'TAP ◀ ▶ TO CHANGE' : 'W/S row • A/D change • T type a name • V voice • ENTER save', 556, 444, 8, FONT_PIXEL, '#ccc', INK, 0);
       }
 
 
@@ -17896,7 +17964,7 @@
           if (B.tab === 1) return bagItems(2);
           const designs = (Progress.data.mysocks || []).map((m, index) => {
             const my = sanitizeMy(m);
-            return { kind: 'my', my, index, name: MY_NAMES[my.name], owner: MYSOCK, have: true };
+            return { kind: 'my', my, index, name: mySockName(my), owner: MYSOCK, have: true };
           });
           return [...designs, ...(designs.length < MY_MAX_DESIGNS ? [{ kind: 'newsock', name: '+ NEW CUSTOM SOCK', owner: MYSOCK, have: true }] : [])];
         }
@@ -21400,11 +21468,11 @@
         { who: 'gran', text: 'I took the stairs.' },
         { who: 'hero', text: 'There are no stairs to another dimension!' },
         { who: 'gran', text: "There are if you're old enough, dear. *CRACK* ...Ooh. That was my back. Or the stairs. Hard to tell." },
-        { who: 'fishnet', text: "Sir, with respect... how old ARE you?" },
+        { who: 'fishnet', text: "Ma'am, with respect... how old ARE you?" },
         { who: 'gran', text: 'Old enough to have knitted the very first sock. Young enough to kick your fishnets into next Tuesday.' },
         { who: 'steel', text: 'HALT! SAFETY INSPECTION! NOBODY enters the Fortress without a HARD HAT!' },
-        { who: 'gran', text: "Young man, I've survived ninety-five winters without a hard hat." },
-        { who: 'steel', text: 'THEN YOU ARE NINETY-FIVE WINTERS OVERDUE! SAFETY FIRST! ...THEN FIGHTING!' }
+        { who: 'gran', text: "Young man, I've survived ninety-eight winters without a hard hat." },
+        { who: 'steel', text: 'THEN YOU ARE NINETY-EIGHT WINTERS OVERDUE! SAFETY FIRST! ...THEN FIGHTING!' }
       ];
       const CH4_MID = [
         { who: 'king', text: 'KNEEL! KNEEL before KING KNEE-SOCK, ruler of the sock drawer AND the top shelf!' },
@@ -21448,7 +21516,7 @@
         { who: 'iron', text: 'I am IRON SHOGUN. I press. I flatten. I remove all WRINKLES.' },
         { who: 'iron', text: 'Your wrinkles are... unacceptable. Prepare to be CRISP.' },
         { who: 'gran', text: 'Young man, I have been wrinkly since before you were a CAST-IRON TODDLER.' },
-        { who: 'iron', text: '...The grandfather. Even I fear... the grandfather.' },
+        { who: 'iron', text: '...The grandmother. Even I fear... the grandmother.' },
         { who: 'gran', text: "Go on then, {HERO}. Iron him out. I'll hold your snacks." },
         { who: 'hero', text: "I DIDN'T BRING SNACKS!" },
         { who: 'gran', text: "That's why I'm holding them, dear." }
@@ -21878,7 +21946,7 @@
       ];
       const CH13_MID = [
         { who: 'puppet', text: '*pinned under a curtain* The show... must... go on...' },
-        { who: 'narr', text: '*Tap. Tap-tap. Tappity-tap. On stage, Stocking Gran is tap-dancing. With his walking stick. VERY fast.*' },
+        { who: 'narr', text: '*Tap. Tap-tap. Tappity-tap. On stage, Stocking Gran is tap-dancing. With her walking stick. VERY fast.*' },
         { who: 'gran', text: 'In my day, we tap-danced to SCHOOL! Uphill! Both ways! In the SNOW!' },
         { who: 'hero', text: 'Gran! You can tap-dance?!' },
         { who: 'gran', text: "Sixty years champion, dearie! Mr. Tappington says if I win tonight, I get a NEW HIP! A shiny one!" },
@@ -23931,7 +23999,7 @@
         ['BLEACH BARON', 'as Lemon-Scented'],
         ['STEEL TOE', 'as Safety First'],
         ['KING KNEE-SOCK', 'as the Only One with Knees'],
-        ['IRON SHOGUN', 'as Afraid of the Grandfather'],
+        ['IRON SHOGUN', 'as Afraid of the Grandmother'],
         ['A GYM SOCK', 'as a Lifestyle'],
         ['MISMATCH', 'as One Hundred Heels, Zero Pairs'],
         ['THE DRYER DEMON', 'as a Big Softie'],
@@ -24827,6 +24895,13 @@
         Sound.init();
         SFX.select();
         const action = button.dataset.on;
+        if (action === 'nameok') return closeNameBox(true);
+        if (action === 'namecancel') return closeNameBox(false);
+        if (action === 'namerand') {
+          const input = document.getElementById('sock-name');
+          if (input) input.value = MY_NAMES[1 + ((Math.random() * (MY_NAMES.length - 1)) | 0)];
+          return;
+        }
         if (action === 'quick') netQuick();
         else if (action === 'host') netHost();
         else if (action === 'join') {
