@@ -62,7 +62,7 @@ const PERSONA = {
   stinky: 'cocky young street brawler',
   argyle: 'calm, noble samurai',
   shinobi: 'cool, quiet ninja woman',
-  gran: 'very old, creaky, wheezy grandmother',
+  gran: 'very old, creaky, wheezy grandfather',
   baby: 'squeaky, bratty toddler',
   kneehi: 'booming, jolly sumo wrestler',
   robo: 'flat, monotone robot',

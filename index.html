@@ -423,6 +423,9 @@
             Ambience.start();
             FighterClips.load();
             AnnouncerClips.load();
+            try {
+              OwnVoice.load();
+            } catch (e) {}
           } catch (e) {
             this.context = null;
           }
@@ -900,7 +903,7 @@
         stinky: { pitch: 165, formant: 1.0, breath: 0.28 }, // gruff gym grunt
         argyle: { pitch: 135, formant: 0.95, breath: 0.1 }, // crisp samurai kiai
         shinobi: { pitch: 205, formant: 1.05, breath: 0.42 }, // hushed ninja
-        gran: { pitch: 285, formant: 1.15, breath: 0.22, volume: 0.8, vibrato: 0.045, vibratoRate: 6.5 }, // wobbly granny
+        gran: { pitch: 120, formant: 0.95, breath: 0.24, volume: 0.85, vibrato: 0.045, vibratoRate: 6.5 }, // wobbly grandpa
         baby: { pitch: 430, formant: 1.32, breath: 0.05, volume: 0.75 }, // squeaky baby
         kneehi: { pitch: 92, formant: 0.84, breath: 0.18 }, // big sumo boom
         robo: { pitch: 125, formant: 1.0, breath: 0.0, robot: true }, // ring-modulated robot
@@ -1103,6 +1106,13 @@
           const now = ac.currentTime;
           if (!force && this.lastSpoke[fighter.side] && now - this.lastSpoke[fighter.side] < 0.2) return;
           this.lastSpoke[fighter.side] = now;
+          if (fighter.def.mysock) {
+            const mv = myVoiceClip(fighter.def, word, fighter.side);
+            if (mv) {
+              this.playClip(fighter, mv.clip, now, mv);
+              return;
+            }
+          }
           const takes = FighterClips.get(fighter.def.id, word);
           if (takes) {
             this.playClip(fighter, pick(takes), now);
@@ -1127,27 +1137,18 @@
         /** A character says one of their recorded words outside a fight (menus, ladder). Returns its length in seconds. */
         characterLine(def, word, side, delay, rate) {
           const ac = Sound.context;
-          const takes = FighterClips.get(def.id, word);
+          const mv = def.mysock ? myVoiceClip(def, word, side) : null; // a custom sock's chosen (or own) voice
+          const takes = mv ? [mv.clip] : FighterClips.get(def.id, word);
           if (!ac || Sound.muted || !takes) return 0;
           const clip = word === 'catchphrase' ? takes[0] : pick(takes);
           this.stopCatchphrase(side);
           const source = ac.createBufferSource();
           source.buffer = clip.buffer;
-          source.playbackRate.value = rate || 1; // above 1 = higher and quicker
-          const gain = ac.createGain();
-          gain.gain.value = 0.9;
-          source.connect(gain);
-          let output = gain;
-          if (ac.createStereoPanner) {
-            const pan = ac.createStereoPanner();
-            pan.pan.value = side === 0 ? -0.3 : 0.3;
-            gain.connect(pan);
-            output = pan;
-          }
-          output.connect(Sound.sfxBus);
+          const r = (rate || 1) * (mv ? mv.rate : 1); // above 1 = higher and quicker
+          source.connect(voiceFx(ac, source, { rate: r, robot: mv && mv.robot }, clip.buffer.duration, side === 0 ? -0.3 : 0.3, 0.9));
           source.start(ac.currentTime + delay, clip.offset);
           this.speaking['pick' + side] = source;
-          return (clip.buffer.duration - clip.offset) / (rate || 1);
+          return (clip.buffer.duration - clip.offset) / r;
         },
 
         stopCatchphrase(side) {
@@ -1161,7 +1162,7 @@
         },
 
         /** Play a recorded take, placed left/right where the fighter stands; it cuts off their previous one. */
-        playClip(fighter, clip, now) {
+        playClip(fighter, clip, now, opt) {
           const ac = Sound.context;
           const previous = this.speaking[fighter.side];
           if (previous) {
@@ -1171,17 +1172,7 @@
           }
           const source = ac.createBufferSource();
           source.buffer = clip.buffer;
-          const gain = ac.createGain();
-          gain.gain.value = 0.8;
-          source.connect(gain);
-          let output = gain;
-          if (ac.createStereoPanner) {
-            const pan = ac.createStereoPanner();
-            pan.pan.value = clamp((fighter.x - W / 2) / W, -0.4, 0.4);
-            gain.connect(pan);
-            output = pan;
-          }
-          output.connect(Sound.sfxBus);
+          source.connect(voiceFx(ac, source, opt || {}, clip.buffer.duration, clamp((fighter.x - W / 2) / W, -0.4, 0.4), 0.8));
           source.start(now + 0.01, clip.offset);
           this.speaking[fighter.side] = source;
         },
@@ -2851,9 +2842,9 @@
         {
           id: 'gran',
           name: 'STOCKING GRAN',
-          jp: 'くつしたばあちゃん',
+          jp: 'くつしたじいちゃん',
           title: 'The Knitted Menace',
-          cane: true, // fights with her walking stick (see CANE_MOVES)
+          cane: true, // fights with his walking stick (see CANE_MOVES)
           color: '#ff8fab',
           glove: '#ff8fab',
           arm: '#d62839',
@@ -5225,7 +5216,27 @@
         { name: 'YARN WRANGLER', slots: ['lasso', 'roll'], special: 'YARN LOOP', special2: 'ROLY-POLY', moveHint: 'Lassos foes, then bonks them', moveHint2: 'Curls up and rolls over you', ai: 'grab' },
         { name: 'ZAPPER', slots: ['shoot', 'zap'], proj: 'yarn', special: 'YARN BALL', special2: 'STATIC SOCK', moveHint: 'Hurls a ball of yarn', moveHint2: 'Electric shock field', ai: 'proj', zap: true }
       ];
-      const MY_DEFAULT = { name: 0, body: 0, c2: 4, cuff: 4, heel: 3, glove: 1, pattern: 0, tall: 2, wide: 2, foot: 2, eyes: 0, iris: 0, style: 0, head: null, face: null, bod: null, hc: null, fc: null, bc: null };
+      // VOICE: borrow a hero's recorded voice (rate = higher/lower), or use the player's own recording
+      const MY_VOICES = [
+        { name: 'BRAWLER', from: 'stinky' },
+        { name: 'SAMURAI', from: 'argyle' },
+        { name: 'NINJA', from: 'shinobi' },
+        { name: 'SUMO', from: 'kneehi' },
+        { name: 'ROBOT', from: 'robo' },
+        { name: 'GHOST', from: 'ghost' },
+        { name: 'TINY FLUFF', from: 'lint' },
+        { name: 'CHEEKY KID', from: 'socklet' },
+        { name: 'TODDLER', from: 'baby' },
+        { name: 'GRANDPA', from: 'gran' },
+        { name: 'CHIPMUNK', from: 'stinky', rate: 1.45 },
+        { name: 'MONSTER', from: 'kneehi', rate: 0.72 },
+        { name: 'MY OWN VOICE', own: true },
+        { name: 'MY VOICE: SQUEAKY', own: true, rate: 1.4 },
+        { name: 'MY VOICE: DEEP', own: true, rate: 0.72 },
+        { name: 'MY VOICE: ROBOT', own: true, robot: true }
+      ];
+      const MY_OWN_VOICE = MY_VOICES.findIndex(v => v.own);
+      const MY_DEFAULT = { voice: 0, name: 0, body: 0, c2: 4, cuff: 4, heel: 3, glove: 1, pattern: 0, tall: 2, wide: 2, foot: 2, eyes: 0, iris: 0, style: 0, head: null, face: null, bod: null, hc: null, fc: null, bc: null };
       /** Clean up a design from storage or from the other phone. */
       function sanitizeMy(m) {
         const o = {},
@@ -5240,6 +5251,7 @@
         o.eyes = idx(src.eyes, MY_EYES.length, 0);
         o.iris = idx(src.iris, MY_IRIS.length, 0);
         o.style = idx(src.style, MY_STYLES.length, 0);
+        o.voice = idx(src.voice, MY_VOICES.length, 0);
         for (const [k, slot] of [['head', 'head'], ['face', 'face'], ['bod', 'body']])
           o[k] = MY_ITEMS[src[k]] && MY_ITEMS[src[k]].slot === slot ? src[k] : null;
         for (const k of ['hc', 'fc', 'bc']) o[k] = typeof src[k] === 'string' && /^#[0-9a-f]{6}$/i.test(src[k]) ? src[k] : null;
@@ -8557,7 +8569,7 @@
       };
 
       // moves usable in the air
-      // Stocking Gran fights with her walking stick: her punches become stick attacks that reach a little
+      // Stocking Gran fights with his walking stick: his punches become stick attacks that reach a little
       // further but hit slightly softer, so she stays balanced. Same timing as the moves they replace.
       const CANE_MOVES = { punch: 'canejab', cpunch: 'canelow', upper: 'canewhack', slap: 'caneswipe' };
       const CANE_POSES = { canejab: 'punch', canelow: 'cpunch', canewhack: 'upper', caneswipe: 'slap' };
@@ -9717,7 +9729,7 @@
         }
         /** Start the normal attack named mv (see MOVES). */
         attack(mv) {
-          if (this.def.cane && CANE_MOVES[mv]) mv = CANE_MOVES[mv]; // Gran swings her stick instead
+          if (this.def.cane && CANE_MOVES[mv]) mv = CANE_MOVES[mv]; // Gran swings his stick instead
           this.setState('atk');
           this.move = mv;
           if (['punch', 'cpunch', 'jpunch', 'slap', 'canejab', 'canelow', 'caneswipe'].includes(mv)) {
@@ -15892,7 +15904,7 @@
         stinky: ['においで勝負だ!', "Let's settle this by smell!"],
         argyle: ['靴下の道、いざ参る!', 'The way of the sock — here I come!'],
         shinobi: ['影から足元をすくうわ。', "I'll sweep your feet from the shadows."],
-        gran: ['ばあちゃんをなめるでないよ!…いたたた…', 'Never underestimate granny! …ow ow ow…'],
+        gran: ['じいちゃんをなめるでないぞ!…いたたた…', 'Never underestimate grandpa! …ow ow ow…'],
         baby: ['ちっちゃくても、つよいもん!', 'Tiny, but STRONG!'],
         kneehi: ['伸びる相撲、見せてやる!', 'Behold — stretchy sumo!'],
         robo: ['圧縮率、百パーセント!', 'Compression: one hundred percent!'],
@@ -17149,7 +17161,7 @@
         ['NAME', 'name'], ['BODY COLOUR', 'body'], ['PATTERN', 'pattern'], ['PATTERN COLOUR', 'c2'], ['CUFF', 'cuff'],
         ['TOE & HEEL', 'heel'], ['HANDS', 'glove'], ['HEIGHT', 'tall'], ['WIDTH', 'wide'], ['FOOT SIZE', 'foot'],
         ['EYES', 'eyes'], ['EYE COLOUR', 'iris'], ['FIGHT STYLE', 'style'], ['HEAD ITEM', 'head'], ['HEAD ITEM COLOUR', 'hc'],
-        ['FACE ITEM', 'face'], ['FACE ITEM COLOUR', 'fc'], ['BODY ITEM', 'bod'], ['BODY ITEM COLOUR', 'bc']
+        ['FACE ITEM', 'face'], ['FACE ITEM COLOUR', 'fc'], ['BODY ITEM', 'bod'], ['BODY ITEM COLOUR', 'bc'], ['VOICE', 'voice']
       ];
       const MAKER_COLS = 10; // rows per column
       const makerRowRect = i => ({ x: i < MAKER_COLS ? 318 : 640, y: 74 + (i % MAKER_COLS) * 37, w: 304, h: 33 });
@@ -17164,7 +17176,8 @@
         { id: 'new', label: 'NEW SOCK [N]', x: 522, y: 456, w: 144, h: 34 },
         { id: 'delete', label: 'DELETE [X]', x: 674, y: 456, w: 120, h: 34 },
         { id: 'save', label: 'SAVE & WEAR ✓', x: 318, y: 496, w: 476, h: 34 },
-        { id: 'back', label: 'BACK', x: 802, y: 456, w: 138, h: 74 }
+        { id: 'back', label: 'BACK', x: 802, y: 456, w: 138, h: 74 },
+        { id: 'rec', label: '● RECORD MY VOICE', x: 20, y: 496, w: 258, h: 34 }
       ];
       const ITEM_SLOT_OF = { head: 'head', face: 'face', bod: 'body' };
       const ITEM_COLOR_OF = { hc: 'head', fc: 'face', bc: 'bod' };
@@ -17194,6 +17207,7 @@
           case 'eyes': return { vals: n(MY_EYES), show: v => MY_EYES[v] };
           case 'iris': return { vals: n(MY_IRIS), show: v => MY_IRIS_NAMES[v], swatch: v => MY_IRIS[v] || '#2a2a2a' };
           case 'style': return { vals: n(MY_STYLES), show: v => MY_STYLES[v].name };
+          case 'voice': return { vals: n(MY_VOICES), show: v => MY_VOICES[v].name };
           case 'head': case 'face': case 'bod': {
             const own = MY_ITEM_IDS.filter(id => MY_ITEMS[id].slot === ITEM_SLOT_OF[key] && hasMyItem(id));
             return { vals: [null, ...own], show: v => (v ? MY_ITEMS[v].name : 'NONE'), items: own.length };
@@ -17219,6 +17233,12 @@
         const at = Math.max(0, ch.vals.indexOf(M.my[key] === undefined ? null : M.my[key]));
         M.my[key] = ch.vals[wrapIndex(at + dir, ch.vals.length)];
         M.tumble = 22;
+        if (key === 'voice') {
+          // hear it straight away
+          if (MY_VOICES[M.my.voice].own && !OwnVoice.any()) makerNote('NOTHING RECORDED YET — PRESS  ● RECORD MY VOICE');
+          FighterVoice.characterLine(mySockDef(M.my), pick(['win', 'special', 'hurtBig', 'superv']), 0, 0.02);
+          return;
+        }
         SFX.spin();
       }
       function makerRandom() {
@@ -17275,6 +17295,14 @@
         if (id === 'save') return makerSave();
         if (id === 'back') return leaveMaker(-1);
         if (id === 'random') return makerRandom();
+        if (id === 'rec')
+          return openVoiceRec(() => {
+            game.screen = 'maker';
+            if (OwnVoice.any() && !MY_VOICES[M.my.voice].own) {
+              M.my.voice = MY_OWN_VOICE;
+              makerNote('VOICE SET TO  MY OWN VOICE  — SAVE TO KEEP IT');
+            }
+          });
         if (id === 'prev' || id === 'next') {
           const list = myDesigns();
           M.designs = list;
@@ -17340,6 +17368,7 @@
         if (wasPressed('KeyE', 'BracketRight')) makerButton('next');
         if (wasPressed('KeyR')) makerRandom();
         if (wasPressed('KeyN')) makerButton('new');
+        if (wasPressed('KeyV')) return makerButton('rec');
         if (wasPressed('KeyX', 'Delete')) makerButton('delete');
         if (wasPressed('Enter', 'Space')) return makerSave();
         const c0 = game.click;
@@ -17362,32 +17391,17 @@
       function drawMaker() {
         const M = game.maker,
           t = M.t;
-        drawStage(0.55);
-        ctx.fillStyle = 'rgba(14,6,28,0.55)';
-        ctx.fillRect(0, 0, W, H);
+        // you design your sock inside THE DRYER: it tumbles in the drum, with a flip on every change
+        drawStage(0.15, 'dryer');
+        ctx.fillStyle = 'rgba(14,6,28,0.35)';
+        ctx.fillRect(300, 0, W - 300, H);
         drawText('CUSTOM HERO', 160, 34, 32, FONT_COMIC, '#ffe234', INK, 8);
-        drawText('カスタムヒーロー', 160, 60, 12, FONT_JAPANESE, '#fff', INK, 4);
-        // the sock on a little spotlight
+        drawText('乾燥機でカスタムヒーロー', 160, 60, 11, FONT_JAPANESE, '#fff', INK, 4);
         const def = mySockDef(M.my);
-        ctx.fillStyle = 'rgba(255,240,180,0.13)';
-        ctx.beginPath();
-        ctx.moveTo(110, 80);
-        ctx.lineTo(210, 80);
-        ctx.lineTo(270, 420);
-        ctx.lineTo(50, 420);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.beginPath();
-        ctx.ellipse(160, 414, 80, 14, 0, 0, 7);
-        ctx.fill();
-        const p = idleAnim(basePose(), t);
-        if (M.tumble > 0) {
-          p.rot = (M.tumble / 22) * Math.PI * 2;
-          p.eyes = 'happy';
-          p.mouth = 'grin';
-        }
-        drawSock(ctx, def, p, 140, 412, 1, fitScale(def, 1.55) * 0.95, { x: 4, y: 0 });
+        let angle = Math.sin(game.time * 0.04) * 0.18;
+        if (M.tumble > 0) angle += (M.tumble / 22) * Math.PI * 2;
+        if (M.tumble > 0) drawSparkles(150, 262, 105, game.time, 6, '#fff');
+        drawTumblingSock(def, 150, 262 + Math.sin(game.time * 0.06) * 6, 0.92, angle, game.time);
         drawText(def.name, 160, 436, 18, FONT_COMIC, '#fff', INK, 5);
         const total = (Progress.data.mysocks || []).length;
         drawText(
@@ -17432,7 +17446,8 @@
         });
         // style tips
         const st = MY_STYLES[M.my.style];
-        drawText('SPECIAL: ' + st.special + '   ↓+SPECIAL: ' + st.special2, 640 + 152, 74 + 9 * 37 + 17, 7, FONT_PIXEL, '#9fe8ff', INK, 0);
+        drawText('SPECIAL: ' + st.special, 160, 84, 7, FONT_PIXEL, '#9fe8ff', INK, 0);
+        drawText('↓+SPECIAL: ' + st.special2, 160, 96, 7, FONT_PIXEL, '#9fe8ff', INK, 0);
         for (const b of MAKER_BUTTONS) {
           roundRectPath(ctx, b.x, b.y, b.w, b.h, 9);
           ctx.fillStyle = b.id === 'save' ? '#2f9e44' : b.id === 'back' ? '#3a2a55' : b.id === 'delete' ? '#8a1f2f' : '#2a1d48';
@@ -17440,11 +17455,356 @@
           ctx.strokeStyle = INK;
           ctx.lineWidth = 3;
           ctx.stroke();
-          drawText(b.label, b.x + b.w / 2, b.y + b.h / 2 + 1, b.id === 'save' ? 13 : 9, FONT_PIXEL, '#fff', INK, 0);
+          drawText(b.id === 'rec' && !IS_TOUCH ? b.label + ' [V]' : b.label, b.x + b.w / 2, b.y + b.h / 2 + 1, b.id === 'save' ? 13 : 9, FONT_PIXEL, b.id === 'rec' ? '#ff8fa3' : '#fff', INK, 0);
         }
         const note = M.note && game.time < M.note.until ? M.note.text : '';
         if (note) drawText(note, 556, 444, 9, FONT_PIXEL, '#ffb03a', INK, 4);
-        else if (t % 80 < 60) drawText(IS_TOUCH ? 'TAP ◀ ▶ TO CHANGE' : 'W/S row • A/D change • Q/E designs • ENTER save', 556, 444, 8, FONT_PIXEL, '#ccc', INK, 0);
+        else if (t % 80 < 60) drawText(IS_TOUCH ? 'TAP ◀ ▶ TO CHANGE' : 'W/S row • A/D change • Q/E designs • V voice • ENTER save', 556, 444, 8, FONT_PIXEL, '#ccc', INK, 0);
+      }
+
+
+      /* ---------------- MY OWN VOICE: the player records their own shouts for their custom socks ----------------
+       * The recordings stay on this device (IndexedDB). Online, the other phone hears a stand-in voice instead. */
+      const OwnVoice = {
+        SLOTS: [
+          ['attack', 'ATTACK!', 'Shout like you are throwing a punch:  "HI-YAH!"'],
+          ['hurt', 'OUCH!', 'You just got bonked:  "OW!"  or  "OOF!"'],
+          ['super', 'SUPER MOVE!', 'Yell your super move:  "SOCK... ATTACK!!"'],
+          ['ko', 'KNOCKED OUT', 'Fall over dramatically:  "NOOOOOO...!"'],
+          ['win', 'VICTORY!', 'Your winning line:  "TOO EASY!"']
+        ],
+        buffers: {}, // slot -> { buffer, offset } ready to play
+        started: false,
+        rec: null, // the recording happening now
+        error: '',
+        MAX_SECONDS: 3,
+
+        db() {
+          return new Promise((ok, fail) => {
+            try {
+              const r = indexedDB.open('sockfighters-voice', 1);
+              r.onupgradeneeded = () => r.result.createObjectStore('clips');
+              r.onsuccess = () => ok(r.result);
+              r.onerror = () => fail(r.error);
+            } catch (e) {
+              fail(e);
+            }
+          });
+        },
+        async put(slot, value) {
+          const d = await this.db();
+          await new Promise((ok, fail) => {
+            const tx = d.transaction('clips', 'readwrite');
+            if (value) tx.objectStore('clips').put(value, slot);
+            else tx.objectStore('clips').delete(slot);
+            tx.oncomplete = ok;
+            tx.onerror = () => fail(tx.error);
+          });
+        },
+        /** Load the saved recordings (once the sound is switched on). */
+        load() {
+          if (this.started || !Sound.context || !window.indexedDB) return;
+          this.started = true;
+          this.db()
+            .then(
+              d =>
+                new Promise(ok => {
+                  const tx = d.transaction('clips', 'readonly');
+                  const store = tx.objectStore('clips');
+                  const out = {};
+                  let left = this.SLOTS.length;
+                  for (const [slot] of this.SLOTS) {
+                    const g = store.get(slot);
+                    g.onsuccess = () => {
+                      if (g.result) out[slot] = g.result;
+                      if (--left === 0) ok(out);
+                    };
+                    g.onerror = () => {
+                      if (--left === 0) ok(out);
+                    };
+                  }
+                })
+            )
+            .then(out => {
+              for (const slot in out) this.decode(slot, out[slot].data).catch(() => {});
+            })
+            .catch(() => {});
+        },
+        /** Turn recorded bytes into a trimmed, evened-out clip. */
+        async decode(slot, data) {
+          const ac = Sound.context;
+          const buf = await new Promise((ok, fail) => {
+            const p = ac.decodeAudioData(data.slice(0), ok, fail);
+            if (p && p.catch) p.catch(fail);
+          });
+          const s = buf.getChannelData(0);
+          let peak = 0;
+          for (let i = 0; i < s.length; i++) peak = Math.max(peak, Math.abs(s[i]));
+          if (peak < 0.01) throw new Error('silent');
+          const th = peak * 0.08;
+          let a = 0,
+            b = s.length - 1;
+          while (a < b && Math.abs(s[a]) < th) a++;
+          while (b > a && Math.abs(s[b]) < th) b--;
+          a = Math.max(0, a - Math.floor(buf.sampleRate * 0.03));
+          b = Math.min(s.length, b + Math.floor(buf.sampleRate * 0.12), a + buf.sampleRate * this.MAX_SECONDS);
+          const out = ac.createBuffer(1, Math.max(1, b - a), buf.sampleRate);
+          const o = out.getChannelData(0);
+          const gain = 0.9 / peak,
+            fade = Math.min(o.length >> 2, Math.floor(buf.sampleRate * 0.02));
+          for (let i = 0; i < o.length; i++) {
+            let v = s[a + i] * gain;
+            if (i < fade) v *= i / fade;
+            if (i > o.length - fade) v *= (o.length - i) / fade;
+            o[i] = v;
+          }
+          this.buffers[slot] = { buffer: out, offset: 0 };
+          return true;
+        },
+        has(slot) {
+          return !!this.buffers[slot];
+        },
+        any() {
+          return this.SLOTS.some(([slot]) => this.buffers[slot]);
+        },
+        /** Start recording one slot (stops by itself after a few seconds). */
+        async start(slot) {
+          this.error = '';
+          if (this.rec) return this.stop();
+          Sound.init && Sound.init();
+          const ac = Sound.context;
+          if (!ac || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+            this.error = "SORRY, THIS BROWSER CAN'T RECORD SOUND";
+            return;
+          }
+          const R = { slot, at: game.time, level: 0, stream: null, mr: null, chunks: [], analyser: null };
+          this.rec = R;
+          try {
+            R.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true } });
+          } catch (e) {
+            this.rec = null;
+            this.error = 'MICROPHONE BLOCKED — ALLOW IT IN YOUR BROWSER, THEN TRY AGAIN';
+            return;
+          }
+          if (this.rec !== R) return R.stream.getTracks().forEach(t => t.stop());
+          try {
+            const src = ac.createMediaStreamSource(R.stream);
+            R.analyser = ac.createAnalyser();
+            R.analyser.fftSize = 512;
+            src.connect(R.analyser);
+          } catch (e) {}
+          R.mr = new MediaRecorder(R.stream);
+          R.mr.ondataavailable = e => e.data && e.data.size && R.chunks.push(e.data);
+          R.mr.onstop = () => this.finish(R);
+          R.mr.start();
+          R.at = game.time;
+          R.timer = setTimeout(() => this.stop(), this.MAX_SECONDS * 1000);
+        },
+        stop() {
+          const R = this.rec;
+          if (!R) return;
+          clearTimeout(R.timer);
+          if (R.mr && R.mr.state !== 'inactive') R.mr.stop();
+          else {
+            this.rec = null;
+            if (R.stream) R.stream.getTracks().forEach(t => t.stop());
+          }
+        },
+        async finish(R) {
+          this.rec = null;
+          R.stream.getTracks().forEach(t => t.stop());
+          try {
+            const blob = new Blob(R.chunks, { type: (R.mr && R.mr.mimeType) || 'audio/webm' });
+            const data = await blob.arrayBuffer();
+            await this.decode(R.slot, data);
+            await this.put(R.slot, { data, type: blob.type });
+            SFX.confirm();
+            this.play(R.slot);
+          } catch (e) {
+            this.error = e && e.message === 'silent' ? "I COULDN'T HEAR ANYTHING — TRY AGAIN, LOUDER!" : 'THAT RECORDING DID NOT WORK — TRY AGAIN';
+          }
+        },
+        /** How loud the microphone is right now (0..1), for the meter. */
+        level() {
+          const R = this.rec;
+          if (!R || !R.analyser) return 0;
+          const a = new Uint8Array(R.analyser.fftSize);
+          R.analyser.getByteTimeDomainData(a);
+          let m = 0;
+          for (const v of a) m = Math.max(m, Math.abs(v - 128));
+          R.level = Math.max(m / 128, R.level * 0.85);
+          return R.level;
+        },
+        play(slot, opt) {
+          const ac = Sound.context,
+            clip = this.buffers[slot];
+          if (!ac || !clip) return;
+          const source = ac.createBufferSource();
+          source.buffer = clip.buffer;
+          source.connect(voiceFx(ac, source, opt || {}, clip.buffer.duration));
+          source.start();
+        },
+        remove(slot) {
+          delete this.buffers[slot];
+          this.put(slot, null).catch(() => {});
+        }
+      };
+
+      /** Route a voice clip through its effect (robot buzz, or none) and a gain to the speakers. Returns the input node. */
+      function voiceFx(ac, source, opt, seconds, panValue, volume) {
+        if (opt.rate) source.playbackRate.value = opt.rate;
+        const gain = ac.createGain();
+        gain.gain.value = volume || 0.9;
+        let input = gain;
+        if (opt.robot) {
+          const ring = ac.createGain();
+          ring.gain.value = 0;
+          const osc = ac.createOscillator();
+          osc.type = 'square';
+          osc.frequency.value = 70;
+          const depth = ac.createGain();
+          depth.gain.value = 0.9;
+          osc.connect(depth);
+          depth.connect(ring.gain);
+          const dry = ac.createGain();
+          dry.gain.value = 0.35;
+          ring.connect(gain);
+          dry.connect(gain);
+          const split = ac.createGain();
+          split.connect(ring);
+          split.connect(dry);
+          osc.start();
+          osc.stop(ac.currentTime + seconds / (opt.rate || 1) + 1.5);
+          input = split;
+        }
+        let out = gain;
+        if (panValue !== undefined && ac.createStereoPanner) {
+          const pan = ac.createStereoPanner();
+          pan.pan.value = panValue;
+          gain.connect(pan);
+          out = pan;
+        }
+        out.connect(Sound.sfxBus || ac.destination);
+        return input;
+      }
+
+      // which recorded shout each fight word uses
+      const OWN_SLOT_OF = { light: 'attack', heavy: 'attack', special: 'attack', throwv: 'attack', hup: 'attack', superv: 'super',
+        hurt: 'hurt', hurtBig: 'hurt', block: 'hurt', dizzy: 'hurt', ko: 'ko', win: 'win', laugh: 'win', catchphrase: 'win' };
+
+      /** The clip a custom sock says for a word: its chosen voice, or the player's own recording. */
+      function myVoiceClip(def, word, side) {
+        let v = MY_VOICES[(def.my && def.my.voice) | 0] || MY_VOICES[0];
+        if (v.own) {
+          const own = OwnVoice.buffers[OWN_SLOT_OF[word]];
+          if (own && isMine(side)) return { clip: own, rate: v.rate || 1, robot: !!v.robot };
+          v = MY_VOICES[0]; // nothing recorded for this one (or it's the other phone's sock): a stand-in voice
+        }
+        const w = word === 'catchphrase' ? 'win' : word === 'superv' ? 'special' : word;
+        const takes = FighterClips.get(v.from, w) || FighterClips.get(v.from, 'light');
+        return takes ? { clip: pick(takes), rate: v.rate || 1, robot: false } : null;
+      }
+
+      /* the RECORD MY VOICE screen */
+      const vrRow = i => ({ x: 70, y: 104 + i * 64, w: 820, h: 56 });
+      const vrRec = i => ({ x: 560, y: vrRow(i).y + 8, w: 150, h: 40 });
+      const vrPlay = i => ({ x: 720, y: vrRow(i).y + 8, w: 150, h: 40 });
+      function openVoiceRec(onExit) {
+        game.voicerec = { row: 0, t: 0, onExit };
+        game.screen = 'voicerec';
+        Sound.init && Sound.init();
+        OwnVoice.load();
+        OwnVoice.error = '';
+        SFX.select();
+      }
+      function updateVoiceRec() {
+        const V = game.voicerec;
+        V.t++;
+        if (backWasPressed()) {
+          OwnVoice.stop();
+          game.voicerec = null;
+          return V.onExit ? V.onExit() : toModeMenu();
+        }
+        const n = OwnVoice.SLOTS.length;
+        if (wasPressed('KeyW', 'ArrowUp')) {
+          V.row = wrapIndex(V.row - 1, n);
+          SFX.select();
+        }
+        if (wasPressed('KeyS', 'ArrowDown')) {
+          V.row = wrapIndex(V.row + 1, n);
+          SFX.select();
+        }
+        if (wasPressed('KeyR', 'Enter')) OwnVoice.start(OwnVoice.SLOTS[V.row][0]);
+        if (wasPressed('KeyP', 'Space')) OwnVoice.play(OwnVoice.SLOTS[V.row][0]);
+        const c0 = game.click;
+        if (c0) {
+          game.click = null;
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          for (let i = 0; i < n; i++) {
+            const slot = OwnVoice.SLOTS[i][0];
+            if (inside(vrRec(i))) {
+              V.row = i;
+              return OwnVoice.start(slot);
+            }
+            if (inside(vrPlay(i))) {
+              V.row = i;
+              return OwnVoice.play(slot);
+            }
+            if (inside(vrRow(i))) {
+              V.row = i;
+              SFX.select();
+            }
+          }
+        }
+      }
+      function drawVoiceRec() {
+        const V = game.voicerec,
+          t = V.t,
+          R = OwnVoice.rec;
+        drawStage(0.55);
+        ctx.fillStyle = 'rgba(14,6,28,0.6)';
+        ctx.fillRect(0, 0, W, H);
+        drawBackButton('BACK');
+        drawText('RECORD MY VOICE', W / 2, 34, 30, FONT_COMIC, '#ffe234', INK, 8);
+        drawText('Your custom socks shout in YOUR voice!  Then pick  MY OWN VOICE  in the VOICE row.', W / 2, 72, 8, FONT_PIXEL, '#9fe8ff', INK, 0);
+        drawText('(Your recordings stay on this device.  Hold the phone close and be LOUD!)', W / 2, 88, 7, FONT_PIXEL, '#bdb3d9', INK, 0);
+        OwnVoice.SLOTS.forEach(([slot, label, hint], i) => {
+          const r = vrRow(i),
+            on = i === V.row,
+            live = R && R.slot === slot;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
+          ctx.fillStyle = live ? 'rgba(200,30,60,0.45)' : on ? 'rgba(255,79,163,0.3)' : 'rgba(20,10,36,0.85)';
+          ctx.fill();
+          ctx.strokeStyle = live ? '#ff3b5c' : on ? '#ff4fa3' : '#4b3d6e';
+          ctx.lineWidth = on || live ? 3 : 2;
+          ctx.stroke();
+          drawText(label, r.x + 16, r.y + 20, 15, FONT_COMIC, ['#ff8fc8', '#7dff9a', '#ffd23f', '#9fe8ff', '#ffb03a'][i], INK, 4, 'left');
+          if (live) {
+            const secs = Math.max(0, OwnVoice.MAX_SECONDS - (game.time - R.at) / 60);
+            const lv = OwnVoice.level();
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(r.x + 16, r.y + 34, 280, 12);
+            ctx.fillStyle = lv > 0.85 ? '#ff3b5c' : '#7dff9a';
+            ctx.fillRect(r.x + 16, r.y + 34, 280 * Math.min(1, lv * 1.2), 12);
+            drawText(R.mr ? 'RECORDING... ' + secs.toFixed(1) + 's' : 'ALLOW THE MIC...', r.x + 310, r.y + 40, 8, FONT_PIXEL, '#fff', INK, 0, 'left');
+          } else drawText(hint, r.x + 16, r.y + 41, 8, FONT_PIXEL, '#fff', INK, 0, 'left');
+          if (OwnVoice.has(slot) && !live) drawText('✓ RECORDED', r.x + 400, r.y + 20, 8, FONT_PIXEL, '#7dff9a', INK, 0, 'left');
+          for (const [b, txt, col] of [
+            [vrRec(i), live ? '■ STOP' : OwnVoice.has(slot) ? '● AGAIN' : '● RECORD', '#c81e3c'],
+            [vrPlay(i), '▶ PLAY', OwnVoice.has(slot) ? '#2f9e44' : '#3a3a4a']
+          ]) {
+            roundRectPath(ctx, b.x, b.y, b.w, b.h, 9);
+            ctx.fillStyle = col;
+            ctx.fill();
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            drawText(txt, b.x + b.w / 2, b.y + b.h / 2 + 1, 10, FONT_PIXEL, '#fff', INK, 0);
+          }
+        });
+        if (OwnVoice.error) drawText(OwnVoice.error, W / 2, 438, 9, FONT_PIXEL, '#ffb03a', INK, 4);
+        else if (t % 80 < 60)
+          drawText(IS_TOUCH ? 'TAP RECORD, SHOUT, DONE!' : 'W/S choose • R or ENTER record • P or SPACE play • ESC back', W / 2, 438, 8, FONT_PIXEL, '#ccc', INK, 0);
       }
 
       /* ---------------- SOCK MAKER (was MY BAG): every skin and accessory in the game, as icons ---------------- */
@@ -17555,7 +17915,18 @@
       const bagTabRect = i => ({ x: 150 + i * 226, y: 76, w: 214, h: 34 });
       const BAG_PREV = { x: 8, y: 236, w: 38, h: 60 },
         BAG_NEXT = { x: 914, y: 236, w: 38, h: 60 },
-        BAG_MAKER = { x: 724, y: 474, w: 220, h: 50 };
+        BAG_MAKER = { x: 724, y: 474, w: 220, h: 50 },
+        BAG_DRYER = { x: 560, y: 474, w: 156, h: 50 };
+      /** The hero the Sock Maker is showing (null on the trophy tab). */
+      const bagHero = B => (bagByHero(B) ? bagHeroes()[clamp(B.hero || 0, 0, bagHeroes().length - 1)] : null);
+      /** Open THE DRYER for that hero (MY SOCK: the Custom Hero designer), then come back here. */
+      function bagOpenDryer(B) {
+        const hero = bagHero(B);
+        if (!hero) return;
+        if (hero.mysock) return bagOpenMaker(null);
+        const keep = Object.assign({}, B);
+        openDryer(hero, Progress.data.looks[hero.id] || 0, () => openBag(keep));
+      }
       function openBag(from) {
         game.bag = from && typeof from === 'object' ? Object.assign(from, { t: 0 }) : { tab: 0, sel: 0, t: 0, hero: 0, from: from || 'mode' };
         game.screen = 'bag';
@@ -17594,6 +17965,7 @@
         if (wasPressed('KeyW', 'ArrowUp')) move(-BAG_COLS);
         if (wasPressed('KeyS', 'ArrowDown')) move(BAG_COLS);
         if (wasPressed('KeyM')) return openMaker(() => openBag());
+        if (wasPressed('KeyC') && bagHero(B)) return bagOpenDryer(B);
         const c0 = game.click;
         if (c0) {
           game.click = null;
@@ -17609,6 +17981,7 @@
           if (inside(BAG_PREV) && page > 0) return move(-bagPer(B));
           if (inside(BAG_NEXT)) return move(Math.min(bagPer(B), items.length - 1 - B.sel) > 0 ? bagPer(B) : 0);
           if (inside(BAG_MAKER)) return bagOpenMaker(null);
+          if (inside(BAG_DRYER) && bagHero(B)) return bagOpenDryer(B);
           if (bagByHero(B))
             for (let i = 0; i < bagHeroes().length; i++)
               if (inside(bagChip(i))) {
@@ -17794,7 +18167,7 @@
           drawText(it.name, 40, 452, 18, FONT_COMIC, it.have ? '#ffe234' : '#aaa', INK, 5, 'left');
           const whose = it.owner.mysock ? 'FOR MY SOCK (' + (it.slot || '').toUpperCase() + ' ITEM)' : 'BELONGS TO ' + it.owner.name;
           drawText(whose, 40, 478, 8, FONT_PIXEL, '#9fe8ff', INK, 0, 'left');
-          drawText(it.have ? (it.owner.mysock ? '✓ YOU HAVE IT — PUT IT ON IN CUSTOM HERO' : '✓ YOU HAVE IT — WEAR IT IN THE DRYER (CHARACTER SELECT, C)') : '🔒 ' + it.hint, 40, 500, 7, FONT_PIXEL, it.have ? '#7dff9a' : '#ffb03a', INK, 0, 'left');
+          drawText(it.have ? (it.owner.mysock ? '✓ YOU HAVE IT — PUT IT ON IN CUSTOM HERO' : '✓ YOU HAVE IT — WEAR IT IN THE DRYER') : '🔒 ' + it.hint, 40, 500, 7, FONT_PIXEL, it.have ? '#7dff9a' : '#ffb03a', INK, 0, 'left');
         }
         roundRectPath(ctx, BAG_MAKER.x, BAG_MAKER.y, BAG_MAKER.w, BAG_MAKER.h, 12);
         ctx.fillStyle = '#ff4fa3';
@@ -17803,6 +18176,17 @@
         ctx.lineWidth = 4;
         ctx.stroke();
         drawText('CUSTOM HERO ' + (IS_TOUCH ? '' : '[M]'), BAG_MAKER.x + BAG_MAKER.w / 2, BAG_MAKER.y + BAG_MAKER.h / 2 + 1, 11, FONT_PIXEL, '#fff', INK, 0);
+        const dh = bagHero(B);
+        if (dh && !dh.mysock) {
+          roundRectPath(ctx, BAG_DRYER.x, BAG_DRYER.y, BAG_DRYER.w, BAG_DRYER.h, 12);
+          ctx.fillStyle = '#ff9d2e';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          drawText('THE DRYER' + (IS_TOUCH ? '' : ' [C]'), BAG_DRYER.x + BAG_DRYER.w / 2, BAG_DRYER.y + 18, 10, FONT_PIXEL, '#fff', INK, 0);
+          drawText('DRESS ' + (dh.name.length > 12 ? 'THIS HERO' : dh.name), BAG_DRYER.x + BAG_DRYER.w / 2, BAG_DRYER.y + 36, 6, FONT_PIXEL, INK, null, 0);
+        }
         if (bagByHero(B)) drawBagHoverTag(B);
       }
 
@@ -20087,13 +20471,11 @@
         { label: 'PROLOGUE', sub: 'LAUNDRY DAY', on: true, go: () => startPrologue() },
         {
           label: storyAllCleared() ? 'START THE STORY AGAIN' : 'CLEAR STORY PROGRESS',
-          // a second tap confirms, so nobody resets their story by accident
-          sub: game.adv.hub && game.adv.hub.restartAt && game.adv.hub.t - game.adv.hub.restartAt < 180 ? 'TAP AGAIN TO LOCK EVERY CHAPTER AND START OVER' : 'LOCKS THE CHAPTERS AGAIN • SKINS & TROPHIES STAY',
+          sub: 'LOCKS THE CHAPTERS AGAIN • SKINS & TROPHIES STAY',
           on: true,
+          // an ARE YOU SURE? box asks first, so nobody resets their story by accident
           go: () => {
-            const Hb = game.adv.hub;
-            if (Hb.restartAt && Hb.t - Hb.restartAt < 180) restartStory();
-            else Hb.restartAt = Hb.t;
+            game.adv.hub.confirm = { yes: false, t: 0 };
           }
         }
       ];
@@ -20220,6 +20602,7 @@
           game.click = null;
           return;
         }
+        if (Hb.confirm) return updateClearConfirm(Hb);
         const items = HUB_ITEMS();
         if (backWasPressed()) return toModeMenu();
         const nCh = ADV_CHAPTERS.length;
@@ -20274,6 +20657,63 @@
           SFX.confirm();
           it.go();
         }
+      }
+
+      const CONFIRM_YES = { x: 300, y: 318, w: 160, h: 54 },
+        CONFIRM_NO = { x: 500, y: 318, w: 160, h: 54 };
+      function updateClearConfirm(Hb) {
+        const C = Hb.confirm;
+        C.t++;
+        const no = () => {
+          Hb.confirm = null;
+          SFX.select();
+        };
+        if (wasPressed('Escape', 'Backspace', 'KeyN')) return no();
+        if (wasPressed('KeyA', 'ArrowLeft', 'KeyD', 'ArrowRight')) {
+          C.yes = !C.yes;
+          SFX.select();
+        }
+        let yes = wasPressed('KeyY') || (wasPressed(...CONFIRM_KEYS) && C.t > 6 ? (C.yes ? true : (no(), false)) : false);
+        const c0 = game.click;
+        if (c0) {
+          game.click = null;
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          if (inside(CONFIRM_NO)) return no();
+          if (inside(CONFIRM_YES)) yes = true;
+        }
+        if (yes && Hb.confirm) {
+          Hb.confirm = null;
+          SFX.confirm();
+          restartStory();
+        }
+      }
+      function drawClearConfirm(Hb) {
+        const C = Hb.confirm;
+        ctx.fillStyle = 'rgba(5,2,12,0.72)';
+        ctx.fillRect(0, 0, W, H);
+        roundRectPath(ctx, 230, 150, 500, 250, 18);
+        ctx.fillStyle = '#1c1030';
+        ctx.fill();
+        ctx.strokeStyle = '#ff4f6a';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        drawText('⚠ ARE YOU SURE? ⚠', W / 2, 192, 28, FONT_COMIC, '#ffe234', INK, 7);
+        drawText(storyAllCleared() ? 'This starts the story again from the very beginning.' : 'This clears your story progress.', W / 2, 232, 9, FONT_PIXEL, '#fff', INK, 0);
+        drawText('Every chapter gets LOCKED again (back to the Prologue).', W / 2, 254, 8, FONT_PIXEL, '#ffb3be', INK, 0);
+        drawText('Your skins, trophies and Skill Tree stay.', W / 2, 276, 8, FONT_PIXEL, '#9fe8ff', INK, 0);
+        for (const [r, label, col, on] of [
+          [CONFIRM_YES, 'YES', '#c81e3c', C.yes],
+          [CONFIRM_NO, 'NO', '#2f9e44', !C.yes]
+        ]) {
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 12);
+          ctx.fillStyle = col;
+          ctx.fill();
+          ctx.strokeStyle = on ? '#fff' : INK;
+          ctx.lineWidth = on ? 5 : 3;
+          ctx.stroke();
+          drawText(label, r.x + r.w / 2, r.y + r.h / 2 + 2, 22, FONT_COMIC, '#fff', INK, 5);
+        }
+        if (!IS_TOUCH) drawText('Y = yes  •  N or ESC = no', W / 2, 388, 7, FONT_PIXEL, '#aaa', INK, 0);
       }
 
       /** The Queen's throne room: one grand arched window over the Rinse Sea (the Demon's smoke far away), velvet
@@ -20808,6 +21248,7 @@
             4
           );
         drawBackButton('MENU');
+        if (Hb.confirm) drawClearConfirm(Hb);
       }
 
       /* ---- story chapters: the original fighting game, with story scenes in between ---- */
@@ -20959,7 +21400,7 @@
         { who: 'gran', text: 'I took the stairs.' },
         { who: 'hero', text: 'There are no stairs to another dimension!' },
         { who: 'gran', text: "There are if you're old enough, dear. *CRACK* ...Ooh. That was my back. Or the stairs. Hard to tell." },
-        { who: 'fishnet', text: "Ma'am, with respect... how old ARE you?" },
+        { who: 'fishnet', text: "Sir, with respect... how old ARE you?" },
         { who: 'gran', text: 'Old enough to have knitted the very first sock. Young enough to kick your fishnets into next Tuesday.' },
         { who: 'steel', text: 'HALT! SAFETY INSPECTION! NOBODY enters the Fortress without a HARD HAT!' },
         { who: 'gran', text: "Young man, I've survived ninety-five winters without a hard hat." },
@@ -21007,7 +21448,7 @@
         { who: 'iron', text: 'I am IRON SHOGUN. I press. I flatten. I remove all WRINKLES.' },
         { who: 'iron', text: 'Your wrinkles are... unacceptable. Prepare to be CRISP.' },
         { who: 'gran', text: 'Young man, I have been wrinkly since before you were a CAST-IRON TODDLER.' },
-        { who: 'iron', text: '...The grandmother. Even I fear... the grandmother.' },
+        { who: 'iron', text: '...The grandfather. Even I fear... the grandfather.' },
         { who: 'gran', text: "Go on then, {HERO}. Iron him out. I'll hold your snacks." },
         { who: 'hero', text: "I DIDN'T BRING SNACKS!" },
         { who: 'gran', text: "That's why I'm holding them, dear." }
@@ -21437,7 +21878,7 @@
       ];
       const CH13_MID = [
         { who: 'puppet', text: '*pinned under a curtain* The show... must... go on...' },
-        { who: 'narr', text: '*Tap. Tap-tap. Tappity-tap. On stage, Stocking Gran is tap-dancing. With her walking stick. VERY fast.*' },
+        { who: 'narr', text: '*Tap. Tap-tap. Tappity-tap. On stage, Stocking Gran is tap-dancing. With his walking stick. VERY fast.*' },
         { who: 'gran', text: 'In my day, we tap-danced to SCHOOL! Uphill! Both ways! In the SNOW!' },
         { who: 'hero', text: 'Gran! You can tap-dance?!' },
         { who: 'gran', text: "Sixty years champion, dearie! Mr. Tappington says if I win tonight, I get a NEW HIP! A shiny one!" },
@@ -23490,7 +23931,7 @@
         ['BLEACH BARON', 'as Lemon-Scented'],
         ['STEEL TOE', 'as Safety First'],
         ['KING KNEE-SOCK', 'as the Only One with Knees'],
-        ['IRON SHOGUN', 'as Afraid of the Grandmother'],
+        ['IRON SHOGUN', 'as Afraid of the Grandfather'],
         ['A GYM SOCK', 'as a Lifestyle'],
         ['MISMATCH', 'as One Hundred Heels, Zero Pairs'],
         ['THE DRYER DEMON', 'as a Big Softie'],
@@ -24548,6 +24989,7 @@
         advCredits: { update: updateAdvCredits, draw: drawAdvCredits },
         queenRobe: { update: updateQueenRobe, draw: drawQueenRobe },
         maker: { update: updateMaker, draw: drawMaker },
+        voicerec: { update: updateVoiceRec, draw: drawVoiceRec },
         bag: { update: updateBag, draw: drawBag },
         skills: { update: updateSkills, draw: drawSkills },
         bounty: { update: updateBounty, draw: drawBounty },
@@ -24743,6 +25185,10 @@
         drawSockPortrait,
         drawHosieryPortrait,
         openMaker,
+        openVoiceRec,
+        OwnVoice,
+        MY_VOICES,
+        myVoiceClip,
         openBag,
         mySockDef,
         MY_ITEMS,
