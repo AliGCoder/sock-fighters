@@ -8,7 +8,7 @@ QWEN=../announcer/.venv-qwen/Scripts/python.exe
 VOX=../announcer/.venv-vox/Scripts/python.exe
 echo "== 1. Gran's fight voice (98 years old)"
 cd ../announcer
-$QWEN qwen_fighters.py gran --redesign
+$QWEN qwen_fighters.py gran  # her voice: refs/fighter_gran.wav (pick a new one with --redesign: 10 designs, the oldest-sounding wins)
 $QWEN qwen_catchphrases.py gran
 cd ../story
 echo "== 2. story lines"

@@ -42,7 +42,10 @@ CAST = {
                   superv=['ばあちゃんをなめるでないよ!'], throwv=['よいしょお!'], hurt=['あいたたた!', 'こ、腰が…!', 'おおっと!'],
                   hurtBig=['あいたたたた!', 'ひいい、腰がぁ!'], ko=['あいたたた…腰が…もうダメじゃ…'], hup=['よっこらしょ!'],
                   block=['ううっ…'], laugh=['ひぇっひぇっひぇ!'], win=['まだまだ若いもんには負けんよ…いたたた…'],
-                  dizzy=['あ〜れ〜…腰が…']), 'old'),
+                  dizzy=['あ〜れ〜…腰が…'],
+                  # her nagging, shouted mid-fight (same order as GRAN_NAGS in index.html)
+                  nag=['背筋を伸ばしなさい!', 'まったく、最近の若い靴下は!', 'ちゃんとご飯食べてるのかい?!',
+                       'セーターを着なさいって言ってるでしょ!', '靴下は二足そろえて洗いなさい!']), 'old'),
     'baby': (SMALL, 'A Japanese toddler girl, very squeaky, cute and bratty, babyish speech.',
              dict(superv=['おこったもん!'], laugh=['きゃはは!'], win=['やったー!']), None),
     'kneehi': (MALE, 'A huge Japanese sumo wrestler, booming deep voice, powerful and jolly.',
@@ -168,6 +171,35 @@ def lines_for(cid):
     return words
 
 
+# Characters who must sound VERY old: their own design note (instead of "close-mic, punchy battle cries"),
+# and their voice is picked by how old it sounds (see age_cues).
+OLDEST = {
+    'gran': ' Speaking style: a NAGGING old granny of 98, always scolding and complaining, fussy, tutting and '
+            'whiny, a slightly nasal, sharp, bossy telling-off tone, croaky and crackly, her voice quavering and '
+            'cracking with age, cranky little shouts as she fights. Natural recording from a little distance in a '
+            'small quiet room, not close to the microphone, no echo.',
+}
+
+
+def age_cues(y):
+    """How old a voice sounds, roughly: its median pitch (Hz, lower = older for this voice) and its jitter
+    (the cycle-to-cycle pitch shake, higher = older), measured with Praat."""
+    try:
+        import parselmouth
+        from parselmouth.praat import call
+        snd = parselmouth.Sound(np.asarray(y, dtype=np.float64), sampling_frequency=SR)
+        pitch = snd.to_pitch(pitch_floor=75, pitch_ceiling=700)
+        f0 = call(pitch, 'Get quantile', 0, 0, 0.5, 'Hertz')
+        pp = call(snd, 'To PointProcess (periodic, cc)', 75, 700)
+        jitter = call(pp, 'Get jitter (local)', 0, 0, 0.0001, 0.02, 1.3)
+        f0 = f0 if f0 == f0 else 999.0
+        jitter = jitter if jitter == jitter else 0.0
+        return f0, jitter
+    except Exception as e:
+        print('  (age cues failed: %s)' % e, flush=True)
+        return 999.0, 0.0
+
+
 def ref_line(cid):
     w = lines_for(cid)
     return w['light'][0] + w['heavy'][0] + w['special'][0] + w['win'][0]
@@ -257,16 +289,26 @@ def main():
     for n, cid in enumerate(ids):
         if os.path.exists(os.path.join(HERE, 'refs', f'fighter_{cid}.wav')) and '--redesign' not in sys.argv:
             continue  # keep the voice that was already designed (and auditioned)
-        # several takes; keep the driest one (the model sometimes "records" a voice in a big echoey room)
-        best, best_tail = None, 9.0
-        for take in range(5):
-            torch.manual_seed(7000 + 100 * take + n)
+        # several takes; keep the driest one (the model sometimes "records" a voice in a big echoey room).
+        # OLDEST (Stocking Gran): more takes, and keep the lowest, shakiest voice of the dry ones.
+        oldest = cid in OLDEST
+        best, best_tail, best_score = None, 9.0, 9e9
+        for take in range(10 if oldest else 5):
+            torch.manual_seed(7000 + 100 * take + n + (500 if oldest else 0))
             wavs, _ = design.generate_voice_design(
                 text=ref_line(cid), language='Japanese',
-                instruct=CAST[cid][1] + ' A fighting game character shouting battle cries: short, punchy and full of energy. '
-                                        'Close-mic studio recording, completely dry, no reverb or echo.')
+                instruct=CAST[cid][1] + (OLDEST[cid] if oldest else
+                                         ' A fighting game character shouting battle cries: short, punchy and full of energy. '
+                                         'Close-mic studio recording, completely dry, no reverb or echo.'))
             y = np.asarray(wavs[0], dtype=np.float32)
             tail = echo_tail(y)
+            if oldest:
+                f0, jitter = age_cues(y)
+                score = f0 - 600 * jitter + (1000 if tail > 0.25 else 0)  # low and shaky wins; echoey loses
+                print(f'  {cid} take {take + 1}: pitch {f0:.0f} Hz, shake {jitter * 100:.1f}%, echo tail {tail * 1000:.0f} ms', flush=True)
+                if score < best_score:
+                    best, best_tail, best_score = y, tail, score
+                continue
             print(f'  {cid} take {take + 1}: echo tail {tail * 1000:.0f} ms', flush=True)
             if tail < best_tail:
                 best, best_tail = y, tail

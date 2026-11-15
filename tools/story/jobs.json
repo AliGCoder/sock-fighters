@@ -24,7 +24,7 @@
   "key": "1872d154",
   "voice": "gran",
   "say": "わしの若い頃はな、靴下はちゃんとした消え方をしたもんじゃ。ラジエーターの裏にな!…あいたた、腰が。",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "story"
  },
  {
@@ -206,7 +206,7 @@
   "key": "beb2fd60",
   "voice": "gran",
   "say": "あっちがつまずかせたんだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -353,7 +353,7 @@
   "key": "6caedff0",
   "voice": "gran",
   "say": "ベビー・ブーティー姫だよ。ティアラをつけて。くるくる回るガラガラを持って。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -486,7 +486,7 @@
   "key": "38b6b553",
   "voice": "gran",
   "say": "去年のだって言ってた。…そこは催眠術のせいじゃない。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -668,7 +668,7 @@
   "key": "40aed0b3",
   "voice": "gran",
   "say": "オレは靴下だぞ!シワシワで当たり前だろ!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -857,7 +857,7 @@
   "key": "da574558",
   "voice": "gran",
   "say": "王冠はもらえる?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -997,7 +997,7 @@
   "key": "7a2e950f",
   "voice": "gran",
   "say": "さて、誰かこのシャンデリアから降ろしておくれ。どうやって登ったのか、わしにもわからんのじゃ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -1088,7 +1088,7 @@
   "key": "a4e902af",
   "voice": "gran",
   "say": "それ、メダル?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -1228,7 +1228,7 @@
   "key": "da99a3d0",
   "voice": "gran",
   "say": "うえ。諦めたセーターの上を歩いてるみたいだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -1368,7 +1368,7 @@
   "key": "c69e7d27",
   "voice": "gran",
   "say": "お大事に。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -1494,7 +1494,7 @@
   "key": "c9e5e7b3",
   "voice": "gran",
   "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -1627,7 +1627,7 @@
   "key": "c10bc48d",
   "voice": "gran",
   "say": "四匹しかいないけど。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -1788,7 +1788,7 @@
   "key": "52e06b06",
   "voice": "gran",
   "say": "…オレ、セーターになっちゃった。",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -1928,7 +1928,7 @@
   "key": "18f8bbd0",
   "voice": "gran",
   "say": "リント団の親戚なのか?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -2075,7 +2075,7 @@
   "key": "9fe9b84e",
   "voice": "gran",
   "say": "お前、靴下っていうより穴だな。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -2215,7 +2215,7 @@
   "key": "dfad6843",
   "voice": "gran",
   "say": "そもそも、なんであいつは靴下ばかり集めてるんだ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -2355,7 +2355,7 @@
   "key": "1f069c8e",
   "voice": "gran",
   "say": "全身の毛が逆立ってる。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -2488,7 +2488,7 @@
   "key": "1f014f98",
   "voice": "gran",
   "say": "お前、木にくっついてるぞ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -2761,7 +2761,7 @@
   "key": "501aac84",
   "voice": "gran",
   "say": "トウ・シノビ?いつから魔王の手下になったんだ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -2922,7 +2922,7 @@
   "key": "39755d90",
   "voice": "gran",
   "say": "三回言ったぞ。普通じゃない。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -3083,7 +3083,7 @@
   "key": "6f579a1f",
   "voice": "gran",
   "say": "お前、乾燥機の魔王の手下だったんだぞ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -3307,7 +3307,7 @@
   "key": "835749aa",
   "voice": "gran",
   "say": "魔王は姿を変えられるのか?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -3454,7 +3454,7 @@
   "key": "4a499bff",
   "voice": "gran",
   "say": "気のせいかな、オレ…ベージュになってきてない?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -3594,7 +3594,7 @@
   "key": "2cf50faa",
   "voice": "gran",
   "say": "よう、ちびすけ。たまご色は今年の流行だぞ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -3720,7 +3720,7 @@
   "key": "44abcf4c",
   "voice": "gran",
   "say": "うそ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -3881,7 +3881,7 @@
   "key": "4e08d1db",
   "voice": "gran",
   "say": "ニーハイ?お前…真っ白じゃないか。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -4042,7 +4042,7 @@
   "key": "37eb3cfb",
   "voice": "gran",
   "say": "これはシミじゃない。個性だ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -4210,7 +4210,7 @@
   "key": "04710504",
   "voice": "gran",
   "say": "人生、汚れひとつないことだけが全てじゃないぜ、男爵。シミのあるところに、物語があるんだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -4336,7 +4336,7 @@
   "key": "6c3baf42",
   "voice": "gran",
   "say": "自分のかかとから出てきたおみくじクッキーだ。聞くな。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -4448,7 +4448,7 @@
   "key": "4247baed",
   "voice": "gran",
   "say": "おや、やっと来たかい。ずいぶん遅かったねえ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -4476,7 +4476,7 @@
   "key": "1e2bbc81",
   "voice": "gran",
   "say": "ばあちゃん?!どうやってここまで来たんだよ?!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -4574,7 +4574,7 @@
   "key": "1694e5b4",
   "voice": "gran",
   "say": "階段を使ったんじゃよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -4602,7 +4602,7 @@
   "key": "177cdecd",
   "voice": "gran",
   "say": "異世界に行く階段なんてないだろ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -4700,7 +4700,7 @@
   "key": "14b64a20",
   "voice": "gran",
   "say": "年を取ればあるんじゃよ。…ボキッ!…おお。今のは腰かね。それとも階段かね。よくわからん。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -4714,7 +4714,7 @@
   "key": "7a455293",
   "voice": "gran",
   "say": "最初の靴下を編んだくらいには年寄りじゃ。あんたの網タイツを来週の火曜まで蹴り飛ばせるくらいには若いがね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -4725,16 +4725,16 @@
   "file": "story"
  },
  {
-  "key": "f646ec81",
+  "key": "71987a92",
   "voice": "gran",
-  "say": "お若いの、わしはヘルメットなしで九十五回の冬を越してきたんじゃよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "say": "お若いの、わしはヘルメットなしで九十八回の冬を越してきたんじゃよ。",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
-  "key": "063ff1e6",
+  "key": "6b084753",
   "voice": "steel",
-  "say": "ならば九十五回分、点検が遅れているということだ!安全第一!…戦いは二番目だ!",
+  "say": "ならば九十八回分、点検が遅れているということだ!安全第一!…戦いは二番目だ!",
   "note": "gruff, deep construction worker, shouting furiously",
   "file": "story"
  },
@@ -4756,7 +4756,7 @@
   "key": "fa439e1e",
   "voice": "gran",
   "say": "お若いの、わしがひざまずいたら、もう立ち上がれんよ。わしをよけて統治しておくれ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -4791,7 +4791,7 @@
   "key": "e36dcd7e",
   "voice": "gran",
   "say": "靴下にはひざなんてないぞ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -4896,7 +4896,7 @@
   "key": "d58ed56e",
   "voice": "gran",
   "say": "あの子のぐるぐるを叩き出してやりな。優しくね。昔はかわいい子だったんじゃよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -4931,7 +4931,7 @@
   "key": "0ed4a62d",
   "voice": "gran",
   "say": "あんた、手下になっとったんじゃよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -5043,7 +5043,7 @@
   "key": "a9db2af8",
   "voice": "gran",
   "say": "あれは変装した乾燥機の魔王だったんだ!クリング・クイーンも同じ手でだまされたんだ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -5162,7 +5162,7 @@
   "key": "0f47130c",
   "voice": "gran",
   "say": "さあ、お行き。将軍が待っとるよ。わしはお茶でも沸かしておくからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -5183,7 +5183,7 @@
   "key": "6fddc41c",
   "voice": "gran",
   "say": "お若いの、わしはあんたが鋳鉄の赤ん坊だった頃から、シワシワなんじゃよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -5197,119 +5197,119 @@
   "key": "f41eec18",
   "voice": "gran",
   "say": "さあ行きな、スティンキー・タビ。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-stinky"
  },
  {
   "key": "c70cca57",
   "voice": "gran",
   "say": "さあ行きな、アーガイルさん。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-argyle"
  },
  {
   "key": "32dcea37",
   "voice": "gran",
   "say": "さあ行きな、トウ・シノビ。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-shinobi"
  },
  {
   "key": "a15d6ec2",
   "voice": "gran",
   "say": "さあ行きな、ストッキング・グラン。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
   "key": "af3932f0",
   "voice": "gran",
   "say": "さあ行きな、ベビー・ブーティー。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-baby"
  },
  {
   "key": "7838711d",
   "voice": "gran",
   "say": "さあ行きな、ニーハイ・カズオ。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-kneehi"
  },
  {
   "key": "29e5e71f",
   "voice": "gran",
   "say": "さあ行きな、メカソックス・エックス。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-robo"
  },
  {
   "key": "061d8c97",
   "voice": "gran",
   "say": "さあ行きな、ロスト・ソック。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-ghost"
  },
  {
   "key": "6926b8f9",
   "voice": "gran",
   "say": "さあ行きな、リント・バニー。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-lint"
  },
  {
   "key": "d123bcc3",
   "voice": "gran",
   "say": "さあ行きな、ソックレット。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-socklet"
  },
  {
   "key": "da410fc9",
   "voice": "gran",
   "say": "さあ行きな、ホーリー・モーリー。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-holey"
  },
  {
   "key": "4afb98e9",
   "voice": "gran",
   "say": "さあ行きな、スチール・トウ。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-steel"
  },
  {
   "key": "5b239a25",
   "voice": "gran",
   "say": "さあ行きな、キング・ニーソック。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-king"
  },
  {
   "key": "11beeb90",
   "voice": "gran",
   "say": "さあ行きな、ドライヤー・デーモン。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-demon"
  },
  {
   "key": "dbefa617",
   "voice": "gran",
   "say": "さあ行きな、ブリーチ・バロン。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-bleach"
  },
  {
   "key": "9e47f33d",
   "voice": "gran",
   "say": "さあ行きな、クリング・クイーン。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-cling"
  },
  {
   "key": "35964eb6",
   "voice": "gran",
   "say": "さあ行きな、アイロン・ショーグン。あいつのシワを伸ばしておやり。おやつは持っといてあげるからね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-iron"
  },
  {
@@ -5337,7 +5337,7 @@
   "key": "064a7ae0",
   "voice": "gran",
   "say": "おやつなんて持ってきてないよ!",
-  "note": "very old, creaky, wheezy grandmother, shouting furiously",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, shouting furiously",
   "file": "hero-gran"
  },
  {
@@ -5435,7 +5435,7 @@
   "key": "9f7d91e0",
   "voice": "gran",
   "say": "だから、わしが持っとるんじゃよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -5477,7 +5477,7 @@
   "key": "a1c581a1",
   "voice": "gran",
   "say": "じゃあ、なんでだよ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -5582,7 +5582,7 @@
   "key": "9d4745dd",
   "voice": "gran",
   "say": "失恋かい。おやまあ。それはいちばんタチの悪いシワだねえ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "story"
  },
  {
@@ -5631,7 +5631,7 @@
   "key": "087e9f8a",
   "voice": "gran",
   "say": "見ろ!あれは魔王が初日にコインランドリーから盗んだ靴下だ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -5757,7 +5757,7 @@
   "key": "40feb186",
   "voice": "gran",
   "say": "…待てよ。あれはあいつじゃない。誰かのジム用の靴下だ。",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -5911,7 +5911,7 @@
   "key": "258b1047",
   "voice": "gran",
   "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -6037,7 +6037,7 @@
   "key": "1b66dfd4",
   "voice": "gran",
   "say": "ソックレット?!腕に糸が結ばれてるぞ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -6191,7 +6191,7 @@
   "key": "9216fd8b",
   "voice": "gran",
   "say": "トウ・シノビ!お前まで操り人形に?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -6352,7 +6352,7 @@
   "key": "7daaa233",
   "voice": "gran",
   "say": "みんなに糸をつけてるのは、お前か?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -6632,7 +6632,7 @@
   "key": "b09487db",
   "voice": "gran",
   "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -6772,7 +6772,7 @@
   "key": "6b663b7a",
   "voice": "gran",
   "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -6905,7 +6905,7 @@
   "key": "5da66ff1",
   "voice": "gran",
   "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -7038,7 +7038,7 @@
   "key": "254b3d22",
   "voice": "gran",
   "say": "リント・バニー?!こんなところで何してるんだ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -7185,7 +7185,7 @@
   "key": "4f0f4a10",
   "voice": "gran",
   "say": "メカソックス!大丈夫か?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -7339,7 +7339,7 @@
   "key": "cb1ebbb2",
   "voice": "gran",
   "say": "一時間前は、ちっちゃかっただろ!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -7486,7 +7486,7 @@
   "key": "e1616e9b",
   "voice": "gran",
   "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -7675,7 +7675,7 @@
   "key": "ca449ed8",
   "voice": "gran",
   "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -7822,7 +7822,7 @@
   "key": "0875d685",
   "voice": "gran",
   "say": "待てよ…そのひじのしましまの継ぎあて。洗濯の日に失くした、オレの靴下じゃないか!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -7983,7 +7983,7 @@
   "key": "a44cbf73",
   "voice": "gran",
   "say": "オレの靴下!…あ。左だ。右がほしかったのに。",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -8123,7 +8123,7 @@
   "key": "f46b0bbf",
   "voice": "gran",
   "say": "もう終わりだ、魔王!ベビー・ブーティー姫の正体はお前だってわかってるんだ!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -8270,7 +8270,7 @@
   "key": "87fe3b1d",
   "voice": "gran",
   "say": "ストッキング・グランが来たからには、もう終わりだ!みんなの靴下を返してもらうぞ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -8424,7 +8424,7 @@
   "key": "44854839",
   "voice": "gran",
   "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -8606,7 +8606,7 @@
   "key": "49b908d4",
   "voice": "gran",
   "say": "なんだ?どうしたんだ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -8746,7 +8746,7 @@
   "key": "7e548830",
   "voice": "gran",
   "say": "靴?でも靴はぼくらの友だちだよ!ぼくら、靴の中に住んでるんだから!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -8872,7 +8872,7 @@
   "key": "81e8c167",
   "voice": "gran",
   "say": "…汗だく。ぺしゃんこ。ちょっとチーズくさい。",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -9033,7 +9033,7 @@
   "key": "eabebc79",
   "voice": "gran",
   "say": "ベビーブーティ?なんで白いベトベトまみれなの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -9166,7 +9166,7 @@
   "key": "95301e01",
   "voice": "gran",
   "say": "今のビーサン…命令した?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -9306,7 +9306,7 @@
   "key": "425def03",
   "voice": "gran",
   "say": "バケツひとつなら、いいよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -9467,7 +9467,7 @@
   "key": "5af2d38f",
   "voice": "gran",
   "say": "砂の上で犬かきしてるけど。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -9621,7 +9621,7 @@
   "key": "70190f6f",
   "voice": "gran",
   "say": "靴下を消してるのは、きみ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -9754,7 +9754,7 @@
   "key": "fd4014b8",
   "voice": "gran",
   "say": "どっちの味方なんだよ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -9880,7 +9880,7 @@
   "key": "4f1d0a2d",
   "voice": "gran",
   "say": "…ビッグ…ブーツ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -10013,7 +10013,7 @@
   "key": "20c57aff",
   "voice": "gran",
   "say": "ビッグブーツって誰?いなくなった靴下はどこ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -10174,7 +10174,7 @@
   "key": "9f4690b3",
   "voice": "gran",
   "say": "…今、不気味なナレーション聞こえなかった?",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -10356,7 +10356,7 @@
   "key": "c9fdf7cc",
   "voice": "gran",
   "say": "ぼく、靴下を帽子にしてるんだけど。きみは靴下をマフラーにしてるし。ぼくら、靴下でできてるんだよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -10489,7 +10489,7 @@
   "key": "c36816f2",
   "voice": "gran",
   "say": "クリングクイーン!きみも靴下を助けに来たの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -10657,7 +10657,7 @@
   "key": "c0a5f6af",
   "voice": "gran",
   "say": "ブリーチ男爵?今度は審査員?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -10811,7 +10811,7 @@
   "key": "f9dc369d",
   "voice": "gran",
   "say": "レディ・スティレット!いなくなった靴下を返して!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -10951,7 +10951,7 @@
   "key": "6770d84b",
   "voice": "gran",
   "say": "きみ、ビッグブーツの手下なんでしょ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -11112,7 +11112,7 @@
   "key": "43919c16",
   "voice": "gran",
   "say": "靴下。楽屋。今すぐ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -11301,7 +11301,7 @@
   "key": "079e3447",
   "voice": "gran",
   "say": "一歩ごとにグチャッ。もう歩いてないよ。グチャってるだけ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -11434,7 +11434,7 @@
   "key": "acbf9fa6",
   "voice": "gran",
   "say": "迷子の靴下?どうしたの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -11602,7 +11602,7 @@
   "key": "22306cb5",
   "voice": "gran",
   "say": "和夫!きみまで靴の手下なの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -11763,7 +11763,7 @@
   "key": "bf846b6c",
   "voice": "gran",
   "say": "誰も!まだ雨降ってるよ!ずーっと降ってるよ!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -11896,7 +11896,7 @@
   "key": "d74bbcac",
   "voice": "gran",
   "say": "…もっと大きな水たまりでジャンプすること?",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -12064,7 +12064,7 @@
   "key": "bbe3d3b6",
   "voice": "gran",
   "say": "普通のブーツは足をぬらさないでしょ。それって立派な仕事だよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -12190,7 +12190,7 @@
   "key": "9062767a",
   "voice": "gran",
   "say": "乾いた、ぽかぽかの靴下を入れて。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -12358,7 +12358,7 @@
   "key": "de554dc4",
   "voice": "gran",
   "say": "ぼく、スケートできないよ。足がないんだもん。ぼく自身が足なんだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -12498,7 +12498,7 @@
   "key": "6395e48c",
   "voice": "gran",
   "say": "ソックレット?!スピード落として!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -12666,7 +12666,7 @@
   "key": "795f7ecd",
   "voice": "gran",
   "say": "メカソックス!それに…ケビン?鳥のケビン?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -12827,7 +12827,7 @@
   "key": "52ff7763",
   "voice": "gran",
   "say": "ローラ・ディスコ!ビッグブーツがここで何か作ってるよね。ひもの付いたもの。何なの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -12974,7 +12974,7 @@
   "key": "5a0f806e",
   "voice": "gran",
   "say": "ローラー・ダンス・ファイトって何?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -13114,7 +13114,7 @@
   "key": "8345905c",
   "voice": "gran",
   "say": "国をまるごと縛るの?!",
-  "note": "very old, creaky, wheezy grandmother, shouting furiously",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, shouting furiously",
   "file": "hero-gran"
  },
  {
@@ -13303,7 +13303,7 @@
   "key": "fdf4a59f",
   "voice": "gran",
   "say": "そこらじゅう片っぽ靴下?それは悪夢だね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -13436,7 +13436,7 @@
   "key": "60fa6878",
   "voice": "gran",
   "say": "すべてが始まった場所に戻ってきた。七号乾燥機…",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -13569,7 +13569,7 @@
   "key": "19f03f47",
   "voice": "gran",
   "say": "アーガイルさん?なんで…ピンクなの?うさぎ柄だし?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -13716,7 +13716,7 @@
   "key": "f638647a",
   "voice": "gran",
   "say": "笑ってないよ。",
-  "note": "very old, creaky, wheezy grandmother, laughing",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, laughing",
   "file": "hero-gran"
  },
  {
@@ -13863,7 +13863,7 @@
   "key": "05974c72",
   "voice": "gran",
   "say": "入れ替えで、だれかのにおいになっちゃったんだ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -14017,7 +14017,7 @@
   "key": "ba44f574",
   "voice": "gran",
   "say": "でもほどいたはずだよ!靴下はみんな相手を見つけたのに!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -14199,7 +14199,7 @@
   "key": "db0ede0a",
   "voice": "gran",
   "say": "どのタレントショー?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -14360,7 +14360,7 @@
   "key": "2c6974bd",
   "voice": "gran",
   "say": "…戦うこと?靴下でいること?",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -14500,7 +14500,7 @@
   "key": "be515b99",
   "voice": "gran",
   "say": "パペッティーニ!引退したんじゃなかったの!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -14640,7 +14640,7 @@
   "key": "7934c200",
   "voice": "gran",
   "say": "わしの若いころはな、タップダンスで学校に通ったんじゃ!上り坂を!行きも帰りも!雪の中を!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "story"
  },
  {
@@ -14668,7 +14668,7 @@
   "key": "a5b56d7c",
   "voice": "gran",
   "say": "ばあちゃん!タップダンスできるの?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -14766,7 +14766,7 @@
   "key": "64fb7097",
   "voice": "gran",
   "say": "六十年連続チャンピオンじゃよ!タッピントンさんがな、今夜勝ったら新しい腰をくれるって!ピカピカのやつ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "story"
  },
  {
@@ -14780,7 +14780,7 @@
   "key": "a50ba0b6",
   "voice": "gran",
   "say": "今はある!テニスボールじゃ!さあ、わしと踊れ、若いの…踊るか、やられるか!…あいたた、腰が。",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "story"
  },
  {
@@ -14822,7 +14822,7 @@
   "key": "d420743e",
   "voice": "gran",
   "say": "ミスター・タッピントン!なんでビッグブーツは音楽を盗むの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -14962,7 +14962,7 @@
   "key": "cc87ceb9",
   "voice": "gran",
   "say": "勝った!六十一年連続チャンピオン!テニスボールの腰はどこじゃ?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "story"
  },
  {
@@ -15004,7 +15004,7 @@
   "key": "3d0585aa",
   "voice": "gran",
   "say": "見てくだされ、女王陛下!わしのトロフィー!見て!よーく見て!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "story"
  },
  {
@@ -15046,7 +15046,7 @@
   "key": "65ba103b",
   "voice": "gran",
   "say": "暗いのなんて怖くないよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -15172,7 +15172,7 @@
   "key": "7d1d45f2",
   "voice": "gran",
   "say": "怖くない!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -15305,7 +15305,7 @@
   "key": "2508ed32",
   "voice": "gran",
   "say": "なんでここ、なにもかもこんなに大きいの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -15431,7 +15431,7 @@
   "key": "4af5e6f0",
   "voice": "gran",
   "say": "トウ・シノビ!ここで何してるの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -15571,7 +15571,7 @@
   "key": "2d627410",
   "voice": "gran",
   "say": "わかった。…はいやー。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -15718,7 +15718,7 @@
   "key": "fd19d1fb",
   "voice": "gran",
   "say": "ホーリー、きみはぼくらの味方だったじゃない!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -15872,7 +15872,7 @@
   "key": "0dec9147",
   "voice": "gran",
   "say": "ホーリーだよ!くしゃみしたんだ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -16026,7 +16026,7 @@
   "key": "e31eb83c",
   "voice": "gran",
   "say": "枕なら見つけてあげる!宮殿には枕がいっぱいあるよ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -16159,7 +16159,7 @@
   "key": "ec41224d",
   "voice": "gran",
   "say": "ドット、ビッグブーツはここに何を隠してるの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -16313,7 +16313,7 @@
   "key": "7144b791",
   "voice": "gran",
   "say": "…カーテン?!ビッグブーツは女王さまのカーテンが欲しいの?!",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -16446,7 +16446,7 @@
   "key": "a3ff752a",
   "voice": "gran",
   "say": "女王陛下、なんでビッグブーツはカーテンを欲しがるの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -16635,7 +16635,7 @@
   "key": "6cb51f1e",
   "voice": "gran",
   "say": "スチールトゥ・サム!ブーツのために働いてるの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -16803,7 +16803,7 @@
   "key": "cf7c7d9d",
   "voice": "gran",
   "say": "催眠のあと、いい人でいるって約束したじゃない!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -16971,7 +16971,7 @@
   "key": "1c6692ba",
   "voice": "gran",
   "say": "リボンはプレゼント用だよ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -17118,7 +17118,7 @@
   "key": "5f10eb8b",
   "voice": "gran",
   "say": "自分が縛られたら、そんなに強くないね!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -17279,7 +17279,7 @@
   "key": "fd09aa90",
   "voice": "gran",
   "say": "…スカウト。みんなを集めて。すべての靴下を。すべての仲間を。女王さまを取り返すんだ。",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -17405,7 +17405,7 @@
   "key": "99d7ded3",
   "voice": "gran",
   "say": "…スティンキーも。",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -17552,7 +17552,7 @@
   "key": "b9988ad3",
   "voice": "gran",
   "say": "スチールトゥ・サムが言ってた。ブーツの軍団はどろんこピッチで訓練してるって。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -17685,7 +17685,7 @@
   "key": "0d47507f",
   "voice": "gran",
   "say": "九十九対ゼロ?!まだ試合してないのに!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -17818,7 +17818,7 @@
   "key": "8eb2346b",
   "voice": "gran",
   "say": "和夫、またなの?!",
-  "note": "very old, creaky, wheezy grandmother, shouting furiously",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, shouting furiously",
   "file": "hero-gran"
  },
  {
@@ -17979,7 +17979,7 @@
   "key": "685412e7",
   "voice": "gran",
   "say": "アイアン将軍!きみまで?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -18140,7 +18140,7 @@
   "key": "4ae70270",
   "voice": "gran",
   "say": "女王さまはどこ、スタッズ?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -18287,7 +18287,7 @@
   "key": "eded6bdc",
   "voice": "gran",
   "say": "…いいよ。キックオフ!",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -18427,7 +18427,7 @@
   "key": "34f09c9f",
   "voice": "gran",
   "say": "黄金の靴下はどこにあるの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -18595,7 +18595,7 @@
   "key": "dc7744cd",
   "voice": "gran",
   "say": "乾燥機の…試練?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -18742,7 +18742,7 @@
   "key": "f23d0f96",
   "voice": "gran",
   "say": "準備できてる!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -18868,7 +18868,7 @@
   "key": "2547d253",
   "voice": "gran",
   "say": "ぼく、つま先ひとつしかないよ。ぼく自体が大きなつま先なんだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -19043,7 +19043,7 @@
   "key": "08ae26ce",
   "voice": "gran",
   "say": "ずいぶん隠れてるね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -19183,7 +19183,7 @@
   "key": "86153742",
   "voice": "gran",
   "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -19365,7 +19365,7 @@
   "key": "feafb5a0",
   "voice": "gran",
   "say": "これで頂の扉が開けられる!行こう!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -19526,7 +19526,7 @@
   "key": "572d8d30",
   "voice": "gran",
   "say": "みんな、準備はいい?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -19673,7 +19673,7 @@
   "key": "9652fd3c",
   "voice": "gran",
   "say": "ソックレット?今度はケビンの手下なの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -19827,7 +19827,7 @@
   "key": "5819fe52",
   "voice": "gran",
   "say": "迷子の靴下!どういうこと?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -19981,7 +19981,7 @@
   "key": "85c2f497",
   "voice": "gran",
   "say": "ケビン!本当のことは知ってるよ!きみは迷子の靴下だったんでしょ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -20128,7 +20128,7 @@
   "key": "db3159e4",
   "voice": "gran",
   "say": "なら見せてあげる。靴下は仲間を見捨てない。自分を鳥だと思ってる靴下でもね!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -20261,7 +20261,7 @@
   "key": "7266c4ee",
   "voice": "gran",
   "say": "ケビン…ぼくらは探しに来たよ。遅くなったけど。来たんだ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -20401,7 +20401,7 @@
   "key": "5a04e83f",
   "voice": "gran",
   "say": "…それって、どういう意味?",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -20555,7 +20555,7 @@
   "key": "b7102ba1",
   "voice": "gran",
   "say": "黄金の靴下とケビンの地図があるんだ。準備ばっちりだよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -20702,7 +20702,7 @@
   "key": "87f0c7c6",
   "voice": "gran",
   "say": "はとめ穴をくぐるの?それはきつそうだね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -20828,7 +20828,7 @@
   "key": "9ee5e64c",
   "voice": "gran",
   "say": "ビーサン!やめたんじゃなかったの!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -20989,7 +20989,7 @@
   "key": "eb531551",
   "voice": "gran",
   "say": "宮殿でみんなあざだらけだったのは、それか。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -21136,7 +21136,7 @@
   "key": "8085b52b",
   "voice": "gran",
   "say": "それで?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -21318,7 +21318,7 @@
   "key": "8363f92b",
   "voice": "gran",
   "say": "何人に試したの?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -21486,7 +21486,7 @@
   "key": "398665f9",
   "voice": "gran",
   "say": "…うん。大きいね。",
-  "note": "very old, creaky, wheezy grandmother, deadpan, awkward pause",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
@@ -21612,7 +21612,7 @@
   "key": "a9fd3c65",
   "voice": "gran",
   "say": "なに、スカウト?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
@@ -21738,7 +21738,7 @@
   "key": "b71d3fc0",
   "voice": "gran",
   "say": "穴は風を通すでしょ。きみは息切れしないし、絶対にあきらめないし、ぼくが知ってるいちばん勇敢な靴下だ。きみはもう騎士だよ。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -21878,7 +21878,7 @@
   "key": "f4354dc2",
   "voice": "gran",
   "say": "スタッズ、こんなの間違ってるって、わかってるでしょ!",
-  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
@@ -22039,7 +22039,7 @@
   "key": "4025610b",
   "voice": "gran",
   "say": "タッピントン、きみは観客が大好きでしょ。ブーツは誰も二度と踊らない世界を作ろうとしてるんだよ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -22214,7 +22214,7 @@
   "key": "8e9274f6",
   "voice": "gran",
   "say": "だから、誰も靴下をはかない世界にしたいの?!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -22354,7 +22354,7 @@
   "key": "a6adcdd4",
   "voice": "gran",
   "say": "もういい!女王さまのために、ナイロニアのために、すべての引き出しのすべての靴下のために…行くぞ!",
-  "note": "very old, creaky, wheezy grandmother, lively",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, lively",
   "file": "hero-gran"
  },
  {
@@ -22585,7 +22585,7 @@
   "key": "1c4feee4",
   "voice": "gran",
   "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "very old, creaky, wheezy grandmother, conversational",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, conversational",
   "file": "hero-gran"
  },
  {
@@ -22725,7 +22725,7 @@
   "key": "b27653dd",
   "voice": "gran",
   "say": "また湯たんぽ?",
-  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "note": "nagging 98-year-old granny: a very, very old woman, always scolding and complaining, fussy and whiny, trembling and croaky, confused, questioning",
   "file": "hero-gran"
  },
  {

@@ -62,7 +62,7 @@ const PERSONA = {
   stinky: 'cocky young street brawler',
   argyle: 'calm, noble samurai',
   shinobi: 'cool, quiet ninja woman',
-  gran: '98-year-old grandmother: a very, very old woman, thin, trembling, toothless and wheezy, speaks slowly',
+  gran: 'LOUD nagging 98-year-old granny: a very, very old woman who SHOUTS everything, always scolding and complaining at the top of her voice, fussy and whiny, trembling and croaky',
   baby: 'squeaky, bratty toddler',
   kneehi: 'booming, jolly sumo wrestler',
   robo: 'flat, monotone robot',
@@ -107,6 +107,8 @@ function mood(who, text) {
   const letters = words.replace(/[^A-Za-z]/g, '');
   const caps = letters.replace(/[^A-Z]/g, '').length;
   if (who === 'narr') return /!/.test(text) ? 'excited storytelling' : 'storytelling';
+  // Stocking Gran nags, and she nags LOUDLY
+  if (who === 'gran') return /HA(HA)+|laugh|hee/i.test(text) ? 'cackling' : 'shouting and nagging, scolding loudly like a cranky old granny';
   if (/WAA+H|\*sniff|crying|tantrum|\*dabbing/i.test(text)) return 'crying and sobbing';
   if (/\*quietly\*/.test(text)) return 'quiet and sad';
   if (/\*VERY loudly\*/.test(text)) return 'suddenly very loud';
