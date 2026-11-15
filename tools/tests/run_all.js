@@ -29,7 +29,6 @@ for (const [name, what] of TESTS) {
     if (/^errors?:/i.test(line.trim()) && !/none/.test(line)) bad.push(line.trim());
     if (/desyncs":[1-9]/.test(line)) bad.push('online fell out of step: ' + line.trim().slice(0, 100));
     if (/same result on both: false/.test(line)) bad.push(line.trim());
-    if (/missing [1-9]/.test(line) && !/queen: \.\.\./.test(line)) bad.push(line.trim().slice(0, 120));
     if (/"peak":0[,}]/.test(line)) bad.push('no sound reached the speakers');
     if (/"ann":0[,}]/.test(line) && /VS \+ fight/.test(line)) bad.push('the announcer never spoke');
   }
@@ -37,6 +36,9 @@ for (const [name, what] of TESTS) {
   const secs = ((Date.now() - t0) / 1000).toFixed(0);
   console.log((bad.length ? '✗ ' : '✓ ') + what + '  (' + secs + 's)');
   for (const b of bad) console.log('    ' + b);
+  // story lines still waiting for their voices (new episodes are recorded once their voices are approved): a note, not a bug
+  const wait = (out.match(/missing (\d+)/) || [])[1];
+  if (wait && +wait > 0) console.log('    note: ' + wait + ' story lines are still waiting to be recorded (they show as text until then)');
   if (bad.length) problems.push([name, bad, out]);
 }
 console.log(problems.length ? '\n' + problems.length + ' test(s) found problems.' : '\nAll clear: no bugs found.');

@@ -1087,4 +1087,13 @@ module.exports = {
   "...Knight? You came BACK? Through the window? To visit?": "…騎士?戻ってきたの?窓を通って?会いに?",
   "Every time the lady does the washing, Your Majesty.": "おばさんが洗濯するたびに来ます、女王陛下。",
   "*not crying at all* ...Good. We kept your hot water bottles warm. BOTH of them.": "…よろしい。湯たんぽは温めておいたわ。二つともね。",
+  "*The dryer window glows purple. A figure in a black mission suit, night-vision goggles and a tiny earpiece presses against the glass...*": "乾燥機の窓が紫に光る。黒いミッションスーツに暗視ゴーグル、小さなイヤホンをつけた人影が、ガラスに張りついた…",
+  "Psst! Down here! Agent Fishnet, Royal Scout of Nylonia. This is a SECRET mission. Act natural.": "しーっ!こっちです!ナイロニア王室斥候、エージェント・フィッシュネット。これは極秘任務です。自然にふるまってください。",
+  "Why is she whispering? We can all see her.": "なぜ小声なのだ?全員に見えているぞ。",
+  "Because it's SECRET! ...Also my goggles are on upside down. Hold on.": "極秘だからです!…あと、ゴーグルが逆さまでした。ちょっと待ってください。",
+  "Listen. The DRYER DEMON has woken up. He is stealing socks from every drawer, in every world. Your other half was just the start.": "よく聞いてください。乾燥機の魔王が目覚めました。あらゆる世界の、あらゆる引き出しから靴下を盗んでいます。あなたの片割れは、その始まりにすぎません。",
+  "My Queen sent me through the dryer on a top secret mission: to find... a HERO.": "女王陛下が私を乾燥機の向こうへ送り出したんです。極秘任務で。…ヒーローを探すために。",
+  "*checks a tiny notebook* Hmm. It says here: \"brave, heroic, smells of roses.\" ...Close enough!": "うーん。ここに書いてあるのは「勇敢で、英雄的で、バラの香り」。…まあ、だいたい合ってます!",
+  "Great! Hold on to something. Going through the dryer is a bit... TUMBLY. Follow me, hero!": "よし!何かにつかまってください。乾燥機を通るのは、ちょっと…グルグルしますよ。ついてきてください、ヒーロー!",
+  "He took my other half. I'm going.": "あいつがオレの片割れを奪ったんだ。行くぜ。",
 };

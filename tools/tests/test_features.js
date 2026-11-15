@@ -74,7 +74,7 @@ require('fs').mkdirSync(SP, { recursive: true });
     S.Progress.data.adv = { prologue: true, hero: 1, look: 0, cleared: { 1: true, 2: true }, seen: { afterCh1: true, afterCh2: true } };
     const K = S.skillData();
     K.sp = 3;
-    S.startAdventure(); if (S.game.screen === 'advSlots') S.playSlot(0); /* (story mode opens on the save games) */
+    S.startAdventure(); if (S.game.screen === 'advSlots') S.continueGame(); /* (story mode opens on the save games) */
     S.openSkills();
   });
   await p.waitForTimeout(400);

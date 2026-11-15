@@ -28,52 +28,45 @@
   "file": "story"
  },
  {
-  "key": "0b9fa320",
+  "key": "cc7a2fce",
   "voice": "narr",
-  "say": "乾燥機の窓が紫色に光る。ガラスの中に、華やかな顔が浮かび上がった…",
+  "say": "乾燥機の窓が紫に光る。黒いミッションスーツに暗視ゴーグル、小さなイヤホンをつけた人影が、ガラスに張りついた…",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "e9363a7c",
-  "voice": "queen",
-  "say": "ごきげんよう、一本脚の皆さま。わたくしどもはナイロニア女王。ホージェリーの民と、麗しきナイロニア島を治める者ですわ。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "key": "bfcc6ba8",
+  "voice": "fishnet",
+  "say": "しーっ!こっちです!ナイロニア王室斥候、エージェント・フィッシュネット。これは極秘任務です。自然にふるまってください。",
+  "note": "eager, quick young scout, lively",
   "file": "story"
  },
  {
-  "key": "47a666a5",
+  "key": "2a438061",
   "voice": "argyle",
-  "say": "なんで「我ら」なんだ?一人しかいないじゃないか。",
+  "say": "なぜ小声なのだ?全員に見えているぞ。",
   "note": "calm, noble samurai, conversational",
   "file": "story"
  },
  {
-  "key": "68d4227f",
-  "voice": "queen",
-  "say": "わたくしどもには脚が二本ございますの。ですから、いつでも「わたくしども」ですのよ。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "key": "b3ac1e0e",
+  "voice": "fishnet",
+  "say": "極秘だからです!…あと、ゴーグルが逆さまでした。ちょっと待ってください。",
+  "note": "eager, quick young scout, lively",
   "file": "story"
  },
  {
-  "key": "d72554b5",
-  "voice": "queen",
-  "say": "よくお聞きなさいませ。一度しか申しませんわ。…お察しの悪い方には、二度。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, sassy, with a sly, knowing smirk and a raised eyebrow",
+  "key": "af96de87",
+  "voice": "fishnet",
+  "say": "よく聞いてください。乾燥機の魔王が目覚めました。あらゆる世界の、あらゆる引き出しから靴下を盗んでいます。あなたの片割れは、その始まりにすぎません。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "4b091404",
-  "voice": "queen",
-  "say": "乾燥機の魔王が目覚めましたの。あなた方の靴下を奪い、わたくしどものストッキングまで奪っていく。このままでは、どの世界の引き出しも、空になってしまいますわ。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
-  "file": "story"
- },
- {
-  "key": "498a0d84",
-  "voice": "queen",
-  "say": "わたくしどもが求めているのは…勇者ですの。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "key": "f888120a",
+  "voice": "fishnet",
+  "say": "女王陛下が私を乾燥機の向こうへ送り出したんです。極秘任務で。…ヒーローを探すために。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -91,16 +84,16 @@
   "file": "story"
  },
  {
-  "key": "2d0fe38c",
-  "voice": "queen",
-  "say": "勇者をお願いしたのですけれど。…くんくん…ジムバッグではなくて。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, sassy, with a sly, knowing smirk and a raised eyebrow",
+  "key": "84b9dea2",
+  "voice": "fishnet",
+  "say": "うーん。ここに書いてあるのは「勇敢で、英雄的で、バラの香り」。…まあ、だいたい合ってます!",
+  "note": "eager, quick young scout, lively",
   "file": "story"
  },
  {
-  "key": "a16266e5",
+  "key": "ef489df9",
   "voice": "stinky",
-  "say": "あいつはオレの片割れを持ってったんだ、おばさん。オレは行くぜ。",
+  "say": "あいつがオレの片割れを奪ったんだ。行くぜ。",
   "note": "cocky young street brawler, conversational",
   "file": "story"
  },
@@ -112,10 +105,10 @@
   "file": "story"
  },
  {
-  "key": "7f865ea4",
-  "voice": "queen",
-  "say": "よろしいでしょう。わたくしどもの呼びかけに応える方をお選びなさいませ。お茶菓子をお持ちになって。それから、カーテンには決してお手を触れませんように。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, sassy, with a sly, knowing smirk and a raised eyebrow",
+  "key": "2b752dc2",
+  "voice": "fishnet",
+  "say": "よし!何かにつかまってください。乾燥機を通るのは、ちょっと…グルグルしますよ。ついてきてください、ヒーロー!",
+  "note": "eager, quick young scout, lively",
   "file": "story"
  },
  {

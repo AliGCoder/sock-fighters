@@ -18,31 +18,27 @@
   },
   {
    "who": "narr",
-   "text": "*The dryer window glows purple. A glamorous face appears in the glass...*"
+   "text": "*The dryer window glows purple. A figure in a black mission suit, night-vision goggles and a tiny earpiece presses against the glass...*"
   },
   {
-   "who": "queen",
-   "text": "Greetings, single-leggers. We are QUEEN NYLONIA, ruler of the Hosiery and of the beautiful Island of Nylonia."
+   "who": "fishnet",
+   "text": "Psst! Down here! Agent Fishnet, Royal Scout of Nylonia. This is a SECRET mission. Act natural."
   },
   {
    "who": "argyle",
-   "text": "Why is she saying \"we\"? There is one of her."
+   "text": "Why is she whispering? We can all see her."
   },
   {
-   "who": "queen",
-   "text": "We have TWO LEGS, darling. We are ALWAYS a \"we\"."
+   "who": "fishnet",
+   "text": "Because it's SECRET! ...Also my goggles are on upside down. Hold on."
   },
   {
-   "who": "queen",
-   "text": "Listen carefully, for We will only say this once. ...Twice if you are slow."
+   "who": "fishnet",
+   "text": "Listen. The DRYER DEMON has woken up. He is stealing socks from every drawer, in every world. Your other half was just the start."
   },
   {
-   "who": "queen",
-   "text": "The DRYER DEMON has awoken. He steals your socks. He steals Our stockings. Soon there will be nothing left in any drawer, in any world."
-  },
-  {
-   "who": "queen",
-   "text": "We need... a HERO."
+   "who": "fishnet",
+   "text": "My Queen sent me through the dryer on a top secret mission: to find... a HERO."
   },
   {
    "who": "narr",
@@ -53,20 +49,20 @@
    "text": "...Me?"
   },
   {
-   "who": "queen",
-   "text": "We asked for a hero. Not a... *sniff* ...gym bag."
+   "who": "fishnet",
+   "text": "*checks a tiny notebook* Hmm. It says here: \"brave, heroic, smells of roses.\" ...Close enough!"
   },
   {
    "who": "stinky",
-   "text": "He took my other half, lady. I'm going."
+   "text": "He took my other half. I'm going."
   },
   {
    "who": "argyle",
    "text": "Then we all go. The way of the sock is never to walk alone."
   },
   {
-   "who": "queen",
-   "text": "Very well. Choose who answers Our call. Bring snacks. Do NOT touch Our curtains."
+   "who": "fishnet",
+   "text": "Great! Hold on to something. Going through the dryer is a bit... TUMBLY. Follow me, hero!"
   }
  ],
  "PALACE_ARRIVAL": [

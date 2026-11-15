@@ -20967,7 +20967,7 @@
       const HOSIERY = {
         queen: { name: 'QUEEN NYLONIA', jp: 'ナイロニア女王', color: '#f6bccd', band: '#c46a86', sheer: 0.82, crown: true, lashes: true, train: true, gloves: '#f6eeff', sceptre: true, blush: true,
           trainCol: '#a8395f', jewel: '#ffd23f', tiara: true, earrings: true, ermine: true, shimmer: true },
-        fishnet: { name: 'FISHNET SCOUT', jp: '網タイツ斥候', color: '#3a2a44', band: '#1d141d', net: true, gloves: '#3a2a44', bandana: true },
+        fishnet: { name: 'FISHNET SCOUT', jp: '網タイツ斥候', color: '#3a2a44', band: '#1d141d', net: true, gloves: '#3a2a44', bandana: true, shinobi: true }, // a fishnet girl shinobi
         sheer: { name: 'SHEER SPY', jp: 'シアー密偵', color: '#e9c7b0', band: '#c9a088', sheer: 0.45, gloves: '#e9c7b0' },
         control: { name: 'CONTROL-TOP GUARD', jp: '補正部隊', color: '#5a3f6e', band: '#3a2650', big: true, gloves: '#5a3f6e' },
         tights: { name: 'TIGHTS TROOPER', jp: 'タイツ兵', color: '#e8333a', band: '#a51f25', gloves: '#e8333a' },
@@ -21375,6 +21375,29 @@
           c.arc(mx, my - 3, 8, 0.2, Math.PI - 0.2);
           c.stroke();
         }
+        if (H.shinobi) {
+          // a fishnet girl shinobi: only her mouth is covered, by a sheer black cloth
+          c.fillStyle = 'rgba(12,10,18,0.62)';
+          c.strokeStyle = 'rgba(12,10,18,0.9)';
+          c.lineWidth = 2;
+          c.beginPath();
+          c.moveTo(-10, ey + 11);
+          c.quadraticCurveTo(16, ey + 7, 42, ey + 11);
+          c.lineTo(40, ey + 30);
+          c.quadraticCurveTo(16, ey + 40, -8, ey + 30);
+          c.closePath();
+          c.fill();
+          c.stroke();
+          // the sheer weave catching the light
+          c.strokeStyle = 'rgba(255,255,255,0.12)';
+          c.lineWidth = 1;
+          for (let k = 0; k < 4; k++) {
+            c.beginPath();
+            c.moveTo(-6, ey + 15 + k * 5);
+            c.quadraticCurveTo(16, ey + 12 + k * 5 + 2, 38, ey + 15 + k * 5);
+            c.stroke();
+          }
+        }
         // floating gloves
         const arm = Math.sin(t * 0.09) * 3;
         const arms = H.armed ? o.arms || { spear: true, sword: true, shield: true } : {};
@@ -21739,6 +21762,25 @@
           c.fill();
           c.stroke();
         }
+        if (H.shinobi) {
+          // a high ponytail, tied with red
+          const sw = Math.sin(t * 0.12) * 4;
+          c.fillStyle = '#1d141d';
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.beginPath();
+          c.moveTo(-bodyW / 2 + 8, top + 4);
+          c.quadraticCurveTo(-bodyW / 2 - 18 + sw, top - 16, -bodyW / 2 - 26 + sw, top + 26);
+          c.quadraticCurveTo(-bodyW / 2 - 8 + sw, top + 6, -bodyW / 2 + 16, top + 10);
+          c.closePath();
+          c.fill();
+          c.stroke();
+          c.fillStyle = '#e8333a';
+          c.beginPath();
+          c.arc(-bodyW / 2 + 6, top + 6, 5, 0, 7);
+          c.fill();
+          c.stroke();
+        }
         if (H.bandana) {
           c.fillStyle = '#e8333a';
           c.fillRect(-bodyW / 2 - 1, top + 12, bodyW + 2, 7);
@@ -21779,13 +21821,7 @@
       function storySlots() {
         const d = Progress.data;
         if (!Array.isArray(d.storySlots)) d.storySlots = [];
-        // an older save with story progress becomes SAVE GAME 1
-        if (!d.storySlots.length && d.adv && d.adv.prologue) {
-          d.storySlots.push({});
-          d.activeSlot = 0;
-          stashSlot();
-        }
-        return d.storySlots;
+        return d.storySlots; // (nothing is saved here until YOU press SAVE GAME)
       }
       /** Write the save game being played back into its slot. */
       function stashSlot() {
@@ -21794,32 +21830,56 @@
         if (!Array.isArray(d.storySlots) || !(d.activeSlot >= 0) || !d.storySlots[d.activeSlot]) return;
         d.storySlots[d.activeSlot] = { hero: A.hero, look: A.look, prologue: A.prologue, cleared: A.cleared, seen: A.seen, skills: d.skills || {}, at: Date.now() };
       }
-      /** Carry on with save game i. */
+      /** Carry on with save game i (whatever you were playing and didn't save is dropped). */
       function loadSlot(i) {
         const d = Progress.data,
           slots = storySlots();
-        stashSlot();
-        const s = slots[i];
+        const s = JSON.parse(JSON.stringify(slots[i])); // a copy: the save only changes when you SAVE GAME
         d.activeSlot = i;
         d.adv = { hero: s.hero | 0, look: s.look || 0, prologue: s.prologue !== false, cleared: s.cleared || {}, seen: s.seen || {} };
         d.skills = s.skills || {};
         Progress.save();
       }
-      /** A brand-new save game: pick a hero, then the story from the very beginning, with a fresh skill tree. */
+      /** A brand-new game: pick a hero, then the story from the very beginning, with a fresh skill tree. It is not
+       *  a save game until you press SAVE GAME in the palace. */
       function newSlot() {
-        const d = Progress.data,
-          slots = storySlots();
-        stashSlot();
-        slots.push({ hero: 0, look: 0, prologue: false, cleared: {}, seen: {}, skills: {}, at: Date.now() });
-        d.activeSlot = slots.length - 1;
+        const d = Progress.data;
+        d.activeSlot = -1;
         d.adv = { hero: 0, look: 0, prologue: false, cleared: {}, seen: {} };
         d.skills = {};
         Progress.save();
       }
+      /** Has the game you're playing changed since it was last saved? */
+      function unsavedChanges() {
+        const d = Progress.data,
+          A = advData(),
+          s = d.activeSlot >= 0 && storySlots()[d.activeSlot];
+        if (!s) return true;
+        return JSON.stringify([s.hero, s.cleared, s.skills]) !== JSON.stringify([A.hero, A.cleared, d.skills || {}]);
+      }
+      /** SAVE GAME: into this game's save (the first time, a new one). */
+      function saveGame() {
+        const d = Progress.data,
+          slots = storySlots();
+        if (!(d.activeSlot >= 0) || !slots[d.activeSlot]) {
+          if (slots.length >= MAX_SLOTS) {
+            Toasts.push({ head: 'SAVE GAMES FULL', name: 'DELETE ONE FIRST', text: 'Open LOAD GAME and delete an old save (X)' });
+            SFX.block();
+            return;
+          }
+          slots.push({});
+          d.activeSlot = slots.length - 1;
+        }
+        stashSlot();
+        d.storySlots[d.activeSlot] = JSON.parse(JSON.stringify(d.storySlots[d.activeSlot])); // the save keeps its own copy
+        Progress.save();
+        SFX.confirm();
+        Toasts.push({ head: 'GAME SAVED', name: 'SAVE ' + (d.activeSlot + 1), text: advHero().name + ' • ' + Object.keys(advData().cleared || {}).length + ' episodes' });
+      }
       /** A save game, summed up for its card (the one being played is read live). */
       function slotInfo(i) {
         const d = Progress.data,
-          s = i === d.activeSlot ? Object.assign({}, advData(), { skills: d.skills }) : storySlots()[i];
+          s = i === 'current' ? Object.assign({}, advData(), { skills: d.skills }) : storySlots()[i];
         const def = ROSTER[clamp(s.hero | 0, 0, STORY_HEROES_N - 1)];
         const done = Object.keys(s.cleared || {}).filter(n => STORY_CHAPTERS[n]);
         const next = ADV_CHAPTERS.find(c => STORY_CHAPTERS[c.n] && !(s.cleared || {})[c.n]);
@@ -21828,9 +21888,18 @@
 
       /* ---- the SAVE GAMES screen (Story Mode opens here) ---- */
       const slotCard = (i, n) => ({ x: 40 + (i % 4) * 224, y: 92 + Math.floor(i / 4) * 196, w: 208, h: 184 });
+      /** An unsaved game you were playing (shown as CONTINUE so it isn't lost by accident). */
+      const unsavedGame = () => Progress.data.activeSlot < 0 && advData().prologue && Object.keys(advData().cleared || {}).length > 0;
+      /** The cards on the SAVE GAMES screen, in order. */
+      function slotList() {
+        const L = [];
+        if (unsavedGame()) L.push('current');
+        storySlots().forEach((_, i) => L.push(i));
+        if (storySlots().length < MAX_SLOTS) L.push('new');
+        return L;
+      }
       function openSlots() {
         storySlots();
-        stashSlot();
         game.adv = { scene: null, slots: { sel: Math.max(0, Progress.data.activeSlot | 0), t: 0, delAt: 0 } };
         game.screen = 'advSlots';
         SFX.select();
@@ -21849,15 +21918,15 @@
           return;
         }
         newSlot();
-        advData().seen.proFresh = true;
         game.adv = { scene: null };
         StoryVoices.loadFor(null);
-        startPrologue(); // ...then you pick your hero
+        openAdvSelect('newgame'); // choose your hero first... then Episode 1, which begins with the prologue
       }
       function updateAdvSlots() {
         const V = game.adv.slots,
           slots = storySlots(),
-          n = slots.length + (slots.length < MAX_SLOTS ? 1 : 0);
+          list = slotList(),
+          n = list.length;
         V.t++;
         if (backWasPressed()) {
           game.adv = null;
@@ -21872,18 +21941,16 @@
         if (wasPressed('KeyW', 'ArrowUp')) move(-4);
         if (wasPressed('KeyS', 'ArrowDown')) move(4);
         const del = () => {
-          if (V.sel >= slots.length) return;
+          if (typeof list[V.sel] !== 'number') return;
+          const at = list[V.sel];
           if (V.delAt && V.t - V.delAt < 150) {
             const d = Progress.data;
-            slots.splice(V.sel, 1);
-            if (d.activeSlot === V.sel) {
-              d.activeSlot = -1;
-              d.adv = { hero: 0, look: 0, prologue: false, cleared: {}, seen: {} };
-              d.skills = {};
-            } else if (d.activeSlot > V.sel) d.activeSlot--;
+            slots.splice(at, 1);
+            if (d.activeSlot === at) d.activeSlot = -1;
+            else if (d.activeSlot > at) d.activeSlot--;
             Progress.save();
             V.delAt = 0;
-            V.sel = Math.min(V.sel, slots.length);
+            V.sel = Math.min(V.sel, slotList().length - 1);
             V.note = { text: 'SAVE GAME DELETED', at: V.t };
             SFX.block();
           } else {
@@ -21900,7 +21967,7 @@
             const r = slotCard(i);
             if (c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h) {
               // the little bin on a card deletes it
-              if (i < slots.length && c0.x > r.x + r.w - 34 && c0.y < r.y + 30) {
+              if (typeof list[i] === 'number' && c0.x > r.x + r.w - 34 && c0.y < r.y + 30) {
                 V.sel = i;
                 return del();
               }
@@ -21911,8 +21978,13 @@
         }
         if (go) {
           SFX.confirm();
-          if (V.sel < slots.length) playSlot(V.sel);
-          else startNewGame();
+          const pickd = list[V.sel];
+          if (pickd === 'new') startNewGame();
+          else if (pickd === 'current') {
+            game.adv = { scene: null };
+            StoryVoices.loadFor(advHero().id);
+            openHub();
+          } else playSlot(pickd);
         }
       }
       function drawAdvSlots() {
@@ -21925,8 +21997,10 @@
         drawBackButton('MENU');
         drawText('SAVE GAMES', W / 2, 40, 36, FONT_COMIC, '#ffe234', INK, 8);
         drawText('CARRY ON A STORY, OR START A NEW ONE', W / 2, 72, 9, FONT_PIXEL, '#fff', INK, 0);
-        const n = slots.length + (slots.length < MAX_SLOTS ? 1 : 0);
+        const list = slotList(),
+          n = list.length;
         for (let i = 0; i < n; i++) {
+          const card = list[i];
           const r = slotCard(i),
             on = V.sel === i,
             lift = on ? -4 - Math.sin(t * 0.15) * 2 : 0;
@@ -21938,7 +22012,7 @@
           ctx.strokeStyle = on ? '#ff4fa3' : INK;
           ctx.lineWidth = on ? 5 : 3;
           ctx.stroke();
-          if (i >= slots.length) {
+          if (card === 'new') {
             // + START A NEW GAME
             drawText('+', x + r.w / 2, y + 66, 64, FONT_COMIC, on ? '#ffe234' : '#9a8fc0', INK, 6);
             drawText('START A', x + r.w / 2, y + 122, 18, FONT_COMIC, '#fff', INK, 4);
@@ -21946,7 +22020,7 @@
             drawText('PICK ANY HERO', x + r.w / 2, y + 168, 6, FONT_PIXEL, '#bdb3d9', INK, 0);
             continue;
           }
-          const info = slotInfo(i);
+          const info = slotInfo(card);
           ctx.save();
           roundRectPath(ctx, x + 8, y + 30, r.w - 16, 86, 10);
           ctx.clip();
@@ -21960,9 +22034,10 @@
           roundRectPath(ctx, x + 8, y + 8, 64, 18, 6);
           ctx.fillStyle = '#ffe234';
           ctx.fill();
-          drawText('SAVE ' + (i + 1), x + 40, y + 17, 7, FONT_PIXEL, INK, null, 0);
+          drawText(card === 'current' ? 'CONTINUE' : 'SAVE ' + (card + 1), x + 40, y + 17, 7, FONT_PIXEL, INK, null, 0);
+          if (card === 'current') drawText('NOT SAVED', x + r.w - 44, y + 17, 6, FONT_PIXEL, '#ffb03a', INK, 0);
           // the bin
-          drawText('✕', x + r.w - 18, y + 17, 12, FONT_PIXEL, V.delAt && V.sel === i && V.t - V.delAt < 150 ? '#ff4f6a' : '#9a8fc0', null, 0);
+          else drawText('✕', x + r.w - 18, y + 17, 12, FONT_PIXEL, V.delAt && V.sel === i && V.t - V.delAt < 150 ? '#ff4f6a' : '#9a8fc0', null, 0);
           drawText(info.def.name, x + r.w / 2, y + 132, info.def.name.length > 13 ? 13 : 16, FONT_COMIC, info.def.color || '#fff', INK, 4);
           drawText(info.fresh ? 'NOT STARTED YET' : info.episodes + ' EPISODES  •  LEVEL ' + info.level, x + r.w / 2, y + 152, 7, FONT_PIXEL, '#7dff9a', INK, 0);
           drawText(info.fresh ? '' : 'NEXT: ' + info.next, x + r.w / 2, y + 168, 6, FONT_PIXEL, '#ffe234', INK, 0);
@@ -22292,19 +22367,18 @@
         { who: 'narr', text: '*Dryer No. 7 starts spinning by itself. A sock is sucked toward the door!*', fx: s => (s.suck = 1) },
         { who: 'stinky', text: "HEY! THAT'S MY OTHER HALF!" },
         { who: 'gran', text: 'In my day, socks went missing the honest way. Behind the radiator! ...Oh, my back.' },
-        { who: 'narr', text: '*The dryer window glows purple. A glamorous face appears in the glass...*', fx: s => (s.queen = 1) },
-        { who: 'queen', text: 'Greetings, single-leggers. We are QUEEN NYLONIA, ruler of the Hosiery and of the beautiful Island of Nylonia.' },
-        { who: 'argyle', text: 'Why is she saying "we"? There is one of her.' },
-        { who: 'queen', text: 'We have TWO LEGS, darling. We are ALWAYS a "we".' },
-        { who: 'queen', text: 'Listen carefully, for We will only say this once. ...Twice if you are slow.' },
-        { who: 'queen', text: 'The DRYER DEMON has awoken. He steals your socks. He steals Our stockings. Soon there will be nothing left in any drawer, in any world.' },
-        { who: 'queen', text: 'We need... a HERO.' },
+        { who: 'narr', text: '*The dryer window glows purple. A figure in a black mission suit, night-vision goggles and a tiny earpiece presses against the glass...*', fx: s => (s.agent = 1) },
+        { who: 'fishnet', text: 'Psst! Down here! Agent Fishnet, Royal Scout of Nylonia. This is a SECRET mission. Act natural.' },
+        { who: 'argyle', text: 'Why is she whispering? We can all see her.' },
+        { who: 'fishnet', text: "Because it's SECRET! ...Also my goggles are on upside down. Hold on." },
+        { who: 'fishnet', text: 'Listen. The DRYER DEMON has woken up. He is stealing socks from every drawer, in every world. Your other half was just the start.' },
+        { who: 'fishnet', text: 'My Queen sent me through the dryer on a top secret mission: to find... a HERO.' },
         { who: 'narr', text: '*Everyone looks at Stinky Tabi. Stinky Tabi looks behind himself.*', fx: s => (s.look = 1) },
         { who: 'stinky', text: '...Me?' },
-        { who: 'queen', text: 'We asked for a hero. Not a... *sniff* ...gym bag.' },
-        { who: 'stinky', text: "He took my other half, lady. I'm going." },
+        { who: 'fishnet', text: '*checks a tiny notebook* Hmm. It says here: "brave, heroic, smells of roses." ...Close enough!' },
+        { who: 'stinky', text: "He took my other half. I'm going." },
         { who: 'argyle', text: 'Then we all go. The way of the sock is never to walk alone.' },
-        { who: 'queen', text: 'Very well. Choose who answers Our call. Bring snacks. Do NOT touch Our curtains.' }
+        { who: 'fishnet', text: "Great! Hold on to something. Going through the dryer is a bit... TUMBLY. Follow me, hero!" }
       ];
 
       function startPrologue() {
@@ -22323,14 +22397,14 @@
         drawStage(0.25, 'laundry');
         const speaking = game.adv.scene ? game.adv.scene.lines[game.adv.scene.i].who : '';
         // Dryer No. 7, with the Queen in its window
-        const shake = S.spin ? Math.sin(t * 1.3) * (S.queen ? 1 : 3) : 0;
+        const shake = S.spin ? Math.sin(t * 1.3) * (S.queen || S.agent ? 1 : 3) : 0;
         ctx.save();
         ctx.translate(720, 214);
         ctx.scale(0.62, 0.62);
         ctx.translate(-720, -214);
         drawDryerMachine(720, 214, 0, shake);
         ctx.restore();
-        if (S.spin && !S.queen) {
+        if (S.spin && !S.queen && !S.agent) {
           // a purple swirl in the window
           ctx.save();
           ctx.beginPath();
@@ -22374,6 +22448,79 @@
           ctx.stroke();
           ctx.restore();
         }
+        if (S.agent) {
+          // AGENT FISHNET on a secret mission: black beanie, night-vision goggles, an earpiece
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(720, 214, 60, 0, 7);
+          ctx.clip();
+          const g = ctx.createRadialGradient(720, 214, 10, 720, 214, 70);
+          g.addColorStop(0, '#2a4a3a');
+          g.addColorStop(1, '#0a1a12');
+          ctx.fillStyle = g;
+          ctx.fillRect(650, 140, 140, 150);
+          const appear = Math.min(1, S.agent++ / 30),
+            s = 0.62,
+            bx = 714,
+            by = 300 + (1 - appear) * 60;
+          ctx.globalAlpha = appear;
+          drawHosiery(ctx, 'fishnet', bx, by, s, -1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile', alpha: appear });
+          // where her eyes are (see drawHosieryPortrait): just above her waistband
+          const ex = bx - 15 * s,
+            ey = by - 148 * s;
+          // the beanie
+          ctx.fillStyle = '#15151c';
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.ellipse(ex, ey - 22, 30, 20, 0, Math.PI, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillRect(ex - 31, ey - 24, 62, 8);
+          // night-vision goggles (green lenses), strap round the back
+          ctx.strokeStyle = '#15151c';
+          ctx.lineWidth = 5;
+          ctx.beginPath();
+          ctx.moveTo(ex - 28, ey - 4);
+          ctx.lineTo(ex + 28, ey - 4);
+          ctx.stroke();
+          for (const dx of [-11, 11]) {
+            ctx.fillStyle = '#2b2b33';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(ex + dx, ey - 4, 10, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(80,255,120,' + (0.6 + Math.sin(t * 0.2) * 0.2) + ')';
+            ctx.beginPath();
+            ctx.arc(ex + dx, ey - 4, 6, 0, 7);
+            ctx.fill();
+          }
+          // the earpiece and its curly wire
+          ctx.strokeStyle = '#d9d9e6';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          for (let i = 0; i <= 10; i++) ctx.lineTo(ex + 26 + Math.sin(i * 1.6) * 3, ey + 4 + i * 3);
+          ctx.stroke();
+          ctx.fillStyle = '#15151c';
+          ctx.beginPath();
+          ctx.arc(ex + 26, ey + 2, 4, 0, 7);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.restore();
+          ctx.save();
+          ctx.shadowColor = '#7dff9a';
+          ctx.shadowBlur = 18;
+          ctx.strokeStyle = 'rgba(125,255,154,0.75)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(720, 214, 62, 0, 7);
+          ctx.stroke();
+          ctx.restore();
+          if (t % 50 < 30) drawText('TOP SECRET', 720, 150, 9, FONT_PIXEL, '#ff4f6a', INK, 3);
+        }
         // Stinky's other half flying into the dryer
         if (S.suck && S.suck < 60) {
           const k = S.suck / 60;
@@ -22400,11 +22547,11 @@
             p.mouth = t % 10 < 5 ? 'yell' : 'grin';
             p.yOff = -Math.abs(Math.sin(t * 0.25)) * 8;
           }
-          if (S.queen && !talking) p.eyes = 'happy';
+          if ((S.queen || S.agent) && !talking) p.eyes = 'happy';
           if (S.look && id !== 'stinky') {
             p.eyes = 'angry';
           }
-          drawSock(ctx, d, p, x, 396, S.look && id === 'stinky' ? -1 : 1, fitScale(d, 0.95), { x: S.queen ? 4 : 3, y: 0 });
+          drawSock(ctx, d, p, x, 396, S.look && id === 'stinky' ? -1 : 1, fitScale(d, 0.95), { x: S.queen || S.agent ? 4 : 3, y: 0 });
         }
         drawSceneBox();
       }
@@ -22441,12 +22588,17 @@
             StoryVoices.loadFor(ROSTER[S.c].id); // this hero's spoken lines
             A.look = skinOptions(ROSTER[S.c])[wrapIndex(S.k, skinOptions(ROSTER[S.c]).length)];
             Progress.save();
-            if (S.from === 'prologue') openPortal();
+            if (S.from === 'newgame') {
+              // straight into Episode 1 (its prologue first); the palace and the Queen come after
+              game.adv = { scene: null };
+              startChapter(1);
+            } else if (S.from === 'prologue') openPortal();
             else openHub();
           }
           return;
         }
         if (backWasPressed()) {
+          if (S.from === 'newgame') return openSlots(); // changed your mind
           if (S.from === 'prologue') toTitle();
           else openHub();
           return;
@@ -22530,7 +22682,7 @@
           ctx.fill();
         }
         ctx.restore();
-        drawText(S.from === 'prologue' ? "WHO WILL ANSWER THE QUEEN'S CALL?" : 'CHOOSE YOUR HERO', 520, 30, 26, FONT_COMIC, '#ffe234', INK, 7);
+        drawText(S.from === 'prologue' ? "WHO WILL ANSWER THE QUEEN'S CALL?" : S.from === 'newgame' ? 'NEW GAME: CHOOSE YOUR HERO' : 'CHOOSE YOUR HERO', 520, 30, 26, FONT_COMIC, '#ffe234', INK, 7);
         drawBackButton(S.from === 'prologue' ? 'QUIT' : 'BACK');
         // portrait grid
         for (let i = 0; i < STORY_HEROES_N; i++) {
@@ -22931,7 +23083,8 @@
                 }
               };
             })),
-        { label: 'SAVE GAMES', sub: 'SAVE ' + ((Progress.data.activeSlot | 0) + 1) + ': ' + advHeroLook().name, on: true, go: () => openSlots() },
+        { label: 'SAVE GAME', sub: unsavedChanges() ? (Progress.data.activeSlot >= 0 ? 'SAVE ' + (Progress.data.activeSlot + 1) + ' • NOT SAVED YET' : 'NOT SAVED YET') : 'SAVE ' + (Progress.data.activeSlot + 1) + ' • ALL SAVED ✓', on: true, go: () => saveGame() },
+        { label: 'LOAD GAME', sub: 'YOUR SAVE GAMES', on: true, go: () => openSlots() },
         { label: 'SKILL TREE', sub: 'LEVEL ' + skillData().lvl + (skillData().sp ? ' • ' + skillData().sp + ' POINTS TO SPEND!' : ''), on: true, go: () => openSkills() },
         { label: 'BOUNTY BOARD', sub: 'SIDE FIGHTS & SPARRING', on: true, go: () => openBounty() },
         {
@@ -23815,6 +23968,62 @@
       // A chapter is a list of steps: { scene, cast } plays a story scene on the chapter's arena (cast = the villains
       // standing there), { fight: id } is a normal 1-on-1 fight against that villain (lose = try again), and
       // { clear: true } ends the chapter. Your hero (and their Dryer style) is the one locked in on the hero select.
+      // Episode 1 opens with the kidnapping: which two friends are taken depends on who the hero is
+      const CH1_KIDNAP = [
+        { who: 'narr', text: '*THE LINT PLAINS. The dryer spits everyone out into a field of fluff. The palace towers glint far away.*', fx: s => ((s.flash = 10), (s.friends = ['argyle', 'gran'])) },
+        { who: 'fishnet', text: "Welcome to Nylonia! The palace is just past these plains. Stay close, everyone, and do NOT touch the fluff." },
+        { who: 'argyle', text: "This fluff is... watching us." },
+        { who: 'gran', text: "Ooh, it's like walking on a sweater. ...My back LOVES it." },
+        { who: 'narr', text: '*A-CHOO! A-CHOO! A-CHOO! Lint Gang babies pop out of every fluff ball. Dozens of them!*', fx: s => (s.sneeze = { t: 0, x: 700, kind: 'gang', babies: 5 }) },
+        { who: 'lint', text: 'GET THEM, BABIES! The boss wants HOSTAGES!' },
+        { who: 'fishnet', text: 'Ninja mode! Stay behind me! HI-YAH!', fx: s => (s.flash = 12) },
+        { who: 'narr', text: '*Fishnet Scout flips, kicks and karate-chops. Lint flies everywhere... but there are just too many of them.*', fx: s => (s.quake = { at: s.t || 0, n: 3 }) },
+        { who: 'argyle', text: "Unhand me, you fuzz! A samurai does NOT get carried like LAUNDRY!" },
+        { who: 'gran', text: "Put me down! I have a BAD BACK! ...And a WORSE TEMPER!" },
+        { who: 'narr', text: "*The Lint Gang hoists Argyle-san and Stocking Gran onto their tiny shoulders and scurries off into the fog.*", fx: s => (s.kidnap = s.t) },
+        { who: 'lint', text: 'Want your friends back? Come and FIND them! HAHAHA! ...ACHOO!' },
+        { who: 'fishnet', text: "*panting* I'm sorry, Sir Knight. There were... so many of them." },
+        { who: 'hero', text: 'They took them. They actually took them.' },
+        { who: 'fishnet', text: "Then we get them back. Together. The Lint Gang's leader is still out here. Let's start with him." }
+      ];
+      const CH1_KIDNAP_ARGYLE = [
+        { who: 'narr', text: '*THE LINT PLAINS. The dryer spits everyone out into a field of fluff. The palace towers glint far away.*', fx: s => ((s.flash = 10), (s.friends = ['stinky', 'gran'])) },
+        { who: 'fishnet', text: "Welcome to Nylonia! The palace is just past these plains. Stay close, everyone, and do NOT touch the fluff." },
+        { who: 'stinky', text: "Smells like a gym bag in here. ...Wait, that's me." },
+        { who: 'gran', text: "Ooh, it's like walking on a sweater. ...My back LOVES it." },
+        { who: 'narr', text: '*A-CHOO! A-CHOO! A-CHOO! Lint Gang babies pop out of every fluff ball. Dozens of them!*', fx: s => (s.sneeze = { t: 0, x: 700, kind: 'gang', babies: 5 }) },
+        { who: 'lint', text: 'GET THEM, BABIES! The boss wants HOSTAGES!' },
+        { who: 'fishnet', text: 'Ninja mode! Stay behind me! HI-YAH!', fx: s => (s.flash = 12) },
+        { who: 'narr', text: '*Fishnet Scout flips, kicks and karate-chops. Lint flies everywhere... but there are just too many of them.*', fx: s => (s.quake = { at: s.t || 0, n: 3 }) },
+        { who: 'stinky', text: "HEY! My other half is gone and NOW this?! PUT ME DOWN!" },
+        { who: 'gran', text: "Put me down! I have a BAD BACK! ...And a WORSE TEMPER!" },
+        { who: 'narr', text: "*The Lint Gang hoists Stinky Tabi and Stocking Gran onto their tiny shoulders and scurries off into the fog.*", fx: s => (s.kidnap = s.t) },
+        { who: 'lint', text: 'Want your friends back? Come and FIND them! HAHAHA! ...ACHOO!' },
+        { who: 'fishnet', text: "*panting* I'm sorry, Sir Knight. There were... so many of them." },
+        { who: 'hero', text: 'They took them. They actually took them.' },
+        { who: 'fishnet', text: "Then we get them back. Together. The Lint Gang's leader is still out here. Let's start with him." }
+      ];
+      const CH1_KIDNAP_GRAN = [
+        { who: 'narr', text: '*THE LINT PLAINS. The dryer spits everyone out into a field of fluff. The palace towers glint far away.*', fx: s => ((s.flash = 10), (s.friends = ['stinky', 'argyle'])) },
+        { who: 'fishnet', text: "Welcome to Nylonia! The palace is just past these plains. Stay close, everyone, and do NOT touch the fluff." },
+        { who: 'stinky', text: "Smells like a gym bag in here. ...Wait, that's me." },
+        { who: 'argyle', text: "This fluff is... watching us." },
+        { who: 'narr', text: '*A-CHOO! A-CHOO! A-CHOO! Lint Gang babies pop out of every fluff ball. Dozens of them!*', fx: s => (s.sneeze = { t: 0, x: 700, kind: 'gang', babies: 5 }) },
+        { who: 'lint', text: 'GET THEM, BABIES! The boss wants HOSTAGES!' },
+        { who: 'fishnet', text: 'Ninja mode! Stay behind me! HI-YAH!', fx: s => (s.flash = 12) },
+        { who: 'narr', text: '*Fishnet Scout flips, kicks and karate-chops. Lint flies everywhere... but there are just too many of them.*', fx: s => (s.quake = { at: s.t || 0, n: 3 }) },
+        { who: 'stinky', text: "HEY! My other half is gone and NOW this?! PUT ME DOWN!" },
+        { who: 'argyle', text: "Unhand me, you fuzz! A samurai does NOT get carried like LAUNDRY!" },
+        { who: 'narr', text: "*The Lint Gang hoists Stinky Tabi and Argyle-san onto their tiny shoulders and scurries off into the fog.*", fx: s => (s.kidnap = s.t) },
+        { who: 'lint', text: 'Want your friends back? Come and FIND them! HAHAHA! ...ACHOO!' },
+        { who: 'fishnet', text: "*panting* I'm sorry, Sir Knight. There were... so many of them." },
+        { who: 'hero', text: 'They took them. They actually took them.' },
+        { who: 'fishnet', text: "Then we get them back. Together. The Lint Gang's leader is still out here. Let's start with him." }
+      ];
+      const kidnapScene = () => {
+        const id = advHero().id;
+        return id === 'argyle' ? CH1_KIDNAP_ARGYLE : id === 'gran' ? CH1_KIDNAP_GRAN : CH1_KIDNAP;
+      };
       const CH1_INTRO = [
         { who: 'hero', text: "Ugh. It's like walking on a sweater that gave up." },
         { who: 'fishnet', text: "The LINT PLAINS, Sir Knight! The Demon's Lint Gang guards the way to the Static Swamp." },
@@ -25107,6 +25316,7 @@
           stage: 'plains',
           tier: 'medium',
           steps: [
+            { scene: () => kidnapScene(), cast: ['lint'] },
             { scene: CH1_INTRO, cast: ['lint'] },
             { fight: 'lint' },
             { walk: true },
@@ -25624,7 +25834,7 @@
           particles.length = 0;
           floatingTexts.length = 0;
           game.screen = 'advScene';
-          playScene(step.scene, nextStoryStep, game.adv.stage);
+          playScene(typeof step.scene === 'function' ? step.scene() : step.scene, nextStoryStep, game.adv.stage);
           if (step.boss) {
             // the arcade announcer's boss warning
             try {
@@ -26932,6 +27142,34 @@
           }
           if (id === 'lint') spots.lint.top = 250;
         });
+        if (St.friends) {
+          // the hero's two friends... until the Lint Gang carries them off on a swarm of babies
+          St.friends.forEach((id, i) => {
+            const d = withSkin(findCharacter(id), 0);
+            const p = pose(speaking === id, 50 + i * 30);
+            let x = 410 + i * 80,
+              y = 396,
+              rot = 0;
+            if (St.kidnap != null) {
+              const k = Math.max(0, (t - St.kidnap) / 100);
+              if (k >= 1.2) return;
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              rot = -1.25;
+              y = 372 - Math.abs(Math.sin(t * 0.4 + i)) * 8;
+              x += k * 760;
+              for (let j = 0; j < 5; j++) drawLintBaby(x - 40 + j * 20, 392 + Math.abs(Math.sin(t * 0.5 + j)) * -6, 9, Math.sin(t * 0.3 + j) * 0.3, null);
+            } else if (St.sneeze) {
+              p.eyes = 'wince';
+              p.mouth = 'o';
+            }
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rot);
+            drawSock(ctx, d, p, 0, 0, i ? -1 : 1, fitScale(d, 0.85), { x: 3, y: 0 });
+            ctx.restore();
+          });
+        }
         drawSceneMoments(St, t, spots);
         // the lint ball swelling on the tip of his nose
         if (St.sneeze) {
@@ -28404,6 +28642,9 @@
         openSlots,
         startNewGame,
         playSlot,
+        saveGame,
+        /** tests: carry on with the game in progress (saved or not) */
+        continueGame: () => { game.adv = { scene: null }; openHub(); },
         heroPerks,
         HERO_PERK_LIST,
         /** tests: the skill tree and story balance numbers */

@@ -16,7 +16,7 @@ require('fs').mkdirSync(SP, { recursive: true });
   const shots = new Set();
   const shot = async name => { if (shots.has(name)) return; shots.add(name); await p.screenshot({ path: SP + 'full_' + name + '.png' }); };
   const FROM0 = +(process.env.FROM || 1);
-  await G(FROM0 => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; for (let n = 1; n < FROM0; n++) S.Progress.data.adv.cleared[n] = 1; S.startAdventure(); if (S.game.screen === 'advSlots') S.playSlot(0); /* (story mode opens on the save games) */ }, FROM0);
+  await G(FROM0 => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; for (let n = 1; n < FROM0; n++) S.Progress.data.adv.cleared[n] = 1; S.startAdventure(); if (S.game.screen === 'advSlots') S.continueGame(); /* (story mode opens on the save games) */ }, FROM0);
   await p.waitForTimeout(400);
   const FROM = +(process.env.FROM || 1), TO = +(process.env.TO || 27); // every episode of every chapter
   for (let ch = FROM; ch <= TO; ch++) {

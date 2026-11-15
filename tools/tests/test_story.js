@@ -13,7 +13,7 @@ require('fs').mkdirSync(SP, { recursive: true });
   const G = (fn, a) => p.evaluate(fn, a);
   const key = async (k, w = 80) => { await p.keyboard.press(k); await p.waitForTimeout(w); };
   const scr = () => G(() => window.__sock.game.screen);
-  await G(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 1, look: 0, cleared: {}, seen: {} }; S.startAdventure(); if (S.game.screen === 'advSlots') S.playSlot(0); /* (story mode opens on the save games) */ });
+  await G(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 1, look: 0, cleared: {}, seen: {} }; S.startAdventure(); if (S.game.screen === 'advSlots') S.continueGame(); /* (story mode opens on the save games) */ });
   await p.waitForTimeout(400);
   await p.screenshot({ path: SP + 'st_hub.png' });
   await G(() => { window.__sock.game.adv.hub.sel = 0; }); // CHAPTER 1...
