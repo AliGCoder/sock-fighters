@@ -78,7 +78,16 @@ const PERSONA = {
   iron: 'stern, booming warlord',
   mismatch: 'huge, deep, rumbling patchwork golem, a little dim-witted',
   puppet: 'flamboyant, hammy stage prince, dramatic showman',
-  mitten: 'big, grumpy, woolly voice, jealous and dramatic'
+  mitten: 'big, grumpy, woolly voice, jealous and dramatic',
+  flipflop: 'laid-back, goofy surfer dude',
+  stiletto: 'haughty, sassy fashion diva',
+  galosh: 'huge, booming, splashy rubber boot',
+  skate: 'groovy, bubbly disco queen',
+  tapper: 'dapper, cheerful old-time showman',
+  slipper: 'sleepy, cranky dinosaur slipper',
+  lace: 'sly, hissing snake',
+  studs: 'loud, shouty football coach',
+  bigboot: 'gigantic, slow, booming ancient boot'
 };
 /** The mood of one line, read from how it's written. */
 function mood(who, text) {
@@ -137,7 +146,7 @@ function japanese(text, heroId) {
 }
 
 const names = Object.keys(raw).filter(k => k !== 'ROSTER');
-const roster = raw.ROSTER; // [id, NAME]
+const roster = raw.ROSTER.filter(([id]) => id !== 'mysock'); // [id, NAME] (MY SOCK is not in the story)
 const jobs = new Map();
 function add(speaker, shown, voice, say, file, text, who) {
   if (!say) return;

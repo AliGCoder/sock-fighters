@@ -13,12 +13,13 @@ const TESTS = [
   ['test_voices', 'Story voices on PC, iPhone and Android'],
   ['test_online', 'Online play stays in step (iPhone + Android)'],
   ['test_quick', 'Quick Match pairs random players over the internet'],
-  ...(quick ? [] : [['test_full', 'Story mode: all 7 chapters, credits, palace scenes']])
+  ['test_features', 'MY SOCK, Sock Maker, Bag, Skill Tree, Bounties, Daily'],
+  ...(quick ? [] : [['test_full', 'Story mode: all 20 chapters, credits, palace scenes']])
 ];
 const problems = [];
 for (const [name, what] of TESTS) {
   const t0 = Date.now();
-  const r = spawnSync(process.execPath, [path.join(__dirname, name + '.js')], { encoding: 'utf8', timeout: (name === 'test_full' ? 25 : 9) * 60 * 1000 });
+  const r = spawnSync(process.execPath, [path.join(__dirname, name + '.js')], { encoding: 'utf8', timeout: (name === 'test_full' ? 60 : 9) * 60 * 1000 });
   const out = (r.stdout || '') + (r.stderr || '');
   const bad = [];
   if (r.status !== 0) bad.push('exited with code ' + r.status);

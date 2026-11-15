@@ -102,6 +102,61 @@ CAST = {
                   superv=['しわ一つ残さぬ!'], throwv=['どりゃあ!'], hurt=['ぬっ!', 'ぐっ!', 'むっ!'], hurtBig=['ぐおおっ!', 'おのれ!'],
                   ko=['この…将軍が…!'], block=['効かぬ!'], laugh=['ぐははは!'], win=['完璧な仕上がりだ。'],
                   dizzy=['ぬう…目が…']), None),
+    # ---- THE SHOE WARS (story chapters 8-20) ----
+    'flipflop': (MALE, 'A laid-back young Japanese surfer dude: relaxed, sunny, drawling and cheerful, says "dude" a lot, '
+                       'chill and goofy. Clearly a young man.',
+                 dict(light=['ほいっ!', 'よっ!', 'それっ!'], heavy=['うぇーい!', 'どーん!'], special=['ビーサン、いけっ!', 'ワイプアウト!'],
+                      superv=['カワバンガあああ!'], throwv=['ぽーい!'], hurt=['いてっ!', 'マジか!', 'うおっ!'],
+                      hurtBig=['ワイプアウトだー!', 'うわあ!'], ko=['ひでぇ…波だぜ…'], laugh=['へへっ、イケてる!'],
+                      win=['最高の波だったぜ!'], dizzy=['海がぐるぐる…']), None),
+    'stiletto': (FEMALE, 'A haughty, glamorous Japanese fashion diva: sharp, sassy, dramatic and theatrical, a confident '
+                         'catwalk queen with a sneering, elegant voice.',
+                 dict(light=['はっ!', 'ふんっ!', 'えいっ!'], heavy=['ポーズ!', 'はああっ!'], special=['ヒール・スパイク!', 'ポーズを決めて!'],
+                      superv=['ランウェイは私のものよ!'], throwv=['退場よ!'], hurt=['きゃっ!', '服が!', 'いやっ!'],
+                      hurtBig=['ヒールが折れる!', 'きゃああ!'], ko=['今シーズン…終わり…'], laugh=['オーホッホッホ!'],
+                      win=['あなた、時代遅れよ。'], dizzy=['フラッシュが…まぶしい…']), None),
+    'galosh': (MALE, 'A huge, booming Japanese man with a big, rubbery, splashy, gleeful voice: loud, a little silly, loves '
+                     'puddles. Clearly an adult man.',
+               dict(light=['ふんっ!', 'ぬん!', 'それっ!'], heavy=['ザッバーン!', 'どすん!'], special=['水たまり、発射!', 'びしょぬれだ!'],
+                    superv=['モンスーンだああ!'], throwv=['ぽちゃん!'], hurt=['キュッ!', 'ぐっ!', 'ぬっ!'],
+                    hurtBig=['ゴムがぁ!', 'ぐおお!'], ko=['乾いて…しまう…'], laugh=['がっはっは!'],
+                    win=['ずぶぬれだな!'], dizzy=['水がまわる…']), None),
+    'skate': (FEMALE, 'A groovy, upbeat Japanese disco queen: bubbly, funky and sing-song, cheerful 1970s dance-floor '
+                      'energy, a confident woman.',
+              dict(light=['はっ!', 'それっ!', 'イェイ!'], heavy=['グルーヴィー!', 'フゥー!'], special=['ディスコ・スピン!', 'ローラー・ラッシュ!'],
+                   superv=['グルーヴ・マシーン、スタート!'], throwv=['ほーら!'], hurt=['あんっ!', 'ちょっと!', 'いたっ!'],
+                   hurtBig=['リズムが!', 'きゃああ!'], ko=['音楽が…止まる…'], laugh=['アハハ、ファンキー!'],
+                   win=['踊り続けて、ベイビー!'], dizzy=['ミラーボールが…まわる…']), None),
+    'tapper': (MALE, 'A dapper, old-fashioned Japanese showman: smooth, cheerful and theatrical, a song-and-dance man '
+                     'with a crisp, bright voice.',
+               dict(light=['タップ!', 'はっ!', 'それっ!'], heavy=['ジャズハンズ!', 'タタン!'], special=['タップ・アタック!', 'シャッフル!'],
+                    superv=['フィナーレだ、拍手を!'], throwv=['ステージから退場!'], hurt=['おっと!', 'いたっ!', 'リズムが!'],
+                    hurtBig=['タップが乱れる!', 'うわあ!'], ko=['幕…引き…'], laugh=['ハッハッハ!'],
+                    win=['スタンディングオベーションを!'], dizzy=['ステップが…からまる…']), None),
+    'slipper': (FEMALE, 'A sleepy, grumpy Japanese woman with a husky, yawning, cranky voice: drowsy and slow, then '
+                        'suddenly roaring like a little dinosaur.',
+                dict(light=['んっ!', 'ふんっ!', 'がおっ!'], heavy=['ガオー!', 'どすん!'], special=['おやすみゴロゴロ!', 'ねむねむスタンプ!'],
+                     superv=['おやすみのお話、してあげる!'], throwv=['あっち行って!'], hurt=['むにゃ!', 'いたっ!', 'うう!'],
+                     hurtBig=['眠いのに!', 'ガオオ!'], ko=['すぴー…'], laugh=['ふわぁ…ふふ…'],
+                     win=['これで寝られる…'], dizzy=['ふわぁ…ねむ…']), None),
+    'lace': (MALE, 'A sly, hissing Japanese man with a thin, slithering, snake-like voice: drawn-out s sounds, creepy '
+                   'and smug.',
+             dict(light=['シャッ!', 'シュッ!', 'はっ!'], heavy=['シャアア!', 'からめっ!'], special=['くつひも投げ縄!', '固結びだぁ!'],
+                  superv=['からまれぇぇ!'], throwv=['ほどけろ!'], hurt=['シャッ!', 'くっ!', 'うぬ!'],
+                  hurtBig=['ほつれるぅ!', 'シャアア!'], ko=['ほどけて…しまう…'], laugh=['シャッシャッシャ!'],
+                  win=['結ばれたなぁ。'], dizzy=['からまって…まわる…']), None),
+    'studs': (MALE, 'A loud, energetic Japanese football coach: shouty, sporty and boisterous, a gruff but cheerful '
+                    'voice like a man yelling from the touchline.',
+              dict(light=['おらっ!', 'ほいっ!', 'せいっ!'], heavy=['シュート!', 'どりゃあ!'], special=['パワーシュート!', 'オーバーヘッド!'],
+                   superv=['ゴールデンゴールだ!'], throwv=['オフサイド!'], hurt=['ファウル!', 'いてっ!', 'ぐっ!'],
+                   hurtBig=['レッドカード!', 'ぐああ!'], ko=['試合…終了…'], laugh=['がはは、ナイス!'],
+                   win=['ゴオオオル!'], dizzy=['ボールが…ふたつ…']), None),
+    'bigboot': (MALE, 'A gigantic, ancient Japanese giant: an extremely deep, slow, booming, rumbling voice that shakes '
+                      'the room, grumpy and proud. Clearly a huge man.',
+                dict(light=['ふん!', 'ぬん!', 'どん!'], heavy=['ドスン!', 'ぬおおお!'], special=['踏み潰す!', '泥をくらえ!'],
+                     superv=['ストンパゲドンだあああ!'], throwv=['どけえ!'], hurt=['ぬっ!', 'ぐっ!', 'むう!'],
+                     hurtBig=['わしの革がぁ!', 'ぐおおお!'], ko=['わしは…ただの…ブーツ…'], laugh=['ぐわっはっは!'],
+                     win=['靴下は踏まれるものだ。'], dizzy=['ぬう…足元が…']), None),
 }
 
 
