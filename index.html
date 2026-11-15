@@ -3333,6 +3333,7 @@
       /** A character in a skin. `skinIndex` is a number (one of its hand-made skins) or a style object
        *  { base, fx, hue, sat, light, name } (an unlocked effect skin or a "MY STYLE" from the dryer). */
       function withSkin(def, skinIndex) {
+        if (def.mysock) return mySockDef(skinIndex && typeof skinIndex === 'object' && skinIndex.my ? skinIndex.my : def.my || MY_DEFAULT);
         if (skinIndex && typeof skinIndex === 'object') return styledSkin(def, skinIndex);
         const count = def.skins.length;
         const skin = def.skins[(((skinIndex || 0) % count) + count) % count];
@@ -4441,6 +4442,7 @@
       function sanitizeStyle(st) {
         if (typeof st === 'number') return clamp(st | 0, 0, 9);
         if (!st || typeof st !== 'object') return 0;
+        if (st.my && typeof st.my === 'object') return { my: sanitizeMy(st.my) };
         const num = (v, lo, hi, d) => (typeof v === 'number' && isFinite(v) ? clamp(v, lo, hi) : d);
         return {
           base: num(st.base, 0, 9, 0) | 0,
@@ -4476,8 +4478,219 @@
           villainHero: true
         })
       );
-      // everyone on the select screen: the 8 heroes, then the 9 villains
-      const ROSTER = [...CHARS, ...VILLAIN_HEROES];
+
+      /* ---------------- MY SOCK: a blank sock the player designs in the SOCK MAKER ---------------- */
+      // A design ("my") is plain data, so it saves, and travels to the other phone online inside the look.
+      const MY_COLORS = ['#f4f1ea', '#ffffff', '#2a2a2a', '#7a7f8c', '#e8333a', '#ff6b81', '#ff9d2e', '#ffe234', '#c8f05a', '#4fdc6a',
+        '#1fb7a8', '#3fd0ff', '#2f5bd3', '#7b5cff', '#c46aff', '#ff4fa3', '#8a5a2a', '#d4a017', '#f6bccd', '#bfe9ff'];
+      const MY_COLOR_NAMES = ['CREAM', 'WHITE', 'BLACK', 'GREY', 'RED', 'ROSE', 'ORANGE', 'YELLOW', 'LIME', 'GREEN',
+        'TEAL', 'SKY', 'BLUE', 'VIOLET', 'PURPLE', 'PINK', 'BROWN', 'GOLD', 'BLUSH', 'ICE'];
+      const MY_PATTERNS = ['PLAIN', 'STRIPES', 'PINSTRIPES', 'TWO-TONE', 'POLKA DOTS', 'ARGYLE', 'ZIGZAG', 'STARS', 'HEARTS', 'RAINBOW'];
+      const MY_EYES = ['NORMAL', 'BIG', 'SMALL', 'SLEEPY', 'LASHES', 'ANGRY', 'CYCLOPS', 'GOOGLY', 'STARRY'];
+      const MY_IRIS = [null, '#3fd0ff', '#4fdc6a', '#8a5a2a', '#7b5cff', '#e8333a', '#ffd23f', '#ff4fa3'];
+      const MY_IRIS_NAMES = ['BLACK', 'BLUE', 'GREEN', 'BROWN', 'VIOLET', 'RED', 'GOLD', 'PINK'];
+      const MY_TALL = [0.8, 0.9, 1, 1.1, 1.2, 1.3];
+      const MY_TALL_NAMES = ['TINY', 'SHORT', 'MEDIUM', 'TALL', 'TALLER', 'SKYSCRAPER'];
+      const MY_WIDE = [0.85, 0.95, 1, 1.1, 1.2];
+      const MY_WIDE_NAMES = ['SKINNY', 'SLIM', 'NORMAL', 'CHUNKY', 'CHONKY'];
+      const MY_FOOT = [0.8, 0.9, 1, 1.15, 1.3];
+      const MY_FOOT_NAMES = ['TINY', 'SMALL', 'NORMAL', 'BIG', 'CLOWN'];
+      const MY_NAMES = ['MY SOCK', 'SIR SOCKSALOT', 'CAPTAIN COTTON', 'LADY LINTSLEY', 'TOE-TALLY RAD', 'SOCKET ROCKET',
+        'THE HEEL', 'WOOLY WONDER', 'DARN-IT DAN', 'FUZZY FURY', 'ANKLE ANNIE', 'KNIT WIT', 'THE STITCH', 'SOCKZILLA',
+        'DR. DARN', 'COSY COMET', 'TUBE SOCK TONY', 'PURL-Y QUEEN', 'BAREFOOT BOB', 'SOCK OF AGES'];
+      // fighting styles: which special moves the sock has (SPECIAL_SLOTS kinds)
+      const MY_STYLES = [
+        { name: 'BRAWLER', slots: ['shoot', 'sumo'], proj: 'yarn', special: 'YARN BALL', special2: 'BELLY FLOP', moveHint: 'Hurls a ball of yarn', moveHint2: 'Leaps up and flops down', ai: 'proj' },
+        { name: 'SPINNER', slots: ['spin', 'rising'], special: 'SPIN CYCLE', special2: 'RISING CUFF', moveHint: 'Spins like a washing machine', moveHint2: 'Spinning anti-air uppercut', ai: 'close' },
+        { name: 'NINJA', slots: ['vanish', 'rising'], special: 'SOCK DROP', special2: 'UPPER CUFF', moveHint: 'Vanishes, then strikes from behind', moveHint2: 'Spinning anti-air uppercut', ai: 'tele' },
+        { name: 'STRETCHY', slots: ['snap', 'sumo'], special: 'ELASTIC FLICK', special2: 'BOUNCE STOMP', moveHint: 'Stretches out like a rubber band', moveHint2: 'Hops up and quakes the floor', ai: 'close' },
+        { name: 'YARN WRANGLER', slots: ['lasso', 'roll'], special: 'YARN LOOP', special2: 'ROLY-POLY', moveHint: 'Lassos foes, then bonks them', moveHint2: 'Curls up and rolls over you', ai: 'grab' },
+        { name: 'ZAPPER', slots: ['shoot', 'zap'], proj: 'yarn', special: 'YARN BALL', special2: 'STATIC SOCK', moveHint: 'Hurls a ball of yarn', moveHint2: 'Electric shock field', ai: 'proj', zap: true }
+      ];
+      const MY_DEFAULT = { name: 0, body: 0, c2: 4, cuff: 4, heel: 3, glove: 1, pattern: 0, tall: 2, wide: 2, foot: 2, eyes: 0, iris: 0, style: 0, head: null, face: null, bod: null, hc: null, fc: null, bc: null };
+      /** Clean up a design from storage or from the other phone. */
+      function sanitizeMy(m) {
+        const o = {},
+          src = m && typeof m === 'object' ? m : {};
+        const idx = (v, n, d) => (typeof v === 'number' && isFinite(v) ? clamp(v | 0, 0, n - 1) : d);
+        o.name = idx(src.name, MY_NAMES.length, 0);
+        for (const k of ['body', 'c2', 'cuff', 'heel', 'glove']) o[k] = idx(src[k], MY_COLORS.length, MY_DEFAULT[k]);
+        o.pattern = idx(src.pattern, MY_PATTERNS.length, 0);
+        o.tall = idx(src.tall, MY_TALL.length, 2);
+        o.wide = idx(src.wide, MY_WIDE.length, 2);
+        o.foot = idx(src.foot, MY_FOOT.length, 2);
+        o.eyes = idx(src.eyes, MY_EYES.length, 0);
+        o.iris = idx(src.iris, MY_IRIS.length, 0);
+        o.style = idx(src.style, MY_STYLES.length, 0);
+        for (const [k, slot] of [['head', 'head'], ['face', 'face'], ['bod', 'body']])
+          o[k] = MY_ITEMS[src[k]] && MY_ITEMS[src[k]].slot === slot ? src[k] : null;
+        for (const k of ['hc', 'fc', 'bc']) o[k] = typeof src[k] === 'string' && /^#[0-9a-f]{6}$/i.test(src[k]) ? src[k] : null;
+        return o;
+      }
+      const MYSOCK = {
+        id: 'mysock',
+        mysock: true,
+        name: 'MY SOCK',
+        jp: 'マイソックス',
+        title: 'Made by You',
+        color: '#f4f1ea',
+        glove: '#ffffff',
+        arm: '#f4f1ea',
+        special: 'YARN BALL',
+        special2: 'BELLY FLOP',
+        superName: 'SUPER SOCK SLAM',
+        moveHint: 'Hurls a ball of yarn',
+        moveHint2: 'Leaps up and flops down',
+        taunts: ['LOOK AT ME!', 'HAND-MADE!', '*poses*'],
+        quotes: ['Designed to win!', 'One of a kind. Literally.', 'My maker would be proud.', 'Fresh out of the Sock Maker!'],
+        skins: [{ name: 'BARE SOCK', pal: { base: '#f4f1ea', s1: '#e8333a', s2: '#e8333a', heel: '#7a7f8c', cuff: '#e8333a' } }],
+        pattern(u) {
+          const P = this.pal,
+            m = this.my || MY_DEFAULT;
+          if (u < 0.09) return P.cuff;
+          if ((u > 0.57 && u < 0.66) || u > 0.92) return P.heel;
+          switch (MY_PATTERNS[m.pattern]) {
+            case 'STRIPES':
+              return Math.floor((u - 0.09) * 16) % 2 ? P.s1 : P.base;
+            case 'PINSTRIPES':
+              return Math.floor(u * 44) % 4 === 0 ? P.s1 : P.base;
+            case 'TWO-TONE':
+              return u > 0.6 ? P.s1 : P.base;
+            case 'RAINBOW':
+              return hslToHex((u * 520) % 360, 0.75, 0.62);
+          }
+          return P.base;
+        },
+        detail(c, spine) {
+          const m = this.my || MY_DEFAULT,
+            kind = MY_PATTERNS[m.pattern],
+            pts = spine.pts,
+            col = this.pal.s1;
+          if (!['POLKA DOTS', 'ARGYLE', 'ZIGZAG', 'STARS', 'HEARTS'].includes(kind)) return;
+          c.save();
+          c.fillStyle = col;
+          c.strokeStyle = col;
+          if (kind === 'ZIGZAG') {
+            c.lineWidth = 5;
+            c.lineJoin = 'miter';
+            c.beginPath();
+            for (let i = 2; i < pts.length - 2; i++) {
+              const p = pts[i],
+                o = (i % 2 ? 0.3 : -0.3) * p.w;
+              i === 2 ? c.moveTo(p.x + p.nx * o, p.y + p.ny * o) : c.lineTo(p.x + p.nx * o, p.y + p.ny * o);
+            }
+            c.stroke();
+            c.restore();
+            return;
+          }
+          for (let i = 2; i < pts.length - 2; i += kind === 'ARGYLE' ? 2 : 1) {
+            const p = pts[i],
+              o = kind === 'ARGYLE' ? 0 : (i % 2 ? 0.22 : -0.2) * p.w,
+              x = p.x + p.nx * o,
+              y = p.y + p.ny * o;
+            if (p.u > 0.56 && p.u < 0.67) continue; // keep the heel clear
+            if (kind === 'POLKA DOTS') {
+              c.beginPath();
+              c.arc(x, y, 4.6, 0, 7);
+              c.fill();
+            } else if (kind === 'ARGYLE') {
+              const s = p.w * 0.3,
+                tx = p.ny,
+                ty = -p.nx; // along the sock
+              c.beginPath();
+              c.moveTo(x + tx * s * 1.2, y + ty * s * 1.2);
+              c.lineTo(x + p.nx * s, y + p.ny * s);
+              c.lineTo(x - tx * s * 1.2, y - ty * s * 1.2);
+              c.lineTo(x - p.nx * s, y - p.ny * s);
+              c.closePath();
+              c.fill();
+            } else if (kind === 'STARS') {
+              c.beginPath();
+              for (let k = 0; k < 10; k++) {
+                const a = -Math.PI / 2 + (k * Math.PI) / 5,
+                  r = k % 2 ? 2.4 : 6;
+                k ? c.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r) : c.moveTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
+              }
+              c.closePath();
+              c.fill();
+            } else if (kind === 'HEARTS') {
+              c.beginPath();
+              c.moveTo(x, y + 5);
+              c.bezierCurveTo(x - 9, y - 1, x - 4, y - 8, x, y - 3);
+              c.bezierCurveTo(x + 4, y - 8, x + 9, y - 1, x, y + 5);
+              c.fill();
+            }
+          }
+          c.restore();
+        }
+      };
+      MYSOCK.pal = MYSOCK.skins[0].pal;
+      MYSOCK.hat = null;
+      MYSOCK.stache = null;
+      MYSOCK.shades = false;
+      MYSOCK.skin = 0;
+      MYSOCK.skinName = 'BARE SOCK';
+      MYSOCK.ai = 'proj';
+      MYSOCK.slots = MY_STYLES[0].slots;
+      MYSOCK.proj = 'yarn';
+      MYSOCK.my = MY_DEFAULT;
+      const myCache = new Map();
+      /** The playable sock built from a design. */
+      function mySockDef(design) {
+        const m = sanitizeMy(design);
+        const key = JSON.stringify(m);
+        let out = myCache.get(key);
+        if (out) return out;
+        const col = i => MY_COLORS[i];
+        const st = MY_STYLES[m.style];
+        out = Object.assign(Object.create(MYSOCK), {
+          my: m,
+          name: MY_NAMES[m.name],
+          pal: { base: col(m.body), s1: col(m.c2), s2: col(m.c2), heel: col(m.heel), cuff: col(m.cuff) },
+          color: col(m.body) === '#2a2a2a' ? '#7a7f8c' : col(m.body),
+          glove: col(m.glove),
+          arm: shadeColor(col(m.body), -0.08),
+          tall: MY_TALL[m.tall],
+          wMul: MY_WIDE[m.wide],
+          footMul: MY_FOOT[m.foot],
+          eyeStyle: MY_EYES[m.eyes] === 'NORMAL' ? null : MY_EYES[m.eyes],
+          iris: MY_IRIS[m.iris],
+          slots: st.slots,
+          proj: st.proj || 'yarn',
+          special: st.special,
+          special2: st.special2,
+          moveHint: st.moveHint,
+          moveHint2: st.moveHint2,
+          ai: st.ai,
+          zap: !!st.zap,
+          acc: m.head || m.face || m.bod ? 'mysock' : null,
+          accList: [
+            [m.head, m.hc],
+            [m.face, m.fc],
+            [m.bod, m.bc]
+          ]
+            .filter(a => a[0])
+            .map(([id, c]) => ({ id, col: c || MY_ITEMS[id].color })),
+          hat: null,
+          stache: null,
+          shades: false,
+          skin: { my: m },
+          skinName: MY_NAMES[m.name]
+        });
+        if (myCache.size > 200) myCache.clear();
+        myCache.set(key, out);
+        return out;
+      }
+      /** The designs saved in the Sock Maker (at least the bare sock). */
+      function myDesigns() {
+        const list = (Progress.data.mysocks || []).map(sanitizeMy);
+        return list.length ? list : [Object.assign({}, MY_DEFAULT)];
+      }
+      const MY_MAX_DESIGNS = 6;
+
+      // everyone on the select screen: the 8 heroes, the 9 villains, then MY SOCK (always last)
+      const ROSTER = [...CHARS, ...VILLAIN_HEROES, MYSOCK];
+      const STORY_HEROES_N = ROSTER.length - 1; // MY SOCK isn't in the story (yet)
 
       // 16 achievements. reward: { skin: effect id } and/or { heroes: [ids] }. goal + stat = counted ones.
       const ACHIEVEMENTS = [
@@ -4527,7 +4740,7 @@
         const parts = [];
         if (r.heroes) parts.push('NEW HEROES: ' + r.heroes.map(id => findCharacter(id).name).join(', '));
         if (r.skin) parts.push('NEW SKIN: ' + SKIN_FX[r.skin].name);
-        if (r.acc) parts.push('NEW ACCESSORY: ' + ACCESSORIES[r.acc].name);
+        if (r.acc) parts.push(MY_ITEMS[r.acc] ? 'MY SOCK ITEM: ' + MY_ITEMS[r.acc].name : 'NEW ACCESSORY: ' + ACCESSORIES[r.acc].name);
         return parts.join('  +  ');
       }
 
@@ -4582,10 +4795,460 @@
       const accOwner = id => String(id).replace(/\d+$/, '');
       /** Every accessory a hero has, first one first. */
       const heroAccessories = id => Object.keys(ACCESSORIES).filter(k => accOwner(k) === id);
+
+      /* ---- MY SOCK's own items: each one is a trophy reward, and only MY SOCK can wear them (3 at once: head, face, body) ---- */
+      const MY_ITEMS = {
+        mysock1: { name: 'BOBBLE BEANIE', slot: 'head', color: '#e8333a', ach: 'firstwin' },
+        mysock2: { name: 'COOL SHADES', slot: 'face', color: '#2a2a2a', ach: 'socknado' },
+        mysock3: { name: 'BIG BOW', slot: 'head', color: '#ff4fa3', ach: 'combo5' },
+        mysock4: { name: 'SHINY HALO', slot: 'head', color: '#ffe234', ach: 'perfect' },
+        mysock5: { name: 'HERO CAPE', slot: 'body', color: '#e8333a', ach: 'superko' },
+        mysock6: { name: 'TOP HAT', slot: 'head', color: '#2a2a2a', ach: 'medium' },
+        mysock7: { name: 'GOLD MEDAL', slot: 'body', color: '#ffd23f', ach: 'wins25' },
+        mysock8: { name: 'ADVENTURE BACKPACK', slot: 'body', color: '#4fdc6a', ach: 'arenas' },
+        mysock9: { name: 'HEART SPECS', slot: 'face', color: '#ff4fa3', ach: 'lucky' },
+        mysock10: { name: 'HEADPHONES', slot: 'head', color: '#3fd0ff', ach: 'online1' },
+        mysock11: { name: 'COSY SCARF', slot: 'body', color: '#ff9d2e', ach: 'online5' },
+        mysock12: { name: 'FLOWER CROWN', slot: 'head', color: '#ff6b81', ach: 'stylist' },
+        mysock13: { name: 'WIZARD HAT', slot: 'head', color: '#7b5cff', ach: 'allheroes' },
+        mysock14: { name: 'KNIGHT HELMET', slot: 'head', color: '#c9d1de', ach: 'storyclear' },
+        mysock15: { name: 'MITTEN EARMUFFS', slot: 'head', color: '#bfe9ff', ach: 'mittens' },
+        mysock16: { name: 'ANGEL WINGS', slot: 'body', color: '#ffffff', ach: 'combo10' },
+        mysock17: { name: 'PROPELLER CAP', slot: 'head', color: '#2f5bd3', ach: 'wins50' },
+        mysock18: { name: 'STICKY PLASTER', slot: 'face', color: '#f6bccd', ach: 'comeback' },
+        mysock19: { name: 'CURLY MOUSTACHE', slot: 'face', color: '#8a5a2a', ach: 'speedy' },
+        mysock20: { name: 'DIAMOND CROWN', slot: 'head', color: '#bfe9ff', ach: 'wins100' }
+      };
+      const MY_ITEM_IDS = Object.keys(MY_ITEMS);
+      for (const id of MY_ITEM_IDS) {
+        const a = ACHIEVEMENT_BY_ID[MY_ITEMS[id].ach];
+        a.reward = Object.assign({}, a.reward || {}, { acc: id });
+      }
+      /** MY SOCK owns an item once its trophy is won (also trophies won before items existed). */
+      const hasMyItem = id => !!MY_ITEMS[id] && !!(Progress.data.ach[MY_ITEMS[id].ach] || Progress.data.accs[id]);
+
+      /** Draw MY SOCK's items for one layer ('behind' / 'mask' / 'face'). */
+      function drawMyItems(c, spine, pose, def, layer) {
+        for (const it of def.accList || []) {
+          const I = MY_ITEMS[it.id];
+          if (!I) continue;
+          const want = I.slot === 'face' ? 'face' : I.slot === 'head' ? 'mask' : ['mysock5', 'mysock8', 'mysock16'].includes(it.id) ? 'behind' : 'mask';
+          if (want !== layer) continue;
+          c.save();
+          c.strokeStyle = INK;
+          c.lineWidth = 3;
+          c.lineJoin = 'round';
+          c.lineCap = 'round';
+          drawMyItem(c, spine, it.id, it.col);
+          c.restore();
+        }
+      }
+      function drawMyItem(c, spine, id, col) {
+        const dark = shadeColor(col, -0.35),
+          light = shadeColor(col, 0.35),
+          t = game.time;
+        const sh = spine.sh,
+          k = ankleBand(spine);
+        const head = f => {
+          const a = sockPoint(spine, f);
+          c.translate(a.x - a.nx * a.w * 0.5, a.y - a.ny * a.w * 0.5);
+          c.rotate(Math.atan2(-a.nx, a.ny));
+        };
+        const eyes = eyePositions(spine);
+        const fillStroke = (fill) => {
+          c.fillStyle = fill;
+          c.fill();
+          c.stroke();
+        };
+        switch (id) {
+          case 'mysock1': // bobble beanie
+            head(0.4);
+            c.beginPath();
+            c.moveTo(-28, 6);
+            c.quadraticCurveTo(-28, -30, 0, -32);
+            c.quadraticCurveTo(28, -30, 28, 6);
+            c.closePath();
+            fillStroke(col);
+            c.strokeStyle = dark;
+            c.lineWidth = 2;
+            for (let x = -18; x <= 18; x += 9) {
+              c.beginPath();
+              c.moveTo(x, 0);
+              c.lineTo(x * 0.6, -26);
+              c.stroke();
+            }
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            roundRectPath(c, -31, -2, 62, 12, 5);
+            fillStroke('#ffffff');
+            c.beginPath();
+            c.arc(0, -38, 9, 0, 7);
+            fillStroke('#ffffff');
+            break;
+          case 'mysock3': // big bow
+            head(0.3);
+            for (const s of [-1, 1]) {
+              c.beginPath();
+              c.moveTo(0, -6);
+              c.quadraticCurveTo(s * 30, -34, s * 28, -4);
+              c.quadraticCurveTo(s * 22, 8, 0, -6);
+              fillStroke(col);
+            }
+            c.beginPath();
+            c.arc(0, -6, 7, 0, 7);
+            fillStroke(dark);
+            break;
+          case 'mysock4': // halo
+            head(0.45);
+            c.save();
+            c.shadowColor = col;
+            c.shadowBlur = 12;
+            c.strokeStyle = col;
+            c.lineWidth = 6;
+            c.beginPath();
+            c.ellipse(0, -34 + Math.sin(t * 0.08) * 3, 26, 8, 0, 0, 7);
+            c.stroke();
+            c.restore();
+            break;
+          case 'mysock6': // top hat
+            head(0.38);
+            roundRectPath(c, -34, -6, 68, 10, 4);
+            fillStroke(col);
+            roundRectPath(c, -22, -54, 44, 52, 4);
+            fillStroke(col);
+            c.fillStyle = '#e8333a';
+            c.fillRect(-22, -16, 44, 9);
+            c.strokeRect(-22, -16, 44, 9);
+            break;
+          case 'mysock10': // headphones
+            head(0.48);
+            c.lineWidth = 6;
+            c.strokeStyle = INK;
+            c.beginPath();
+            c.arc(0, 10, 34, Math.PI * 1.08, Math.PI * 1.92);
+            c.stroke();
+            c.lineWidth = 3.5;
+            c.strokeStyle = col;
+            c.beginPath();
+            c.arc(0, 10, 34, Math.PI * 1.08, Math.PI * 1.92);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            for (const s of [-1, 1]) {
+              roundRectPath(c, s * 32 - 9, -4, 18, 26, 7);
+              fillStroke(col);
+            }
+            break;
+          case 'mysock12': // flower crown
+            head(0.4);
+            for (let n = 0; n < 5; n++) {
+              const x = -24 + n * 12,
+                y = -4 - Math.sin((n / 4) * Math.PI) * 6;
+              c.fillStyle = n % 2 ? '#ffffff' : col;
+              for (let p = 0; p < 5; p++) {
+                const a = (p * Math.PI * 2) / 5;
+                c.beginPath();
+                c.arc(x + Math.cos(a) * 5, y + Math.sin(a) * 5, 4, 0, 7);
+                c.fill();
+              }
+              c.beginPath();
+              c.arc(x, y, 3.5, 0, 7);
+              c.fillStyle = '#ffe234';
+              c.fill();
+            }
+            c.strokeStyle = '#2f7a2a';
+            c.lineWidth = 2.5;
+            c.beginPath();
+            c.moveTo(-30, 2);
+            c.quadraticCurveTo(0, 8, 30, 2);
+            c.stroke();
+            break;
+          case 'mysock13': // wizard hat
+            head(0.38);
+            c.beginPath();
+            c.moveTo(-32, 4);
+            c.lineTo(32, 4);
+            c.lineTo(8, -40);
+            c.quadraticCurveTo(14, -62, 30, -66);
+            c.quadraticCurveTo(-4, -64, -8, -40);
+            c.closePath();
+            fillStroke(col);
+            c.fillStyle = '#ffe234';
+            for (const [x, y] of [[-8, -10], [10, -24], [4, -2]]) {
+              c.beginPath();
+              for (let q = 0; q < 10; q++) {
+                const a = -Math.PI / 2 + (q * Math.PI) / 5,
+                  r = q % 2 ? 2 : 5;
+                q ? c.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r) : c.moveTo(x + Math.cos(a) * r, y + Math.sin(a) * r);
+              }
+              c.closePath();
+              c.fill();
+            }
+            break;
+          case 'mysock14': // knight helmet with a plume
+            head(0.36);
+            c.beginPath();
+            c.moveTo(-30, 8);
+            c.quadraticCurveTo(-32, -34, 0, -36);
+            c.quadraticCurveTo(32, -34, 30, 8);
+            c.closePath();
+            fillStroke(col);
+            c.fillStyle = INK;
+            c.fillRect(-20, -12, 40, 4);
+            c.strokeStyle = shadeColor(col, 0.4);
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(-20, -26);
+            c.quadraticCurveTo(0, -32, 20, -26);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.beginPath();
+            c.moveTo(0, -36);
+            c.quadraticCurveTo(-24, -60 + Math.sin(t * 0.1) * 3, -36, -40);
+            c.quadraticCurveTo(-16, -44, 0, -36);
+            fillStroke('#e8333a');
+            break;
+          case 'mysock15': // mitten earmuffs
+            head(0.48);
+            c.lineWidth = 5;
+            c.strokeStyle = dark;
+            c.beginPath();
+            c.arc(0, 8, 32, Math.PI * 1.1, Math.PI * 1.9);
+            c.stroke();
+            c.lineWidth = 3;
+            c.strokeStyle = INK;
+            for (const s of [-1, 1]) {
+              c.save();
+              c.translate(s * 30, 4);
+              c.rotate(s * 0.3);
+              c.beginPath();
+              c.ellipse(0, 0, 11, 15, 0, 0, 7);
+              fillStroke(col);
+              c.beginPath();
+              c.ellipse(s * 9, -4, 5, 7, s * 0.6, 0, 7);
+              fillStroke(col);
+              c.fillStyle = '#ffffff';
+              c.fillRect(-11, 10, 22, 6);
+              c.restore();
+            }
+            break;
+          case 'mysock17': // propeller cap
+            head(0.4);
+            c.beginPath();
+            c.moveTo(-26, 4);
+            c.quadraticCurveTo(-26, -24, 0, -26);
+            c.quadraticCurveTo(26, -24, 26, 4);
+            c.closePath();
+            fillStroke(col);
+            c.beginPath();
+            c.moveTo(20, 2);
+            c.quadraticCurveTo(42, 0, 44, 8);
+            c.lineTo(20, 8);
+            fillStroke(dark);
+            c.strokeStyle = INK;
+            c.beginPath();
+            c.moveTo(0, -26);
+            c.lineTo(0, -36);
+            c.stroke();
+            {
+              const spin = Math.cos(t * 0.6);
+              for (const s of [-1, 1]) {
+                c.beginPath();
+                c.ellipse(s * 13 * spin, -38, Math.abs(13 * spin) + 1, 4, 0, 0, 7);
+                fillStroke(s < 0 ? '#e8333a' : '#ffe234');
+              }
+            }
+            break;
+          case 'mysock20': // diamond crown
+            head(0.38);
+            c.beginPath();
+            c.moveTo(-26, 4);
+            c.lineTo(-30, -24);
+            c.lineTo(-14, -10);
+            c.lineTo(0, -32);
+            c.lineTo(14, -10);
+            c.lineTo(30, -24);
+            c.lineTo(26, 4);
+            c.closePath();
+            fillStroke('#ffd23f');
+            for (const [x, y, r] of [[0, -14, 6], [-18, -6, 4], [18, -6, 4]]) {
+              c.beginPath();
+              c.moveTo(x, y - r);
+              c.lineTo(x + r, y);
+              c.lineTo(x, y + r);
+              c.lineTo(x - r, y);
+              c.closePath();
+              fillStroke(col);
+            }
+            c.fillStyle = '#ffffff';
+            if (t % 50 < 10) {
+              c.beginPath();
+              c.arc(4, -18, 2, 0, 7);
+              c.fill();
+            }
+            break;
+          // ---- face ----
+          case 'mysock2': // cool shades
+          case 'mysock9': {
+            // heart specs
+            const [a, b] = eyes;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(a.x + 8, a.y - 2);
+            c.lineTo(b.x - 8, b.y - 2);
+            c.stroke();
+            for (const e of eyes) {
+              if (id === 'mysock2') {
+                roundRectPath(c, e.x - 15, e.y - 10, 30, 20, 7);
+                fillStroke(col);
+                c.fillStyle = 'rgba(255,255,255,0.5)';
+                c.fillRect(e.x - 9, e.y - 6, 6, 3);
+              } else {
+                c.beginPath();
+                c.moveTo(e.x, e.y + 13);
+                c.bezierCurveTo(e.x - 22, e.y, e.x - 10, e.y - 18, e.x, e.y - 8);
+                c.bezierCurveTo(e.x + 10, e.y - 18, e.x + 22, e.y, e.x, e.y + 13);
+                c.fillStyle = 'rgba(255,79,163,0.35)';
+                c.fill();
+                c.strokeStyle = col;
+                c.lineWidth = 4;
+                c.stroke();
+              }
+            }
+            break;
+          }
+          case 'mysock18': {
+            // sticky plaster on the cheek
+            const m = sockPoint(spine, 0.78);
+            c.translate(m.x + m.nx * m.w * 0.05, m.y + m.ny * m.w * 0.05);
+            for (const r of [0.7, -0.7]) {
+              c.save();
+              c.rotate(r);
+              roundRectPath(c, -12, -4, 24, 8, 3);
+              fillStroke(col);
+              c.fillStyle = shadeColor(col, -0.2);
+              c.fillRect(-3, -3, 6, 6);
+              c.restore();
+            }
+            break;
+          }
+          case 'mysock19': {
+            // curly moustache, just above the mouth
+            const m = sockPoint(spine, 0.86);
+            c.translate(m.x + m.nx * m.w * 0.02, m.y + m.ny * m.w * 0.02);
+            c.fillStyle = col;
+            for (const s of [-1, 1]) {
+              c.beginPath();
+              c.moveTo(0, 0);
+              c.quadraticCurveTo(s * 14, -9, s * 20, -2);
+              c.quadraticCurveTo(s * 24, 4, s * 18, 4);
+              c.quadraticCurveTo(s * 14, 2, s * 17, -1);
+              c.quadraticCurveTo(s * 10, 4, 0, 4);
+              c.closePath();
+              fillStroke(col);
+            }
+            break;
+          }
+          // ---- body ----
+          case 'mysock5': {
+            // hero cape
+            const wave = Math.sin(t * 0.12) * 6;
+            c.beginPath();
+            c.moveTo(sh.x + 10, sh.y - 10);
+            c.quadraticCurveTo(sh.x - 46, sh.y + 30, -64 + wave, -2);
+            c.lineTo(-6, -2);
+            c.quadraticCurveTo(sh.x - 4, sh.y + 26, sh.x + 20, sh.y - 4);
+            c.closePath();
+            fillStroke(col);
+            break;
+          }
+          case 'mysock8': // adventure backpack
+            roundRectPath(c, sh.x - 46, sh.y - 4, 34, 46, 9);
+            fillStroke(col);
+            roundRectPath(c, sh.x - 42, sh.y + 18, 26, 16, 5);
+            fillStroke(dark);
+            c.beginPath();
+            c.arc(sh.x - 29, sh.y + 26, 2.5, 0, 7);
+            c.fillStyle = '#ffe234';
+            c.fill();
+            break;
+          case 'mysock16': // angel wings
+            for (const [dx, sc] of [[-6, 1], [6, 0.8]]) {
+              const flap = Math.sin(t * 0.14 + dx) * 0.15;
+              c.save();
+              c.translate(sh.x - 20 + dx, sh.y + 6);
+              c.rotate(-0.4 + flap);
+              c.scale(sc, sc);
+              c.beginPath();
+              c.moveTo(0, 0);
+              c.quadraticCurveTo(-30, -44, -64, -36);
+              c.quadraticCurveTo(-52, -24, -58, -14);
+              c.quadraticCurveTo(-44, -8, -48, 4);
+              c.quadraticCurveTo(-24, 6, 0, 0);
+              fillStroke(col);
+              c.restore();
+            }
+            break;
+          case 'mysock7': {
+            // gold medal on a ribbon round the ankle
+            c.strokeStyle = '#2f5bd3';
+            c.lineWidth = 6;
+            c.beginPath();
+            c.moveTo(k.back.x, k.back.y);
+            c.quadraticCurveTo(k.ctrl.x, k.ctrl.y + 4, k.front.x, k.front.y);
+            c.stroke();
+            const mx = k.mid.x + 6,
+              my = k.mid.y + 22;
+            c.strokeStyle = '#e8333a';
+            c.lineWidth = 5;
+            c.beginPath();
+            c.moveTo(k.mid.x, k.mid.y);
+            c.lineTo(mx, my - 10);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.arc(mx, my, 11, 0, 7);
+            fillStroke(col);
+            c.fillStyle = dark;
+            c.font = 'bold 11px sans-serif';
+            c.textAlign = 'center';
+            c.fillText('1', mx, my + 4);
+            break;
+          }
+          case 'mysock11': {
+            // cosy scarf: a thick band with two tails
+            for (const [sc, sw] of [[INK, 17], [col, 12]]) {
+              c.strokeStyle = sc;
+              c.lineWidth = sw;
+              c.beginPath();
+              c.moveTo(k.back.x, k.back.y);
+              c.quadraticCurveTo(k.ctrl.x, k.ctrl.y, k.front.x, k.front.y);
+              c.stroke();
+            }
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            const wave = Math.sin(t * 0.15) * 4;
+            for (const [dx, len] of [[0, 34], [10, 28]]) {
+              roundRectPath(c, k.back.x - 6 + dx * 0.4 + wave * (dx ? 0.5 : 1), k.back.y + 2, 11, len, 3);
+              fillStroke(dx ? dark : col);
+            }
+            c.strokeStyle = light;
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(k.back.x - 4 + wave, k.back.y + 28);
+            c.lineTo(k.back.x + 4 + wave, k.back.y + 28);
+            c.stroke();
+            break;
+          }
+        }
+      }
+
       const ACC_COLORS = ['#e8333a', '#ff9d2e', '#ffe234', '#4fdc6a', '#3fd0ff', '#7b5cff', '#ff4fa3', '#ffffff', '#2a2a2a', '#d4a017'];
 
       /** Draw a hero's own accessory. layer: 'behind' (behind the sock), 'mask' (on the body/head), 'face'. */
       function drawAccessory(c, spine, pose, def, layer) {
+        if (def.accList) return drawMyItems(c, spine, pose, def, layer);
         const acc = def.acc;
         if (!acc || accOwner(acc) !== def.id) return; // only its own hero can wear it
         const col = def.accColor || ACCESSORIES[acc].color;
@@ -5600,6 +6263,7 @@
             skins: d.skins || {},
             heroes: d.heroes || {},
             accs: d.accs || {},
+            mysocks: Array.isArray(d.mysocks) ? d.mysocks.slice(0, 6) : [],
             adv: d.adv || {},
             looks: {},
             stats: Object.assign(
@@ -6000,7 +6664,58 @@
       }
 
       /** One googly eye. type: normal, angry, shock, blink, happy, wince, x, spiral. pupil = look offset. */
-      function drawEye(c, x, y, r, type, pupil, isFront) {
+      /** The two eyes, or MY SOCK's designed ones (big, sleepy, lashes, one big cyclops eye...). */
+      function drawSockEyes(c, spine, pose, def, pupil) {
+        const es = def.eyeStyle,
+          pu = pupil || { x: 3, y: 0 };
+        let eyes = eyePositions(spine);
+        const custom = es && (pose.eyes === 'normal' || pose.eyes === 'angry');
+        let scale = pose.eyeScale || 1;
+        if (custom) {
+          if (es === 'BIG') scale *= 1.3;
+          if (es === 'SMALL') scale *= 0.72;
+          if (es === 'CYCLOPS') eyes = [{ x: (eyes[0].x + eyes[1].x) / 2, y: (eyes[0].y + eyes[1].y) / 2 - 2, r: 19 }];
+        }
+        const type = custom && es === 'ANGRY' ? 'angry' : pose.eyes;
+        const p = custom && es === 'GOOGLY' ? { x: Math.sin(game.time * 0.5) * 7, y: Math.cos(game.time * 0.37) * 6 } : pu;
+        eyes.forEach((e, k) => drawEye(c, e.x, e.y, e.r * scale, type, p, k === eyes.length - 1, def.iris));
+        if (!custom) return;
+        c.save();
+        c.strokeStyle = INK;
+        c.lineWidth = 3;
+        for (const e of eyes) {
+          const r = e.r * scale;
+          if (es === 'SLEEPY') {
+            c.beginPath();
+            c.arc(e.x, e.y, r + 1, Math.PI * 1.02, Math.PI * 1.98);
+            c.closePath();
+            c.fillStyle = def.pal.base;
+            c.fill();
+            c.stroke();
+          } else if (es === 'LASHES') {
+            for (const a of [-2.1, -1.57, -1.05]) {
+              c.beginPath();
+              c.moveTo(e.x + Math.cos(a) * r, e.y + Math.sin(a) * r);
+              c.lineTo(e.x + Math.cos(a) * (r + 7), e.y + Math.sin(a) * (r + 7));
+              c.stroke();
+            }
+          } else if (es === 'STARRY') {
+            c.fillStyle = '#ffffff';
+            const x = e.x + 4,
+              y = e.y - 3;
+            c.beginPath();
+            for (let q = 0; q < 8; q++) {
+              const a = (q * Math.PI) / 4,
+                rr = q % 2 ? 1.2 : 4;
+              q ? c.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr) : c.moveTo(x + rr, y);
+            }
+            c.closePath();
+            c.fill();
+          }
+        }
+        c.restore();
+      }
+      function drawEye(c, x, y, r, type, pupil, isFront, iris) {
         c.strokeStyle = INK;
         c.lineWidth = 3;
         if (type === 'blink') {
@@ -6067,9 +6782,15 @@
           px *= limit / length;
           py *= limit / length;
         }
+        if (iris) {
+          c.fillStyle = iris;
+          c.beginPath();
+          c.arc(x + px, y + py, pupilRadius + 3, 0, 7);
+          c.fill();
+        }
         c.fillStyle = INK;
         c.beginPath();
-        c.arc(x + px, y + py, pupilRadius, 0, 7);
+        c.arc(x + px, y + py, iris ? pupilRadius - 1.5 : pupilRadius, 0, 7);
         c.fill();
         c.fillStyle = '#fff';
         c.beginPath();
@@ -6213,6 +6934,12 @@
         c.translate(0, pivot);
         c.scale((pose.sx || 1) * (pose.spinX == null ? 1 : pose.spinX), pose.sy || 1);
         c.lineJoin = 'round';
+        if (pose.iconOnly) {
+          // just the accessory, on an invisible sock (MY BAG icons)
+          if (def.acc) for (const layer of ['behind', 'mask', 'face']) drawAccessory(c, spine, pose, def, layer);
+          c.restore();
+          return;
+        }
 
         if (def.behind && !flash && !(def.acc && ACCESSORIES[def.acc] && ACCESSORIES[def.acc].cape)) def.behind(c, spine, pose);
         if (def.acc && !flash) drawAccessory(c, spine, pose, def, 'behind');
@@ -6290,9 +7017,7 @@
         }
 
         // 6. face
-        eyePositions(spine).forEach((eye, k) =>
-          drawEye(c, eye.x, eye.y, eye.r * (pose.eyeScale || 1), pose.eyes, pupil || { x: 3, y: 0 }, k === 1)
-        );
+        drawSockEyes(c, spine, pose, def, pupil);
         if (!flash && def.front) def.front(c, spine, pose);
         if (!flash && def.shades) drawShades(c, spine, pose);
         if (!flash && def.acc) drawAccessory(c, spine, pose, def, 'face');
@@ -7190,7 +7915,8 @@
         hypno: { dmg: 40, stun: 20, knock: 2, hit: 'mid' }, // light damage, but it leaves you hypnotised (dizzy)
         oddsock: { dmg: 80, stun: 18, knock: 7, hit: 'mid' },
         button: { dmg: 65, stun: 16, knock: 5, hit: 'mid' },
-        snowball: { dmg: 85, stun: 22, knock: 7, hit: 'mid' }
+        snowball: { dmg: 85, stun: 22, knock: 7, hit: 'mid' },
+        yarn: { dmg: 75, stun: 18, knock: 6, hit: 'mid' }
       };
 
       // Which two special-move behaviours each character uses: [special, down + special]
@@ -7232,7 +7958,8 @@
         hypno: { m: 'hypno', w: ['YOU ARE GETTING SLEEPY...', 'SWIIIRL!'], c: '#d9a6ff' },
         oddsock: { m: 'oddsock', w: ['ODD!', 'MISMATCHED!', "WHOSE SOCK?!"], c: '#ffd23f' },
         button: { m: 'button', w: ['BOINK!', 'BUTTONED!', 'CUTE!'], c: '#ffd23f' },
-        snowball: { m: 'snowball', w: ['SPLAT!', 'BRRR!', 'FROSTY!'], c: '#bfe9ff' }
+        snowball: { m: 'snowball', w: ['SPLAT!', 'BRRR!', 'FROSTY!'], c: '#bfe9ff' },
+        yarn: { m: 'yarn', w: ['TANGLED!', 'KNIT-WHACK!', 'YARN!'], c: '#ff8fab' }
       };
 
       // states in which a fighter is on the floor (and can't be hit)
@@ -7755,7 +8482,7 @@
         /** aura special move */
         updateAura(opponent, input) {
           this.vx = 0;
-          const rb = this.def.id === 'robo' || this.def.id === 'cling'; // electric field instead of stink
+          const rb = this.def.id === 'robo' || this.def.id === 'cling' || !!this.def.zap; // electric field instead of stink
           if (this.t === 4) rb ? SFX.zap() : SFX.pfft();
           if (rb && this.t % 8 === 4) SFX.zap();
           if (this.t % 8 === 2) {
@@ -7883,7 +8610,7 @@
               type: pt,
               x: this.x + this.face * 65,
               y: this.y - (pt === 'fluff' ? 55 : 95),
-              vx: this.face * ({ fluff: 4.5, moth: 5, fire: 7.5, bleach: 6.5, static: 5.2, steam: 7, oddsock: 6.2, button: 7, snowball: 5.6 }[pt] || 6),
+              vx: this.face * ({ fluff: 4.5, moth: 5, fire: 7.5, bleach: 6.5, static: 5.2, steam: 7, oddsock: 6.2, button: 7, snowball: 5.6, yarn: 6 }[pt] || 6),
               owner: this,
               t: 0,
               y0: this.y - 95
@@ -8099,7 +8826,7 @@
                 opponent.combo = 0;
                 this.grabT = 0;
                 SFX.squeak();
-                addText(opponent.x, opponent.y - 175, this.def.id === 'puppet' ? 'STRINGS ATTACHED!' : 'GOTCHA, DEARIE!', '#ff8fab', 28);
+                addText(opponent.x, opponent.y - 175, this.def.id === 'puppet' ? 'STRINGS ATTACHED!' : this.def.mysock ? 'GOTCHA!' : 'GOTCHA, DEARIE!', '#ff8fab', 28);
               }
             } else if (t >= 24) {
               this.lassoLen = Math.max(0, this.lassoLen - 26);
@@ -8551,7 +9278,7 @@
         }
         /** Start this character's special move (down held = the second special). See SPECIAL_SLOTS. */
         startSpecial(opponent, down) {
-          const st = SPECIAL_SLOTS[this.def.id][down ? 1 : 0];
+          const st = (this.def.slots || SPECIAL_SLOTS[this.def.id])[down ? 1 : 0];
           const pj = { stink: 'stink', cry: 'cry', rocketfire: 'rocket', shoot: this.def.proj, hypno: 'hypno' }[st];
           if (pj && game.projectiles.some(p => p.owner === this && p.type === pj)) return;
           this.cool = down ? 85 : 75;
@@ -10039,6 +10766,34 @@
       }
 
       function drawProjectile(p) {
+        if (p.type === 'yarn') {
+          // MY SOCK's ball of yarn, in its pattern colour, trailing a loose thread
+          const col = (p.owner && p.owner.def.pal && p.owner.def.pal.s1) || '#ff8fab';
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.quadraticCurveTo(-p.vx * 4, 14 + Math.sin(p.t * 0.4) * 6, -p.vx * 8, 6);
+          ctx.stroke();
+          ctx.rotate(p.t * 0.25 * Math.sign(p.vx || 1));
+          ctx.fillStyle = col;
+          ctx.strokeStyle = INK;
+          ctx.beginPath();
+          ctx.arc(0, 0, 15, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.strokeStyle = shadeColor(col, -0.3);
+          ctx.lineWidth = 2;
+          for (const a of [0, 1, 2]) {
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 13, 5, a * 1.05, 0, 7);
+            ctx.stroke();
+          }
+          ctx.restore();
+          return;
+        }
         if (p.type === 'shuriken') {
           drawShuriken(p);
           return;
@@ -13159,6 +13914,7 @@
             ['1 PLAYER', 'VS CPU', 'cpu'],
             ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
+            ['MY BAG', 'SKINS, ACCESSORIES & SOCK MAKER', 'bag'],
             ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
           ]
         : [
@@ -13167,6 +13923,7 @@
             ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
             ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
+            ['MY BAG', 'SKINS, ACCESSORIES & SOCK MAKER', 'bag'],
             ['MOVE LIST', 'LEARN THE SOCK ARTS', 'moves']
           ];
       const ONLINE_MENU_INDEX = MODE_MENU.findIndex(item => item[2] === 'online');
@@ -13228,6 +13985,10 @@
           }
           if (action === 'awards') {
             game.screen = 'awards';
+            return;
+          }
+          if (action === 'bag') {
+            openBag();
             return;
           }
           if (action === 'moves') {
@@ -13681,13 +14442,13 @@
       // their achievement). Card numbers are ROSTER indexes; RANDOM_SLOT is the "?" card.
       const RANDOM_SLOT = ROSTER.length;
       const SELECT_SLOTS = ROSTER.length + 1;
-      const SLOT_ORDER = [...CHARS.map((_, i) => i), RANDOM_SLOT, ...VILLAIN_HEROES.map((_, i) => CHARS.length + i)];
+      const SLOT_ORDER = [...CHARS.map((_, i) => i), ROSTER.length - 1, RANDOM_SLOT, ...VILLAIN_HEROES.map((_, i) => CHARS.length + i)];
       const ROULETTE_FRAMES = 42;
       function selectCardRect(i) {
         const pos = SLOT_ORDER.indexOf(i);
-        const row = pos < 9 ? 0 : 1,
-          col = pos % 9;
-        return { x: 30 + col * 100, y: 96 + row * 96, w: 94, h: 90 };
+        const row = pos < 10 ? 0 : 1,
+          col = row ? pos - 10 : pos;
+        return { x: (row ? 64 : 18) + col * 93, y: 96 + row * 96, w: 88, h: 90 };
       }
       /** The next card left (-1) or right (+1) in screen order. */
       const nextSlot = (slot, dir) => SLOT_ORDER[(SLOT_ORDER.indexOf(slot) + dir + SELECT_SLOTS) % SELECT_SLOTS];
@@ -13695,6 +14456,7 @@
 
       /** The skins a character can wear: hand-made ones, unlocked effect skins, and MY STYLE from the dryer. */
       function skinOptions(def) {
+        if (def.mysock) return myDesigns().map(my => ({ my }));
         const out = def.skins.map((_, i) => i);
         for (const fx of SKIN_FX_IDS) if (SKIN_FX[fx].hero === def.id && Progress.hasSkin(fx)) out.push({ base: 0, fx });
         const mine = Progress.data.looks[def.id];
@@ -14108,7 +14870,7 @@
             ctx.strokeStyle = `rgba(255,79,163,${pulse})`;
             ctx.lineWidth = 3;
             ctx.stroke();
-            drawText(IS_TOUCH ? 'DRYER: STYLE IT' : 'DRYER: STYLE IT [C]', r.x + r.w / 2, r.y + r.h / 2 + 1, 8, FONT_PIXEL, '#fff', INK, 0);
+            drawText(base.mysock ? (IS_TOUCH ? 'SOCK MAKER: DESIGN IT' : 'SOCK MAKER [C]') : IS_TOUCH ? 'DRYER: STYLE IT' : 'DRYER: STYLE IT [C]', r.x + r.w / 2, r.y + r.h / 2 + 1, 8, FONT_PIXEL, '#fff', INK, 0);
           }
         };
         panel(
@@ -14901,6 +15663,14 @@
       /** Open the Dryer for `def` wearing `current`; onExit(saved) is called when you leave. With no arguments it
        *  styles player 1's sock on the character select screen. */
       function openDryer(def, current, onExit) {
+        if (!def && ROSTER[game.selection.c1] && ROSTER[game.selection.c1].mysock) {
+          const s = game.selection;
+          const n = myDesigns().length;
+          return openMaker(saved => {
+            if (saved >= 0) s.k1 = saved;
+            game.screen = 'select';
+          }, wrapIndex(s.k1, n));
+        }
         if (!def) {
           const s = game.selection;
           def = ROSTER[s.c1];
@@ -14972,6 +15742,544 @@
 
       function leaveDryer(saved) {
         game.dryer.onExit(saved);
+      }
+
+
+      /* ---------------- THE SOCK MAKER: design MY SOCK (body, colours, pattern, eyes, fighting style, items) ---------------- */
+      const MAKER_ROWS = [
+        ['NAME', 'name'], ['BODY COLOUR', 'body'], ['PATTERN', 'pattern'], ['PATTERN COLOUR', 'c2'], ['CUFF', 'cuff'],
+        ['TOE & HEEL', 'heel'], ['HANDS', 'glove'], ['HEIGHT', 'tall'], ['WIDTH', 'wide'], ['FOOT SIZE', 'foot'],
+        ['EYES', 'eyes'], ['EYE COLOUR', 'iris'], ['FIGHT STYLE', 'style'], ['HEAD ITEM', 'head'], ['HEAD ITEM COLOUR', 'hc'],
+        ['FACE ITEM', 'face'], ['FACE ITEM COLOUR', 'fc'], ['BODY ITEM', 'bod'], ['BODY ITEM COLOUR', 'bc']
+      ];
+      const MAKER_COLS = 10; // rows per column
+      const makerRowRect = i => ({ x: i < MAKER_COLS ? 318 : 640, y: 74 + (i % MAKER_COLS) * 37, w: 304, h: 33 });
+      const makerArrow = (i, dir) => {
+        const r = makerRowRect(i);
+        return dir < 0 ? { x: r.x + 118, y: r.y, w: 34, h: r.h } : { x: r.x + r.w - 34, y: r.y, w: 34, h: r.h };
+      };
+      const MAKER_BUTTONS = [
+        { id: 'prev', label: '◀', x: 20, y: 456, w: 40, h: 34 },
+        { id: 'next', label: '▶', x: 238, y: 456, w: 40, h: 34 },
+        { id: 'random', label: 'SURPRISE ME! [R]', x: 318, y: 456, w: 196, h: 34 },
+        { id: 'new', label: 'NEW SOCK [N]', x: 522, y: 456, w: 144, h: 34 },
+        { id: 'delete', label: 'DELETE [X]', x: 674, y: 456, w: 120, h: 34 },
+        { id: 'save', label: 'SAVE & WEAR ✓', x: 318, y: 496, w: 476, h: 34 },
+        { id: 'back', label: 'BACK', x: 802, y: 456, w: 138, h: 74 }
+      ];
+      const ITEM_SLOT_OF = { head: 'head', face: 'face', bod: 'body' };
+      const ITEM_COLOR_OF = { hc: 'head', fc: 'face', bc: 'bod' };
+
+      /** Open the Sock Maker. onExit(savedIndex or -1) runs when you leave. */
+      function openMaker(onExit, startIndex) {
+        const designs = myDesigns();
+        const i = clamp(startIndex | 0, 0, designs.length - 1);
+        game.maker = { designs, i, my: Object.assign({}, designs[i]), row: 0, t: 0, tumble: 0, note: null, onExit, saved: !!(Progress.data.mysocks || []).length };
+        game.screen = 'maker';
+        SFX.select();
+      }
+      function makerNote(text) {
+        game.maker.note = { text, until: game.time + 150 };
+      }
+      /** The choices for one row, as a list (values) and how to show each one. */
+      function makerChoices(key) {
+        const n = list => list.map((_, i) => i);
+        switch (key) {
+          case 'name': return { vals: n(MY_NAMES), show: v => MY_NAMES[v] };
+          case 'body': case 'c2': case 'cuff': case 'heel': case 'glove':
+            return { vals: n(MY_COLORS), show: v => MY_COLOR_NAMES[v], swatch: v => MY_COLORS[v] };
+          case 'pattern': return { vals: n(MY_PATTERNS), show: v => MY_PATTERNS[v] };
+          case 'tall': return { vals: n(MY_TALL), show: v => MY_TALL_NAMES[v] };
+          case 'wide': return { vals: n(MY_WIDE), show: v => MY_WIDE_NAMES[v] };
+          case 'foot': return { vals: n(MY_FOOT), show: v => MY_FOOT_NAMES[v] };
+          case 'eyes': return { vals: n(MY_EYES), show: v => MY_EYES[v] };
+          case 'iris': return { vals: n(MY_IRIS), show: v => MY_IRIS_NAMES[v], swatch: v => MY_IRIS[v] || '#2a2a2a' };
+          case 'style': return { vals: n(MY_STYLES), show: v => MY_STYLES[v].name };
+          case 'head': case 'face': case 'bod': {
+            const own = MY_ITEM_IDS.filter(id => MY_ITEMS[id].slot === ITEM_SLOT_OF[key] && hasMyItem(id));
+            return { vals: [null, ...own], show: v => (v ? MY_ITEMS[v].name : 'NONE'), items: own.length };
+          }
+          case 'hc': case 'fc': case 'bc':
+            return { vals: [null, ...ACC_COLORS], show: v => (v ? MY_COLOR_NAMES[MY_COLORS.indexOf(v)] || 'COLOUR ' + (ACC_COLORS.indexOf(v) + 1) : 'ITS OWN'), swatch: v => v };
+        }
+      }
+      function makerChange(row, dir) {
+        const M = game.maker,
+          key = MAKER_ROWS[row][1];
+        const ch = makerChoices(key);
+        if ((key === 'head' || key === 'face' || key === 'bod') && !ch.items) {
+          makerNote('WIN TROPHIES TO EARN ' + (key === 'bod' ? 'BODY' : key.toUpperCase()) + ' ITEMS! (SEE MY BAG)');
+          SFX.block();
+          return;
+        }
+        if (ITEM_COLOR_OF[key] && !M.my[ITEM_COLOR_OF[key]]) {
+          makerNote('PUT AN ITEM ON FIRST!');
+          SFX.block();
+          return;
+        }
+        const at = Math.max(0, ch.vals.indexOf(M.my[key] === undefined ? null : M.my[key]));
+        M.my[key] = ch.vals[wrapIndex(at + dir, ch.vals.length)];
+        M.tumble = 22;
+        SFX.spin();
+      }
+      function makerRandom() {
+        const M = game.maker,
+          pick = n => (Math.random() * n) | 0;
+        const m = M.my;
+        m.body = pick(MY_COLORS.length);
+        m.c2 = pick(MY_COLORS.length);
+        m.cuff = pick(MY_COLORS.length);
+        m.heel = pick(MY_COLORS.length);
+        m.glove = pick(MY_COLORS.length);
+        m.pattern = pick(MY_PATTERNS.length);
+        m.tall = pick(MY_TALL.length);
+        m.wide = pick(MY_WIDE.length);
+        m.foot = pick(MY_FOOT.length);
+        m.eyes = pick(MY_EYES.length);
+        m.iris = pick(MY_IRIS.length);
+        m.name = pick(MY_NAMES.length);
+        for (const key of ['head', 'face', 'bod']) {
+          const v = makerChoices(key).vals;
+          m[key] = v[pick(v.length)];
+        }
+        M.tumble = 40;
+        SFX.spin();
+      }
+      function makerSave() {
+        const M = game.maker;
+        const list = (Progress.data.mysocks || []).map(sanitizeMy);
+        const clean = sanitizeMy(M.my);
+        if (M.i < list.length) list[M.i] = clean;
+        else if (list.length < MY_MAX_DESIGNS) {
+          list.push(clean);
+          M.i = list.length - 1;
+        } else {
+          makerNote('ALL ' + MY_MAX_DESIGNS + ' SLOTS ARE FULL — DELETE ONE FIRST');
+          SFX.block();
+          return;
+        }
+        Progress.data.mysocks = list;
+        Progress.award('stylist');
+        Progress.save();
+        SFX.confirm();
+        leaveMaker(M.i);
+      }
+      function leaveMaker(saved) {
+        const M = game.maker;
+        game.maker = null;
+        if (M.onExit) M.onExit(saved);
+        else toModeMenu();
+      }
+      function makerButton(id) {
+        const M = game.maker;
+        const total = Math.max(M.designs.length, (Progress.data.mysocks || []).length);
+        if (id === 'save') return makerSave();
+        if (id === 'back') return leaveMaker(-1);
+        if (id === 'random') return makerRandom();
+        if (id === 'prev' || id === 'next') {
+          const list = myDesigns();
+          M.designs = list;
+          M.i = wrapIndex(M.i + (id === 'next' ? 1 : -1), list.length);
+          M.my = Object.assign({}, list[M.i]);
+          M.tumble = 22;
+          SFX.select();
+          return;
+        }
+        if (id === 'new') {
+          if ((Progress.data.mysocks || []).length >= MY_MAX_DESIGNS) {
+            makerNote('ALL ' + MY_MAX_DESIGNS + ' SLOTS ARE FULL — DELETE ONE FIRST');
+            SFX.block();
+            return;
+          }
+          M.i = (Progress.data.mysocks || []).length;
+          M.my = Object.assign({}, MY_DEFAULT);
+          M.tumble = 30;
+          makerNote('A BRAND NEW BARE SOCK! DESIGN IT, THEN SAVE.');
+          SFX.spin();
+          return;
+        }
+        if (id === 'delete') {
+          const list = (Progress.data.mysocks || []).slice();
+          if (M.i >= list.length) {
+            M.my = Object.assign({}, MY_DEFAULT);
+            makerNote('NOT SAVED YET — CLEARED IT INSTEAD');
+            return;
+          }
+          if (M.delAt && game.time - M.delAt < 150) {
+            list.splice(M.i, 1);
+            Progress.data.mysocks = list;
+            Progress.save();
+            M.designs = myDesigns();
+            M.i = Math.min(M.i, M.designs.length - 1);
+            M.my = Object.assign({}, M.designs[M.i]);
+            M.delAt = 0;
+            makerNote('DELETED. BYE BYE, SOCK!');
+            SFX.block();
+          } else {
+            M.delAt = game.time;
+            makerNote('PRESS DELETE AGAIN TO REALLY DELETE IT');
+          }
+          void total;
+        }
+      }
+      function updateMaker() {
+        const M = game.maker;
+        M.t++;
+        if (M.tumble > 0) M.tumble--;
+        if (backWasPressed()) return leaveMaker(-1);
+        if (wasPressed('KeyW', 'ArrowUp')) {
+          M.row = wrapIndex(M.row - 1, MAKER_ROWS.length);
+          SFX.select();
+        }
+        if (wasPressed('KeyS', 'ArrowDown')) {
+          M.row = wrapIndex(M.row + 1, MAKER_ROWS.length);
+          SFX.select();
+        }
+        if (wasPressed('KeyA', 'ArrowLeft')) makerChange(M.row, -1);
+        if (wasPressed('KeyD', 'ArrowRight')) makerChange(M.row, 1);
+        if (wasPressed('KeyQ', 'BracketLeft')) makerButton('prev');
+        if (wasPressed('KeyE', 'BracketRight')) makerButton('next');
+        if (wasPressed('KeyR')) makerRandom();
+        if (wasPressed('KeyN')) makerButton('new');
+        if (wasPressed('KeyX', 'Delete')) makerButton('delete');
+        if (wasPressed('Enter', 'Space')) return makerSave();
+        const c0 = game.click;
+        if (c0) {
+          game.click = null;
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          for (const b of MAKER_BUTTONS) if (inside(b)) return makerButton(b.id);
+          for (let i = 0; i < MAKER_ROWS.length; i++) {
+            if (inside(makerArrow(i, -1))) {
+              M.row = i;
+              return makerChange(i, -1);
+            }
+            if (inside(makerArrow(i, 1)) || inside(makerRowRect(i))) {
+              M.row = i;
+              return makerChange(i, 1);
+            }
+          }
+        }
+      }
+      function drawMaker() {
+        const M = game.maker,
+          t = M.t;
+        drawStage(0.55);
+        ctx.fillStyle = 'rgba(14,6,28,0.55)';
+        ctx.fillRect(0, 0, W, H);
+        drawText('SOCK MAKER', 160, 34, 34, FONT_COMIC, '#ffe234', INK, 8);
+        drawText('靴下メーカー', 160, 60, 12, FONT_JAPANESE, '#fff', INK, 4);
+        // the sock on a little spotlight
+        const def = mySockDef(M.my);
+        ctx.fillStyle = 'rgba(255,240,180,0.13)';
+        ctx.beginPath();
+        ctx.moveTo(110, 80);
+        ctx.lineTo(210, 80);
+        ctx.lineTo(270, 420);
+        ctx.lineTo(50, 420);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath();
+        ctx.ellipse(160, 414, 80, 14, 0, 0, 7);
+        ctx.fill();
+        const p = idleAnim(basePose(), t);
+        if (M.tumble > 0) {
+          p.rot = (M.tumble / 22) * Math.PI * 2;
+          p.eyes = 'happy';
+          p.mouth = 'grin';
+        }
+        drawSock(ctx, def, p, 140, 412, 1, fitScale(def, 1.55) * 0.95, { x: 4, y: 0 });
+        drawText(def.name, 160, 436, 18, FONT_COMIC, '#fff', INK, 5);
+        const total = (Progress.data.mysocks || []).length;
+        drawText(
+          M.i < total ? 'DESIGN ' + (M.i + 1) + ' OF ' + total : 'NOT SAVED YET',
+          149,
+          474,
+          9,
+          FONT_PIXEL,
+          M.i < total ? '#9fe8ff' : '#ffb03a',
+          INK,
+          0
+        );
+        // rows
+        MAKER_ROWS.forEach(([label, key], i) => {
+          const r = makerRowRect(i),
+            on = i === M.row;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 8);
+          ctx.fillStyle = on ? 'rgba(255,79,163,0.35)' : 'rgba(20,10,36,0.82)';
+          ctx.fill();
+          ctx.strokeStyle = on ? '#ff4fa3' : '#4b3d6e';
+          ctx.lineWidth = on ? 3 : 2;
+          ctx.stroke();
+          drawText(label, r.x + 8, r.y + r.h / 2 + 1, 7, FONT_PIXEL, on ? '#fff' : '#bdb3d9', INK, 0, 'left');
+          const ch = makerChoices(key),
+            v = M.my[key] === undefined ? null : M.my[key];
+          const locked = (key === 'head' || key === 'face' || key === 'bod') && !ch.items;
+          const txt = locked ? 'WIN TROPHIES!' : ch.show(v);
+          const mid = r.x + 118 + (r.w - 118) / 2;
+          drawText('◀', r.x + 135, r.y + r.h / 2 + 1, 11, FONT_PIXEL, '#ffe234', INK, 0);
+          drawText('▶', r.x + r.w - 17, r.y + r.h / 2 + 1, 11, FONT_PIXEL, '#ffe234', INK, 0);
+          let tx = mid;
+          if (ch.swatch && v !== null) {
+            ctx.fillStyle = ch.swatch(v);
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 2;
+            roundRectPath(ctx, r.x + 156, r.y + 9, 15, 15, 4);
+            ctx.fill();
+            ctx.stroke();
+            tx += 9;
+          }
+          drawText(txt, tx, r.y + r.h / 2 + 1, txt.length > 13 ? 7 : 8, FONT_PIXEL, locked ? '#888' : '#fff', INK, 0);
+        });
+        // style tips
+        const st = MY_STYLES[M.my.style];
+        drawText('SPECIAL: ' + st.special + '   ↓+SPECIAL: ' + st.special2, 640 + 152, 74 + 9 * 37 + 17, 7, FONT_PIXEL, '#9fe8ff', INK, 0);
+        for (const b of MAKER_BUTTONS) {
+          roundRectPath(ctx, b.x, b.y, b.w, b.h, 9);
+          ctx.fillStyle = b.id === 'save' ? '#2f9e44' : b.id === 'back' ? '#3a2a55' : b.id === 'delete' ? '#8a1f2f' : '#2a1d48';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          drawText(b.label, b.x + b.w / 2, b.y + b.h / 2 + 1, b.id === 'save' ? 13 : 9, FONT_PIXEL, '#fff', INK, 0);
+        }
+        const note = M.note && game.time < M.note.until ? M.note.text : '';
+        if (note) drawText(note, 556, 444, 9, FONT_PIXEL, '#ffb03a', INK, 4);
+        else if (t % 80 < 60) drawText(IS_TOUCH ? 'TAP ◀ ▶ TO CHANGE' : 'W/S row • A/D change • Q/E designs • ENTER save', 556, 444, 8, FONT_PIXEL, '#ccc', INK, 0);
+      }
+
+      /* ---------------- MY BAG: every skin and accessory in the game, as icons ---------------- */
+      const iconCache = new Map();
+      /** A picture of just the accessory (drawn on an invisible sock, then cropped to what was drawn). */
+      function accIcon(id) {
+        if (iconCache.has(id)) return iconCache.get(id);
+        const cv = document.createElement('canvas');
+        cv.width = 240;
+        cv.height = 260;
+        const c = cv.getContext('2d');
+        let def;
+        if (MY_ITEMS[id]) def = mySockDef(Object.assign({}, MY_DEFAULT, { [{ head: 'head', face: 'face', body: 'bod' }[MY_ITEMS[id].slot]]: id }));
+        else def = styledSkin(findCharacter(accOwner(id)), { base: 0, fx: null, hue: 0, sat: 1, light: 0, acc: id, accColor: ACCESSORIES[id].color });
+        const pose = basePose();
+        pose.iconOnly = true;
+        const saveTime = game.time;
+        game.time = 20;
+        try {
+          drawSock(c, def, pose, 120, 220, 1, 0.9, { x: 3, y: 0 });
+        } catch (e) {}
+        game.time = saveTime;
+        let out = null;
+        try {
+          const px = c.getImageData(0, 0, cv.width, cv.height).data;
+          let x0 = cv.width, y0 = cv.height, x1 = -1, y1 = -1;
+          for (let y = 0; y < cv.height; y++)
+            for (let x = 0; x < cv.width; x++)
+              if (px[(y * cv.width + x) * 4 + 3] > 20) {
+                if (x < x0) x0 = x;
+                if (x > x1) x1 = x;
+                if (y < y0) y0 = y;
+                if (y > y1) y1 = y;
+              }
+          if (x1 >= 0) out = { cv, x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+        } catch (e) {}
+        iconCache.set(id, out);
+        return out;
+      }
+      /** Every collectable, by tab. */
+      function bagItems(tab) {
+        const heroes = ROSTER.filter(d => !d.mysock);
+        if (tab === 0) {
+          const out = [];
+          for (const d of heroes) {
+            d.skins.forEach((s, i) => out.push({ kind: 'skin', def: d, look: i, name: s.name, owner: d, have: Progress.heroUnlocked(d.id), hint: Progress.heroUnlocked(d.id) ? '' : unlockHint(d.id) }));
+            for (const fx of SKIN_FX_IDS)
+              if (SKIN_FX[fx].hero === d.id)
+                out.push({
+                  kind: 'skin',
+                  def: d,
+                  look: { base: 0, fx },
+                  name: SKIN_FX[fx].name,
+                  owner: d,
+                  have: Progress.hasSkin(fx),
+                  hint: Progress.unlockHint(SKIN_FX[fx].unlock === 0 ? 'skin1' : 'skin2', d)
+                });
+          }
+          return out;
+        }
+        if (tab === 1)
+          return Object.keys(ACCESSORIES)
+            .filter(id => !MY_ITEMS[id])
+            .map(id => {
+              const d = findCharacter(accOwner(id));
+              const first = id === accOwner(id);
+              return { kind: 'acc', id, name: ACCESSORIES[id].name, owner: d, have: Progress.hasAcc(id), hint: Progress.unlockHint(first ? 'acc' : 'acc2', d) };
+            });
+        return MY_ITEM_IDS.map(id => {
+          const a = ACHIEVEMENT_BY_ID[MY_ITEMS[id].ach];
+          return { kind: 'acc', id, name: MY_ITEMS[id].name, owner: MYSOCK, slot: MY_ITEMS[id].slot, have: hasMyItem(id), hint: 'TROPHY: ' + a.name + ' — ' + a.desc.toUpperCase() };
+        });
+      }
+      const BAG_TABS = ['SKINS', 'ACCESSORIES', 'MY SOCK ITEMS'];
+      const BAG_COLS = 8,
+        BAG_ROWS = 3,
+        BAG_PER = BAG_COLS * BAG_ROWS;
+      const bagCell = k => ({ x: 52 + (k % BAG_COLS) * 108, y: 128 + Math.floor(k / BAG_COLS) * 96, w: 100, h: 88 });
+      const bagTabRect = i => ({ x: 150 + i * 226, y: 76, w: 214, h: 34 });
+      const BAG_PREV = { x: 8, y: 236, w: 38, h: 60 },
+        BAG_NEXT = { x: 914, y: 236, w: 38, h: 60 },
+        BAG_MAKER = { x: 724, y: 474, w: 220, h: 50 };
+      function openBag(from) {
+        game.bag = { tab: 0, sel: 0, t: 0, from: from || 'mode' };
+        game.screen = 'bag';
+        SFX.select();
+      }
+      function updateBag() {
+        const B = game.bag;
+        B.t++;
+        if (backWasPressed()) {
+          game.bag = null;
+          toModeMenu();
+          return;
+        }
+        const items = bagItems(B.tab);
+        const tab = d => {
+          B.tab = wrapIndex(B.tab + d, BAG_TABS.length);
+          B.sel = 0;
+          SFX.select();
+        };
+        if (wasPressed('KeyQ', 'BracketLeft', 'Tab')) tab(1);
+        if (wasPressed('KeyE', 'BracketRight')) tab(-1);
+        const move = d => {
+          B.sel = clamp(B.sel + d, 0, items.length - 1);
+          SFX.select();
+        };
+        if (wasPressed('KeyA', 'ArrowLeft')) move(-1);
+        if (wasPressed('KeyD', 'ArrowRight')) move(1);
+        if (wasPressed('KeyW', 'ArrowUp')) move(-BAG_COLS);
+        if (wasPressed('KeyS', 'ArrowDown')) move(BAG_COLS);
+        if (wasPressed('KeyM')) return openMaker(() => openBag());
+        const c0 = game.click;
+        if (c0) {
+          game.click = null;
+          const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+          for (let i = 0; i < BAG_TABS.length; i++)
+            if (inside(bagTabRect(i))) {
+              B.tab = i;
+              B.sel = 0;
+              SFX.select();
+              return;
+            }
+          const page = Math.floor(B.sel / BAG_PER);
+          if (inside(BAG_PREV) && page > 0) return move(-BAG_PER);
+          if (inside(BAG_NEXT)) return move(Math.min(BAG_PER, items.length - 1 - B.sel) > 0 ? BAG_PER : 0);
+          if (inside(BAG_MAKER)) return openMaker(() => openBag());
+          for (let k = 0; k < BAG_PER; k++)
+            if (inside(bagCell(k)) && page * BAG_PER + k < items.length) {
+              B.sel = page * BAG_PER + k;
+              SFX.select();
+            }
+        }
+      }
+      function drawBagBackground() {
+        // a big canvas rucksack opened up
+        roundRectPath(ctx, 30, 60, 900, 410, 34);
+        ctx.fillStyle = '#7a4a2a';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 6;
+        ctx.stroke();
+        roundRectPath(ctx, 44, 118, 872, 300, 20);
+        ctx.fillStyle = '#4e2e1a';
+        ctx.fill();
+        ctx.strokeStyle = '#a8703f';
+        ctx.setLineDash([10, 8]);
+        ctx.lineWidth = 3;
+        roundRectPath(ctx, 38, 66, 888, 398, 30);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        for (const x of [120, 840]) {
+          roundRectPath(ctx, x - 20, 40, 40, 34, 8);
+          ctx.fillStyle = '#5a3720';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 4;
+          ctx.stroke();
+          ctx.fillStyle = '#ffd23f';
+          ctx.fillRect(x - 7, 60, 14, 10);
+        }
+      }
+      function drawBag() {
+        const B = game.bag,
+          t = B.t;
+        drawStage(0.4);
+        ctx.fillStyle = 'rgba(14,6,28,0.6)';
+        ctx.fillRect(0, 0, W, H);
+        drawBagBackground();
+        drawBackButton('BACK');
+        drawText('MY BAG', W / 2, 32, 34, FONT_COMIC, '#ffe234', INK, 8);
+        BAG_TABS.forEach((name, i) => {
+          const r = bagTabRect(i);
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
+          ctx.fillStyle = i === B.tab ? '#ffd23f' : '#3a2416';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          const list = bagItems(i);
+          drawText(name + ' ' + list.filter(it => it.have).length + '/' + list.length, r.x + r.w / 2, r.y + r.h / 2 + 1, 9, FONT_PIXEL, i === B.tab ? INK : '#fff', i === B.tab ? null : INK, 0);
+        });
+        const items = bagItems(B.tab);
+        B.sel = clamp(B.sel, 0, items.length - 1);
+        const page = Math.floor(B.sel / BAG_PER),
+          pages = Math.ceil(items.length / BAG_PER);
+        for (let k = 0; k < BAG_PER; k++) {
+          const it = items[page * BAG_PER + k];
+          if (!it) break;
+          const r = bagCell(k),
+            on = page * BAG_PER + k === B.sel;
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 12);
+          ctx.fillStyle = it.have ? (on ? '#fff3c4' : '#f2e2c4') : '#2a1a10';
+          ctx.fill();
+          ctx.strokeStyle = on ? '#ff4fa3' : INK;
+          ctx.lineWidth = on ? 5 : 3;
+          ctx.stroke();
+          ctx.save();
+          roundRectPath(ctx, r.x, r.y, r.w, r.h, 12);
+          ctx.clip();
+          if (!it.have) ctx.globalAlpha = 0.28;
+          if (it.kind === 'skin') {
+            const d = withSkin(it.def, it.look);
+            drawSockPortrait(ctx, d, basePose(), r.x + r.w / 2, r.y + 34, 0.62, { x: 3, y: 0 });
+          } else {
+            const ic = accIcon(it.id);
+            if (ic) {
+              const s = Math.min((r.w - 18) / ic.w, (r.h - 26) / ic.h, 1.4);
+              const bob = on ? Math.sin(t * 0.12) * 3 : 0;
+              ctx.drawImage(ic.cv, ic.x, ic.y, ic.w, ic.h, r.x + r.w / 2 - (ic.w * s) / 2, r.y + 6 + (r.h - 26 - ic.h * s) / 2 + bob, ic.w * s, ic.h * s);
+            }
+          }
+          ctx.restore();
+          if (!it.have) drawPadlock(r.x + r.w - 18, r.y + 22, 0.7);
+          drawText(it.name, r.x + r.w / 2, r.y + r.h - 10, it.name.length > 14 ? 5.5 : 6.5, FONT_PIXEL, it.have ? INK : '#888', null, 0);
+        }
+        if (page > 0) drawText('◀', BAG_PREV.x + 19, BAG_PREV.y + 30, 22, FONT_PIXEL, '#ffe234', INK, 4);
+        if (page < pages - 1) drawText('▶', BAG_NEXT.x + 19, BAG_NEXT.y + 30, 22, FONT_PIXEL, '#ffe234', INK, 4);
+        drawText('PAGE ' + (page + 1) + '/' + pages, W / 2, 426, 8, FONT_PIXEL, '#f2e2c4', INK, 0);
+        // details of the chosen thing
+        const it = items[B.sel];
+        if (it) {
+          drawText(it.name, 40, 452, 18, FONT_COMIC, it.have ? '#ffe234' : '#aaa', INK, 5, 'left');
+          const whose = it.owner.mysock ? 'FOR MY SOCK (' + (it.slot || '').toUpperCase() + ' ITEM)' : 'BELONGS TO ' + it.owner.name;
+          drawText(whose, 40, 478, 8, FONT_PIXEL, '#9fe8ff', INK, 0, 'left');
+          drawText(it.have ? (it.owner.mysock ? '✓ IN YOUR BAG — PUT IT ON IN THE SOCK MAKER' : '✓ IN YOUR BAG — WEAR IT IN THE DRYER (CHARACTER SELECT, C)') : '🔒 ' + it.hint, 40, 500, 7, FONT_PIXEL, it.have ? '#7dff9a' : '#ffb03a', INK, 0, 'left');
+        }
+        roundRectPath(ctx, BAG_MAKER.x, BAG_MAKER.y, BAG_MAKER.w, BAG_MAKER.h, 12);
+        ctx.fillStyle = '#ff4fa3';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        drawText('SOCK MAKER ' + (IS_TOUCH ? '' : '[M]'), BAG_MAKER.x + BAG_MAKER.w / 2, BAG_MAKER.y + BAG_MAKER.h / 2 + 1, 11, FONT_PIXEL, '#fff', INK, 0);
       }
 
       function updateDryerScreen() {
@@ -15361,10 +16669,10 @@
             drawText(v + '/' + a.goal, x + w - 72, y + 83, 6, FONT_PIXEL, '#ddd', INK, 0, 'right');
           }
         });
-        const heroes = ROSTER.filter(d => Progress.heroUnlocked(d.id)).length;
+        const heroes = ROSTER.filter(d => !d.mysock && Progress.heroUnlocked(d.id)).length;
         const skins = SKIN_FX_IDS.filter(fx => Progress.hasSkin(fx)).length;
         drawText(
-          'HEROES ' + heroes + '/' + ROSTER.length + '   •   HERO SKINS ' + skins + '/' + SKIN_FX_IDS.length + '   •   WINS ' + Progress.data.stats.wins,
+          'HEROES ' + heroes + '/' + STORY_HEROES_N + '   •   HERO SKINS ' + skins + '/' + SKIN_FX_IDS.length + '   •   WINS ' + Progress.data.stats.wins,
           W / 2,
           508,
           10,
@@ -15433,7 +16741,7 @@
       /** Her saved look (kept with the story progress). */
       function queenLook() {
         const A = (typeof Progress !== 'undefined' && Progress.data && Progress.data.adv) || {};
-        const q = A.queen || {};
+        const q = {}; // (A.queen: the old Royal Wardrobe choices, no longer used)
         const pick = (list, i) => clamp(i | 0, 0, list.length - 1);
         return {
           head: pick(QUEEN_WARDROBE.head, q.head),
@@ -16193,7 +17501,7 @@
         d.adv = Object.assign({ prologue: false, hero: 0, look: 0, cleared: {}, seen: {} }, d.adv || {});
         return d.adv;
       }
-      const advHero = () => ROSTER[clamp(advData().hero | 0, 0, ROSTER.length - 1)];
+      const advHero = () => ROSTER[clamp(advData().hero | 0, 0, STORY_HEROES_N - 1)];
       const advHeroLook = () => withSkin(advHero(), sanitizeStyle(advData().look));
 
       function startAdventure() {
@@ -16433,6 +17741,29 @@
         }
         return true;
       }
+      /**
+       * A head-and-shoulders picture of a sock: the eyes are placed at (cx, cy) whatever the character's height, so
+       * tall socks, hats and big feet never push the face out of the frame. Returns nothing; draws like drawSock.
+       */
+      function sockEyeCentre(def, pose) {
+        const q = Object.assign({}, pose);
+        if (def.tall) q.bodyH *= def.tall;
+        if (def.footMul) q.footLen *= def.footMul;
+        q.wMul = def.wMul || 1;
+        const eyes = eyePositions(buildSpine(q));
+        return { x: (eyes[0].x + eyes[1].x) / 2, y: (eyes[0].y + eyes[1].y) / 2 + (pose.yOff || 0) };
+      }
+      function drawSockPortrait(c, def, pose, cx, cy, scale, pupil, face = 1) {
+        const s = scale / Math.sqrt(def.wMul || 1);
+        const e = sockEyeCentre(def, pose);
+        drawSock(c, def, pose, cx - e.x * s * face, cy - e.y * s, face, s, pupil);
+      }
+      /** The same for the pantyhose folk (Queen, Scout): their eyes sit near the waistband. */
+      function drawHosieryPortrait(c, kind, cx, cy, s, t, o) {
+        const H = kind === 'queen' ? queenHosiery() : HOSIERY[kind];
+        const eyeY = H.big ? -160 : -148;
+        drawHosiery(c, kind, cx - 15 * s, cy - eyeY * s, s, 1, t, o);
+      }
       function drawSceneBox() {
         const S = game.adv && game.adv.scene;
         if (!S || S.i < 0 || S.i >= S.lines.length) return;
@@ -16455,11 +17786,11 @@
           roundRectPath(ctx, 28, 414, 106, 106, 12);
           ctx.clip();
           const talk = Math.floor(S.t / 5) % 2 === 0 && S.shown < text.length;
-          if (info.hosiery) drawHosiery(ctx, info.hosiery, 74, 592, 0.95, 1, S.t, { mouth: talk ? 'open' : 'smile' });
+          if (info.hosiery) drawHosieryPortrait(ctx, info.hosiery, 81, 466, 0.8, S.t, { mouth: talk ? 'open' : 'smile' });
           else {
             const p = idleAnim(basePose(), S.t);
             p.mouth = talk ? 'yell' : 'grin';
-            drawSock(ctx, info.sock, p, 66, 548, 1, fitScale(info.sock, 0.9), { x: 3, y: 0 });
+            drawSockPortrait(ctx, info.sock, p, 81, 462, 0.95, { x: 3, y: 0 });
           }
           ctx.restore();
           ctx.strokeStyle = INK;
@@ -16651,7 +17982,7 @@
           return;
         }
         const move = d => {
-          S.c = wrapIndex(S.c + d, ROSTER.length);
+          S.c = wrapIndex(S.c + d, STORY_HEROES_N);
           S.k = 0;
           SFX.select();
         };
@@ -16673,7 +18004,7 @@
         const c0 = game.click;
         if (c0) {
           const inside = r => c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
-          for (let i = 0; i < ROSTER.length; i++)
+          for (let i = 0; i < STORY_HEROES_N; i++)
             if (inside(advCellRect(i))) {
               if (S.c !== i) {
                 S.c = i;
@@ -16732,7 +18063,7 @@
         drawText(S.from === 'prologue' ? "WHO WILL ANSWER THE QUEEN'S CALL?" : 'CHOOSE YOUR HERO', 520, 30, 26, FONT_COMIC, '#ffe234', INK, 7);
         drawBackButton(S.from === 'prologue' ? 'QUIT' : 'BACK');
         // portrait grid
-        for (let i = 0; i < ROSTER.length; i++) {
+        for (let i = 0; i < STORY_HEROES_N; i++) {
           const r = advCellRect(i),
             d = ROSTER[i],
             lk = !Progress.heroUnlocked(d.id),
@@ -17012,14 +18343,29 @@
         { n: 6, name: 'THE PUPPET THEATRE', jp: '人形劇場' },
         { n: 7, name: 'THE MITTEN PEAKS', jp: 'ミトン山脈' }
       ];
-      /** Palace menu button i (the rows close up a little when the START AGAIN button joins the list). */
+      /** Palace menu: chapter i is a picture square (10 to a page, 5 x 2); the other items are buttons along the bottom. */
+      const HUB_PER_PAGE = 10;
+      const hubPages = () => Math.ceil(ADV_CHAPTERS.length / HUB_PER_PAGE);
       const hubButton = i => {
-        const n = HUB_ITEMS().length;
-        if (n > 10) return { x: 24, y: 94 + i * 37, w: 300, h: 33 };
-        if (n > 9) return { x: 24, y: 98 + i * 41, w: 300, h: 37 };
-        if (n > 8) return { x: 24, y: 100 + i * 45, w: 300, h: 40 };
-        return { x: 24, y: 104 + i * 49, w: 300, h: 42 };
+        const nCh = ADV_CHAPTERS.length;
+        if (i < nCh) {
+          const page = (game.adv && game.adv.hub && game.adv.hub.page) || 0;
+          if (Math.floor(i / HUB_PER_PAGE) !== page) return { x: -999, y: -999, w: 0, h: 0 };
+          const k = i % HUB_PER_PAGE;
+          return { x: 56 + (k % 5) * 172, y: 92 + Math.floor(k / 5) * 152, w: 160, h: 142 };
+        }
+        const j = i - nCh;
+        return { x: 70 + j * 278, y: 404, w: 262, h: 44 };
       };
+      const HUB_PREV = { x: 6, y: 190, w: 44, h: 100 },
+        HUB_NEXT = { x: 910, y: 190, w: 44, h: 100 };
+      /** The chapter's boss (the last boss scene's villain) and arena, for its picture square. */
+      function chapterArt(n) {
+        const C = STORY_CHAPTERS[n];
+        if (!C) return null;
+        const bossStep = C.steps.filter(s => s.scene && s.boss).pop();
+        return { stage: (bossStep && bossStep.stage) || C.stage, boss: bossStep ? bossStep.cast[0] : null };
+      }
       const storyAllCleared = () => ADV_CHAPTERS.every(ch => !STORY_CHAPTERS[ch.n] || advData().cleared[ch.n]);
       /** Play the whole story again from the prologue: chapters lock again, but skins, accessories and trophies stay. */
       function restartStory() {
@@ -17048,23 +18394,17 @@
         })),
         { label: 'CHANGE HERO', sub: advHeroLook().name, on: true, go: () => openAdvSelect('hub') },
         { label: 'WATCH THE PROLOGUE', sub: 'LAUNDRY DAY', on: true, go: () => startPrologue() },
-        { label: 'DRESS THE QUEEN', sub: 'THE ROYAL WARDROBE', on: true, go: () => openQueenRobe() },
-        ...(storyAllCleared()
-          ? [
-              {
-                label: 'START THE STORY AGAIN',
-                // a second tap confirms, so nobody resets their story by accident
-                sub: game.adv.hub && game.adv.hub.restartAt && game.adv.hub.t - game.adv.hub.restartAt < 180 ? 'TAP AGAIN TO START OVER' : 'FROM THE PROLOGUE • YOUR SKINS STAY',
-                on: true,
-                go: () => {
-                  const Hb = game.adv.hub;
-                  if (Hb.restartAt && Hb.t - Hb.restartAt < 180) restartStory();
-                  else Hb.restartAt = Hb.t;
-                }
-              }
-            ]
-          : []),
-        { label: 'BACK TO MENU', sub: '', on: true, go: () => toModeMenu() }
+        {
+          label: storyAllCleared() ? 'START THE STORY AGAIN' : 'CLEAR STORY PROGRESS',
+          // a second tap confirms, so nobody resets their story by accident
+          sub: game.adv.hub && game.adv.hub.restartAt && game.adv.hub.t - game.adv.hub.restartAt < 180 ? 'TAP AGAIN TO LOCK EVERY CHAPTER AND START OVER' : 'LOCKS THE CHAPTERS AGAIN • SKINS & TROPHIES STAY',
+          on: true,
+          go: () => {
+            const Hb = game.adv.hub;
+            if (Hb.restartAt && Hb.t - Hb.restartAt < 180) restartStory();
+            else Hb.restartAt = Hb.t;
+          }
+        }
       ];
 
       const PALACE_ARRIVAL = [
@@ -17190,16 +18530,38 @@
         }
         const items = HUB_ITEMS();
         if (backWasPressed()) return toModeMenu();
-        if (wasPressed('KeyW', 'ArrowUp')) {
-          Hb.sel = wrapIndex(Hb.sel - 1, items.length);
+        const nCh = ADV_CHAPTERS.length;
+        const setSel = i => {
+          Hb.sel = clamp(i, 0, items.length - 1);
+          if (Hb.sel < nCh) Hb.page = Math.floor(Hb.sel / HUB_PER_PAGE);
           SFX.select();
+        };
+        const inGrid = Hb.sel < nCh;
+        if (wasPressed('KeyA', 'ArrowLeft')) setSel(Hb.sel - 1);
+        if (wasPressed('KeyD', 'ArrowRight')) setSel(Hb.sel + 1);
+        if (wasPressed('KeyW', 'ArrowUp')) {
+          if (!inGrid) setSel(Math.min(nCh - 1, (Hb.page || 0) * HUB_PER_PAGE + 5));
+          else if (Hb.sel % HUB_PER_PAGE >= 5) setSel(Hb.sel - 5);
         }
         if (wasPressed('KeyS', 'ArrowDown')) {
-          Hb.sel = wrapIndex(Hb.sel + 1, items.length);
-          SFX.select();
+          if (inGrid && Hb.sel % HUB_PER_PAGE < 5 && Hb.sel + 5 < nCh) setSel(Hb.sel + 5);
+          else if (inGrid) setSel(nCh);
         }
+        if (wasPressed('KeyQ', 'BracketLeft') && (Hb.page || 0) > 0) setSel(((Hb.page || 0) - 1) * HUB_PER_PAGE);
+        if (wasPressed('KeyE', 'BracketRight') && (Hb.page || 0) < hubPages() - 1) setSel(((Hb.page || 0) + 1) * HUB_PER_PAGE);
         let go = wasPressed(...CONFIRM_KEYS) ? Hb.sel : -1;
         const c0 = game.click;
+        const hit = r => c0 && c0.x > r.x && c0.x < r.x + r.w && c0.y > r.y && c0.y < r.y + r.h;
+        if (hit(HUB_PREV) && (Hb.page || 0) > 0) {
+          setSel(((Hb.page || 0) - 1) * HUB_PER_PAGE);
+          game.click = null;
+          return;
+        }
+        if (hit(HUB_NEXT) && (Hb.page || 0) < hubPages() - 1) {
+          setSel(((Hb.page || 0) + 1) * HUB_PER_PAGE);
+          game.click = null;
+          return;
+        }
         if (c0) {
           items.forEach((it, i) => {
             const r = hubButton(i);
@@ -17611,6 +18973,88 @@
         drawText('WE APPROVE. (DONE)', 230, 497, 18, FONT_COMIC, '#fff', INK, 5);
       }
 
+      /** One chapter's picture square: its arena, its boss, its name, and cleared / locked. */
+      function drawChapterSquare(ch, r, on, it, t) {
+        const art = chapterArt(ch.n),
+          cleared = !!advData().cleared[ch.n];
+        const lift = on ? -4 - Math.sin(t * 0.15) * 2 : 0;
+        const x = r.x,
+          y = r.y + lift,
+          w = r.w,
+          hh = r.h;
+        ctx.save();
+        roundRectPath(ctx, x, y, w, hh, 14);
+        ctx.fillStyle = '#1a1030';
+        ctx.fill();
+        ctx.clip();
+        const picH = 100;
+        if (art) {
+          const bg = ensureStage(art.stage);
+          if (bg) ctx.drawImage(bg, x - 12, y, w + 24, ((w + 24) * H) / W);
+          else {
+            ctx.fillStyle = '#2a1d48';
+            ctx.fillRect(x, y, w, picH);
+          }
+          if (art.boss) {
+            // the boss, peeking into the picture
+            ctx.fillStyle = 'rgba(0,0,0,0.25)';
+            ctx.beginPath();
+            ctx.ellipse(x + w - 42, y + picH - 6, 34, 8, 0, 0, 7);
+            ctx.fill();
+            const d = withSkin(findCharacter(art.boss), 0);
+            const p = idleAnim(basePose(), t + ch.n * 17);
+            p.eyes = cleared ? 'happy' : 'angry';
+            if (on) p.mouth = 'grin';
+            drawSockPortrait(ctx, d, p, x + w - 46, y + 48, 0.62, { x: -3, y: 0 }, -1);
+          }
+        } else {
+          ctx.fillStyle = '#2a1d48';
+          ctx.fillRect(x, y, w, picH);
+          drawText('?', x + w / 2, y + picH / 2, 46, FONT_COMIC, '#6b6290', INK, 6);
+        }
+        // name band
+        ctx.fillStyle = on ? '#ff4fa3' : 'rgba(20,10,36,0.94)';
+        ctx.fillRect(x, y + picH, w, hh - picH);
+        if (!it.on) {
+          ctx.fillStyle = 'rgba(8,4,18,0.62)';
+          ctx.fillRect(x, y, w, picH);
+        }
+        ctx.restore();
+        roundRectPath(ctx, x, y, w, hh, 14);
+        ctx.strokeStyle = on ? '#fff' : INK;
+        ctx.lineWidth = on ? 5 : 3;
+        ctx.stroke();
+        // chapter number badge
+        roundRectPath(ctx, x + 6, y + 6, 46, 22, 7);
+        ctx.fillStyle = '#ffe234';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        drawText('CH.' + ch.n, x + 29, y + 18, 9, FONT_PIXEL, INK, null, 0);
+        const name = ch.name.replace(/^THE /, '');
+        drawText(name, x + w / 2, y + picH + 14, name.length > 15 ? 11 : 13, FONT_COMIC, it.on ? '#fff' : '#888', INK, 4);
+        drawText(it.sub, x + w / 2, y + hh - 10, 6, FONT_PIXEL, cleared ? '#7dff9a' : it.on ? '#ffe234' : '#888', INK, 0);
+        if (cleared) {
+          // a gold star sticker
+          ctx.save();
+          ctx.translate(x + w - 16, y + 16);
+          ctx.rotate(Math.sin(t * 0.05 + ch.n) * 0.15);
+          ctx.beginPath();
+          for (let q = 0; q < 10; q++) {
+            const a = -Math.PI / 2 + (q * Math.PI) / 5,
+              rr = q % 2 ? 6 : 14;
+            q ? ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr) : ctx.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+          }
+          ctx.closePath();
+          ctx.fillStyle = '#ffd23f';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+          ctx.restore();
+        } else if (!it.on) drawPadlock(x + w / 2, y + 52, 1.3);
+      }
       function drawAdvHub() {
         const Hb = game.adv.hub,
           t = Hb.t;
@@ -17630,20 +19074,32 @@
         drawSock(ctx, def, p, 518, 470, 1, fitScale(def, 1.0), { x: 4, y: 0 });
         if (Hb.scout) drawHosiery(ctx, 'fishnet', 656, 474, 0.95, 1, t, { mouth: speaking === 'fishnet' && t % 10 < 5 ? 'open' : 'smile' });
         if (game.adv.scene) return drawSceneBox();
-        // menu
-        drawText('PALACE OF NYLONIA', 174, 80, 26, FONT_COMIC, '#ffe234', INK, 7);
+        // menu: the chapters as picture squares
+        ctx.fillStyle = 'rgba(10,4,22,0.5)';
+        ctx.fillRect(0, 0, W, H);
+        drawText('PALACE OF NYLONIA', W / 2, 40, 30, FONT_COMIC, '#ffe234', INK, 8);
+        drawText('CHOOSE A CHAPTER', W / 2, 70, 9, FONT_PIXEL, '#fff', INK, 0);
+        const nCh = ADV_CHAPTERS.length,
+          page = Hb.page || 0;
         HUB_ITEMS().forEach((it, i) => {
           const r = hubButton(i),
             on = Hb.sel === i;
+          if (r.w === 0) return;
+          if (i < nCh) return drawChapterSquare(ADV_CHAPTERS[i], r, on, it, t);
           roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
-          ctx.fillStyle = !it.on ? 'rgba(30,20,50,0.75)' : on ? '#ff4fa3' : 'rgba(42,29,72,0.92)';
+          ctx.fillStyle = !it.on ? 'rgba(30,20,50,0.75)' : on ? '#ff4fa3' : 'rgba(42,29,72,0.95)';
           ctx.fill();
           ctx.strokeStyle = on ? '#fff' : INK;
           ctx.lineWidth = 3;
           ctx.stroke();
-          drawText(it.label, r.x + 14, r.y + Math.round(r.h * 0.36), it.label.length > 24 ? 14 : r.h < 36 ? 15 : 17, FONT_COMIC, it.on ? '#fff' : '#777', INK, 4, 'left');
-          drawText(it.sub, r.x + 14, r.y + r.h - 8, r.h < 36 ? 6 : 7, FONT_PIXEL, it.on ? '#ffe234' : '#666', INK, 0, 'left');
+          drawText(it.label, r.x + r.w / 2, r.y + 16, it.label.length > 20 ? 13 : 15, FONT_COMIC, '#fff', INK, 4);
+          drawText(it.sub, r.x + r.w / 2, r.y + r.h - 9, it.sub.length > 40 ? 5 : 6, FONT_PIXEL, '#ffe234', INK, 0);
         });
+        if (hubPages() > 1) {
+          if (page > 0) drawText('◀', HUB_PREV.x + 22, HUB_PREV.y + 50, 26, FONT_PIXEL, '#ffe234', INK, 5);
+          if (page < hubPages() - 1) drawText('▶', HUB_NEXT.x + 22, HUB_NEXT.y + 50, 26, FONT_PIXEL, '#ffe234', INK, 5);
+          drawText('PAGE ' + (page + 1) + '/' + hubPages() + (IS_TOUCH ? '' : '  [Q/E]'), W / 2, 392, 8, FONT_PIXEL, '#ccc', INK, 0);
+        }
         if (Hb.note && t < Hb.note)
           drawText(
             HUB_ITEMS()[Hb.sel] && /FIRST/.test(HUB_ITEMS()[Hb.sel].sub) ? 'Clear the chapter before it first!' : 'The royal engineers are still building that bridge!',
@@ -17907,8 +19363,8 @@
         { who: 'puppet', text: "On with the show! Tonight's performance: the TRAGIC DEFEAT of {HERO}!" }
       ];
       const CH6_END = [
-        { who: 'puppet', text: '*wobbles* Bravo... bravo... *collapses in a heap*' },
-        { who: 'narr', text: '*Something wriggles inside the puppet. Out pops... a small, grumpy, knitted MITTEN.*', fx: s => (s.flash = 10) },
+        { who: 'puppet', text: '*wobbles* Bravo... bravo... *collapses in a heap*', fx: s => (s.flop = s.t) },
+        { who: 'narr', text: '*Something wriggles inside the puppet. Out pops... a small, grumpy, knitted MITTEN.*', fx: s => ((s.flash = 10), (s.pop = s.t)) },
         { who: 'mitten', text: 'Oi! Who turned the lights on?!' },
         { who: 'hero', text: 'A MITTEN?! You were the hand inside the puppet all along!' },
         { who: 'mitten', text: 'Course I was! Socks get EVERYTHING! Songs! Drawers! Christmas stockings! What do mittens get? Left on a BUS!' },
@@ -17950,10 +19406,10 @@
         { who: 'narr', text: '*A warm orange glow climbs the mountain. Somebody is huffing and puffing up the path.*', fx: s => (s.embers = 1) },
         { who: 'demon', text: '*panting* Excuse me... is there a GRAND MITTEN up here? I run the palace cloakroom now.' },
         { who: 'demon', text: 'Somebody handed this in. It has been in Lost Property for... *checks the tag* ...a thousand years.' },
-        { who: 'narr', text: '*He holds up a second mitten. Exactly the same pattern.*', fx: s => (s.flash = 14) },
+        { who: 'narr', text: '*He holds up a second mitten. Exactly the same pattern.*', fx: s => ((s.flash = 14), (s.pair = s.t)) },
         { who: 'mitten', text: '...My PAIR? You found my PAIR?!' },
         { who: 'demon', text: 'Lost things are returned within a thousand years. I TOLD you we were working on it.' },
-        { who: 'narr', text: '*The two mittens hug. The snow stops. Somewhere, a ski lift starts working again.*', fx: s => (s.confetti = 1) },
+        { who: 'narr', text: '*The two mittens hug. The snow stops. Somewhere, a ski lift starts working again.*', fx: s => ((s.confetti = 1), (s.hug = s.t)) },
         { who: 'fishnet', text: '...Is anyone else crying? My tears are freezing into little icicles.' },
         { who: 'hero', text: "Come on. Let's go home. And let's never, EVER put a hand inside a sock again." }
       ];
@@ -17970,7 +19426,7 @@
       ];
       const CH5_MID_END = [
         { who: 'mismatch', text: 'My stitches... coming... LOOSE...' },
-        { who: 'narr', text: '*POP! POP! POP! Mismatch bursts at the seams! A hundred socks rain down, all hopping off to find their partners.*', fx: s => (s.confetti = 1) },
+        { who: 'narr', text: '*POP! POP! POP! Mismatch bursts at the seams! A hundred socks rain down, all hopping off to find their partners.*', fx: s => ((s.confetti = 1), (s.pairs = s.t)) },
         { who: 'hero', text: "My sock! ...Oh. It's a left one. I needed a right one." },
         { who: 'fishnet', text: "Look on the bright side. Now you've got two lefts!" },
         { who: 'queen', text: 'Onward. The Demon is just ahead. And somebody sweep up these socks.' }
@@ -17998,7 +19454,7 @@
         { who: 'ghost', text: 'I fell down the back of the drawer.' },
         { who: 'demon', text: 'FOR A THOUSAND YEARS?!' },
         { who: 'ghost', text: '...It was cozy.' },
-        { who: 'narr', text: '*Silence. Then everybody cheers! The Throne of Odd Socks bursts into a shower of reunited pairs!*', fx: s => (s.confetti = 1) },
+        { who: 'narr', text: '*Silence. Then everybody cheers! The Throne of Odd Socks bursts into a shower of reunited pairs!*', fx: s => ((s.confetti = 1), (s.pairs = s.t)) },
         { who: 'queen', text: '*dabbing her eyes* This is the most beautiful thing We have ever seen. *gasp* ...Oh no.' },
         { who: 'hero', text: 'What? What is it?' },
         { who: 'queen', text: 'We cried so hard... WE HAVE A RUN!' }
@@ -18344,6 +19800,101 @@
         updateScene();
       }
 
+      /** A little heart (for hugs and reunions). */
+      function drawHeart(x, y, s, col) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(s, s);
+        ctx.beginPath();
+        ctx.moveTo(0, 8);
+        ctx.bezierCurveTo(-14, -2, -7, -14, 0, -6);
+        ctx.bezierCurveTo(7, -14, 14, -2, 0, 8);
+        ctx.fillStyle = col || '#ff4f8a';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 2.5 / s;
+        ctx.stroke();
+        ctx.restore();
+      }
+      // pairs of socks finding each other again (the Odd Sock Vault, the Tumble Throne)
+      const REUNITED = [['stinky', 0], ['argyle', 0], ['baby', 1], ['kneehi', 0], ['gran', 2], ['robo', 1]];
+      /** Animated story moments, switched on by a line's fx (see CH6_END, CH7_END, CH5_MID_END). */
+      function drawSceneMoments(St, t, spots) {
+        // MITTENS REUNITED: the Demon holds up the lost one... then it bounds over and they hug
+        if (St.pair != null && spots.demon && spots.mitten) {
+          const m = withSkin(findCharacter('mitten'), 0);
+          const p = idleAnim(basePose(), t + 7);
+          const held = { x: spots.demon.x - 46, y: 352 + Math.sin(t * 0.1) * 4 };
+          const meet = { x: 628, y: 396 };
+          let x = held.x,
+            y = held.y,
+            face = -1;
+          if (St.hug == null) {
+            // held up high, glowing
+            const lift = Math.min(1, (t - St.pair) / 20);
+            y = held.y - lift * 40;
+            p.eyes = 'shock';
+            ctx.save();
+            ctx.globalAlpha = 0.35 + Math.sin(t * 0.2) * 0.15;
+            ctx.fillStyle = '#fff6c2';
+            ctx.beginPath();
+            ctx.arc(x, y - 50, 70, 0, 7);
+            ctx.fill();
+            ctx.restore();
+            if (t % 8 === 0) addParticle({ type: 'spark', x: x + rand(-40, 40), y: y - 50 + rand(-40, 40), vx: 0, vy: -0.6, life: 24, color: '#ffe234' });
+          } else {
+            const k = Math.min(1, (t - St.hug) / 34);
+            x = lerp(held.x, meet.x, ease(k));
+            y = lerp(held.y - 40, meet.y, k) - Math.sin(k * Math.PI) * 110;
+            face = 1; // turned round to face him
+            if (k < 1) p.rot = -k * Math.PI * 2;
+            else {
+              p.eyes = 'happy';
+              p.mouth = 'grin';
+              p.lean = -0.22 * Math.min(1, (t - St.hug - 34) / 16);
+              // hearts floating up from the hug
+              if ((t - St.hug) % 14 === 0) St.hearts = (St.hearts || []).concat([{ x: (meet.x + spots.mitten.x + 20) / 2 + rand(-30, 30), born: t }]);
+            }
+          }
+          drawSock(ctx, m, p, x, y, face, fitScale(m, 0.62), { x: 4 * face, y: 0 });
+        }
+        // SOCKS REUNITED: pairs hop in from both sides, meet, bounce together
+        if (St.pairs != null) {
+          const age = t - St.pairs;
+          REUNITED.forEach(([id, skin], i) => {
+            const d = withSkin(findCharacter(id), skin);
+            const meetX = 410 + i * 46,
+              y = 396 - (i % 2) * 34;
+            const k = Math.min(1, Math.max(0, (age - i * 6) / 40));
+            if (k <= 0) return;
+            for (const side of [-1, 1]) {
+              const from = side < 0 ? -60 : W + 60;
+              const x = lerp(from, meetX + side * 16, ease(k));
+              const hop = k < 1 ? -Math.abs(Math.sin(k * Math.PI * 4)) * 40 : -Math.abs(Math.sin((age + i * 9) * 0.18)) * 10;
+              const p = idleAnim(basePose(), t + i * 13 + side * 5);
+              p.yOff = hop / 0.3;
+              if (k >= 1) {
+                p.eyes = 'happy';
+                p.mouth = 'grin';
+                p.lean = -0.18;
+              }
+              drawSock(ctx, d, p, x, y, -side, fitScale(d, 0.3), { x: -3 * side, y: 0 });
+            }
+            if (k >= 1 && (age + i * 7) % 26 === 0) St.hearts = (St.hearts || []).concat([{ x: meetX, born: t, y0: y - 70 }]);
+          });
+        }
+        // hearts drifting up and fading
+        if (St.hearts && St.hearts.length) {
+          St.hearts = St.hearts.filter(hh => t - hh.born < 70);
+          for (const hh of St.hearts) {
+            const a = (t - hh.born) / 70;
+            ctx.save();
+            ctx.globalAlpha = 1 - a;
+            drawHeart(hh.x + Math.sin((t - hh.born) * 0.12) * 8, (hh.y0 || 300) - a * 120, 1 + a * 0.6, '#ff4f8a');
+            ctx.restore();
+          }
+        }
+      }
       function drawAdvScene() {
         const St = game.adv.stage,
           t = St.t;
@@ -18497,7 +20048,48 @@
             return;
           }
           const tiny = (St.small || []).includes(id); // shown small in this scene (the mitten before his growth spurt)
-          drawSock(ctx, d, p, ex, 396, face, fitScale(d, tiny ? 0.42 : d.tall && d.tall > 1 ? 0.9 : 1.0), { x: 4 * face, y: 0 });
+          let dx0 = ex,
+            dy0 = 396,
+            flop = 0,
+            grow = 1;
+          if (id === 'mitten' && tiny && St.cast.includes('puppet')) {
+            // hiding inside the puppet until he pops out, in a big hop
+            if (St.pop == null) {
+              spots[id] = { x: ex - 20, top: 300 };
+              return;
+            }
+            const k = Math.min(1, (t - St.pop) / 30);
+            const from = 700;
+            dx0 = from + (ex - from) * ease(k);
+            dy0 = 396 - Math.sin(k * Math.PI) * 150;
+            if (k < 1) {
+              p.eyes = 'shock';
+              p.rot = k * Math.PI * 2;
+            }
+          }
+          if (id === 'puppet' && St.flop != null) {
+            flop = Math.min(1, (t - St.flop) / 18);
+            p.eyes = 'x';
+            p.mouth = 'o';
+          }
+          if (id === 'mitten' && St.pair != null) {
+            p.eyes = St.hug != null ? 'happy' : 'shock'; // ...My PAIR?!
+            if (St.hug != null) {
+              const k = Math.min(1, Math.max(0, (t - St.hug - 30) / 20));
+              p.lean = 0.22 * k; // leaning in for the hug
+              grow = 1 - 0.15 * k; // all the cold puffiness goes
+              p.mouth = 'grin';
+            }
+          }
+          ctx.save();
+          if (flop) {
+            // collapses backwards in a heap
+            ctx.translate(dx0, dy0);
+            ctx.rotate(ease(flop) * 1.35);
+            ctx.translate(-dx0, -dy0 - flop * 10);
+          }
+          drawSock(ctx, d, p, dx0, dy0, face, fitScale(d, (tiny ? 0.42 : d.tall && d.tall > 1 ? 0.9 : 1.0) * grow), { x: 4 * face, y: 0 });
+          ctx.restore();
           spots[id] = { x: ex - 20, top: 396 - 190 * Math.min(1.3, d.tall || 1) * (d.tall && d.tall < 1 ? 1 : 0.9) };
           if (hypnotised) drawHypnoSpiral(ctx, ex, spots[id].top - 30, 14, t * 0.2);
           if ((St.strings || []).includes(id)) {
@@ -18520,6 +20112,7 @@
           }
           if (id === 'lint') spots.lint.top = 250;
         });
+        drawSceneMoments(St, t, spots);
         // the lint ball swelling on the tip of his nose
         if (St.sneeze) {
           const z = St.sneeze,
@@ -19778,7 +21371,9 @@
         advWalk: { update: updateAdvWalk, draw: drawAdvWalk },
         advTitle: { update: updateAdvTitle, draw: drawAdvTitle },
         advCredits: { update: updateAdvCredits, draw: drawAdvCredits },
-        queenRobe: { update: updateQueenRobe, draw: drawQueenRobe }
+        queenRobe: { update: updateQueenRobe, draw: drawQueenRobe },
+        maker: { update: updateMaker, draw: drawMaker },
+        bag: { update: updateBag, draw: drawBag }
       };
 
       function updateGame() {
@@ -19966,6 +21561,14 @@
           nextStoryStep();
         },
         drawHosiery,
+        drawSockPortrait,
+        drawHosieryPortrait,
+        openMaker,
+        openBag,
+        mySockDef,
+        MY_ITEMS,
+        accIcon,
+        findCharacter: id => findCharacter(id),
         /** tests: forget all progress */
         resetProgress() {
           localStorage.removeItem(Progress.KEY);
