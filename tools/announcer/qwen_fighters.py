@@ -40,12 +40,15 @@ CAST = {
                      'a grumpy but feisty old granny.',
              dict(light=['ほいっ!', 'ほれっ!', 'えいっ!'], heavy=['どっこいしょ!', 'ふんぬぬっ!'], special=['ほれ、くらいな!', 'いくよっ!'],
                   superv=['ばあちゃんをなめるでないよ!'], throwv=['よいしょお!'], hurt=['あいたたた!', 'こ、腰が…!', 'おおっと!'],
-                  hurtBig=['あいたたたた!', 'ひいい、腰がぁ!'], ko=['あいたたた…腰が…もうダメじゃ…'], hup=['よっこらしょ!'],
+                  # her back REALLY hurts: three long, pained ouches
+                  hurtBig=['あいたたたた!', 'ひいい、腰がぁ!いったぁ〜い、いったぁ〜い、いったぁ〜い!'],
+                  ko=['あいたたた…腰が…いったぁ〜い…いったぁ〜い…いったぁ〜い…もうダメじゃ…'], hup=['よっこらしょ!'],
                   block=['ううっ…'], laugh=['ひぇっひぇっひぇ!'], win=['まだまだ若いもんには負けんよ…いたたた…'],
-                  dizzy=['あ〜れ〜…腰が…'],
+                  dizzy=['あ〜れ〜…腰が…いったぁ〜い…いったぁ〜い…いったぁ〜い…'],
                   # her nagging, shouted mid-fight (same order as GRAN_NAGS in index.html)
                   nag=['背筋を伸ばしなさい!', 'まったく、最近の若い靴下は!', 'ちゃんとご飯食べてるのかい?!',
-                       'セーターを着なさいって言ってるでしょ!', '靴下は二足そろえて洗いなさい!']), 'old'),
+                       'セーターを着なさいって言ってるでしょ!', '靴下は二足そろえて洗いなさい!',
+                       '…あれ?何を言おうとしたんだっけ?!']), 'old'),
     'baby': (SMALL, 'A Japanese toddler girl, very squeaky, cute and bratty, babyish speech.',
              dict(superv=['おこったもん!'], laugh=['きゃはは!'], win=['やったー!']), None),
     'kneehi': (MALE, 'A huge Japanese sumo wrestler, booming deep voice, powerful and jolly.',
@@ -174,11 +177,17 @@ def lines_for(cid):
 # Characters who must sound VERY old: their own design note (instead of "close-mic, punchy battle cries"),
 # and their voice is picked by how old it sounds (see age_cues).
 OLDEST = {
-    'gran': ' Speaking style: a NAGGING old granny of 98, always scolding and complaining, fussy, tutting and '
-            'whiny, a slightly nasal, sharp, bossy telling-off tone, croaky and crackly, her voice quavering and '
-            'cracking with age, cranky little shouts as she fights. Natural recording from a little distance in a '
-            'small quiet room, not close to the microphone, no echo.',
+    'gran': ' Speaking style: a SASSY, quick-witted, fiery old granny of 98, SHOUTING and scolding at the top of '
+            'her lungs, talking FAST with snappy, cheeky comebacks and a sharp tongue, full of attitude, shrill and '
+            'LOUD, her voice cracking and squeaking; now and then she trails off, forgets what she was saying, then '
+            'snaps right back even louder. Croaky and quavering with age, never calm. Natural recording in a small '
+            'quiet room, no echo.',
 }
+# how OLDEST voices are picked: 'energy' = the most up-and-down, lively shouting (the age comes from the effect)
+OLDEST_PICK = {'gran': 'energy'}
+# the line a voice is designed with (and cloned from). Gran's is an angry telling-off, so every line she says
+# carries that anger.
+REF_TEXT = {'gran': 'こらっ!背筋を伸ばしなさいって何度言ったらわかるんだい!…あれ、何の話だっけ?まあいい、とにかく伸ばしな!'}
 
 
 def age_cues(y):
@@ -192,15 +201,20 @@ def age_cues(y):
         f0 = call(pitch, 'Get quantile', 0, 0, 0.5, 'Hertz')
         pp = call(snd, 'To PointProcess (periodic, cc)', 75, 700)
         jitter = call(pp, 'Get jitter (local)', 0, 0, 0.0001, 0.02, 1.3)
+        lo = call(pitch, 'Get quantile', 0, 0, 0.1, 'Hertz')
+        hi = call(pitch, 'Get quantile', 0, 0, 0.9, 'Hertz')
         f0 = f0 if f0 == f0 else 999.0
         jitter = jitter if jitter == jitter else 0.0
-        return f0, jitter
+        spread = 12 * np.log2(hi / lo) if lo == lo and hi == hi and lo > 0 else 0.0  # semitones between low and high
+        return f0, jitter, spread
     except Exception as e:
         print('  (age cues failed: %s)' % e, flush=True)
-        return 999.0, 0.0
+        return 999.0, 0.0, 0.0
 
 
 def ref_line(cid):
+    if cid in REF_TEXT:
+        return REF_TEXT[cid]
     w = lines_for(cid)
     return w['light'][0] + w['heavy'][0] + w['special'][0] + w['win'][0]
 
@@ -303,9 +317,12 @@ def main():
             y = np.asarray(wavs[0], dtype=np.float32)
             tail = echo_tail(y)
             if oldest:
-                f0, jitter = age_cues(y)
-                score = f0 - 600 * jitter + (1000 if tail > 0.25 else 0)  # low and shaky wins; echoey loses
-                print(f'  {cid} take {take + 1}: pitch {f0:.0f} Hz, shake {jitter * 100:.1f}%, echo tail {tail * 1000:.0f} ms', flush=True)
+                f0, jitter, spread = age_cues(y)
+                if OLDEST_PICK.get(cid) == 'energy':  # the liveliest: big ups and downs, a shaky voice
+                    score = -20 * spread - 600 * jitter + (1000 if tail > 0.25 else 0)
+                else:  # low and shaky wins; echoey loses
+                    score = f0 - 600 * jitter + (1000 if tail > 0.25 else 0)
+                print(f'  {cid} take {take + 1}: pitch {f0:.0f} Hz, ups-and-downs {spread:.1f} semitones, shake {jitter * 100:.1f}%, echo tail {tail * 1000:.0f} ms', flush=True)
                 if score < best_score:
                     best, best_tail, best_score = y, tail, score
                 continue

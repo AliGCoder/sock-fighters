@@ -146,11 +146,11 @@ def old(y):
     y = y + env * 0.1 * lfilter(b, a, hiss)
     # not right on the microphone: take away the close-up bass boom, keep the words clear (a gentle lift at
     # 2-5 kHz), then put her a little way off in a small room (short, soft reflections)
-    b, a = butter(2, 160 / (SR / 2), 'high')
+    b, a = butter(2, 110 / (SR / 2), 'high')
     y = lfilter(b, a, y)
     b, a = butter(2, [2000 / (SR / 2), 5000 / (SR / 2)], 'band')
     y = y + 0.2 * lfilter(b, a, y)
-    return _small_room(_nasal(y))
+    return _small_room(_punch(_nasal(y)), wet=0.07)
 
 
 def _nasal(y):
@@ -159,6 +159,16 @@ def _nasal(y):
     y = y + 0.9 * lfilter(b, a, y)
     b, a = butter(2, [2800 / (SR / 2), 3600 / (SR / 2)], 'band')
     return y + 0.35 * lfilter(b, a, y)
+
+
+def _punch(y, drive=3.2):
+    """Loud and in-your-face: squash the quiet and loud parts together (a soft-clip compressor), so she is LOUD
+    the whole way through, with a little grit when she yells."""
+    y = _peak1(y)
+    env = np.convolve(np.abs(y), np.ones(240) / 240, mode='same')
+    gain = 1 / np.maximum(0.25, env / (np.max(env) or 1)) ** 0.5  # lift the quieter words
+    y = _peak1(y * gain)
+    return np.tanh(drive * y) / np.tanh(drive)
 
 
 def _small_room(y, wet=0.22, seconds=0.28):

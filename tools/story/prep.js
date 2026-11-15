@@ -62,7 +62,7 @@ const PERSONA = {
   stinky: 'cocky young street brawler',
   argyle: 'calm, noble samurai',
   shinobi: 'cool, quiet ninja woman',
-  gran: 'LOUD nagging 98-year-old granny: a very, very old woman who SHOUTS everything, always scolding and complaining at the top of her voice, fussy and whiny, trembling and croaky',
+  gran: 'SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky',
   baby: 'squeaky, bratty toddler',
   kneehi: 'booming, jolly sumo wrestler',
   robo: 'flat, monotone robot',
@@ -108,7 +108,7 @@ function mood(who, text) {
   const caps = letters.replace(/[^A-Z]/g, '').length;
   if (who === 'narr') return /!/.test(text) ? 'excited storytelling' : 'storytelling';
   // Stocking Gran nags, and she nags LOUDLY
-  if (who === 'gran') return /HA(HA)+|laugh|hee/i.test(text) ? 'cackling' : 'shouting and nagging, scolding loudly like a cranky old granny';
+  if (who === 'gran') return /HA(HA)+|laugh|hee/i.test(text) ? 'cackling wildly' : 'sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained';
   if (/WAA+H|\*sniff|crying|tantrum|\*dabbing/i.test(text)) return 'crying and sobbing';
   if (/\*quietly\*/.test(text)) return 'quiet and sad';
   if (/\*VERY loudly\*/.test(text)) return 'suddenly very loud';
@@ -153,7 +153,12 @@ const jobs = new Map();
 function add(speaker, shown, voice, say, file, text, who) {
   if (!say) return;
   const key = storyVoiceKey(speaker, shown);
-  const note = (PERSONA[voice] || "") + ", " + mood(who, text);
+  let note = (PERSONA[voice] || "") + ", " + mood(who, text);
+  // Stocking Gran's back (and hip) REALLY hurt: three long, pained ouches, and she sounds it
+  if (who === 'gran' && /my back|my hip|ow ow/i.test(text)) {
+    say = say.replace(/[。!?…\s]*$/, '') + '…いったぁ〜い…いったぁ〜い…いったぁ〜い…';
+    note = (PERSONA[voice] || '') + ', in real pain, groaning and wincing, three long drawn-out ouches';
+  }
   if (!jobs.has(key)) jobs.set(key, { key, voice, say, note, file });
 }
 let skipped = 0;
