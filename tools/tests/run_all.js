@@ -1,0 +1,41 @@
+// The bug check: run every test against the game and report anything wrong. Run before every publish:
+//   node tools/tests/run_all.js            (all of them, about 10 minutes)
+//   node tools/tests/run_all.js quick      (skip the long full-story playthrough)
+// A test fails if it crashes, prints an error, falls out of step online, or a check in it says so.
+const { spawnSync } = require('child_process');
+const path = require('path');
+const quick = process.argv.includes('quick');
+const TESTS = [
+  ['test_sound', 'Sound: announcer and fighter voices actually play'],
+  ['test_story', 'Story mode: chapter 1 start to finish'],
+  ['test_awards', 'Trophies, skins, accessories, the Dryer, phones'],
+  ['test_uniq', 'Every hero has their own unique items'],
+  ['test_voices', 'Story voices on PC, iPhone and Android'],
+  ['test_online', 'Online play stays in step (iPhone + Android)'],
+  ['test_quick', 'Quick Match pairs random players over the internet'],
+  ...(quick ? [] : [['test_full', 'Story mode: all 5 chapters, credits, epilogue']])
+];
+const problems = [];
+for (const [name, what] of TESTS) {
+  const t0 = Date.now();
+  const r = spawnSync(process.execPath, [path.join(__dirname, name + '.js')], { encoding: 'utf8', timeout: 9 * 60 * 1000 });
+  const out = (r.stdout || '') + (r.stderr || '');
+  const bad = [];
+  if (r.status !== 0) bad.push('exited with code ' + r.status);
+  for (const line of out.split('\n')) {
+    if (/^errors?:/i.test(line.trim()) && !/none/.test(line)) bad.push(line.trim());
+    if (/desyncs":[1-9]/.test(line)) bad.push('online fell out of step: ' + line.trim().slice(0, 100));
+    if (/same result on both: false/.test(line)) bad.push(line.trim());
+    if (/missing [1-9]/.test(line) && !/queen: \.\.\./.test(line)) bad.push(line.trim().slice(0, 120));
+    if (/"peak":0[,}]/.test(line)) bad.push('no sound reached the speakers');
+    if (/"ann":0[,}]/.test(line) && /VS \+ fight/.test(line)) bad.push('the announcer never spoke');
+  }
+  if (/paired in/.test(out) === false && name === 'test_quick') bad.push('Quick Match did not pair the two players');
+  const secs = ((Date.now() - t0) / 1000).toFixed(0);
+  console.log((bad.length ? '✗ ' : '✓ ') + what + '  (' + secs + 's)');
+  for (const b of bad) console.log('    ' + b);
+  if (bad.length) problems.push([name, bad, out]);
+}
+console.log(problems.length ? '\n' + problems.length + ' test(s) found problems.' : '\nAll clear: no bugs found.');
+for (const [name, , out] of problems) console.log('\n--- ' + name + ' output ---\n' + out.slice(-2500));
+process.exit(problems.length ? 1 : 0);

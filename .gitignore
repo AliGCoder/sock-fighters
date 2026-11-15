@@ -31,3 +31,4 @@ tools/story/story_clips_qwen.json
 tools/announcer/.venv-vox/
 tools/story/story_clips_english_partial.json
 tools/story/refs/unused/
+tools/tests/out/
