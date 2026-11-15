@@ -13,14 +13,9 @@ require('fs').mkdirSync(SP, { recursive: true });
   const G = (fn, a) => p.evaluate(fn, a);
   const key = async (k, w = 80) => { await p.keyboard.press(k); await p.waitForTimeout(w); };
   const scr = () => G(() => window.__sock.game.screen);
-  await G(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 1, look: 0, cleared: {}, seen: {} }; S.startAdventure(); });
+  await G(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 1, look: 0, cleared: {}, seen: {} }; S.startAdventure(); if (S.game.screen === 'advSlots') S.playSlot(0); /* (story mode opens on the save games) */ });
   await p.waitForTimeout(400);
   await p.screenshot({ path: SP + 'st_hub.png' });
-  // hero select shows the real moves
-  await G(() => { const S = window.__sock; S.game.adv.hub.sel = S.hubItems().findIndex(it => it.label === 'CHANGE HERO'); });
-  await key('Enter', 400);
-  await p.screenshot({ path: SP + 'st_select.png' });
-  await key('Escape', 300);
   await G(() => { window.__sock.game.adv.hub.sel = 0; }); // CHAPTER 1...
   await key('Enter', 400);
   await G(() => { window.__sock.game.adv.hub.sel = 0; }); // ...EPISODE 1 (it begins with the prologue)

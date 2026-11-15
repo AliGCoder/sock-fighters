@@ -13,7 +13,7 @@ const URL = require('url').pathToFileURL(require('path').join(__dirname, '..', '
     await p.goto(URL);
     await p.waitForTimeout(1200);
     await p.mouse.click(200, 200);
-    await p.evaluate(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 4, look: 0, cleared: {}, seen: {} }; S.startAdventure(); });
+    await p.evaluate(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 4, look: 0, cleared: {}, seen: {} }; S.startAdventure(); if (S.game.screen === 'advSlots') S.playSlot(0); /* (story mode opens on the save games) */ });
     await p.waitForFunction(() => window.__sock.StoryVoices.files.story === 'ready' && window.__sock.StoryVoices.files['hero-baby'] === 'ready', null, { timeout: 30000 }).catch(() => {});
     // every line of every scene should have a recording (except silent ones)
     const r = await p.evaluate(sceneNames => {

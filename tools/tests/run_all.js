@@ -15,6 +15,7 @@ const TESTS = [
   ['test_quick', 'Quick Match pairs random players over the internet'],
   ['test_features', 'MY SOCK, Sock Maker, Bag, Skill Tree, Bounties, Daily'],
   ['test_skills', 'Skill tree balance: stats, perks, charms, XP and villain scaling'],
+  ['test_saves', 'Story save games: each has its own hero, episodes and skill tree'],
   ...(quick ? [] : [['test_full', 'Story mode: all 3 chapters (27 episodes), credits, palace scenes']])
 ];
 const problems = [];

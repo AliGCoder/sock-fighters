@@ -10,7 +10,7 @@ const pw = require('C:/SockFighters/tools/announcer/node_modules/playwright');
   await p.waitForTimeout(800);
   const B = await p.evaluate(() => {
     const x = window.__sock.balance();
-    return Object.assign({}, x, { scale: Array.from({ length: 30 }, (_, i) => x.storyScale(i + 1)), xpTable: Array.from({ length: 40 }, (_, i) => x.xp(i + 1)) });
+    return Object.assign({}, x, { heroPerks: Object.fromEntries(Object.keys(window.__sock.HERO_PERK_LIST).map(id => [id, window.__sock.heroPerks(id)])), storyHeroes: window.__sock.ROSTER.slice(0, -1).map(d => d.id), scale: Array.from({ length: 30 }, (_, i) => x.storyScale(i + 1)), xpTable: Array.from({ length: 40 }, (_, i) => x.xp(i + 1)) });
   });
   const bad = [];
   const ok = (cond, msg) => { if (!cond) bad.push(msg); };
@@ -26,7 +26,12 @@ const pw = require('C:/SockFighters/tools/announcer/node_modules/playwright');
   const tiers = {};
   for (const k of B.SKILL_PERKS) (tiers[k.tier] = tiers[k.tier] || []).push(k.cost);
   ok(Math.max(...tiers[1]) <= Math.min(...tiers[2]) && Math.max(...tiers[2]) <= Math.min(...tiers[3]), 'perk costs should rise with their tier');
-  const treeCost = B.SKILL_STATS.length * B.SKILL_MAX + B.SKILL_PERKS.reduce((n, k) => n + k.cost, 0);
+  // every story hero has their own two HERO ONLY perks, each with a real effect
+  for (const id of B.storyHeroes) {
+    const hp = B.heroPerks[id] || [];
+    ok(hp.length === 2 && hp.every(k => k.cost === 2 && ['super', 'special', 'cool', 'tough', 'meter'].includes(k.fx)), 'hero ' + id + ' needs exactly 2 HERO ONLY perks with a real effect');
+  }
+  const treeCost = B.SKILL_STATS.length * B.SKILL_MAX + B.SKILL_PERKS.reduce((n, k) => n + k.cost, 0) + 4; // + the 2 hero perks
   // 3. the XP curve: play every episode once (bosses give x1.5) and see how many points you earn
   let lvl = 1, xp = 0, sp = 0;
   for (const ep of B.episodes) {

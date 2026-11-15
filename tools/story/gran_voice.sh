@@ -23,8 +23,7 @@ for (const j of jobs) if (j.voice === 'gran' && clips[j.key]) { delete clips[j.k
 fs.writeFileSync('story_clips.json', JSON.stringify(clips));
 console.log('cleared ' + n + ' old Gran lines');
 "
-$QWEN sparkle_narr.py
-$VOX vox_story.py
+$QWEN qwen_char.py gran  # every Gran line, cloned from her approved voice (the same engine as GRAN_SAMPLE.wav)
 echo "== 3. pack"
 node pack.js
 cd ../announcer
