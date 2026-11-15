@@ -9641,6 +9641,7 @@
 
         /** superdash special move */
         updateSuperdash(opponent, input) {
+          if (this.def.dentures) return this.updateDentureShot(opponent);
           this.vx = this.face * 15;
           if (this.t % 2 === 0)
             addParticle({
@@ -9683,11 +9684,47 @@
           }
         }
 
+        /** Gran's super: she stays where she is and her false teeth fly across the screen (a long-range hit). */
+        updateDentureShot(opponent) {
+          this.vx = 0;
+          if (this.t === 1) this.dentX = this.x + this.face * 34;
+          if (this.t > 8) this.dentX += this.face * 13; // spat out!
+          if (this.t === 9) {
+            SFX.pfft();
+            addText(this.x + this.face * 40, this.y - 190, 'PTOO!', '#fff', 36);
+          }
+          if (
+            this.t > 8 &&
+            opponent.inv <= 0 &&
+            opponent.alpha > 0.5 &&
+            !GROUNDED_STATES.includes(opponent.state) &&
+            Math.abs(opponent.x - this.dentX) < 46 + (opponent.def.wMul || 1) * 10
+          ) {
+            this.hasHit = true;
+            this.setState('superlock');
+            this.hits = 0;
+            this.lockO = opponent;
+            opponent.setState('hit');
+            opponent.stun = 999;
+            opponent.vx = 0;
+            opponent.alpha = 1;
+            game.drawOnTop = this;
+            if (opponent.grab) {
+              if (opponent.grab.state === 'grabbed') opponent.grab.setState('idle');
+              opponent.grab = null;
+            }
+            return;
+          }
+          if (this.t >= 72 || this.dentX < -60 || this.dentX > W + 60) {
+            this.setState('land');
+            addText(this.x, this.y - 160, 'MY TEETH!', '#bbb', 34);
+          }
+        }
         /** superlock special move */
         updateSuperlock(opponent, input) {
           const o2 = this.lockO;
           this.vx = 0;
-          if (o2.state !== 'ko') {
+          if (o2.state !== 'ko' && !this.def.dentures) {
             o2.x = clamp(this.x + this.face * 82, 45, W - 45);
             if (Math.abs(o2.x - this.x) < 70) this.x = clamp(o2.x - this.face * 82, 45, W - 45);
           }
@@ -10904,15 +10941,17 @@
           const t = this.t;
           if (this.state === 'superdash') {
             // chattering out in front of her
-            const k = Math.min(1, t / 14);
+            const dx = this.dentX !== undefined ? this.dentX : this.x + this.face * 34;
+            const out = Math.min(1, Math.max(0, (t - 8) / 8)); // 0 = still in her mouth
             drawDentures(
               ctx,
-              this.x + this.face * (34 + 96 * k),
-              this.y - 122 - Math.sin(k * Math.PI) * 34,
-              0.22 + 0.4 * k,
-              Math.abs(Math.sin(t * 0.9)),
+              dx,
+              this.y - 122 + Math.sin(t * 0.8) * 5 * out,
+              0.2 + 0.45 * out,
+              t <= 8 ? 0.1 : Math.abs(Math.sin(t * 0.9)),
               this.face,
-              t
+              t,
+              out < 0.5 // plain false teeth while they're in her mouth: no face yet
             );
             return;
           }
@@ -18567,7 +18606,7 @@
        * Gran's runaway false teeth, wind-up "chattering teeth" style: big red lips, white teeth, a tongue
        * poking out and two googly eyes on top. open = 0 (shut) .. 1 (wide open); s = size; face = which way.
        */
-      function drawDentures(c, x, y, s, open, face, t) {
+      function drawDentures(c, x, y, s, open, face, t, plain) {
         const RED = '#e3242b',
           DARK = '#8f0f1c';
         const oyU = -(5 + open * 38),
@@ -18582,7 +18621,7 @@
         c.fillStyle = '#3a0710';
         c.fill();
         // the tongue, poking out of the front corner
-        if (open > 0.15) {
+        if (open > 0.15 && !plain) {
           c.save();
           c.translate(58, 6 + open * 6);
           c.rotate(0.35 + Math.sin(t * 0.5) * 0.15);
@@ -18651,6 +18690,10 @@
         c.beginPath();
         c.ellipse(-28, oyL + 26, 16, 5, 0.15, 0, 7);
         c.fill();
+        if (plain) {
+          c.restore();
+          return;
+        }
         // the wind-up key at the back
         c.fillStyle = '#c9c9d6';
         c.strokeStyle = INK;
