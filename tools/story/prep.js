@@ -77,6 +77,7 @@ const PERSONA = {
   cling: 'sultry, smug villainess queen',
   iron: 'stern, booming warlord',
   mismatch: 'huge, deep, rumbling patchwork golem, a little dim-witted',
+  lefty: 'smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge',
   puppet: 'flamboyant, hammy stage prince, dramatic showman',
   mitten: 'big, grumpy, woolly voice, jealous and dramatic',
   flipflop: 'laid-back, goofy surfer dude',
@@ -155,6 +156,8 @@ function add(speaker, shown, voice, say, file, text, who) {
   const key = storyVoiceKey(speaker, shown);
   let note = (PERSONA[voice] || "") + ", " + mood(who, text);
   // Stocking Gran's back (and hip) REALLY hurt: three long, pained ouches, and she sounds it
+  // Stocking Gran has no teeth: a gummy lisp on her さ-row (same as TOOTHLESS in qwen_fighters.py)
+  if (voice === 'gran') say = say.replace(/[さすせそざずぜぞサスセソザズゼゾ]/g, c => ({ さ: 'しゃ', す: 'しゅ', せ: 'しぇ', そ: 'しょ', ざ: 'じゃ', ず: 'じゅ', ぜ: 'じぇ', ぞ: 'じょ', サ: 'シャ', ス: 'シュ', セ: 'シェ', ソ: 'ショ', ザ: 'ジャ', ズ: 'ジュ', ゼ: 'ジェ', ゾ: 'ジョ' })[c]);
   if (who === 'gran' && /my back|my hip|ow ow/i.test(text)) {
     say = say.replace(/[。!?…\s]*$/, '') + '…いったぁ〜い…いったぁ〜い…いったぁ〜い…';
     note = (PERSONA[voice] || '') + ', in real pain, groaning and wincing, three long drawn-out ouches';

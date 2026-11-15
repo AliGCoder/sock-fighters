@@ -21,6 +21,18 @@ base = Qwen3TTSModel.from_pretrained('Qwen/Qwen3-TTS-12Hz-1.7B-Base', device_map
 prompt = base.create_voice_clone_prompt(ref_audio=os.path.join(ANN, 'refs', f'fighter_{cid}.wav'), ref_text=QF.ref_line(cid))
 
 
+# lines of these voices must sit in this pitch range (Hz) so every line sounds like the same character
+PITCH_BAND = {'gran': (205, 275)}
+
+
+def median_pitch(y):
+    import parselmouth
+    from parselmouth.praat import call
+    snd = parselmouth.Sound(np.asarray(y, dtype=np.float64), sampling_frequency=QF.SR)
+    f0 = call(snd.to_pitch_ac(pitch_floor=75, pitch_ceiling=700), 'Get quantile', 0, 0, 0.5, 'Hertz')
+    return f0 if f0 == f0 else 0.0
+
+
 def units(say):
     return max(1, sum(2 if '一' <= c <= '鿿' else 1 for c in say if c.isalnum()))
 
@@ -28,16 +40,23 @@ def units(say):
 reel = []
 for n, job in enumerate(jobs):
     best = None
-    for attempt in range(3):
+    # UNIFORM voices (Gran): each take must land in her old-lady pitch range, or it is recorded again
+    band = PITCH_BAND.get(cid)
+    best_score = 9e9
+    for attempt in range(6 if band else 3):
         torch.manual_seed(zlib.crc32(f"{job['key']}|q|{attempt}".encode()))
         wavs, _ = base.generate_voice_clone(text=job['say'], language='Japanese', voice_clone_prompt=prompt)
         y = QF.finish(wavs[0], QF.CAST[cid][3])
         secs, u = len(y) / QF.SR, units(job['say'])
-        if 0.05 * u <= secs <= 0.24 * u + 2.0:
-            best = y
+        length_ok = 0.05 * u <= secs <= 0.24 * u + 2.0
+        score = abs(secs / u - 0.11) * 100 if not length_ok else 0
+        if band:
+            f0 = median_pitch(y)
+            score += 0 if band[0] <= f0 <= band[1] else abs(f0 - (band[0] + band[1]) / 2)
+        if score < best_score:
+            best, best_score = y, score
+        if score == 0:
             break
-        if best is None or abs(secs / u - 0.11) < abs(len(best) / QF.SR / u - 0.11):
-            best = y
     done[job['key']] = base64.b64encode(QF.mp3(best)).decode('ascii')
     reel += [best * 0.89, np.zeros(int(QF.SR * 0.5))]
     print(f'[{n + 1}/{len(jobs)}] {cid} {len(best) / QF.SR:4.1f}s  {job["say"][:60]}', flush=True)

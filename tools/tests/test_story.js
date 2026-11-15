@@ -21,7 +21,9 @@ require('fs').mkdirSync(SP, { recursive: true });
   await key('Enter', 400);
   await p.screenshot({ path: SP + 'st_select.png' });
   await key('Escape', 300);
-  await G(() => { window.__sock.game.adv.hub.sel = 0; }); // CH.1
+  await G(() => { window.__sock.game.adv.hub.sel = 0; }); // CHAPTER 1...
+  await key('Enter', 400);
+  await G(() => { window.__sock.game.adv.hub.sel = 0; }); // ...EPISODE 1
   await key('Enter', 500);
   console.log('chapter 1 ->', await scr());
   await p.waitForTimeout(500);

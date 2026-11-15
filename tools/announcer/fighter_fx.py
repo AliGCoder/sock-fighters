@@ -108,7 +108,7 @@ def ghost(y):
     return lfilter(b, a, out)
 
 
-def _praat_older(y, pitch_mul=0.95, formant=0.97, slower=1.05, floor=225, ceiling=280, swing=1.45):
+def _praat_older(y, pitch_mul=0.95, formant=0.97, slower=1.05, floor=225, ceiling=280, swing=1.45, fixed=None):
     """Make a voice much older with Praat's "Change gender": a far lower pitch (formants kept natural),
     a slightly longer, older vocal tract and slower speech. Falls back to the input if Praat isn't there."""
     try:
@@ -119,7 +119,16 @@ def _praat_older(y, pitch_mul=0.95, formant=0.97, slower=1.05, floor=225, ceilin
         median = call(pitch, 'Get quantile', 0, 0, 0.5, 'Hertz')
         if not median or median != median:  # no voiced frames
             return y
-        out = call(snd, 'Change gender', 75, 700, formant, min(ceiling, max(floor, median * pitch_mul)), swing, slower)
+        target = fixed if fixed else min(ceiling, max(floor, median * pitch_mul))  # fixed = every line at the SAME pitch
+        out = call(snd, 'Change gender', 75, 700, formant, target, swing, slower)
+        if fixed:
+            # check it really landed on the fixed pitch (a shrill take can come out far too high); if not, nudge it
+            # down again, so EVERY line is the same old voice
+            for _ in range(3):
+                got = call(out.to_pitch(pitch_floor=75, pitch_ceiling=700), 'Get quantile', 0, 0, 0.5, 'Hertz')
+                if not got or got != got or abs(got - fixed) < 20:
+                    break
+                out = call(out, 'Change gender', 75, 700, 1.0, fixed * fixed / got, 1.0, 1.0)
         return np.asarray(out.values[0], dtype=np.float64)
     except Exception as e:
         print('  (praat older failed: %s)' % e, flush=True)
@@ -129,7 +138,7 @@ def _praat_older(y, pitch_mul=0.95, formant=0.97, slower=1.05, floor=225, ceilin
 def old(y):
     """98 years old, but CLEAR: a much lower, older voice (Praat), a little slower, a gentle uneven quaver,
     a light tremble and just a touch of breath, with the full range kept so every word is easy to hear."""
-    y = _peak1(_praat_older(_peak1(y)))
+    y = _peak1(_praat_older(_peak1(y), fixed=235))  # the same old voice on every line: one fixed pitch
     n = np.arange(len(y))
     t = n / SR
     # quaver: a gentle uneven wobble of about +/- 50 cents (two rates, so it never sounds like a machine)
@@ -150,7 +159,15 @@ def old(y):
     y = lfilter(b, a, y)
     b, a = butter(2, [2000 / (SR / 2), 5000 / (SR / 2)], 'band')
     y = y + 0.2 * lfilter(b, a, y)
-    return _small_room(_punch(_nasal(y)), wet=0.07)
+    return _small_room(_punch(_gummy(_nasal(y))), wet=0.07)
+
+
+def _gummy(y):
+    """No teeth: the hissy s-sounds softened (a dip at 4.5-9 kHz) and a slightly muffled, mushy mouth."""
+    b, a = butter(2, [4500 / (SR / 2), 9000 / (SR / 2)], 'bandstop')
+    y = lfilter(b, a, y)
+    b, a = butter(2, 5200 / (SR / 2), 'low')
+    return 0.4 * y + 0.6 * lfilter(b, a, y)
 
 
 def _nasal(y):

@@ -167,10 +167,22 @@ CAST = {
 }
 
 
+# Stocking Gran has no teeth: her さ-row comes out as a gummy lisp (さ→しゃ, す→しゅ, せ→しぇ, そ→しょ ...)
+TOOTHLESS = {'gran'}
+_LISP = {'さ': 'しゃ', 'す': 'しゅ', 'せ': 'しぇ', 'そ': 'しょ', 'ざ': 'じゃ', 'ず': 'じゅ', 'ぜ': 'じぇ', 'ぞ': 'じょ',
+         'サ': 'シャ', 'ス': 'シュ', 'セ': 'シェ', 'ソ': 'ショ', 'ザ': 'ジャ', 'ズ': 'ジュ', 'ゼ': 'ジェ', 'ゾ': 'ジョ'}
+
+
+def toothless(text):
+    return ''.join(_LISP.get(c, c) for c in text)
+
+
 def lines_for(cid):
     base, _, extra, _ = CAST[cid]
     words = {k: list(v) for k, v in base.items()}
     words.update(extra)
+    if cid in TOOTHLESS:
+        words = {k: [toothless(t) for t in v] for k, v in words.items()}
     return words
 
 
@@ -180,8 +192,9 @@ OLDEST = {
     'gran': ' Speaking style: a SASSY, quick-witted, fiery old granny of 98, SHOUTING and scolding at the top of '
             'her lungs, talking FAST with snappy, cheeky comebacks and a sharp tongue, full of attitude, shrill and '
             'LOUD, her voice cracking and squeaking; now and then she trails off, forgets what she was saying, then '
-            'snaps right back even louder. Croaky and quavering with age, never calm. Natural recording in a small '
-            'quiet room, no echo.',
+            'snaps right back even louder. She has NO TEETH at all: a gummy, mushy, toothless mouth, lisping and '
+            'slurring her s-sounds, lips smacking and flapping. Croaky and quavering with age, never calm. Natural '
+            'recording in a small quiet room, no echo.',
 }
 # how OLDEST voices are picked: 'energy' = the most up-and-down, lively shouting (the age comes from the effect)
 OLDEST_PICK = {'gran': 'energy'}
@@ -214,7 +227,7 @@ def age_cues(y):
 
 def ref_line(cid):
     if cid in REF_TEXT:
-        return REF_TEXT[cid]
+        return toothless(REF_TEXT[cid]) if cid in TOOTHLESS else REF_TEXT[cid]
     w = lines_for(cid)
     return w['light'][0] + w['heavy'][0] + w['special'][0] + w['win'][0]
 

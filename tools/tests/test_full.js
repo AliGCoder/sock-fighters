@@ -15,12 +15,15 @@ require('fs').mkdirSync(SP, { recursive: true });
   const scr = () => G(() => window.__sock.game.screen);
   const shots = new Set();
   const shot = async name => { if (shots.has(name)) return; shots.add(name); await p.screenshot({ path: SP + 'full_' + name + '.png' }); };
-  await G(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; S.startAdventure(); });
+  const FROM0 = +(process.env.FROM || 1);
+  await G(FROM0 => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; for (let n = 1; n < FROM0; n++) S.Progress.data.adv.cleared[n] = 1; S.startAdventure(); }, FROM0);
   await p.waitForTimeout(400);
-  for (let ch = 1; ch <= 20; ch++) {
+  const FROM = +(process.env.FROM || 1), TO = +(process.env.TO || 27); // every episode of every chapter
+  for (let ch = FROM; ch <= TO; ch++) {
     // clear any palace scene, then start the chapter
     for (let i = 0; i < 30 && (await G(() => !!window.__sock.game.adv.scene)); i++) { await key('Space', 50); await key('Space', 100); }
-    await G(c => { window.__sock.game.adv.hub.sel = c - 1; }, ch);
+    // open the episode's CHAPTER, then pick the EPISODE in it
+    await G(c => { const Hb = window.__sock.game.adv.hub; Hb.book = c <= 7 ? 1 : c <= 20 ? 2 : 3; Hb.sel = c - (c <= 7 ? 1 : c <= 20 ? 8 : 21); Hb.page = Math.floor(Hb.sel / 10); }, ch);
     await p.waitForTimeout(600); await key('Enter', 500);
     const log = [];
     for (let guard = 0; guard < 600; guard++) {

@@ -17,7 +17,7 @@ cp jobs.json jobs_all.json
 node -e "
 const fs = require('fs');
 const gran = require('./jobs.json').filter(j => j.voice === 'gran');
-const pick = [...gran.filter(j => /いったぁ/.test(j.say)).slice(0, 3), ...gran.filter(j => !/いったぁ/.test(j.say) && /sassy/.test(j.note)).slice(0, 3)];
+const pick = [...gran.filter(j => /いったぁ/.test(j.say)).slice(0, 3), ...gran.filter(j => !/いったぁ/.test(j.say) && /sassy/.test(j.note)).slice(0, 7)];
 const clips = JSON.parse(fs.readFileSync('story_clips.json', 'utf8'));
 for (const j of pick) delete clips[j.key];
 fs.writeFileSync('story_clips.json', JSON.stringify(clips));

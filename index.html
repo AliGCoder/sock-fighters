@@ -921,6 +921,7 @@
         puppet: { pitch: 180, formant: 1.05, breath: 0.1, vibrato: 0.04, vibratoRate: 6 },
         mitten: { pitch: 90, formant: 0.82, breath: 0.35 },
         flipflop: { pitch: 140, formant: 0.95, breath: 0.2 },
+        lefty: { pitch: 115, formant: 0.9, breath: 0.25 },
         stiletto: { pitch: 280, formant: 1.18, breath: 0.15, vibrato: 0.03, vibratoRate: 6 },
         galosh: { pitch: 85, formant: 0.8, breath: 0.3 },
         skate: { pitch: 250, formant: 1.12, breath: 0.15 },
@@ -1584,6 +1585,7 @@
         puppet: ['パペッティーニ王子', 'Prince Puppetini'],
         mitten: ['グランド・ミトン', 'The Grand Mitten'],
         flipflop: ['キャプテン・ビーサン', 'Captain Flip-Flop'],
+        lefty: ['レフティ', 'Lefty'],
         stiletto: ['レディ・スティレット', 'Lady Stiletto'],
         galosh: ['ガロッシュ・グランデ', 'Galosh Grande'],
         skate: ['ローラ・ディスコ', 'Rolla Disco'],
@@ -1616,6 +1618,7 @@
         puppet: 'ファイナル・カーテン',
         mitten: 'ブリザード・ハグ',
         flipflop: 'トータリー・チューブラー・ツナミ',
+        lefty: 'ファイブ・フィンガー・フレンジー',
         stiletto: 'ランウェイ・ランペイジ',
         galosh: 'モンスーン・メイヘム',
         skate: 'グルーヴ・マシーン',
@@ -4330,6 +4333,68 @@
         fn();
         c.restore();
       }
+      /* ===== CHAPTER 3: LEFTY, THE LOST GLOVE — runs the Lost & Found; lost his pair, so nobody may go home ===== */
+      STORY_VILLAINS.push({
+        id: 'lefty',
+        name: 'LEFTY',
+        jp: 'レフティ',
+        title: 'Keeper of the Lost & Found',
+        rank: 'BOSS',
+        color: '#8a4a6a',
+        glove: '#d9a441',
+        arm: '#5a2a44',
+        tall: 1.15,
+        wMul: 1.1,
+        hp: 1500,
+        dmgMul: 1.1,
+        armor: true,
+        speed: 1.0,
+        ai: 'grab',
+        special: 'FINDERS KEEPERS',
+        special2: 'FINGER FLICK',
+        superName: 'FIVE-FINGER FRENZY',
+        intro: 'Lost something? ...It is MINE now.',
+        taunts: ['*cracks knuckles*', 'Finders keepers.', 'Lost stays LOST.'],
+        quotes: ['Fill in a form. In triplicate.', 'Everything ends up here eventually.', 'I would give you a hand... but I only have one.'],
+        skins: [{ name: 'LEATHER', pal: { a: '#6a3352', b: '#8a4a6a', c: '#d9a441', cuff: '#3a1a2c' } }],
+        pattern(u) {
+          const P = this.pal;
+          if (u < 0.14) return P.cuff; // the wrist
+          if (u > 0.2 && u < 0.24) return P.c; // a gold button strap
+          return Math.floor(u * 30) % 7 === 0 ? P.a : P.b; // stitched leather
+        },
+        behind(c, spine) {
+          // the thumb, sticking out the side
+          const p = spine.pts[7] || spine.pts[spine.pts.length >> 1];
+          c.fillStyle = this.pal.a;
+          c.strokeStyle = INK;
+          c.lineWidth = 4;
+          c.beginPath();
+          c.ellipse(p.x - p.nx * p.w * 0.75, p.y - p.ny * p.w * 0.75, 12, 24, Math.atan2(p.ny, p.nx) + Math.PI / 2, 0, 7);
+          c.fill();
+          c.stroke();
+        },
+        top(c, spine) {
+          // four fingers along the top of his head (the glove's fingertips)
+          onHead(c, spine, 0.5, () => {
+            c.fillStyle = '#8a4a6a';
+            c.strokeStyle = INK;
+            c.lineWidth = 4;
+            for (const [x, hgt] of [[-30, 26], [-10, 36], [10, 34], [30, 24]]) {
+              roundRectPath(c, x - 9, -hgt - 4, 18, hgt + 10, 9);
+              c.fill();
+              c.stroke();
+            }
+            // and the Queen's lost earring, worn as a very small hat
+            c.fillStyle = '#ffd23f';
+            c.beginPath();
+            c.arc(-10, -44, 6, 0, 7);
+            c.fill();
+            c.stroke();
+          });
+        }
+      });
+
       /* ===== THE SHOE WARS (story chapters 8-20): the shoes rise up against the socks ===== */
       STORY_VILLAINS.push(
         // ===== CAPTAIN FLIP-FLOP — a laid-back surfer sock with a flip-flop strapped to his head =====
@@ -8713,6 +8778,7 @@
         mismatch: ['shoot', 'sumo'], // odd sock toss / stitch slam
         puppet: ['shoot', 'lasso'], // button barrage / string pull
         mitten: ['shoot', 'sumo'], // snowball flurry / frost stomp
+        lefty: ['lasso', 'snap'], // finders keepers / finger flick
         flipflop: ['shoot', 'spin'], // flip-flop fling / wipeout wave
         stiletto: ['snap', 'vanish'], // heel spike / strike a pose
         galosh: ['shoot', 'sumo'], // puddle blaster / big splash
@@ -14105,6 +14171,139 @@
       }
 
       /* --- The Sole Summit: the Big Boot's fortress, a giant boot-shaped tower under a stormy sky --- */
+      /* --- The Lost & Found: shelves of lost things, an umbrella stand, a washing line of single gloves, a counter --- */
+      function buildLostFound(b) {
+        b.fillStyle = '#2e3a32';
+        b.fillRect(0, 0, W, 400);
+        // wallpaper stripes
+        b.fillStyle = 'rgba(255,255,255,0.04)';
+        for (let x = 0; x < W; x += 40) b.fillRect(x, 0, 18, 400);
+        // the big sign
+        b.fillStyle = '#d9a441';
+        b.strokeStyle = INK;
+        b.lineWidth = 5;
+        roundRectPath(b, 300, 24, 360, 56, 10);
+        b.fill();
+        b.stroke();
+        b.fillStyle = INK;
+        b.font = 'bold 30px ' + FONT_COMIC;
+        b.textAlign = 'center';
+        b.textBaseline = 'middle';
+        b.fillText('LOST & FOUND', 480, 54);
+        // shelves stacked with lost things
+        const rnd = seededRandom(77);
+        for (const y of [130, 220, 310]) {
+          b.fillStyle = '#6a4a2a';
+          b.fillRect(20, y, 260, 12);
+          b.fillRect(680, y, 260, 12);
+          for (let i = 0; i < 7; i++) {
+            const x = (i < 4 ? 30 : 700 - 4 * 62) + i * 62 + rnd() * 10;
+            const kind = Math.floor(rnd() * 5);
+            b.fillStyle = ['#c98d55', '#5b6bd8', '#ff8fab', '#7dff9a', '#ffd23f'][kind];
+            if (kind === 0) {
+              // a cardboard box labelled LOST
+              b.fillRect(x, y - 40, 50, 40);
+              b.strokeRect(x, y - 40, 50, 40);
+              b.fillStyle = INK;
+              b.font = '10px ' + FONT_PIXEL;
+              b.fillText('LOST', x + 25, y - 20);
+            } else if (kind === 1) {
+              // a single shoe
+              b.beginPath();
+              b.ellipse(x + 24, y - 10, 24, 10, 0, 0, 7);
+              b.fill();
+              b.stroke();
+            } else if (kind === 2) {
+              // a teddy bear
+              b.beginPath();
+              b.arc(x + 24, y - 16, 14, 0, 7);
+              b.arc(x + 24, y - 36, 10, 0, 7);
+              b.fill();
+            } else if (kind === 3) {
+              // a set of keys
+              b.strokeStyle = '#d9d9e6';
+              b.lineWidth = 3;
+              b.beginPath();
+              b.arc(x + 20, y - 18, 8, 0, 7);
+              b.moveTo(x + 28, y - 18);
+              b.lineTo(x + 44, y - 18);
+              b.stroke();
+              b.strokeStyle = INK;
+              b.lineWidth = 5;
+            } else {
+              // one earring
+              b.beginPath();
+              b.arc(x + 24, y - 14, 9, 0, 7);
+              b.fill();
+              b.stroke();
+            }
+          }
+        }
+        // the umbrella stand
+        for (let i = 0; i < 5; i++) {
+          b.strokeStyle = ['#e8333a', '#2a6fb0', '#2f9e44', '#ffd23f', '#7b4bc8'][i];
+          b.lineWidth = 6;
+          b.beginPath();
+          b.moveTo(320 + i * 9, 390);
+          b.lineTo(310 + i * 12, 300);
+          b.quadraticCurveTo(300 + i * 12, 288, 296 + i * 12, 300);
+          b.stroke();
+        }
+        b.strokeStyle = INK;
+        b.lineWidth = 5;
+        b.fillStyle = '#5a5a6a';
+        b.fillRect(304, 340, 64, 52);
+        b.strokeRect(304, 340, 64, 52);
+        perspectiveFloor(b, '#7a6a5a', '#8a7a6a', '#6a5a4a');
+        // the counter (with a bell on it)
+        b.fillStyle = '#8a5a32';
+        b.fillRect(560, 300, 300, 90);
+        b.strokeRect(560, 300, 300, 90);
+        b.fillStyle = '#6a4224';
+        b.fillRect(560, 300, 300, 14);
+      }
+      function drawLostFound(t) {
+        // a washing line of single gloves, gently swinging
+        ctx.strokeStyle = '#d9d2c4';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 100);
+        ctx.quadraticCurveTo(W / 2, 128, W, 100);
+        ctx.stroke();
+        for (let i = 0; i < 12; i++) {
+          const x = 40 + i * 78,
+            y = 100 + Math.sin((x / W) * Math.PI) * 26,
+            sw = Math.sin(t * 0.03 + i) * 0.12;
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(sw);
+          ctx.fillStyle = ['#e8333a', '#2a6fb0', '#f4f1ea', '#2f9e44', '#ffd23f', '#7b4bc8'][i % 6];
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 2.5;
+          roundRectPath(ctx, -10, 4, 20, 24, 5);
+          ctx.fill();
+          ctx.stroke();
+          for (let f = 0; f < 4; f++) {
+            roundRectPath(ctx, -10 + f * 5, 24, 5, 12 - Math.abs(f - 1.5) * 2, 2);
+            ctx.fill();
+            ctx.stroke();
+          }
+          ctx.fillStyle = '#c9c9d6';
+          ctx.fillRect(-3, -2, 6, 8); // the peg
+          ctx.restore();
+        }
+        // the counter bell, glinting
+        ctx.fillStyle = '#d9a441';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(820, 300, 14, Math.PI, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        if (t % 120 < 6) drawSparkles(826, 292, 10, t, 4, '#fff');
+      }
+
       function buildSummit(b) {
         let g = b.createLinearGradient(0, 0, 0, 400);
         g.addColorStop(0, '#1a0a0a');
@@ -14605,7 +14804,8 @@
         bedroom: { name: 'THE BEDROOM OF DOOM', jp: '恐怖の寝室', build: buildBedroom, draw: drawBedroom, storyOnly: true },
         cupboard: { name: 'THE SHOE CUPBOARD', jp: '靴箱', build: buildCupboard, draw: drawCupboard, storyOnly: true },
         pitch: { name: 'THE MUDDY PITCH', jp: 'どろんこピッチ', build: buildPitch, draw: drawPitch, storyOnly: true },
-        summit: { name: 'THE SOLE SUMMIT', jp: 'ソールの頂', build: buildSummit, draw: drawSummit, storyOnly: true }
+        summit: { name: 'THE SOLE SUMMIT', jp: 'ソールの頂', build: buildSummit, draw: drawSummit, storyOnly: true },
+        lostfound: { name: 'THE LOST & FOUND', jp: '落とし物センター', build: buildLostFound, draw: drawLostFound, storyOnly: true }
       };
       const STAGE_IDS = Object.keys(STAGES);
       const MENU_SCREENS = ['title', 'mode', 'diff', 'select', 'moves', 'ladder', 'awards', 'howto'];
@@ -15871,13 +16071,18 @@
       const MENU_SKITS = 10;
       let MENU_SKIT = (Math.random() * MENU_SKITS) | 0;
       function drawMenuSkit(time) {
+        if (MENU_SKIT < 0) return; // (tests: no skit)
         const t = time % SKIT_LEN,
           back = t >= SKIT_LEN / 2, // the second half goes the other way
           k = (t % (SKIT_LEN / 2)) / (SKIT_LEN / 2),
           dir = back ? -1 : 1,
           FLOOR = 532,
           SIZE = 0.5;
-        const lead = back ? W + 130 - k * (W + 560) : -130 + k * (W + 560); // whoever is in front
+        // whoever is in front: runs on from just off one edge to just off the other, plus the length of the line
+        // trailing behind them in this skit, so the floor is never empty for long
+        const TAIL = [300, 160, 440, 180, 220, 230, 200, 180, 80, 180][MENU_SKIT] || 200;
+        const leadAt = kk => (back ? W + 60 - kk * (W + 120 + TAIL) : -60 + kk * (W + 120 + TAIL));
+        const lead = leadAt(k);
         const onStage = x => x > 50 && x < W - 50;
         const runPose = (phase, fast) => {
           const p = basePose();
@@ -15923,7 +16128,7 @@
         const sock = (id, p, x, face, size) => drawSock(ctx, findCharacter(id), p, x, FLOOR, face, size || SIZE, { x: 3 * face, y: 0 });
         const TALK = FLOOR - 112;
         const behind = d => lead - dir * d; // a place d pixels behind whoever is in front
-        const S = { time, t, back, k, dir, FLOOR, SIZE, lead, TALK, behind, bubble, onStage };
+        const S = { time, t, back, k, dir, FLOOR, SIZE, lead, leadAt, TALK, behind, bubble, onStage };
         drawSkitExtras(MENU_SKIT, S, 'under');
 
         if (MENU_SKIT === 0) {
@@ -16063,7 +16268,7 @@
         } else if (MENU_SKIT === 4) {
           // Robo-Sock on vacuum duty: canister on its back, hose, nozzle, a red scanning laser and a SUCTION meter.
           // It sucks up the Lint Bunny (SHLOOP!)... then, on the way back, the bag bursts.
-          const rx = back ? (k > 0.42 ? W + 130 - 0.42 * (W + 560) : lead) : behind(210); // it stops dead where the bag pops
+          const rx = back ? (k > 0.42 ? leadAt(0.42) : lead) : behind(210); // it stops dead where the bag pops
           const stepT = Math.floor(time / 8) % 2; // stiff robot steps
           const rp = basePose();
           rp.yOff = stepT ? -5 : 0;
@@ -16708,7 +16913,7 @@
             stink(lead);
             const faint = k > 0.55;
             const ff = Math.min(1, (k - 0.55) * 10);
-            const hx = faint ? -130 + 0.55 * (W + 560) - 170 : behind(170); // he stops where he faints
+            const hx = faint ? leadAt(0.55) - 170 : behind(170); // he stops where he faints
             const hp = faint ? basePose() : runPose(1, false);
             if (faint) {
               hp.rot = -1.45 * ff;
@@ -16778,7 +16983,7 @@
 
       /** The extra detail on each SELECT MODE skit: props, particles and reactions (layer 'under' or 'over'). */
       function drawSkitExtras(n, S, layer) {
-        const { time, back, k, dir, FLOOR, lead, TALK, behind, bubble, onStage } = S;
+        const { time, back, k, dir, FLOOR, lead, leadAt, TALK, behind, bubble, onStage } = S;
         const over = layer === 'over';
         const hash = i => {
           const s = Math.sin(i * 127.1 + 311.7) * 43758.5453;
@@ -16821,8 +17026,8 @@
               tx = lead - 300;
             if (!over) return speedLines(sx, FLOOR);
             // Stinky's off with Gran's cookie jar, dropping crumbs
-            const jx = sx + dir * 26,
-              jy = FLOOR - 74 + Math.sin(time * 0.5) * 4;
+            const jx = sx + dir * 40,
+              jy = FLOOR - 46 + Math.sin(time * 0.5) * 3; // held out in his hand
             roundRectPath(ctx, jx - 12, jy - 14, 24, 28, 6);
             ctx.fillStyle = 'rgba(200,235,255,0.75)';
             ctx.fill();
@@ -16859,7 +17064,7 @@
               ctx.beginPath();
               ctx.arc(gx + dir * 20, FLOOR - 100, 46, -2.2, -0.6);
               ctx.stroke();
-              drawText('WHOOSH', gx + dir * 50, FLOOR - 150, 8, FONT_PIXEL, '#fff', INK, 2);
+              drawText('WHOOSH', gx + dir * 66, FLOOR - 92, 8, FONT_PIXEL, '#fff', INK, 2);
             }
             if (time % 30 < 10) drawText('chomp!', tx + 26, FLOOR - 86, 7, FONT_PIXEL, '#ff8fab', INK, 2);
           } else {
@@ -17016,8 +17221,8 @@
               ctx.globalAlpha = 1;
             }
             // Knee-Hi has her rattle
-            const rx = kx + dir * 36,
-              ry = FLOOR - 92 + Math.sin(time * 0.5) * 5;
+            const rx = kx + dir * 40,
+              ry = FLOOR - 58 + Math.sin(time * 0.5) * 4; // in his hand
             ctx.strokeStyle = INK;
             ctx.lineWidth = 3;
             ctx.beginPath();
@@ -17056,8 +17261,8 @@
               // the lampshade (and its glow)
               ctx.fillStyle = 'rgba(255,240,170,0.25)';
               ctx.beginPath();
-              ctx.moveTo(sx - 20, FLOOR - 128);
-              ctx.lineTo(sx + 20, FLOOR - 128);
+              ctx.moveTo(sx - 20, FLOOR - 98);
+              ctx.lineTo(sx + 20, FLOOR - 98);
               ctx.lineTo(sx + 50, FLOOR);
               ctx.lineTo(sx - 50, FLOOR);
               ctx.fill();
@@ -17065,10 +17270,10 @@
               ctx.strokeStyle = INK;
               ctx.lineWidth = 3;
               ctx.beginPath();
-              ctx.moveTo(sx - 14, FLOOR - 156);
-              ctx.lineTo(sx + 14, FLOOR - 156);
-              ctx.lineTo(sx + 24, FLOOR - 126);
-              ctx.lineTo(sx - 24, FLOOR - 126);
+              ctx.moveTo(sx - 14, FLOOR - 128);
+              ctx.lineTo(sx + 14, FLOOR - 128);
+              ctx.lineTo(sx + 26, FLOOR - 94);
+              ctx.lineTo(sx - 26, FLOOR - 94);
               ctx.closePath();
               ctx.fill();
               ctx.stroke();
@@ -17237,7 +17442,7 @@
             }
             return;
           }
-          if (!back && k > 0.6) stars(-130 + 0.55 * (W + 560) - 170, FLOOR - 50, 3); // stars over fainted Holey
+          if (!back && k > 0.6) stars(leadAt(0.55) - 170, FLOOR - 50, 3); // stars over fainted Holey
           if (back)
             for (let i = 0; i < 3; i++) {
               const a = time * 0.15 + i * 2.1,
@@ -22415,13 +22620,43 @@
         { n: 17, name: 'THE DRYER DOJO', jp: '乾燥機道場' },
         { n: 18, name: 'THE MIDNIGHT ROOFTOP', jp: '真夜中の屋上' },
         { n: 19, name: 'THE GAUNTLET OF SOLES', jp: 'ソールの試練' },
-        { n: 20, name: 'THE BIG BOOT', jp: 'ザ・ビッグブーツ' }
+        { n: 20, name: 'THE BIG BOOT', jp: 'ザ・ビッグブーツ' },
+        { n: 21, name: 'THE DOOR THAT ONLY OPENS ONE WAY', jp: '片道のドア' },
+        { n: 22, name: 'TICK TOCK TAPPINGTON', jp: 'チクタク・タッピントン' },
+        { n: 23, name: 'THE SPARK THAT FIZZLED', jp: '消えた火花' },
+        { n: 24, name: 'MONEY, MONEY, MONEY', jp: 'マネー・マネー・マネー' },
+        { n: 25, name: 'THE LOST & FOUND', jp: '落とし物センター' },
+        { n: 26, name: 'THE GLOVE BOX', jp: '手袋箱' },
+        { n: 27, name: 'THE WAY HOME', jp: 'おうちへ帰ろう' }
       ];
-      /** Palace menu: chapter i is a picture square (10 to a page, 5 x 2); the other items are buttons along the bottom. */
+      /**
+       * The story is told in CHAPTERS (big stories), each made of EPISODES (internally, the numbers in ADV_CHAPTERS /
+       * STORY_CHAPTERS keep counting 1, 2, 3... right through: episode n of the whole story).
+       */
+      const STORY_BOOKS = [
+        { n: 1, name: 'LOST IN THE SPIN CYCLE', jp: '回転の迷子', from: 1, to: 7, col: ['#2a1a55', '#7b4bc8'], face: 'demon' },
+        { n: 2, name: 'THE SHOE WARS', jp: 'シューズ戦争', from: 8, to: 20, col: ['#4a1f08', '#e0702a'], face: 'bigboot' },
+        { n: 3, name: 'THE WAY HOME', jp: 'おうちへ帰ろう', from: 21, to: 40, col: ['#0f3340', '#2fb8c9'], face: 'lefty' }
+      ];
+      const bookOf = n => STORY_BOOKS.find(b => n >= b.from && n <= b.to) || STORY_BOOKS[0];
+      const epNo = n => n - bookOf(n).from + 1;
+      /** "CHAPTER 2 · EPISODE 5" for story episode n */
+      const epLabel = n => 'CHAPTER ' + bookOf(n).n + ' · EPISODE ' + epNo(n);
+      const epShort = n => 'C' + bookOf(n).n + '·EP' + epNo(n);
+      const bookEps = b => ADV_CHAPTERS.filter(c => c.n >= b.from && c.n <= b.to);
+      const bookOpen = b => bookEps(b).some(c => STORY_CHAPTERS[c.n]) && chapterOpen(b.from);
+      /** The chapter the palace is showing the episodes of (null = the chapter cards). */
+      const hubBook = () => {
+        const Hb = game.adv && game.adv.hub;
+        return Hb && Hb.book ? STORY_BOOKS[Hb.book - 1] : null;
+      };
+      const hubTopCount = () => (hubBook() ? bookEps(hubBook()).length : STORY_BOOKS.length);
+      /** Palace menu: chapter cards (or a chapter's episodes as picture squares, 10 to a page, 5 x 2); then the buttons. */
       const HUB_PER_PAGE = 10;
-      const hubPages = () => Math.ceil(ADV_CHAPTERS.length / HUB_PER_PAGE);
+      const hubPages = () => (hubBook() ? Math.max(1, Math.ceil(bookEps(hubBook()).length / HUB_PER_PAGE)) : 1);
       const hubButton = i => {
-        const nCh = ADV_CHAPTERS.length;
+        const nCh = hubTopCount();
+        if (i < nCh && !hubBook()) return { x: 113 + i * 252, y: 84, w: 230, h: 308 }; // tall chapter cards
         if (i < nCh) {
           const page = (game.adv && game.adv.hub && game.adv.hub.page) || 0;
           if (Math.floor(i / HUB_PER_PAGE) !== page) return { x: -999, y: -999, w: 0, h: 0 };
@@ -22456,18 +22691,39 @@
       const chapterOpen = n => !!STORY_CHAPTERS[n] && (n === 1 || !!advData().cleared[n - 1]);
 
       const HUB_ITEMS = () => [
-        ...ADV_CHAPTERS.map(ch => ({
-          label: 'CH.' + ch.n + '  ' + ch.name,
-          sub: advData().cleared[ch.n]
-            ? 'CLEARED ★'
-            : !STORY_CHAPTERS[ch.n]
-              ? 'COMING SOON'
-              : chapterOpen(ch.n)
-                ? 'TAP TO PLAY'
-                : 'CLEAR CH.' + (ch.n - 1) + ' FIRST',
-          on: chapterOpen(ch.n),
-          go: () => startChapter(ch.n)
-        })),
+        ...(hubBook()
+          ? bookEps(hubBook()).map(ch => ({
+              label: 'EPISODE ' + epNo(ch.n) + '  ' + ch.name,
+              sub: advData().cleared[ch.n]
+                ? 'CLEARED ★'
+                : !STORY_CHAPTERS[ch.n]
+                  ? 'COMING SOON'
+                  : chapterOpen(ch.n)
+                    ? 'TAP TO PLAY'
+                    : epNo(ch.n) === 1
+                      ? 'FINISH CHAPTER ' + (bookOf(ch.n).n - 1) + ' FIRST'
+                      : 'CLEAR EPISODE ' + (epNo(ch.n) - 1) + ' FIRST',
+              on: chapterOpen(ch.n),
+              go: () => startChapter(ch.n)
+            }))
+          : STORY_BOOKS.map(b => {
+              const eps = bookEps(b).filter(c => STORY_CHAPTERS[c.n]);
+              const done = eps.filter(c => advData().cleared[c.n]).length;
+              return {
+                label: 'CHAPTER ' + b.n + '  ' + b.name,
+                sub: !eps.length ? 'COMING SOON' : bookOpen(b) ? done + '/' + eps.length + ' EPISODES' + (done === eps.length ? ' ★' : '') : 'FINISH CHAPTER ' + (b.n - 1) + ' FIRST',
+                on: bookOpen(b),
+                go: () => {
+                  const Hb = game.adv.hub;
+                  Hb.book = b.n;
+                  // open on the first episode still to play
+                  const list = bookEps(b);
+                  const next = list.findIndex(c => STORY_CHAPTERS[c.n] && !advData().cleared[c.n] && chapterOpen(c.n));
+                  Hb.sel = Math.max(0, next);
+                  Hb.page = Math.floor(Hb.sel / HUB_PER_PAGE);
+                }
+              };
+            })),
         { label: 'CHANGE HERO', sub: advHeroLook().name, on: true, go: () => openAdvSelect('hub') },
         { label: 'SKILL TREE', sub: 'LEVEL ' + skillData().lvl + (skillData().sp ? ' • ' + skillData().sp + ' POINTS TO SPEND!' : ''), on: true, go: () => openSkills() },
         { label: 'BOUNTY BOARD', sub: 'SIDE FIGHTS & SPARRING', on: true, go: () => openBounty() },
@@ -22579,6 +22835,15 @@
         const A = advData();
         game.adv = Object.assign(game.adv || {}, { scene: null, hub: { t: 0, scout: A.prologue ? 1 : 0, sel: 0, guards: pickGuardWeapons() } });
         game.screen = 'advHub';
+        const last = game.adv.lastEp;
+        if (last && STORY_CHAPTERS[last]) {
+          // back from an episode: show its chapter's episodes, on the next one to play
+          const b = bookOf(last),
+            list = bookEps(b);
+          let i = list.findIndex(c => c.n === last);
+          if (A.cleared[last] && i + 1 < list.length && STORY_CHAPTERS[list[i + 1].n]) i++;
+          Object.assign(game.adv.hub, { book: b.n, sel: Math.max(0, i), page: Math.floor(Math.max(0, i) / HUB_PER_PAGE) });
+        }
         if (arriving || !A.prologue) {
           A.prologue = true;
           Progress.save();
@@ -22607,8 +22872,17 @@
         }
         if (Hb.confirm) return updateClearConfirm(Hb);
         const items = HUB_ITEMS();
-        if (backWasPressed()) return toModeMenu();
-        const nCh = ADV_CHAPTERS.length;
+        if (backWasPressed()) {
+          if (hubBook()) {
+            Hb.sel = Hb.book - 1;
+            Hb.book = null;
+            Hb.page = 0;
+            SFX.select();
+            return;
+          }
+          return toModeMenu();
+        }
+        const nCh = hubTopCount();
         const setSel = i => {
           Hb.sel = clamp(i, 0, items.length - 1);
           if (Hb.sel < nCh) Hb.page = Math.floor(Hb.sel / HUB_PER_PAGE);
@@ -22618,11 +22892,11 @@
         if (wasPressed('KeyA', 'ArrowLeft')) setSel(Hb.sel - 1);
         if (wasPressed('KeyD', 'ArrowRight')) setSel(Hb.sel + 1);
         if (wasPressed('KeyW', 'ArrowUp')) {
-          if (!inGrid) setSel(Math.min(nCh - 1, (Hb.page || 0) * HUB_PER_PAGE + 5));
-          else if (Hb.sel % HUB_PER_PAGE >= 5) setSel(Hb.sel - 5);
+          if (!inGrid) setSel(hubBook() ? Math.min(nCh - 1, (Hb.page || 0) * HUB_PER_PAGE + 5) : 0);
+          else if (hubBook() && Hb.sel % HUB_PER_PAGE >= 5) setSel(Hb.sel - 5);
         }
         if (wasPressed('KeyS', 'ArrowDown')) {
-          if (inGrid && Hb.sel % HUB_PER_PAGE < 5 && Hb.sel + 5 < nCh) setSel(Hb.sel + 5);
+          if (hubBook() && inGrid && Hb.sel % HUB_PER_PAGE < 5 && Hb.sel + 5 < nCh) setSel(Hb.sel + 5);
           else if (inGrid) setSel(nCh);
         }
         if (wasPressed('KeyQ', 'BracketLeft') && (Hb.page || 0) > 0) setSel(((Hb.page || 0) - 1) * HUB_PER_PAGE);
@@ -22652,6 +22926,7 @@
         }
         if (go >= 0) {
           const it = items[go];
+          if (!it) return; // (a stale selection: nothing there)
           if (!it.on) {
             SFX.block();
             Hb.note = Hb.t + 100;
@@ -23096,7 +23371,7 @@
             drawText(list[R.look[key]].name, r.x + r.w / 2, r.y + 38, list[R.look[key]].name.length > 18 ? 15 : 18, FONT_COMIC, '#fff', INK, 4);
             const locked = list.filter(it => !robeUnlocked(it));
             if (locked.length)
-              drawText('🔒 ' + locked.map(it => 'CH.' + it.ch).join(', ') + ' UNLOCKS MORE', r.x + r.w - 14, r.y + 16, 6, FONT_PIXEL, '#ddd', INK, 0, 'right');
+              drawText('🔒 ' + locked.map(it => epShort(it.ch)).join(', ') + ' UNLOCKS MORE', r.x + r.w - 14, r.y + 16, 6, FONT_PIXEL, '#ddd', INK, 0, 'right');
           }
         });
         roundRectPath(ctx, 30, 474, 400, 46, 10);
@@ -23109,6 +23384,80 @@
       }
 
       /** One chapter's picture square: its arena, its boss, its name, and cleared / locked. */
+      /** A big CHAPTER card on the palace menu: its colours, a picture of its big villain, and its progress. */
+      function drawBookCard(b, r, on, it, t) {
+        const lift = on ? -5 - Math.sin(t * 0.15) * 2 : 0;
+        const x = r.x,
+          y = r.y + lift,
+          w = r.w,
+          hh = r.h;
+        const eps = bookEps(b).filter(c => STORY_CHAPTERS[c.n]);
+        ctx.save();
+        roundRectPath(ctx, x, y, w, hh, 18);
+        const g = ctx.createLinearGradient(0, y, 0, y + hh);
+        g.addColorStop(0, b.col[1]);
+        g.addColorStop(1, b.col[0]);
+        ctx.fillStyle = g;
+        ctx.fill();
+        ctx.clip();
+        // the last episode's arena as a backdrop
+        const last = eps.length ? chapterArt(eps[eps.length - 1].n) : null;
+        const bg = last && ensureStage(last.stage);
+        if (bg) {
+          ctx.globalAlpha = 0.55;
+          ctx.drawImage(bg, x - 60, y, (hh * W) / H, hh);
+          ctx.globalAlpha = 1;
+        }
+        // rays
+        ctx.save();
+        ctx.translate(x + w / 2, y + 120);
+        ctx.rotate(t * 0.004);
+        ctx.fillStyle = 'rgba(255,255,255,0.08)';
+        for (let i = 0; i < 10; i++) {
+          ctx.rotate((Math.PI * 2) / 10);
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(260, -26);
+          ctx.lineTo(260, 26);
+          ctx.fill();
+        }
+        ctx.restore();
+        if (b.face) {
+          const d = withSkin(findCharacter(b.face), 0);
+          const p = idleAnim(basePose(), t + b.n * 20);
+          p.eyes = 'angry';
+          p.mouth = on ? 'grin' : 'grit';
+          drawSockPortrait(ctx, d, p, x + w / 2, y + 120, 1.0, { x: 0, y: 0 }, 1);
+        } else {
+          // not out yet: a silhouette and a big question mark
+          drawText('?', x + w / 2, y + 120, 110, FONT_COMIC, 'rgba(255,255,255,0.35)', INK, 8);
+        }
+        if (!it.on) {
+          ctx.fillStyle = 'rgba(8,4,18,0.55)';
+          ctx.fillRect(x, y, w, hh);
+        }
+        // the name band
+        ctx.fillStyle = on ? 'rgba(255,79,163,0.95)' : 'rgba(15,8,30,0.9)';
+        ctx.fillRect(x, y + hh - 100, w, 100);
+        ctx.restore();
+        roundRectPath(ctx, x, y, w, hh, 18);
+        ctx.strokeStyle = on ? '#fff' : INK;
+        ctx.lineWidth = on ? 6 : 4;
+        ctx.stroke();
+        roundRectPath(ctx, x + 12, y + 12, 112, 28, 8);
+        ctx.fillStyle = '#ffe234';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        drawText('CHAPTER ' + b.n, x + 68, y + 27, 11, FONT_PIXEL, INK, null, 0);
+        const words = b.name.split(' ');
+        const lines = b.name.length > 14 ? [words.slice(0, Math.ceil(words.length / 2)).join(' '), words.slice(Math.ceil(words.length / 2)).join(' ')] : [b.name];
+        lines.forEach((l, q) => drawText(l, x + w / 2, y + hh - (lines.length > 1 ? 80 : 68) + q * 26, 24, FONT_COMIC, it.on || !eps.length ? '#fff' : '#999', INK, 5));
+        drawText(b.jp, x + w / 2, y + hh - 34, 11, FONT_JAPANESE, '#fff', INK, 3);
+        drawText(it.sub, x + w / 2, y + hh - 14, 8, FONT_PIXEL, eps.length && eps.every(c => advData().cleared[c.n]) ? '#7dff9a' : '#ffe234', INK, 0);
+        if (!it.on && eps.length) drawPadlock(x + w - 34, y + 30, 1);
+      }
       function drawChapterSquare(ch, r, on, it, t) {
         const art = chapterArt(ch.n),
           cleared = !!advData().cleared[ch.n];
@@ -23160,13 +23509,14 @@
         ctx.lineWidth = on ? 5 : 3;
         ctx.stroke();
         // chapter number badge
-        roundRectPath(ctx, x + 6, y + 6, 46, 22, 7);
+        const badgeW = epNo(ch.n) > 9 ? 56 : 46;
+        roundRectPath(ctx, x + 6, y + 6, badgeW, 22, 7);
         ctx.fillStyle = '#ffe234';
         ctx.fill();
         ctx.strokeStyle = INK;
         ctx.lineWidth = 2.5;
         ctx.stroke();
-        drawText('CH.' + ch.n, x + 29, y + 18, 9, FONT_PIXEL, INK, null, 0);
+        drawText('EP.' + epNo(ch.n), x + 6 + badgeW / 2, y + 18, 9, FONT_PIXEL, INK, null, 0);
         const name = ch.name.replace(/^THE /, '');
         drawText(name, x + w / 2, y + picH + 14, name.length > 15 ? 11 : 13, FONT_COMIC, it.on ? '#fff' : '#888', INK, 4);
         drawText(it.sub, x + w / 2, y + hh - 10, 6, FONT_PIXEL, cleared ? '#7dff9a' : it.on ? '#ffe234' : '#888', INK, 0);
@@ -23214,15 +23564,16 @@
         // menu: the chapters as picture squares
         ctx.fillStyle = 'rgba(10,4,22,0.5)';
         ctx.fillRect(0, 0, W, H);
-        drawText('PALACE OF NYLONIA', W / 2, 40, 30, FONT_COMIC, '#ffe234', INK, 8);
-        drawText('CHOOSE A CHAPTER', W / 2, 70, 9, FONT_PIXEL, '#fff', INK, 0);
-        const nCh = ADV_CHAPTERS.length,
+        const book = hubBook();
+        drawText(book ? 'CHAPTER ' + book.n + ': ' + book.name : 'PALACE OF NYLONIA', W / 2, 40, book && book.name.length > 16 ? 26 : 30, FONT_COMIC, '#ffe234', INK, 8);
+        drawText(book ? 'CHOOSE AN EPISODE  •  BACK: ALL CHAPTERS' : 'CHOOSE A CHAPTER', W / 2, 70, 9, FONT_PIXEL, '#fff', INK, 0);
+        const nCh = hubTopCount(),
           page = Hb.page || 0;
         HUB_ITEMS().forEach((it, i) => {
           const r = hubButton(i),
             on = Hb.sel === i;
           if (r.w === 0) return;
-          if (i < nCh) return drawChapterSquare(ADV_CHAPTERS[i], r, on, it, t);
+          if (i < nCh) return hubBook() ? drawChapterSquare(bookEps(hubBook())[i], r, on, it, t) : drawBookCard(STORY_BOOKS[i], r, on, it, t);
           roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
           ctx.fillStyle = !it.on ? 'rgba(30,20,50,0.75)' : on ? '#ff4fa3' : 'rgba(42,29,72,0.95)';
           ctx.fill();
@@ -24280,6 +24631,269 @@
         { who: 'queen', text: 'Now. Who wants cake? ...Not you, Stinky. You may have the SMELL of cake.' }
       ];
 
+
+      /* ===== CHAPTER 3: THE WAY HOME (story episodes 21-27) =====
+       * The socks fell into Dryer No. 7 and never fell OUT. To open its door from the inside they need four things:
+       * the Lint Filter Key, the Timer Dial, a Spark of Static and ONE COIN... and a lonely glove wants them too. */
+      const CH21_INTRO = [
+        { who: 'narr', text: '*THE TUMBLE THRONE. A week after the Shoe Wars. The Demon now runs a cloakroom. Business is booming.*' },
+        { who: 'stinky', text: '*sighs* Do you ever miss the laundromat?' },
+        { who: 'hero', text: 'The laundromat?' },
+        { who: 'stinky', text: 'The humming machines. The smell of fabric softener. The nice lady who hums while she folds us. ...She folds us in HALF. It tickles.' },
+        { who: 'fishnet', text: 'Sir Knight... you came from Outside? Through the dryer?' },
+        { who: 'hero', text: 'We all did, Scout. We fell in. We just... never fell OUT.' },
+        { who: 'gran', text: "I've been in here so long, I've forgotten what Outside looks like. ...Is it the one with the sky?" },
+        { who: 'hero', text: "Demon. You've got a door. Open it. We're going home." },
+        { who: 'demon', text: '*coughs* Ah. Yes. About that. My door only opens from OUTSIDE.' },
+        { who: 'hero', text: '...What.' },
+        { who: 'demon', text: 'Someone Outside puts in a coin and presses START. The drum turns, the door clicks, POP, out you go. From in here? Impossible.' },
+        { who: 'stinky', text: "So we're STUCK? FOREVER? With the CURTAIN QUEEN?" },
+        { who: 'queen', text: '*from somewhere far away* We HEARD that.' },
+        { who: 'narr', text: '*Fishnet Scout rubs the fluff off an old brass plate on the back of the door. The engraving begins to glow.*', fx: s => (s.flash = 14) },
+        { who: 'fishnet', text: '"EMERGENCY EXIT FROM THE INSIDE. YOU WILL NEED: ONE LINT FILTER KEY. ONE TIMER DIAL. ONE SPARK OF STATIC. ONE COIN."' },
+        { who: 'gran', text: "A coin! I've got a coin! *rummages* ...No, it's a button. ...No, it's a mint. Want a mint?" },
+        { who: 'hero', text: "Four things. That's all?" },
+        { who: 'demon', text: 'The Lint Filter Key went missing years ago. Last seen on the LINT PLAINS. Someone is using it as a BED.' },
+        { who: 'hero', text: "Then we're going to the Lint Plains." },
+        { who: 'stinky', text: "Road trip! I'll bring snacks! ...I'll bring my SMELL, which is basically a snack!" }
+      ];
+      const CH21_MID = [
+        { who: 'narr', text: '*THE LINT PLAINS. Fluffier than ever. Something small zooms past, holding a shiny key.*' },
+        { who: 'socklet', text: "Finders keepers! I found it under a sleeping bunny! It's MINE now!" },
+        { who: 'hero', text: "That's the Lint Filter Key. We need it to get home." },
+        { who: 'socklet', text: "Home? Pfft. Catch me first! I'm the fastest sock in Nylon— *trips over a fluff ball* ...Okay. Catch me SECOND." }
+      ];
+      const CH21_BOSS = [
+        { who: 'lint', text: 'MY BED! Who took my BED?!' },
+        { who: 'hero', text: 'Your bed... is a KEY?' },
+        { who: 'lint', text: "It's the perfect size! It's cold and hard and it digs into my back! I LOVE it!" },
+        { who: 'gran', text: "Dearie, that's no bed. THIS is a bed. *whips out her knitting needles* Give me thirty seconds." },
+        { who: 'narr', text: '*Click-clack-click-clack. Thirty seconds later, Gran holds up a tiny, fluffy, knitted sleeping bag.*', fx: s => (s.flash = 8) },
+        { who: 'lint', text: "*sniff* ...It has my NAME on it. ...It's SPELLED WRONG. ...I LOVE IT!" },
+        { who: 'lint', text: 'But a deal is a deal, and every Lint Gang deal is sealed with a FIGHT! Ah... AH...' }
+      ];
+      const CH21_END = [
+        { who: 'lint', text: '*snuggled in the sleeping bag* Fine. Take the key. Ugh, so comfy. I may never sneeze again. ...ACHOO.' },
+        { who: 'narr', text: '*Three Lint Gang babies pop out, already wearing tiny matching sleeping bags.*' },
+        { who: 'fishnet', text: 'ONE down, Sir Knight! Three to go!' },
+        { who: 'demon', text: '*on a walkie-talkie* Next, the Timer Dial... I lent it to someone for a "tiny musical emergency". Oh dear. I lent it to MR. TAPPINGTON.' },
+        { who: 'narr', text: '*Meanwhile, at the bottom of a laundry basket, a single glove ticks something off a list. "One down," it whispers.*' }
+      ];
+      const CH22_INTRO = [
+        { who: 'narr', text: "*THE PUPPET THEATRE. Tonight: MR. TAPPINGTON'S TAP-TACULAR. Every seat is full. The stage is... ticking.*" },
+        { who: 'narr', text: '*Tick. Tock. Tick. On the piano sits a big round TIMER DIAL. Mr. Tappington taps to every tick.*' },
+        { who: 'skate', text: 'Whoa whoa whoa! Tickets only, baby! No ticket, no tap!' },
+        { who: 'hero', text: "We don't want to see the show. We want the Timer Dial." },
+        { who: 'skate', text: "The DIAL?! That's his METRONOME, man! Without it he loses the beat! Without the beat, he loses the GROOVE!" },
+        { who: 'stinky', text: 'We only want to borrow it. Forever.' },
+        { who: 'skate', text: "That's not borrowing, that's STEALING with extra steps! Roll with me, baby!" }
+      ];
+      const CH22_BOSS = [
+        { who: 'tapper', text: 'Tap... tap... tappity... WHO goes there, interrupting my RHYTHM?' },
+        { who: 'hero', text: 'Mr. Tappington. We need your Timer Dial to get home.' },
+        { who: 'tapper', text: 'My dial?! My dear sock, I have tapped to that dial for sixty years! Without its tick, my feet just go... *taps wildly* ...BANANAS.' },
+        { who: 'gran', text: 'Sixty years? Pfft. Amateur. *knocks on her hip* Listen to THIS.' },
+        { who: 'narr', text: '*Gran taps her tennis-ball hip. Tock. Tock. Tock. A perfect beat. Not a millisecond out.*' },
+        { who: 'tapper', text: "...That is PERFECT time. Madam... HOW?!" },
+        { who: 'gran', text: 'Ninety-eight years of practice, dearie. And a very well-made tennis ball.' },
+        { who: 'tapper', text: 'Then we shall settle this like gentlesocks. A DANCE-OFF! First to lose the beat... loses the dial!' }
+      ];
+      const CH22_END = [
+        { who: 'tapper', text: '*panting* You... are... magnificent. Take the dial. From now on, I shall tap to Madam Gran.' },
+        { who: 'gran', text: "...Whose grandmother am I? What were we talking about? ...Oh yes. ME. I'm FABULOUS." },
+        { who: 'tapper', text: 'Madam Gran, you are my new METRONOME. The world tour starts Tuesday.' },
+        { who: 'gran', text: "I'll need a cushion. And snacks. And a NAP at four o'clock. Sharp." },
+        { who: 'fishnet', text: 'TWO things! The Key AND the Dial!' },
+        { who: 'narr', text: '*Meanwhile, at the bottom of the laundry basket, five long fingers drum on a list. "Two down. Let them do ALL the work," the glove whispers.*' }
+      ];
+      const CH23_INTRO = [
+        { who: 'narr', text: '*THE STATIC SWAMP. It used to crackle. Now it just... drips. The sparks have all gone out.*' },
+        { who: 'fishnet', text: 'The swamp is so quiet. Where did all the static go?' },
+        { who: 'robo', text: 'STATIC LEVELS: ZERO. ZERO. ZERO. THIS UNIT IS... BORED.' },
+        { who: 'hero', text: 'Mecha-Sock X! We need a spark of static. Just one.' },
+        { who: 'robo', text: 'NEGATIVE. ALL STATIC WAS CONFISCATED. BY THE ROYAL SAFETY DEPARTMENT. AFTER THE INCIDENT.' },
+        { who: 'stinky', text: 'What incident?' },
+        { who: 'robo', text: 'THE INCIDENT WHERE EVERYONE STUCK TO EVERYONE. FOR THREE DAYS. THE KING WAS STUCK TO A GOOSE.' },
+        { who: 'robo', text: 'HOWEVER. IF YOU FIGHT THIS UNIT, THERE WILL BE FRICTION. FRICTION MAKES STATIC. FOR SCIENCE.' }
+      ];
+      const CH23_BOSS = [
+        { who: 'cling', text: "*sobbing on a soggy throne* Go away. I'm not Cling Queen any more. I'm just... Queen. I don't even CLING." },
+        { who: 'hero', text: 'Cling Queen? What happened?' },
+        { who: 'cling', text: 'When the hypnosis wore off, my static went POP. Now nothing sticks to me. Not socks. Not balloons. Not even COMPLIMENTS.' },
+        { who: 'stinky', text: 'Your crown is nice.' },
+        { who: 'cling', text: '*her crown slides straight off her head* SEE?!' },
+        { who: 'narr', text: '*Fishnet Scout pulls a balloon out of the fog. The very same balloon that floated past, covered in socks, a long, long time ago.*' },
+        { who: 'fishnet', text: 'Rub it on something hairy! It works every time!' },
+        { who: 'stinky', text: 'Why is everybody looking at ME?!' },
+        { who: 'narr', text: "*Squeak. Squeak. SQUEEEAK. The balloon rubs Stinky's fuzzy head. His fluff stands straight up. Sparks fly!*", fx: s => (s.flash = 16) },
+        { who: 'cling', text: '*crackling* I FEEL IT! THE BUZZ! THE FIZZ! THE CLING IS BACK!! ...Now FIGHT me for it, darling!' }
+      ];
+      const CH23_END = [
+        { who: 'cling', text: "*glowing, three socks stuck to her* Oh, I've MISSED this! Take a spark, darling. Take two. I'm FIZZING." },
+        { who: 'narr', text: '*ZAP! A little blue spark jumps into a jam jar. Fishnet Scout screws on the lid very, very tight.*', fx: s => (s.flash = 14) },
+        { who: 'fishnet', text: 'THREE things! The Key, the Dial and the Spark!' },
+        { who: 'gran', text: 'Now a coin. Nobody HAS a coin. We pay in BUTTONS here. I once bought a house with a button. ...It was a button-sized house.' },
+        { who: 'queen', text: '*on the royal phone* Knight. There is ONE coin in all of Nylonia. A lucky one. And its owner never... lets... go.' },
+        { who: 'hero', text: 'Who?' },
+        { who: 'queen', text: 'The captain of the Muddy Pitch. STUDS McGOAL.' },
+        { who: 'narr', text: '*Meanwhile, at the bottom of the laundry basket, a glove polishes four little empty boxes. Each one has a label.*' }
+      ];
+      const CH24_INTRO = [
+        { who: 'narr', text: '*THE MUDDY PITCH. The final of the Nylonia Cup. The scoreboard says SOCKS 0, SHOES 0. Nobody has scored for a week.*' },
+        { who: 'galosh', text: '*filling the WHOLE goal* SQUEAK. Nothing gets past me. I am a wall. A wet wall.' },
+        { who: 'hero', text: 'We need to talk to Studs McGoal.' },
+        { who: 'galosh', text: 'The captain is busy. He is tossing his lucky coin. He has tossed it for nine hours. It keeps landing on its EDGE.' },
+        { who: 'stinky', text: 'We need that coin to go HOME!' },
+        { who: 'galosh', text: 'Score past me and you can talk to him. You will not score past me. I have been practising standing still.' }
+      ];
+      const CH24_BOSS = [
+        { who: 'studs', text: 'OI OI! Who wants my LUCKY COIN then?!' },
+        { who: 'hero', text: 'We need it to open Dryer No. 7. To go home.' },
+        { who: 'studs', text: "HOME? This coin's been in my sock for TEN YEARS! It's won every coin toss in history! It's NEVER landed on tails!" },
+        { who: 'fishnet', text: '...Sir Knight. It has heads on BOTH sides.' },
+        { who: 'studs', text: "...SSSHH! *whispers* Nobody knows that. Not even the referee." },
+        { who: 'gran', text: 'Young man! A coin is for SPENDING, not for CHEATING!' },
+        { who: 'studs', text: "Alright, alright! Penalty shoot-out! Win and it's yours! Lose and you're my new ball boy! ...BALL SOCK!" }
+      ];
+      const CH24_END = [
+        { who: 'studs', text: "*lying face down in the mud* What a strike... WHAT a strike. Fine. It's yours. Spend it on something nice. Like a HOME." },
+        { who: 'narr', text: "*The hero holds up the coin. It shines. Everyone gasps. Somewhere, a choir sings. (It's the shoe choir. They lost a bet.)*", fx: s => (s.confetti = 1) },
+        { who: 'fishnet', text: 'ALL FOUR! The Key! The Dial! The Spark! The Coin!' },
+        { who: 'hero', text: "We're going home." },
+        { who: 'narr', text: '*Suddenly... the floodlights go out. Total darkness. A rustle. Five soft little taps.*' },
+        { who: 'stinky', text: "Who turned off the— HEY! Who's holding my HAND?!" },
+        { who: 'narr', text: '*The floodlights flicker back on. The Key, the Dial, the Spark and the Coin are GONE. In their place: one small card.*', fx: s => (s.flash = 10) },
+        { who: 'fishnet', text: '*reading* "FOUND YOU. Finders keepers. — L."' },
+        { who: 'hero', text: '...Who is "L"?' }
+      ];
+      const CH25_INTRO = [
+        { who: 'narr', text: '*Kevin the spy bird follows a trail of tiny fingerprints right across Nylonia... to a door that nobody ever notices.*' },
+        { who: 'narr', text: '*THE LOST AND FOUND. Mountains of lost things. Umbrellas. Keys. One earring. A teddy bear. A hundred single gloves on a washing line.*' },
+        { who: 'fishnet', text: 'Sir Knight... look at it all. Everything anybody ever lost.' },
+        { who: 'gran', text: "Ooh! My reading glasses! ...Oh. They're on my head. Never mind." },
+        { who: 'mismatch', text: 'Welcome to the Lost and Found! I work here now! Part time! Weekends and Wednesdays!' },
+        { who: 'hero', text: 'Mismatch?! We are looking for someone called "L". He stole our way home.' },
+        { who: 'mismatch', text: "The boss? Ohhh, you don't want to meet the boss. Nothing that comes in here EVER goes back out." },
+        { who: 'mismatch', text: "That's the RULE! And I'm the bouncer! A hundred socks of pure BOUNCE!" }
+      ];
+      const CH25_BOSS = [
+        { who: 'narr', text: '*A tiny bell rings. Ding. Behind the counter, a single glove straightens his cuff.*' },
+        { who: 'lefty', text: 'Good evening. Welcome to the Lost and Found. Have you lost something? ...Ah. Your WAY HOME, perhaps?' },
+        { who: 'hero', text: 'You took our Key, our Dial, our Spark AND our Coin!' },
+        { who: 'lefty', text: "FOUND them. Not took. FOUND. There's a difference. I'm LEFTY. I find things. And I keep them." },
+        { who: 'stinky', text: "You're the glove from the bottom of the laundry basket!" },
+        { who: 'lefty', text: '"Interesting," I said. And it WAS interesting. Watching you collect every piece... so I would not have to.' },
+        { who: 'fishnet', text: 'But WHY? Why stop us going home?' },
+        { who: 'lefty', text: "Because I was lost too. Years ago. My other hand... my RIGHTY... never came back for me. If I can't go home... NOBODY goes home." },
+        { who: 'lefty', text: '*cracks his knuckles* Now. Would you like to fill in a LOST PROPERTY FORM? It is very... very... long.' }
+      ];
+      const CH25_END = [
+        { who: 'lefty', text: '*staggering back* Hmph. You fight like someone who REALLY wants to go home.' },
+        { who: 'narr', text: '*Lefty snatches up the four things and dives into a gigantic glove box. The lid slams. CLICK.*', fx: s => (s.flash = 8) },
+        { who: 'lefty', text: '*muffled* Come and get them... if you dare enter... THE GLOVE BOX!' },
+        { who: 'gran', text: "The glove box? Oh dear. Nobody comes back from the glove box. ...Or is that the sock drawer? I always mix them up." },
+        { who: 'hero', text: "We're going in." },
+        { who: 'fishnet', text: '*gulps* Of course we are.' }
+      ];
+      const CH26_INTRO = [
+        { who: 'narr', text: '*Inside the glove box, it is snowing. Mountains of woolly gloves stretch to the horizon. It looks EXACTLY like the Mitten Peaks.*' },
+        { who: 'mitten', text: "OI! Who's tramping snow into my COUSIN'S glove box?!" },
+        { who: 'hero', text: 'Grand Mitten?! Lefty is your COUSIN?' },
+        { who: 'mitten', text: "Second cousin. Wool side. He's the quiet one. Too quiet. Gives me the shivers. And I'm a MITTEN." },
+        { who: 'hero', text: 'He stole our way home.' },
+        { who: 'mitten', text: "Course he did. Ever since he lost his pair, he can't stand anybody finding THEIRS. Remember how I was? He's worse. He's got FINGERS." },
+        { who: 'mitten', text: "I'll take you to him. But first... family tradition. Nobody visits without a SNOWBALL FIGHT!" }
+      ];
+      const CH26_BOSS = [
+        { who: 'lefty', text: '*bitterly* You came. Of course you came. Pairs ALWAYS come back for each other... don\'t they.' },
+        { who: 'hero', text: 'Lefty. Where did you lose your Righty?' },
+        { who: 'lefty', text: 'In a car park. In the rain. I fell out of a coat pocket into a puddle, and I watched him get further... and further... away.' },
+        { who: 'gran', text: 'Oh, dearie...' },
+        { who: 'lefty', text: 'Do NOT "dearie" me! I waited YEARS for him to come looking. He never did. So I made a rule. Lost stays lost. FOREVER.' },
+        { who: 'hero', text: "Then let's change the rule. Give us back our things, and we'll help you find him." },
+        { who: 'lefty', text: 'Find him? HA! He could be ANYWHERE! In a drain! On a fence post! On top of a... a... BIN!' },
+        { who: 'lefty', text: "No. You'll have to prise them from my cold, leathery... FINGERS!" }
+      ];
+      const CH26_END = [
+        { who: 'lefty', text: '*on his knees* ...Fine. Take them. Go home. Everybody always goes home. Everybody except me.' },
+        { who: 'narr', text: '*Silence. Then a deep, rumbling voice comes from the doorway.*', fx: s => (s.quake = { at: s.t || 0, n: 3 }) },
+        { who: 'bigboot', text: 'EXCUSE ME. EVER SINCE THE SHOE WARS I HAVE FELT... STRANGE. LIKE SOMETHING IS STILL... INSIDE ME.' },
+        { who: 'stinky', text: '*gasps* Wait. The Big Boot had my other half inside him all that time... What ELSE is in there?!' },
+        { who: 'hero', text: 'Big Boot. Hold very, very still.' },
+        { who: 'narr', text: '*Everybody grabs the Big Boot by the heel. They shake. They SHAKE. Out fall three marbles, a lot of sand... and one soft, brown, RIGHT-HAND GLOVE.*', fx: s => (s.flash = 16) },
+        { who: 'lefty', text: '...R... Righty?' },
+        { who: 'narr', text: '*The right glove opens its eyes. "Lefty? I looked for you EVERYWHERE. Then I fell into a boot. It was very dark. I have been in here for YEARS."*' },
+        { who: 'lefty', text: '*sobbing* You LOOKED for me?! You were looking?! ALL THIS TIME?!' },
+        { who: 'narr', text: '*Lefty and Righty hold hands. Well. They ARE hands. It is very, very sweet.*', fx: s => ((s.confetti = 1), (s.hug = s.t)) },
+        { who: 'bigboot', text: '*sniffs* ...I REALLY MUST START CHECKING INSIDE MYSELF MORE OFTEN.' },
+        { who: 'lefty', text: 'Your things. The Key, the Dial, the Spark, the Coin. Go home. ...And thank you.' },
+        { who: 'hero', text: 'Come with us. Both of you.' },
+        { who: 'lefty', text: '*smiling for the first time in years* ...We will see you at the door.' }
+      ];
+      const CH27_INTRO = [
+        { who: 'narr', text: '*THE BACK DOOR OF DRYER No. 7. All of Nylonia has come to say goodbye. Even the shoes. ESPECIALLY the shoes.*' },
+        { who: 'queen', text: 'Knight. Before you go... We shall not cry. Queens do not cry. *sniff* It is merely... the steam.' },
+        { who: 'fishnet', text: "Sir Knight... I'm not coming with you, am I. My place is here. Guarding the holes." },
+        { who: 'hero', text: 'Scout... thank you. For everything.' },
+        { who: 'fishnet', text: '*crying into her bandana* GO! Before I get my HOLES all wet!' },
+        { who: 'hero', text: 'Right. The Key goes in the filter... *click*. The Dial goes on the front... *twist*.' },
+        { who: 'narr', text: "*The jar of static opens. ZAP! The dryer's lights flicker on. The drum begins to hum.*", fx: s => (s.flash = 16) },
+        { who: 'gran', text: 'And the coin goes in the slot! ...Which slot? There are THREE slots. ...Ooh, one of them is a biscuit tin.' },
+        { who: 'narr', text: '*CLINK. The coin drops. The door clicks open. Warm light pours in from Outside... and the Demon begins to SHAKE.*', fx: s => (s.quake = { at: s.t || 0, n: 2 }) },
+        { who: 'demon', text: 'Oh no. Oh no no no. The door is opening... and when the door opens, I... I HAVE to...' },
+        { who: 'demon', text: "I HAVE TO TUMBLE!! IT'S A REFLEX!! I'M SO SORRY!! *his eyes start to spin* TUMBLE... DRY... MEDIUM HEAT!!" },
+        { who: 'hero', text: "He's going to spin us all back inside! STOP HIM!" }
+      ];
+      const CH27_END = [
+        { who: 'demon', text: "*very dizzy* ...Phew. Thank you. The tumbling has passed. I'm fine. I'm a cloakroom attendant. I'm FINE." },
+        { who: 'narr', text: '*The door swings wide. Up on top of the machine, Outside, stand Lefty and Righty. They pressed START.*' },
+        { who: 'lefty', text: 'Told you we would see you at the door.' },
+        { who: 'hero', text: 'Everyone ready? Stinky? Gran?' },
+        { who: 'stinky', text: 'BOTH halves of me are ready!' },
+        { who: 'gran', text: 'Ready! ...Ready for what? Oh yes. HOME.' },
+        { who: 'narr', text: '*One by one, the socks tumble out of Dryer No. 7... into the warm, humming, fabric-softener morning of the COIN LAUNDRY.*', fx: s => ((s.flash = 18), (s.confetti = 1)) },
+        { who: 'narr', text: '*A kind lady with a laundry basket hums as she picks them up. She pairs them. She folds them. She smiles. "THERE you are."*' },
+        { who: 'stinky', text: '*whispering* ...She folded us in half. It TICKLES.' },
+        { who: 'hero', text: "*whispering* We're home." },
+        { who: 'narr', text: '*Through the round dryer window, all of Nylonia waves goodbye. The Queen. The Scout. The Big Boot. Even the curtains.*', fx: s => (s.pairs = s.t) },
+        { who: 'narr', text: '*THE END OF CHAPTER 3.*' },
+        { who: 'narr', text: '*...The lady zips up a bag. A BIG bag. With wheels. "Right!" she says. "HOLIDAY TIME!" ...To be continued.*' }
+      ];
+      // the Queen's word at the palace after each episode of Chapter 3
+      const PALACE_AFTER_CH21 = [
+        { who: 'queen', text: 'One piece of the way home. We are pleased. And a little sad. Mostly pleased.' },
+        { who: 'fishnet', text: 'Your Majesty, are you... crying?' },
+        { who: 'queen', text: 'It is the STEAM. This is a laundry. There is ALWAYS steam.' }
+      ];
+      const PALACE_AFTER_CH22 = [
+        { who: 'gran', text: "Your Majesty! I'm going on a world tour! As a metronome! ...What's a metronome?" },
+        { who: 'queen', text: 'It is a clock that judges you. You will be EXCELLENT at it.' }
+      ];
+      const PALACE_AFTER_CH23 = [
+        { who: 'queen', text: 'Cling Queen telephoned. She is stuck to the telephone. Well done, Knight.' },
+        { who: 'stinky', text: 'My fluff still has not gone flat.' },
+        { who: 'queen', text: 'It is an improvement. Leave it.' }
+      ];
+      const PALACE_AFTER_CH24 = [
+        { who: 'queen', text: 'A THIEF? In Our kingdom? Who signs their name "L"?! How RUDE. How MYSTERIOUS. How... rather stylish.' },
+        { who: 'fishnet', text: 'Kevin is following the fingerprints, Your Majesty!' },
+        { who: 'queen', text: 'Kevin is a sock with feathers glued on. But he is OUR sock with feathers glued on. Go.' }
+      ];
+      const PALACE_AFTER_CH25 = [
+        { who: 'queen', text: 'The Lost and Found. We sent Our favourite earring there in 1997. We never saw it again.' },
+        { who: 'hero', text: 'I think I saw it, Your Majesty. Lefty is wearing it as a hat.' },
+        { who: 'queen', text: 'THE NERVE.' }
+      ];
+      const PALACE_AFTER_CH26 = [
+        { who: 'queen', text: 'Lefty and Righty. Together again. We have decreed a royal holiday. HAND-HOLDING DAY.' },
+        { who: 'bigboot', text: '*from the doorway* I CHECKED INSIDE MYSELF AGAIN. I FOUND A SANDWICH. I DO NOT KNOW WHOSE IT IS.' }
+      ];
+      const PALACE_AFTER_CH27 = [
+        { who: 'queen', text: '...Knight? You came BACK? Through the window? To visit?' },
+        { who: 'hero', text: 'Every time the lady does the washing, Your Majesty.' },
+        { who: 'queen', text: '*not crying at all* ...Good. We kept your hot water bottles warm. BOTH of them.' }
+      ];
+
       const STORY_CHAPTERS = {
         1: {
           name: 'THE LINT PLAINS',
@@ -24653,15 +25267,121 @@
             { walk: true },
             { clear: true }
           ]
+        },
+        // ===== CHAPTER 3: THE WAY HOME =====
+        21: {
+          name: 'THE DOOR THAT ONLY OPENS ONE WAY',
+          jp: '片道のドア',
+          stage: 'throne',
+          tier: 'legend',
+          steps: [
+            { scene: CH21_INTRO, cast: ['demon'] },
+            { walk: true },
+            { scene: CH21_MID, cast: ['socklet'], stage: 'plains' },
+            { fight: 'socklet', stage: 'plains' },
+            { scene: CH21_BOSS, cast: ['lint'], boss: true, stage: 'plains' },
+            { fight: 'lint', stage: 'plains' },
+            { scene: CH21_END, cast: ['lint'], stage: 'plains' },
+            { clear: true }
+          ]
+        },
+        22: {
+          name: 'TICK TOCK TAPPINGTON',
+          jp: 'チクタク・タッピントン',
+          stage: 'theatre',
+          tier: 'legend',
+          steps: [
+            { scene: CH22_INTRO, cast: ['skate'] },
+            { fight: 'skate' },
+            { walk: true },
+            { scene: CH22_BOSS, cast: ['tapper'], boss: true },
+            { fight: 'tapper' },
+            { scene: CH22_END, cast: ['tapper'] },
+            { clear: true }
+          ]
+        },
+        23: {
+          name: 'THE SPARK THAT FIZZLED',
+          jp: '消えた火花',
+          stage: 'swamp',
+          tier: 'legend',
+          steps: [
+            { scene: CH23_INTRO, cast: ['robo'] },
+            { fight: 'robo' },
+            { walk: true },
+            { scene: CH23_BOSS, cast: ['cling'], boss: true },
+            { fight: 'cling' },
+            { scene: CH23_END, cast: ['cling'] },
+            { clear: true }
+          ]
+        },
+        24: {
+          name: 'MONEY, MONEY, MONEY',
+          jp: 'マネー・マネー・マネー',
+          stage: 'pitch',
+          tier: 'legend',
+          steps: [
+            { scene: CH24_INTRO, cast: ['galosh'] },
+            { fight: 'galosh' },
+            { walk: true },
+            { scene: CH24_BOSS, cast: ['studs'], boss: true },
+            { fight: 'studs' },
+            { scene: CH24_END, cast: ['studs'] },
+            { clear: true }
+          ]
+        },
+        25: {
+          name: 'THE LOST & FOUND',
+          jp: '落とし物センター',
+          stage: 'lostfound',
+          tier: 'legend',
+          steps: [
+            { scene: CH25_INTRO, cast: ['mismatch'] },
+            { fight: 'mismatch' },
+            { walk: true },
+            { scene: CH25_BOSS, cast: ['lefty'], boss: true },
+            { fight: 'lefty' },
+            { scene: CH25_END, cast: ['lefty'] },
+            { clear: true }
+          ]
+        },
+        26: {
+          name: 'THE GLOVE BOX',
+          jp: '手袋箱',
+          stage: 'peaks',
+          tier: 'legend',
+          steps: [
+            { scene: CH26_INTRO, cast: ['mitten'] },
+            { fight: 'mitten' },
+            { walk: true },
+            { scene: CH26_BOSS, cast: ['lefty'], boss: true, stage: 'lostfound' },
+            { fight: 'lefty', stage: 'lostfound' },
+            { scene: CH26_END, cast: ['lefty', 'bigboot'], stage: 'lostfound' },
+            { clear: true }
+          ]
+        },
+        27: {
+          name: 'THE WAY HOME',
+          jp: 'おうちへ帰ろう',
+          stage: 'dryer',
+          tier: 'legend',
+          steps: [
+            { scene: CH27_INTRO, cast: ['demon'], boss: true, final: true },
+            { fight: 'demon' },
+            { scene: CH27_END, cast: ['demon', 'lefty'], stage: 'laundry' },
+            { clear: true }
+          ]
         }
       };
       Object.assign(PALACE_AFTER, {
         8: PALACE_AFTER_CH8, 9: PALACE_AFTER_CH9, 10: PALACE_AFTER_CH10, 11: PALACE_AFTER_CH11, 12: PALACE_AFTER_CH12, 13: PALACE_AFTER_CH13,
-        14: PALACE_AFTER_CH14, 15: PALACE_AFTER_CH15, 16: PALACE_AFTER_CH16, 17: PALACE_AFTER_CH17, 18: PALACE_AFTER_CH18, 19: PALACE_AFTER_CH19, 20: PALACE_AFTER_CH20
+        14: PALACE_AFTER_CH14, 15: PALACE_AFTER_CH15, 16: PALACE_AFTER_CH16, 17: PALACE_AFTER_CH17, 18: PALACE_AFTER_CH18, 19: PALACE_AFTER_CH19, 20: PALACE_AFTER_CH20,
+        21: PALACE_AFTER_CH21, 22: PALACE_AFTER_CH22, 23: PALACE_AFTER_CH23, 24: PALACE_AFTER_CH24, 25: PALACE_AFTER_CH25, 26: PALACE_AFTER_CH26, 27: PALACE_AFTER_CH27
       });
 
       function startChapter(n) {
         game.story = { chapter: n, step: -1 };
+        if (game.adv) game.adv.lastEp = n; // the palace reopens on this chapter's episodes
         particles.length = 0;
         floatingTexts.length = 0;
         game.adv.title = { t: 0, chapter: n };
@@ -24729,7 +25449,7 @@
         { id: 'power', name: 'STRIKE POWER', desc: '+5% damage per level' },
         { id: 'guard', name: 'GUARD', desc: '-5% damage taken per level' },
         { id: 'stamina', name: 'STAMINA', desc: '+10% super meter gain per level' },
-        { id: 'speed', name: 'SPEED', desc: '+3% walking speed per level' },
+        { id: 'speed', name: 'SPEED', desc: '+5% walking speed per level' },
         { id: 'vital', name: 'VITALITY', desc: '+5% health per level' }
       ];
       const SKILL_MAX = 5;
@@ -24793,15 +25513,20 @@
         const n = storyChapterNo();
         const me = Object.assign(Object.create(p1), {
           hp: Math.round((p1.hp || 1000) * (1 + 0.05 * lv('vital'))),
-          speed: (p1.speed || 1) * (1 + 0.03 * lv('speed'))
+          speed: (p1.speed || 1) * (1 + 0.05 * lv('speed'))
         });
-        // soft level scaling: later chapters' villains are tougher (but not damage sponges)
+        // soft level scaling: later episodes' villains are tougher (but not damage sponges): +2% an episode, at most +40%
         const foe = Object.assign(Object.create(p2), {
-          hp: Math.round((p2.hp || 1000) * (1 + 0.02 * (n - 1))),
+          hp: Math.round((p2.hp || 1000) * storyScale(n)),
           storyBoss: !!boss
         });
         return [me, foe];
       }
+      // BALANCE (checked by tools/tests/test_skills.js): villains grow +2% an episode up to +40%, and all your
+      // damage bonuses together (stats, perks, charm) never go past x1.6
+      const STORY_SCALE_MAX = 0.4,
+        MAX_DMG_MUL = 1.6;
+      const storyScale = n => 1 + Math.min(STORY_SCALE_MAX, 0.02 * (n - 1));
       /** Called when a story fight starts (after the fighters exist). */
       function applyStorySkills() {
         const K = skillData(),
@@ -24813,12 +25538,13 @@
         let guard = 1 - 0.05 * lv('guard');
         if (C && C.dmg && ((C.vs && C.vs.includes(foeId)) || (C.boss && f2.def.storyBoss))) dmg *= C.dmg;
         if (C && C.guard && (!C.vs || C.vs.includes(foeId))) guard *= C.guard;
+        dmg = Math.min(MAX_DMG_MUL, dmg);
         game.storyFx = { baseDmg: dmg, lastHp: f1.hp, still: 0, second: false, enraged: false };
         f1.dmgMul = dmg;
         f1.meterMul = 1 + 0.1 * lv('stamina');
         f1.noChip = !!K.perks.iron;
         if (K.perks.starter) f1.meter = Math.max(f1.meter, 50);
-        f2.dmgMul *= guard * (1 + 0.02 * (n - 1));
+        f2.dmgMul *= guard * storyScale(n);
       }
       /** Every frame of a story fight: perks and the bosses' rage. */
       function storyTick() {
@@ -24828,7 +25554,7 @@
         let m = X.baseDmg;
         if (K.perks.combo && f2.combo >= 3) m *= 1.15;
         if (K.perks.last && f1.hp < f1.hpMax * 0.3) m *= 1.25;
-        f1.dmgMul = m;
+        f1.dmgMul = Math.min(MAX_DMG_MUL, m);
         // WARM WASH: 3 seconds without getting hit, then a little health back now and then
         if (f1.hp < X.lastHp) X.still = 0;
         else X.still++;
@@ -25255,7 +25981,7 @@
           roundRectPath(ctx, 20, 48, r.w - 40, 120, 8);
           ctx.stroke();
           drawText(d.name, r.w / 2, 186, d.name.length > 14 ? 11 : 14, FONT_COMIC, INK, null, 0);
-          drawText(b.spar ? 'TRAIN WITH YOUR MENTOR' : 'SEEN IN CHAPTER ' + b.ch, r.w / 2, 208, 7, FONT_PIXEL, '#5a4a3a', null, 0);
+          drawText(b.spar ? 'TRAIN WITH YOUR MENTOR' : 'SEEN IN ' + epLabel(b.ch), r.w / 2, 208, 7, FONT_PIXEL, '#5a4a3a', null, 0);
           drawText('REWARD', r.w / 2, 232, 8, FONT_PIXEL, '#5a4a3a', null, 0);
           drawText(b.xp + ' XP', r.w / 2, 252, 16, FONT_COMIC, '#2f9e44', INK, 3);
           if (b.charm) drawText('+ ' + CHARMS[b.charm].name, r.w / 2, 274, 8, FONT_PIXEL, '#a06a00', null, 0);
@@ -26097,7 +26823,7 @@
         ctx.stroke();
         ctx.translate(W / 2, 270);
         ctx.rotate(-0.04);
-        drawText('CHAPTER ' + T.chapter, 0, -52, 30, FONT_PIXEL, '#3ff0ff', INK, 6);
+        drawText(epLabel(T.chapter), 0, -52, 26, FONT_PIXEL, '#3ff0ff', INK, 6);
         drawText(ch.name, 0, 4, ch.name.length > 18 ? 62 : 74, FONT_COMIC, '#ffe234', INK, 12);
         drawText(ch.jp || '', 0, 58, 24, FONT_JAPANESE, '#fff', INK, 6);
         ctx.restore();
@@ -26256,8 +26982,8 @@
         const C = game.adv.clear;
         const ch = STORY_CHAPTERS[C.chapter];
         drawStage(0.55, ch.stage);
-        drawText('CHAPTER CLEAR!', W / 2, 110, 74, FONT_COMIC, '#ffe234', INK, 12);
-        drawText('CH.' + C.chapter + '  ' + ch.name, W / 2, 172, 18, FONT_PIXEL, '#fff', INK, 5);
+        drawText('EPISODE CLEAR!', W / 2, 110, 74, FONT_COMIC, '#ffe234', INK, 12);
+        drawText(epLabel(C.chapter) + '  ' + ch.name, W / 2, 172, 16, FONT_PIXEL, '#fff', INK, 5);
         const hero = advHeroLook();
         drawSock(ctx, hero, winAnim(basePose(), C.t, hero.id), W / 2, 460, 1, fitScale(hero, 1.2), { x: 4, y: 0 });
         drawHosiery(ctx, 'fishnet', W / 2 - 170, 466, 1.0, 1, C.t, { mouth: 'open' });
@@ -27390,6 +28116,8 @@
         drawHosieryPortrait,
         openMaker,
         openVoiceRec,
+        /** tests: the skill tree and story balance numbers */
+        balance: () => ({ SKILL_STATS, SKILL_PERKS, SKILL_MAX, CHARMS, xp: lvl => xpToNext(lvl), storyScale, MAX_DMG_MUL, STORY_SCALE_MAX, episodes: Object.keys(STORY_CHAPTERS).filter(k => +k > 0).map(k => ({ n: +k, fights: STORY_CHAPTERS[k].steps.filter(s => s.fight).map(s => s.fight), boss: STORY_CHAPTERS[k].steps.some(s => s.boss) })), ids: [...CHARS, ...VILLAIN_HEROES, ...ENEMIES, ...STORY_VILLAINS].map(c => c.id) }),
         /** tests: pick the SELECT MODE skit */
         setSkit(n) {
           MENU_SKIT = n;

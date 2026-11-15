@@ -32,6 +32,8 @@ for cid, text in CATCHPHRASES.items():
     prompt = base.create_voice_clone_prompt(ref_audio=os.path.join(HERE, 'refs', f'fighter_{cid}.wav'), ref_text=QF.ref_line(cid))
     for attempt in range(4):
         torch.manual_seed(zlib.crc32(f'{cid}|catchphrase|{attempt}'.encode()))
+        if cid in QF.TOOTHLESS:
+            text = QF.toothless(text)
         wavs, _ = base.generate_voice_clone(text=text, language='Japanese', voice_clone_prompt=prompt)
         y = QF.finish(wavs[0], QF.CAST[cid][3])
         if QF.plausible(text, y):
