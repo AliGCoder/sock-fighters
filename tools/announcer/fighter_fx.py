@@ -138,15 +138,15 @@ def _praat_older(y, pitch_mul=0.95, formant=0.97, slower=1.05, floor=225, ceilin
 def old(y):
     """98 years old, but CLEAR: a much lower, older voice (Praat), a little slower, a gentle uneven quaver,
     a light tremble and just a touch of breath, with the full range kept so every word is easy to hear."""
-    y = _peak1(_praat_older(_peak1(y), fixed=235))  # the same old voice on every line: one fixed pitch
+    y = _peak1(_praat_older(_peak1(y), fixed=235, slower=1.2))  # one fixed pitch on every line, and unhurried (98!), but every word clear
     n = np.arange(len(y))
     t = n / SR
     # quaver: a gentle uneven wobble of about +/- 50 cents (two rates, so it never sounds like a machine)
     r1, r2 = 5.2 / SR, 7.9 / SR
-    pos = n + 0.025 / (2 * np.pi * r1) * np.sin(2 * np.pi * r1 * n) + 0.008 / (2 * np.pi * r2) * np.sin(2 * np.pi * r2 * n + 1.3)
+    pos = n + 0.012 / (2 * np.pi * r1) * np.sin(2 * np.pi * r1 * n) + 0.004 / (2 * np.pi * r2) * np.sin(2 * np.pi * r2 * n + 1.3)
     y = np.interp(np.clip(pos, 0, len(y) - 1), n, y)
     # a light tremble in the volume
-    y = y * (1 - 0.15 * (0.5 + 0.5 * np.sin(2 * np.pi * 6.3 * t + 1.0)))
+    y = y * (1 - 0.07 * (0.5 + 0.5 * np.sin(2 * np.pi * 6.3 * t + 1.0)))
     # just a touch of breath that follows the voice (no crackles)
     env = np.convolve(np.abs(y), np.ones(480) / 480, mode='same')
     rng = np.random.default_rng(98)
@@ -155,11 +155,13 @@ def old(y):
     y = y + env * 0.1 * lfilter(b, a, hiss)
     # not right on the microphone: take away the close-up bass boom, keep the words clear (a gentle lift at
     # 2-5 kHz), then put her a little way off in a small room (short, soft reflections)
-    b, a = butter(2, 110 / (SR / 2), 'high')
+    b, a = butter(2, 150 / (SR / 2), 'high')  # less close-up boom
     y = lfilter(b, a, y)
     b, a = butter(2, [2000 / (SR / 2), 5000 / (SR / 2)], 'band')
     y = y + 0.2 * lfilter(b, a, y)
-    return _small_room(_punch(_gummy(_nasal(y))), wet=0.07)
+    # a step away from the mic: gentler punch and a little room. (No muffling: her toothless lisp is in the
+    # words themselves, so the consonants stay crisp and every word is easy to understand.)
+    return _small_room(_punch(_nasal(y), drive=1.3), wet=0.15)
 
 
 def _gummy(y):
@@ -173,7 +175,7 @@ def _gummy(y):
 def _nasal(y):
     """A pinched, nasal, nagging tone: a resonant bump around 1-1.6 kHz and a little bite at 2.8-3.6 kHz."""
     b, a = butter(2, [950 / (SR / 2), 1650 / (SR / 2)], 'band')
-    y = y + 0.9 * lfilter(b, a, y)
+    y = y + 0.4 * lfilter(b, a, y)  # (a lighter nasal tone: easier to understand)
     b, a = butter(2, [2800 / (SR / 2), 3600 / (SR / 2)], 'band')
     return y + 0.35 * lfilter(b, a, y)
 
@@ -183,7 +185,7 @@ def _punch(y, drive=3.2):
     the whole way through, with a little grit when she yells."""
     y = _peak1(y)
     env = np.convolve(np.abs(y), np.ones(240) / 240, mode='same')
-    gain = 1 / np.maximum(0.25, env / (np.max(env) or 1)) ** 0.5  # lift the quieter words
+    gain = 1 / np.maximum(0.25, env / (np.max(env) or 1)) ** 0.3  # lift the quieter words (gently)
     y = _peak1(y * gain)
     return np.tanh(drive * y) / np.tanh(drive)
 

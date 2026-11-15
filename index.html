@@ -2770,9 +2770,9 @@
             "Ninjas don't lose socks. Socks lose ninjas."
           ],
           skins: [
-            { name: 'RAINBOW', pal: { mode: 'rb', sat: 82, lit: 62, mask: '#2a2240', cuff: '#2a2240' } },
+            // her default: the black shinobi suit with the red mask
             {
-              name: 'MIDNIGHT',
+              name: 'SHINOBI SUIT',
               pal: {
                 mode: 'two',
                 c1: '#2b2b3a',
@@ -2785,6 +2785,7 @@
               arm: '#111111',
               color: '#e0283f'
             },
+            { name: 'RAINBOW', pal: { mode: 'rb', sat: 82, lit: 62, mask: '#2a2240', cuff: '#2a2240' } },
             {
               name: 'NEON',
               pal: {
@@ -21774,8 +21775,11 @@
         const A = advData();
         StoryVoices.loadFor(A.prologue ? advHero().id : null);
         game.adv = { scene: null };
-        if (!A.prologue) startPrologue();
-        else openHub();
+        if (!A.prologue) {
+          A.seen = A.seen || {};
+          A.seen.proFresh = true; // you've just watched it: the first Episode 1 won't repeat it
+          startPrologue();
+        } else openHub();
       }
 
       /* ---- story scenes: a dialogue box with the speaker's portrait; tap / SPACE for the next line ---- */
@@ -22644,16 +22648,19 @@
       const epLabel = n => 'CHAPTER ' + bookOf(n).n + ' · EPISODE ' + epNo(n);
       const epShort = n => 'C' + bookOf(n).n + '·EP' + epNo(n);
       const bookEps = b => ADV_CHAPTERS.filter(c => c.n >= b.from && c.n <= b.to);
+      // Chapter 1 starts with the PROLOGUE (Laundry Day) as its own picture card, before Episode 1
+      const PROLOGUE_EP = { n: 0, name: 'LAUNDRY DAY', jp: '洗濯の日', prologue: true };
+      const hubEps = b => bookEps(b); // (the prologue is now the start of Episode 1)
       const bookOpen = b => bookEps(b).some(c => STORY_CHAPTERS[c.n]) && chapterOpen(b.from);
       /** The chapter the palace is showing the episodes of (null = the chapter cards). */
       const hubBook = () => {
         const Hb = game.adv && game.adv.hub;
         return Hb && Hb.book ? STORY_BOOKS[Hb.book - 1] : null;
       };
-      const hubTopCount = () => (hubBook() ? bookEps(hubBook()).length : STORY_BOOKS.length);
+      const hubTopCount = () => (hubBook() ? hubEps(hubBook()).length : STORY_BOOKS.length);
       /** Palace menu: chapter cards (or a chapter's episodes as picture squares, 10 to a page, 5 x 2); then the buttons. */
       const HUB_PER_PAGE = 10;
-      const hubPages = () => (hubBook() ? Math.max(1, Math.ceil(bookEps(hubBook()).length / HUB_PER_PAGE)) : 1);
+      const hubPages = () => (hubBook() ? Math.max(1, Math.ceil(hubEps(hubBook()).length / HUB_PER_PAGE)) : 1);
       const hubButton = i => {
         const nCh = hubTopCount();
         if (i < nCh && !hubBook()) return { x: 113 + i * 252, y: 84, w: 230, h: 308 }; // tall chapter cards
@@ -22692,7 +22699,7 @@
 
       const HUB_ITEMS = () => [
         ...(hubBook()
-          ? bookEps(hubBook()).map(ch => ({
+          ? hubEps(hubBook()).map(ch => ch.prologue ? { label: 'PROLOGUE  LAUNDRY DAY', sub: 'WHERE IT ALL BEGAN', on: true, go: () => startPrologue() } : ({
               label: 'EPISODE ' + epNo(ch.n) + '  ' + ch.name,
               sub: advData().cleared[ch.n]
                 ? 'CLEARED ★'
@@ -22717,7 +22724,7 @@
                   const Hb = game.adv.hub;
                   Hb.book = b.n;
                   // open on the first episode still to play
-                  const list = bookEps(b);
+                  const list = hubEps(b);
                   const next = list.findIndex(c => STORY_CHAPTERS[c.n] && !advData().cleared[c.n] && chapterOpen(c.n));
                   Hb.sel = Math.max(0, next);
                   Hb.page = Math.floor(Hb.sel / HUB_PER_PAGE);
@@ -22727,7 +22734,6 @@
         { label: 'CHANGE HERO', sub: advHeroLook().name, on: true, go: () => openAdvSelect('hub') },
         { label: 'SKILL TREE', sub: 'LEVEL ' + skillData().lvl + (skillData().sp ? ' • ' + skillData().sp + ' POINTS TO SPEND!' : ''), on: true, go: () => openSkills() },
         { label: 'BOUNTY BOARD', sub: 'SIDE FIGHTS & SPARRING', on: true, go: () => openBounty() },
-        { label: 'PROLOGUE', sub: 'LAUNDRY DAY', on: true, go: () => startPrologue() },
         {
           label: storyAllCleared() ? 'START THE STORY AGAIN' : 'CLEAR STORY PROGRESS',
           sub: 'LOCKS THE CHAPTERS AGAIN • SKINS & TROPHIES STAY',
@@ -22839,7 +22845,7 @@
         if (last && STORY_CHAPTERS[last]) {
           // back from an episode: show its chapter's episodes, on the next one to play
           const b = bookOf(last),
-            list = bookEps(b);
+            list = hubEps(b);
           let i = list.findIndex(c => c.n === last);
           if (A.cleared[last] && i + 1 < list.length && STORY_CHAPTERS[list[i + 1].n]) i++;
           Object.assign(game.adv.hub, { book: b.n, sel: Math.max(0, i), page: Math.floor(Math.max(0, i) / HUB_PER_PAGE) });
@@ -23459,8 +23465,8 @@
         if (!it.on && eps.length) drawPadlock(x + w - 34, y + 30, 1);
       }
       function drawChapterSquare(ch, r, on, it, t) {
-        const art = chapterArt(ch.n),
-          cleared = !!advData().cleared[ch.n];
+        const art = ch.prologue ? { stage: 'laundry', boss: 'stinky' } : chapterArt(ch.n),
+          cleared = ch.prologue ? !!advData().prologue : !!advData().cleared[ch.n];
         const lift = on ? -4 - Math.sin(t * 0.15) * 2 : 0;
         const x = r.x,
           y = r.y + lift,
@@ -23516,7 +23522,7 @@
         ctx.strokeStyle = INK;
         ctx.lineWidth = 2.5;
         ctx.stroke();
-        drawText('EP.' + epNo(ch.n), x + 6 + badgeW / 2, y + 18, 9, FONT_PIXEL, INK, null, 0);
+        drawText(ch.prologue ? 'PRO.' : 'EP.' + epNo(ch.n), x + 6 + badgeW / 2, y + 18, 9, FONT_PIXEL, INK, null, 0);
         const name = ch.name.replace(/^THE /, '');
         drawText(name, x + w / 2, y + picH + 14, name.length > 15 ? 11 : 13, FONT_COMIC, it.on ? '#fff' : '#888', INK, 4);
         drawText(it.sub, x + w / 2, y + hh - 10, 6, FONT_PIXEL, cleared ? '#7dff9a' : it.on ? '#ffe234' : '#888', INK, 0);
@@ -23573,7 +23579,7 @@
           const r = hubButton(i),
             on = Hb.sel === i;
           if (r.w === 0) return;
-          if (i < nCh) return hubBook() ? drawChapterSquare(bookEps(hubBook())[i], r, on, it, t) : drawBookCard(STORY_BOOKS[i], r, on, it, t);
+          if (i < nCh) return hubBook() ? drawChapterSquare(hubEps(hubBook())[i], r, on, it, t) : drawBookCard(STORY_BOOKS[i], r, on, it, t);
           roundRectPath(ctx, r.x, r.y, r.w, r.h, 10);
           ctx.fillStyle = !it.on ? 'rgba(30,20,50,0.75)' : on ? '#ff4fa3' : 'rgba(42,29,72,0.95)';
           ctx.fill();
@@ -25379,7 +25385,25 @@
         21: PALACE_AFTER_CH21, 22: PALACE_AFTER_CH22, 23: PALACE_AFTER_CH23, 24: PALACE_AFTER_CH24, 25: PALACE_AFTER_CH25, 26: PALACE_AFTER_CH26, 27: PALACE_AFTER_CH27
       });
 
-      function startChapter(n) {
+      /** Episode 1 of Chapter 1 begins with the prologue (Laundry Day), then carries straight on. */
+      function startChapter(n, afterPrologue) {
+        const A = advData();
+        if (n === 1 && !afterPrologue && !game.story) {
+          A.seen = A.seen || {};
+          if (A.seen.proFresh) {
+            A.seen.proFresh = false;
+            Progress.save();
+          } else {
+            const keep = game.adv || {};
+            game.adv = Object.assign(keep, { scene: null, story: { t: 0 } });
+            game.screen = 'advStory';
+            playScene(PROLOGUE, () => startChapter(1, true), game.adv.story);
+            return;
+          }
+        }
+        return startChapterNow(n);
+      }
+      function startChapterNow(n) {
         game.story = { chapter: n, step: -1 };
         if (game.adv) game.adv.lastEp = n; // the palace reopens on this chapter's episodes
         particles.length = 0;
@@ -28107,7 +28131,7 @@
         storyVoiceKey,
         /** tests: jump straight to step i of chapter ch */
         storyJump(ch, i) {
-          startChapter(ch);
+          startChapterNow(ch);
           game.story.step = i - 1;
           nextStoryStep();
         },

@@ -157,6 +157,8 @@ function add(speaker, shown, voice, say, file, text, who) {
   let note = (PERSONA[voice] || "") + ", " + mood(who, text);
   // Stocking Gran's back (and hip) REALLY hurt: three long, pained ouches, and she sounds it
   // Stocking Gran has no teeth: a gummy lisp on her さ-row (same as TOOTHLESS in qwen_fighters.py)
+  // ...and she is 98: she speaks VERY slowly, pausing after every phrase (the pauses are written into her lines)
+  if (voice === 'gran') say = say.replace(/、/g, '、…').replace(/。(?!$)/g, '。……').replace(/([!！])(?!$)/g, '$1…').replace(/([?？])(?!$)/g, '$1…');
   if (voice === 'gran') say = say.replace(/[さすせそざずぜぞサスセソザズゼゾ]/g, c => ({ さ: 'しゃ', す: 'しゅ', せ: 'しぇ', そ: 'しょ', ざ: 'じゃ', ず: 'じゅ', ぜ: 'じぇ', ぞ: 'じょ', サ: 'シャ', ス: 'シュ', セ: 'シェ', ソ: 'ショ', ザ: 'ジャ', ズ: 'ジュ', ゼ: 'ジェ', ゾ: 'ジョ' })[c]);
   if (who === 'gran' && /my back|my hip|ow ow/i.test(text)) {
     say = say.replace(/[。!?…\s]*$/, '') + '…いったぁ〜い…いったぁ〜い…いったぁ〜い…';

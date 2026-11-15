@@ -190,7 +190,7 @@ def lines_for(cid):
 # and their voice is picked by how old it sounds (see age_cues).
 OLDEST = {
     'gran': ' Speaking style: a SASSY, quick-witted, fiery old granny of 98, SHOUTING and scolding at the top of '
-            'her lungs, talking FAST with snappy, cheeky comebacks and a sharp tongue, full of attitude, shrill and '
+            'her lungs, speaking SLOWLY and draggingly like a very old lady, with long pauses, but with snappy, cheeky comebacks and a sharp tongue, full of attitude, shrill and '
             'LOUD, her voice cracking and squeaking; now and then she trails off, forgets what she was saying, then '
             'snaps right back even louder. She has NO TEETH at all: a gummy, mushy, toothless mouth, lisping and '
             'slurring her s-sounds, lips smacking and flapping. Croaky and quavering with age, never calm. Natural '

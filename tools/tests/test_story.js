@@ -23,7 +23,7 @@ require('fs').mkdirSync(SP, { recursive: true });
   await key('Escape', 300);
   await G(() => { window.__sock.game.adv.hub.sel = 0; }); // CHAPTER 1...
   await key('Enter', 400);
-  await G(() => { window.__sock.game.adv.hub.sel = 0; }); // ...EPISODE 1
+  await G(() => { window.__sock.game.adv.hub.sel = 0; }); // ...EPISODE 1 (it begins with the prologue)
   await key('Enter', 500);
   console.log('chapter 1 ->', await scr());
   await p.waitForTimeout(500);
@@ -32,7 +32,7 @@ require('fs').mkdirSync(SP, { recursive: true });
   const log = [];
   for (let guard = 0; guard < 400; guard++) {
     const s = await scr();
-    if (s === 'advScene') { await key('Space', 50); await key('Space', 120); continue; }
+    if (s === 'advScene' || s === 'advStory') { await key('Space', 50); await key('Space', 120); continue; } // (advStory: Episode 1's prologue)
     if (s === 'vs') {
       log.push('VS ' + (await G(() => window.__sock.game.p2Def.name)) + ' @ ' + (await G(() => window.__sock.game.stageId)));
       if (log.length === 1) await p.screenshot({ path: SP + 'st_vs.png' });

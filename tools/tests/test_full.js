@@ -29,7 +29,7 @@ require('fs').mkdirSync(SP, { recursive: true });
     for (let guard = 0; guard < 600; guard++) {
       const s = await scr();
       if (s === 'advTitle') { if (!log.includes('title card')) { log.push('title card'); await p.waitForTimeout(900); await shot('title_' + ch); } await key('Space', 200); continue; }
-      if (s === 'advScene') {
+      if (s === 'advScene' || s === 'advStory') {
         const st = await G(() => { const St = window.__sock.game.adv.stage; const sc = window.__sock.game.adv.scene; return { warning: St.warning, sneeze: St.sneeze ? St.sneeze.t : -1, rainbow: St.rainbow || 0, confetti: St.confetti || 0, queen: (St.allies || []).length, line: sc ? sc.i : -1, emote: sc && sc.emote ? sc.emote.mark : '' }; });
         if (st.warning > 60) await shot('warning_' + ch);
         if (st.sneeze > 20 && st.sneeze < 60) await shot('sneeze');
