@@ -10552,9 +10552,7 @@
 
         poseSuperdash(p, t, clock) {
           if (this.def.dentures) {
-            p.lean = 0.2;
-            p.mouth = 'o';
-            p.eyes = t < 10 ? 'wince' : 'angry';
+            p.lean = 0.15;
             p.front = { x: 46, y: -56 };
             p.back = { x: -18, y: -30 };
             return;
@@ -10569,9 +10567,7 @@
 
         poseSuperlock(p, t, clock) {
           if (this.def.dentures) {
-            // cheering her teeth on, gums out
-            p.mouth = 'o';
-            p.eyes = 'happy';
+            // cheering her teeth on
             p.lean = 0.1;
             p.front = { x: 40, y: -70 + Math.sin(t * 0.5) * 12 };
             p.back = { x: 10, y: -64 - Math.sin(t * 0.5) * 12 };
@@ -10941,18 +10937,10 @@
           const t = this.t;
           if (this.state === 'superdash') {
             // chattering out in front of her
-            const dx = this.dentX !== undefined ? this.dentX : this.x + this.face * 34;
-            const out = Math.min(1, Math.max(0, (t - 8) / 8)); // 0 = still in her mouth
-            drawDentures(
-              ctx,
-              dx,
-              this.y - 122 + Math.sin(t * 0.8) * 5 * out,
-              0.2 + 0.45 * out,
-              t <= 8 ? 0.1 : Math.abs(Math.sin(t * 0.9)),
-              this.face,
-              t,
-              out < 0.5 // plain false teeth while they're in her mouth: no face yet
-            );
+            if (t <= 8 || this.dentX === undefined) return; // still in her mouth: nothing to see
+            const out = Math.min(1, (t - 8) / 6);
+            // flying dead straight at the opponent, chattering
+            drawDentures(ctx, this.dentX, this.y - 122, 0.3 + 0.45 * out, Math.abs(Math.sin(t * 0.9)), this.face, t);
             return;
           }
           const o2 = this.lockO;
@@ -15416,14 +15404,12 @@
       const VERSUS_MENU = IS_TOUCH
         ? [
             ['1 PLAYER', 'VS CPU', 'cpu'],
-            ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online'],
-            ['◀ BACK', 'TO THE MAIN MENU', 'versusback']
+            ['2 PLAYERS', 'EACH ON YOUR OWN PHONE (ONLINE)', 'online']
           ]
         : [
             ['1 PLAYER', 'VS CPU', 'cpu'],
             ['2 PLAYERS', 'SAME KEYBOARD', '2p'],
-            ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online'],
-            ['◀ BACK', 'TO THE MAIN MENU', 'versusback']
+            ['ONLINE', 'FIGHT A FRIEND ON ANOTHER DEVICE', 'online']
           ];
       const MODE_MAIN = IS_TOUCH
         ? [
@@ -18603,137 +18589,77 @@
       }
 
       /**
-       * Gran's runaway false teeth, wind-up "chattering teeth" style: big red lips, white teeth, a tongue
-       * poking out and two googly eyes on top. open = 0 (shut) .. 1 (wide open); s = size; face = which way.
+       * Gran's false teeth, seen from the side: pink gums and white teeth, hinged at the back so they open and
+       * SNAP shut like a clam, facing the way they fly. open = 0 (shut) .. 1 (wide open); s = size; face = which way.
        */
-      function drawDentures(c, x, y, s, open, face, t, plain) {
-        const RED = '#e3242b',
-          DARK = '#8f0f1c';
-        const oyU = -(5 + open * 38),
-          oyL = 5 + open * 38;
+      function drawDentures(c, x, y, s, open, face, t) {
+        const GUM = '#ff8fa8',
+          GUM_DARK = '#e0607e';
         c.save();
         c.translate(x, y);
         c.scale((face || 1) * s, s);
         c.lineJoin = 'round';
-        // inside of the mouth
-        c.beginPath();
-        c.ellipse(4, 0, 62, 6 + open * 40, 0, 0, 7);
-        c.fillStyle = '#3a0710';
-        c.fill();
-        // the tongue, poking out of the front corner
-        if (open > 0.15 && !plain) {
-          c.save();
-          c.translate(58, 6 + open * 6);
-          c.rotate(0.35 + Math.sin(t * 0.5) * 0.15);
+        // one jaw (drawn as the upper one; the lower one is the same, flipped)
+        const jaw = () => {
+          // the back row of teeth (the far side of the arch), a little darker
+          for (let i = 0; i < 8; i++) {
+            roundRectPath(c, -38 + i * 12.5, -12, 11, 15, 4);
+            c.fillStyle = '#ddd8c8';
+            c.fill();
+            c.strokeStyle = '#8a8676';
+            c.lineWidth = 1.5;
+            c.stroke();
+          }
+          // the front row: big teeth at the front, smaller towards the back
+          for (let i = 0; i < 7; i++) {
+            const big = i >= 5,
+              tw = big ? 15 : 13,
+              th = big ? 20 : 16,
+              tx = -44 + i * 15;
+            roundRectPath(c, tx, -8, tw, th, 4);
+            c.fillStyle = '#fffef6';
+            c.fill();
+            c.strokeStyle = '#6e6e78';
+            c.lineWidth = 2;
+            c.stroke();
+          }
+          // the gum
           c.beginPath();
-          c.ellipse(16, 0, 30, 17 + open * 4, 0, 0, 7);
-          c.fillStyle = '#ff3b4a';
+          c.moveTo(-54, -2);
+          c.quadraticCurveTo(-56, -30, -26, -30);
+          c.lineTo(46, -27);
+          c.quadraticCurveTo(70, -25, 66, -4);
+          c.lineTo(-54, -2);
+          c.closePath();
+          c.fillStyle = GUM;
           c.fill();
           c.strokeStyle = INK;
           c.lineWidth = 4;
           c.stroke();
-          c.beginPath();
-          c.moveTo(0, 0);
-          c.lineTo(30, 0);
-          c.strokeStyle = DARK;
-          c.lineWidth = 3;
-          c.stroke();
-          c.restore();
-        }
-        // a row of teeth: dir 1 = lower (pointing up), -1 = upper (hanging down)
-        const teeth = (oy, dir) => {
-          for (let i = -3; i <= 3; i++) {
-            const big = Math.abs(i) <= 1,
-              tw = big ? 17 : 14,
-              th = big ? 22 : 17,
-              tx = i * 17 + 4 - tw / 2,
-              ty = dir < 0 ? oy - 4 : oy - th + 4;
-            roundRectPath(c, tx, ty, tw, th, 5);
-            c.fillStyle = '#fffef6';
-            c.fill();
-            c.strokeStyle = '#7a7a86';
-            c.lineWidth = 2;
+          // gum ridges and a shine
+          c.strokeStyle = GUM_DARK;
+          c.lineWidth = 2;
+          for (let i = 0; i < 5; i++) {
+            c.beginPath();
+            c.arc(-30 + i * 20, -6, 8, Math.PI * 1.1, Math.PI * 1.9);
             c.stroke();
           }
+          c.fillStyle = 'rgba(255,255,255,0.5)';
+          c.beginPath();
+          c.ellipse(-12, -22, 22, 4, 0, 0, 7);
+          c.fill();
         };
-        // lower jaw: lip, then teeth standing on it
-        teeth(oyL, 1);
-        c.beginPath();
-        c.moveTo(-76, oyL - 4);
-        c.quadraticCurveTo(-74, oyL + 40, 4, oyL + 40);
-        c.quadraticCurveTo(82, oyL + 40, 82, oyL - 4);
-        c.quadraticCurveTo(4, oyL + 12, -76, oyL - 4);
-        c.closePath();
-        c.fillStyle = RED;
-        c.fill();
-        c.strokeStyle = INK;
-        c.lineWidth = 4;
-        c.stroke();
-        // upper jaw: teeth hanging down, then the lip over them
-        teeth(oyU, -1);
-        c.beginPath();
-        c.moveTo(-76, oyU + 4);
-        c.quadraticCurveTo(-74, oyU - 44, 4, oyU - 44);
-        c.quadraticCurveTo(82, oyU - 44, 82, oyU + 4);
-        c.quadraticCurveTo(4, oyU - 12, -76, oyU + 4);
-        c.closePath();
-        c.fillStyle = RED;
-        c.fill();
-        c.strokeStyle = INK;
-        c.lineWidth = 4;
-        c.stroke();
-        // shine on the lips
-        c.fillStyle = 'rgba(255,255,255,0.45)';
-        c.beginPath();
-        c.ellipse(-30, oyU - 30, 20, 6, -0.15, 0, 7);
-        c.fill();
-        c.beginPath();
-        c.ellipse(-28, oyL + 26, 16, 5, 0.15, 0, 7);
-        c.fill();
-        if (plain) {
+        const hinge = -50,
+          ang = open * 0.55;
+        for (const dir of [1, -1]) {
+          // lower jaw first, then the upper on top
+          c.save();
+          c.translate(hinge, 0);
+          c.rotate(dir * ang);
+          c.translate(-hinge, dir * 4);
+          if (dir > 0) c.scale(1, -1);
+          jaw();
           c.restore();
-          return;
-        }
-        // the wind-up key at the back
-        c.fillStyle = '#c9c9d6';
-        c.strokeStyle = INK;
-        c.lineWidth = 3;
-        c.beginPath();
-        c.rect(-92, -5, 18, 10);
-        c.fill();
-        c.stroke();
-        c.beginPath();
-        c.ellipse(-98, 0, 7, 14, Math.sin(t * 0.6) * 0.8, 0, 7);
-        c.fill();
-        c.stroke();
-        // googly eyes on top (they wobble as it chatters)
-        for (const [ex, ey, er] of [
-          [-20, oyU - 54, 17],
-          [18, oyU - 58, 19]
-        ]) {
-          c.beginPath();
-          c.arc(ex, ey, er, 0, 7);
-          c.fillStyle = '#fff';
-          c.fill();
-          c.strokeStyle = INK;
-          c.lineWidth = 3;
-          c.stroke();
-          const px = ex + er * 0.35 + Math.sin(t * 0.9 + ex) * 3,
-            py = ey + Math.cos(t * 0.7 + ex) * 3;
-          c.beginPath();
-          c.arc(px, py, er * 0.45, 0, 7);
-          c.fillStyle = INK;
-          c.fill();
-          c.beginPath();
-          c.arc(px + 2, py - 3, er * 0.14, 0, 7);
-          c.fillStyle = '#fff';
-          c.fill();
-          // eyebrow
-          c.beginPath();
-          c.arc(ex, ey - er - 2, er * 0.8, Math.PI * 1.2, Math.PI * 1.8);
-          c.strokeStyle = INK;
-          c.lineWidth = 3;
-          c.stroke();
         }
         c.restore();
       }
