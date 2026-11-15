@@ -76,7 +76,9 @@ const PERSONA = {
   bleach: 'snobbish, sneering aristocrat',
   cling: 'sultry, smug villainess queen',
   iron: 'stern, booming warlord',
-  mismatch: 'huge, deep, rumbling patchwork golem, a little dim-witted'
+  mismatch: 'huge, deep, rumbling patchwork golem, a little dim-witted',
+  puppet: 'flamboyant, hammy stage prince, dramatic showman',
+  mitten: 'big, grumpy, woolly voice, jealous and dramatic'
 };
 /** The mood of one line, read from how it's written. */
 function mood(who, text) {

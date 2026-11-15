@@ -1,5 +1,7 @@
 // Story voices on PC (Chromium), iPhone (WebKit) and Android (Chromium mobile): files load, keys match, lines play.
 const pw = require('../announcer/node_modules/playwright');
+// every story scene in the game (const NAME = [ { who: ...)
+const SCENES = [...require('fs').readFileSync(require('path').join(__dirname, '..', '..', 'index.html'), 'utf8').matchAll(/const ([A-Z0-9_]+) = \[\n\s+\{ who: /g)].map(m => m[1]);
 const URL = require('url').pathToFileURL(require('path').join(__dirname, '..', '..', 'index.html')).href;
 (async () => {
   for (const [name, type, device] of [['PC', 'chromium', null], ['iPhone', 'webkit', 'iPhone 13'], ['Android', 'chromium', 'Pixel 5']]) {
@@ -14,9 +16,9 @@ const URL = require('url').pathToFileURL(require('path').join(__dirname, '..', '
     await p.evaluate(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 4, look: 0, cleared: {}, seen: {} }; S.startAdventure(); });
     await p.waitForFunction(() => window.__sock.StoryVoices.files.story === 'ready' && window.__sock.StoryVoices.files['hero-baby'] === 'ready', null, { timeout: 30000 }).catch(() => {});
     // every line of every scene should have a recording (except silent ones)
-    const r = await p.evaluate(() => {
+    const r = await p.evaluate(sceneNames => {
       const S = window.__sock, hero = S.ROSTER[4];
-      const names = ['PROLOGUE','PALACE_ARRIVAL','PALACE_AFTER_CH1','PALACE_AFTER_CH2','PALACE_AFTER_CH3','PALACE_AFTER_CH4','PALACE_AFTER_CH5','CH1_INTRO','CH1_MID','CH1_BOSS','CH1_END','CH2_INTRO','CH2_MID','CH2_BOSS','CH2_END','CH2_FLASHBACK','CH2_AFTER','CH3_INTRO','CH3_MID','CH3_BOSS','CH3_END','CH4_INTRO','CH4_MID','CH4_KING_WAKE','CH4_FLASHBACK','CH4_KING_AFTER','CH4_BOSS','CH4_END','CH5_INTRO','CH5_MID','CH5_MID_END','CH5_BOSS','CH5_END'];
+      const names = sceneNames;
       let total = 0, missing = [];
       for (const n of names) for (const l of eval(n)) {
         total++;
@@ -24,7 +26,7 @@ const URL = require('url').pathToFileURL(require('path').join(__dirname, '..', '
         if (!S.StoryVoices.has(key)) missing.push(l.who + ': ' + l.text.slice(0, 30));
       }
       return { files: S.StoryVoices.files, total, missing, hero: hero.id };
-    });
+    }, SCENES);
     // play a line: the next scene line should start a voice
     await p.evaluate(() => window.__sock.storyJump(1, 0)); await p.waitForTimeout(600);
     await p.keyboard.press('Space'); await p.waitForTimeout(100); await p.keyboard.press('Space'); await p.waitForTimeout(900);

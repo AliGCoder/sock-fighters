@@ -273,6 +273,58 @@
    "text": "Best. Mission. EVER."
   }
  ],
+ "PALACE_AFTER_CH6": [
+  {
+   "who": "queen",
+   "text": "A MITTEN? Working a sock like a PUPPET? In Our kingdom?!"
+  },
+  {
+   "who": "queen",
+   "text": "Gloves and mittens have always been jealous of socks. We get the feet. They get... handshakes."
+  },
+  {
+   "who": "fishnet",
+   "text": "Your Majesty, the Mitten Peaks are freezing. Might we borrow a scarf?"
+  },
+  {
+   "who": "queen",
+   "text": "Absolutely not. Our scarves are for FASHION, not survival."
+  },
+  {
+   "who": "queen",
+   "text": "Go, Knight. Climb the peaks. And bring Us a souvenir. Something sparkly. And warm."
+  }
+ ],
+ "PALACE_AFTER_CH7": [
+  {
+   "who": "queen",
+   "text": "The mittens are reunited. The puppets are free. And the cloakroom has finally returned something."
+  },
+  {
+   "who": "demon",
+   "text": "Only one thing. But it is a START."
+  },
+  {
+   "who": "queen",
+   "text": "Knight, for saving Us AGAIN, We award you... the ORDER OF THE WARM TOES!"
+  },
+  {
+   "who": "hero",
+   "text": "Is it a medal?"
+  },
+  {
+   "who": "queen",
+   "text": "It is a hot water bottle. Do not argue with the Queen."
+  },
+  {
+   "who": "fishnet",
+   "text": "...Your Majesty, I think I hear something in the shoe cupboard."
+  },
+  {
+   "who": "queen",
+   "text": "...Oh no. Not the SHOES."
+  }
+ ],
  "CH1_INTRO": [
   {
    "who": "hero",
@@ -1003,6 +1055,274 @@
   {
    "who": "fishnet",
    "text": "I'd help, but my holes let the smell straight in."
+  }
+ ],
+ "CH6_INTRO": [
+  {
+   "who": "narr",
+   "text": "*THE PUPPET THEATRE. Red velvet curtains. Creaky wooden boards. Every seat is filled... with puppets. They are all staring.*"
+  },
+  {
+   "who": "fishnet",
+   "text": "Sir Knight, I don't like this. Puppets give me the shivers. And I'm mostly holes, so I shiver a LOT."
+  },
+  {
+   "who": "hero",
+   "text": "The Queen said socks have been going missing again. And this time they come back... with STRINGS."
+  },
+  {
+   "who": "socklet",
+   "text": "*jerks upright* WELCOME! TO! THE! SHOW! *jerks sideways* ...Ow. Somebody is pulling my ankle."
+  },
+  {
+   "who": "hero",
+   "text": "Socklet?! There are strings tied to your arms!"
+  },
+  {
+   "who": "socklet",
+   "text": "I KNOW! I can't even scratch my own nose! I don't even HAVE a nose!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Cut the strings! ...Gently! ...Then fight him, I suppose. He looks like he wants to."
+  },
+  {
+   "who": "socklet",
+   "text": "I DON'T want to! But my legs DO!"
+  }
+ ],
+ "CH6_MID": [
+  {
+   "who": "socklet",
+   "text": "*the strings snap* FREEDOM! ...I am going to go and lie down in a sock drawer for a week."
+  },
+  {
+   "who": "shinobi",
+   "text": "*drops from the rafters on strings* ...Do not look at me."
+  },
+  {
+   "who": "hero",
+   "text": "Toe-Shinobi! You're a puppet too?!"
+  },
+  {
+   "who": "shinobi",
+   "text": "A ninja must be silent. Invisible. They put BELLS on my strings. Every time I move, they go JINGLE."
+  },
+  {
+   "who": "shinobi",
+   "text": "*jingle* ...See?"
+  },
+  {
+   "who": "fishnet",
+   "text": "That is the least sneaky ninja I have ever seen."
+  },
+  {
+   "who": "shinobi",
+   "text": "Defeat me. Quickly. Before somebody asks me to do a little dance."
+  }
+ ],
+ "CH6_BOSS": [
+  {
+   "who": "narr",
+   "text": "*The spotlight swings to centre stage. Out struts a sock puppet in a paper crown, with yarn hair and enormous googly eyes.*"
+  },
+  {
+   "who": "puppet",
+   "text": "LADIES AND GENTLESOCKS! It is I! PRINCE PUPPETINI! Star of the stage! Darling of the drawer!"
+  },
+  {
+   "who": "hero",
+   "text": "You're the one tying strings to everybody?"
+  },
+  {
+   "who": "puppet",
+   "text": "Every great show needs a CAST! And socks are SO easy to work. You just... slip a hand in."
+  },
+  {
+   "who": "fishnet",
+   "text": "...Slip a hand in?"
+  },
+  {
+   "who": "puppet",
+   "text": "...I said nothing. Forget the hand. THERE IS NO HAND."
+  },
+  {
+   "who": "puppet",
+   "text": "On with the show! Tonight's performance: the TRAGIC DEFEAT of {HERO}!"
+  }
+ ],
+ "CH6_END": [
+  {
+   "who": "puppet",
+   "text": "*wobbles* Bravo... bravo... *collapses in a heap*"
+  },
+  {
+   "who": "narr",
+   "text": "*Something wriggles inside the puppet. Out pops... a small, grumpy, knitted MITTEN.*"
+  },
+  {
+   "who": "mitten",
+   "text": "Oi! Who turned the lights on?!"
+  },
+  {
+   "who": "hero",
+   "text": "A MITTEN?! You were the hand inside the puppet all along!"
+  },
+  {
+   "who": "mitten",
+   "text": "Course I was! Socks get EVERYTHING! Songs! Drawers! Christmas stockings! What do mittens get? Left on a BUS!"
+  },
+  {
+   "who": "fishnet",
+   "text": "...That's actually quite sad."
+  },
+  {
+   "who": "mitten",
+   "text": "Don't pity me! I'm the GRAND MITTEN! I'll make every sock my puppet! Catch me in the MITTEN PEAKS... if you can stand the COLD!"
+  },
+  {
+   "who": "hero",
+   "text": "We're socks. Keeping feet warm is literally our whole job."
+  },
+  {
+   "who": "mitten",
+   "text": "...Drat."
+  }
+ ],
+ "CH7_INTRO": [
+  {
+   "who": "narr",
+   "text": "*THE MITTEN PEAKS. Snow. Wind. Mountains of lost gloves and mittens, frozen solid. A ski lift creaks overhead.*"
+  },
+  {
+   "who": "hero",
+   "text": "It's SO cold. My heel has gone numb. My toe has stopped talking to me."
+  },
+  {
+   "who": "fishnet",
+   "text": "I'm made of holes, Sir Knight. The wind goes straight THROUGH me. I can hear my own echo."
+  },
+  {
+   "who": "lint",
+   "text": "*bounces out of a snowdrift* SNOW BUNNY! I am the SNOW BUNNY now! Look how FLUFFY I am!"
+  },
+  {
+   "who": "hero",
+   "text": "Lint Bunny?! What are you doing up here?"
+  },
+  {
+   "who": "lint",
+   "text": "The Mitten said I could be king of the snow! Snow is basically sky-lint! *Ah... AH...* ACHOO!"
+  },
+  {
+   "who": "narr",
+   "text": "*Two tiny Lint Gang members tumble out of the sneeze... and immediately start a snowball fight.*"
+  },
+  {
+   "who": "lint",
+   "text": "FIGHT ME! Loser has to build a snowman! ...Winner ALSO has to build a snowman. I just really like snowmen."
+  }
+ ],
+ "CH7_MID": [
+  {
+   "who": "robo",
+   "text": "WARNING. TEMPERATURE: VERY LOW. JOINTS: FROZEN. DIGNITY: ALSO FROZEN."
+  },
+  {
+   "who": "hero",
+   "text": "Mecha-Sock! Are you okay?!"
+  },
+  {
+   "who": "robo",
+   "text": "I WAS SENT TO GUARD THE MOUNTAIN PATH. I HAVE STOOD HERE FOR THREE DAYS. A BIRD HAS BUILT A NEST ON MY HEAD."
+  },
+  {
+   "who": "fishnet",
+   "text": "Aww. It is a very nice nest."
+  },
+  {
+   "who": "robo",
+   "text": "THANK YOU. I HAVE NAMED IT KEVIN. ...BATTLE MODE: REQUIRED. PLEASE DEFROST ME WITH VIOLENCE."
+  }
+ ],
+ "CH7_BOSS": [
+  {
+   "who": "narr",
+   "text": "*At the summit, a gigantic knitted mitten towers over the snow. It has a pom-pom. It is very, very angry.*"
+  },
+  {
+   "who": "mitten",
+   "text": "YOU AGAIN! You ruined my puppet show! Now face me at full size!"
+  },
+  {
+   "who": "hero",
+   "text": "You were TINY an hour ago!"
+  },
+  {
+   "who": "mitten",
+   "text": "Wool FLUFFS UP in the cold! This is my winter size! ...Also I have been doing push-ups."
+  },
+  {
+   "who": "mitten",
+   "text": "For a THOUSAND YEARS, socks got all the love! Fluffy socks! Bed socks! LUCKY socks! Has anyone EVER said \"lucky mitten\"?!"
+  },
+  {
+   "who": "fishnet",
+   "text": "...No. No, they have not."
+  },
+  {
+   "who": "mitten",
+   "text": "EXACTLY! So every sock in the world will be my PUPPET! And the world will finally hold hands... with ME!"
+  },
+  {
+   "who": "hero",
+   "text": "That's... kind of sweet. And REALLY creepy."
+  },
+  {
+   "who": "mitten",
+   "text": "THANK YOU! NOW FIGHT!"
+  }
+ ],
+ "CH7_END": [
+  {
+   "who": "mitten",
+   "text": "*deflates with a sad little squeak* ...Nobody ever goes looking for a lost mitten."
+  },
+  {
+   "who": "narr",
+   "text": "*A warm orange glow climbs the mountain. Somebody is huffing and puffing up the path.*"
+  },
+  {
+   "who": "demon",
+   "text": "*panting* Excuse me... is there a GRAND MITTEN up here? I run the palace cloakroom now."
+  },
+  {
+   "who": "demon",
+   "text": "Somebody handed this in. It has been in Lost Property for... *checks the tag* ...a thousand years."
+  },
+  {
+   "who": "narr",
+   "text": "*He holds up a second mitten. Exactly the same pattern.*"
+  },
+  {
+   "who": "mitten",
+   "text": "...My PAIR? You found my PAIR?!"
+  },
+  {
+   "who": "demon",
+   "text": "Lost things are returned within a thousand years. I TOLD you we were working on it."
+  },
+  {
+   "who": "narr",
+   "text": "*The two mittens hug. The snow stops. Somewhere, a ski lift starts working again.*"
+  },
+  {
+   "who": "fishnet",
+   "text": "...Is anyone else crying? My tears are freezing into little icicles."
+  },
+  {
+   "who": "hero",
+   "text": "Come on. Let's go home. And let's never, EVER put a hand inside a sock again."
   }
  ],
  "CH5_MID": [

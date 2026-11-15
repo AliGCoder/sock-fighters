@@ -85,6 +85,18 @@ CAST = {
                       superv=['ぜんぶ、ほどけろおおお!'], throwv=['ぽいっ!'], hurt=['ぬっ!', 'うぐ!', 'ほつれた!'],
                       hurtBig=['ぐおおおっ!', '縫い目がぁ!'], ko=['ほどける…ほどけるう…'], laugh=['ぐふふふ!'],
                       win=['コレクション、追加!'], dizzy=['ぐるぐる…ペアがいない…']), None),
+    'puppet': (MALE, 'A flamboyant, theatrical young Japanese stage prince: dramatic, vain and hammy, a showman with a '
+                     'bright, ringing, sing-song voice.',
+               dict(light=['はっ!', 'それっ!', 'ほいっ!'], heavy=['ブラボー!', 'とうっ!'], special=['ボタン、乱れ撃ち!', 'ショーの始まりだ!'],
+                    superv=['フィナーレだ!拍手を!'], throwv=['退場!'], hurt=['あいたっ!', '台本と違う!', 'ひっ!'],
+                    hurtBig=['僕の衣装が!', 'ぎゃああ!'], ko=['幕が…下りる…'], laugh=['ハッハッハ、ブラボー!'],
+                    win=['アンコールは僕にだけ!'], dizzy=['糸が…からまる…']), None),
+    'mitten': (MALE, 'A big, grumpy Japanese man with a deep, booming but woolly, muffled voice: cold, sulky, jealous '
+                     'and dramatic. Clearly an adult man.',
+               dict(light=['ふんっ!', 'ぬん!', 'それっ!'], heavy=['ぬうん!', 'どすん!'], special=['雪玉、くらえ!', '凍えろ!'],
+                    superv=['ブリザード・ハグだああ!'], throwv=['ぽいっ!'], hurt=['ぬっ!', '冷たっ!', 'ぐっ!'],
+                    hurtBig=['毛玉がぁ!', 'ぐおお!'], ko=['片方…どこだ…'], laugh=['ぐははは!'],
+                    win=['手袋の勝ちだ!'], dizzy=['ほどける…']), None),
     'iron': (MALE,'A towering, stern Japanese warlord: deep, commanding, booming voice, harsh and proud like a samurai general.',
              dict(light=['ふんっ!', 'せいっ!', 'はっ!'], heavy=['ぬおおっ!', '成敗!'], special=['蒸気を浴びよ!', '押し潰す!'],
                   superv=['しわ一つ残さぬ!'], throwv=['どりゃあ!'], hurt=['ぬっ!', 'ぐっ!', 'むっ!'], hurtBig=['ぐおおっ!', 'おのれ!'],

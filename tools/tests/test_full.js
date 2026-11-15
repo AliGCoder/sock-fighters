@@ -17,7 +17,7 @@ require('fs').mkdirSync(SP, { recursive: true });
   const shot = async name => { if (shots.has(name)) return; shots.add(name); await p.screenshot({ path: SP + 'full_' + name + '.png' }); };
   await G(() => { const S = window.__sock; S.resetProgress(); S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; S.startAdventure(); });
   await p.waitForTimeout(400);
-  for (let ch = 1; ch <= 5; ch++) {
+  for (let ch = 1; ch <= 7; ch++) {
     // clear any palace scene, then start the chapter
     for (let i = 0; i < 30 && (await G(() => !!window.__sock.game.adv.scene)); i++) { await key('Space', 50); await key('Space', 100); }
     await G(c => { window.__sock.game.adv.hub.sel = c - 1; }, ch);

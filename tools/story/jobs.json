@@ -1008,6 +1008,202 @@
   "file": "story"
  },
  {
+  "key": "f059e4e1",
+  "voice": "queen",
+  "say": "ミトンが?靴下を操り人形のように?わたくしどもの王国で?!",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, composed but firm, with elegant emphasis",
+  "file": "story"
+ },
+ {
+  "key": "e9d9f0ef",
+  "voice": "queen",
+  "say": "手袋もミトンも、昔から靴下をうらやんでいましたの。わたくしどもには足がある。あちらは…握手だけ。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "5d189163",
+  "voice": "fishnet",
+  "say": "女王陛下、ミトン山脈は凍えるほど寒いです。マフラーをお借りできませんか?",
+  "note": "eager, quick young scout, confused, questioning",
+  "file": "story"
+ },
+ {
+  "key": "a0e30ef5",
+  "voice": "queen",
+  "say": "とんでもございません。わたくしどものマフラーはおしゃれ用。生き延びるためではありませんの。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, sassy, with a sly, knowing smirk and a raised eyebrow",
+  "file": "story"
+ },
+ {
+  "key": "b25ce26d",
+  "voice": "queen",
+  "say": "お行きなさいませ、騎士殿。山を登って、お土産をお持ちになって。キラキラして、あたたかいものを。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "c312be25",
+  "voice": "queen",
+  "say": "ミトンは再会し、人形たちは自由に。そしてクロークが、ついに何かを返しましたわ。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "9c63a757",
+  "voice": "demon",
+  "say": "まだ一つだけだ。だが、第一歩だ。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "2496ef59",
+  "voice": "queen",
+  "say": "騎士殿、またしてもわたくしどもを救ってくださったお礼に…「あったかつま先勲章」を授けますわ!",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, composed but firm, with elegant emphasis",
+  "file": "story"
+ },
+ {
+  "key": "d60ec9e9",
+  "voice": "stinky",
+  "say": "それ、メダル?",
+  "note": "cocky young street brawler, confused, questioning",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "9597ebdd",
+  "voice": "argyle",
+  "say": "それ、メダル?",
+  "note": "calm, noble samurai, confused, questioning",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "e3b693f7",
+  "voice": "shinobi",
+  "say": "それ、メダル?",
+  "note": "cool, quiet ninja woman, confused, questioning",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "a4e902af",
+  "voice": "gran",
+  "say": "それ、メダル?",
+  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "file": "hero-gran"
+ },
+ {
+  "key": "16760a51",
+  "voice": "baby",
+  "say": "それ、メダル?",
+  "note": "squeaky, bratty toddler, confused, questioning",
+  "file": "hero-baby"
+ },
+ {
+  "key": "1d1e5d85",
+  "voice": "kneehi",
+  "say": "それ、メダル?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "6103d469",
+  "voice": "robo",
+  "say": "それ、メダル?",
+  "note": "flat, monotone robot, confused, questioning",
+  "file": "hero-robo"
+ },
+ {
+  "key": "8ba81a9a",
+  "voice": "ghost",
+  "say": "それ、メダル?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "d2ce550e",
+  "voice": "lint",
+  "say": "それ、メダル?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
+  "file": "hero-lint"
+ },
+ {
+  "key": "b436bed0",
+  "voice": "socklet",
+  "say": "それ、メダル?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "696025cc",
+  "voice": "holey",
+  "say": "それ、メダル?",
+  "note": "nervous, whiny coward, confused, questioning",
+  "file": "hero-holey"
+ },
+ {
+  "key": "1d47046e",
+  "voice": "steel",
+  "say": "それ、メダル?",
+  "note": "gruff, deep construction worker, confused, questioning",
+  "file": "hero-steel"
+ },
+ {
+  "key": "ebda0e2c",
+  "voice": "king",
+  "say": "それ、メダル?",
+  "note": "pompous, theatrical king, confused, questioning",
+  "file": "hero-king"
+ },
+ {
+  "key": "199eeb82",
+  "voice": "demon",
+  "say": "それ、メダル?",
+  "note": "deep, growling demon lord, confused, questioning",
+  "file": "hero-demon"
+ },
+ {
+  "key": "c8cbb880",
+  "voice": "bleach",
+  "say": "それ、メダル?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "b80aaadc",
+  "voice": "cling",
+  "say": "それ、メダル?",
+  "note": "sultry, smug villainess queen, confused, questioning",
+  "file": "hero-cling"
+ },
+ {
+  "key": "344d9b3f",
+  "voice": "iron",
+  "say": "それ、メダル?",
+  "note": "stern, booming warlord, confused, questioning",
+  "file": "hero-iron"
+ },
+ {
+  "key": "d94e1856",
+  "voice": "queen",
+  "say": "湯たんぽですわ。女王に口答えなさらないで。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "285e2479",
+  "voice": "fishnet",
+  "say": "…女王陛下、靴箱の中から何か聞こえるんですけど。",
+  "note": "eager, quick young scout, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "c7075d19",
+  "voice": "queen",
+  "say": "…まあ、なんてこと。まさか…靴?",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
   "key": "88a113ca",
   "voice": "stinky",
   "say": "うえ。諦めたセーターの上を歩いてるみたいだ。",
@@ -5675,6 +5871,1903 @@
   "say": "手伝いたいんですけど、穴から匂いが全部入ってくるんです。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
+ },
+ {
+  "key": "8e0e2fb6",
+  "voice": "narr",
+  "say": "人形劇場。赤いビロードの幕。きしむ木の床。客席はぜんぶ埋まっている…人形たちで。みんな、こっちをじっと見ている。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "1345dba7",
+  "voice": "fishnet",
+  "say": "騎士様、ここ、苦手です。人形ってゾクゾクするんです。私、ほとんど穴なので、ゾクゾクがすごいんです。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "d14d3efd",
+  "voice": "stinky",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "14081351",
+  "voice": "argyle",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "7d17b3ff",
+  "voice": "shinobi",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "258b1047",
+  "voice": "gran",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "very old, creaky, wheezy grandmother, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "4fbfc875",
+  "voice": "baby",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "1d474689",
+  "voice": "kneehi",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "569a327d",
+  "voice": "robo",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "8bb767e0",
+  "voice": "ghost",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "97e35324",
+  "voice": "lint",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "67e87922",
+  "voice": "socklet",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "6b32745e",
+  "voice": "holey",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "fb66cfc4",
+  "voice": "steel",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "0f52ff7e",
+  "voice": "king",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "93495e98",
+  "voice": "demon",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "841d0812",
+  "voice": "bleach",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "7c9b8f2e",
+  "voice": "cling",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "4f390b57",
+  "voice": "iron",
+  "say": "女王様が言ってた。また靴下が消えてるって。しかも今度は…糸をつけて戻ってくるんだ。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
+ },
+ {
+  "key": "00274e47",
+  "voice": "socklet",
+  "say": "ようこそ!ショーへ!…いてっ。誰かがボクの足首を引っぱってる。",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "story"
+ },
+ {
+  "key": "404dd0a2",
+  "voice": "stinky",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "cocky young street brawler, lively",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "4ba35dc6",
+  "voice": "argyle",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "calm, noble samurai, lively",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "49f14b6c",
+  "voice": "shinobi",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "cool, quiet ninja woman, lively",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "1b66dfd4",
+  "voice": "gran",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "very old, creaky, wheezy grandmother, lively",
+  "file": "hero-gran"
+ },
+ {
+  "key": "c36aeaba",
+  "voice": "baby",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "squeaky, bratty toddler, lively",
+  "file": "hero-baby"
+ },
+ {
+  "key": "6ec2a63e",
+  "voice": "kneehi",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "booming, jolly sumo wrestler, lively",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "809a1b22",
+  "voice": "robo",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "flat, monotone robot, lively",
+  "file": "hero-robo"
+ },
+ {
+  "key": "1dd82b29",
+  "voice": "ghost",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "soft, whispery, eerie ghost girl, lively",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "ac0acc4d",
+  "voice": "lint",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "hero-lint"
+ },
+ {
+  "key": "1d6a412b",
+  "voice": "socklet",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "7e399fc7",
+  "voice": "holey",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "nervous, whiny coward, lively",
+  "file": "hero-holey"
+ },
+ {
+  "key": "123f30ed",
+  "voice": "steel",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "gruff, deep construction worker, lively",
+  "file": "hero-steel"
+ },
+ {
+  "key": "835a0be7",
+  "voice": "king",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "pompous, theatrical king, lively",
+  "file": "hero-king"
+ },
+ {
+  "key": "e5d6f7a1",
+  "voice": "demon",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "deep, growling demon lord, lively",
+  "file": "hero-demon"
+ },
+ {
+  "key": "b2adcf1b",
+  "voice": "bleach",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "snobbish, sneering aristocrat, lively",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "6f18e357",
+  "voice": "cling",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "sultry, smug villainess queen, lively",
+  "file": "hero-cling"
+ },
+ {
+  "key": "7f1daea4",
+  "voice": "iron",
+  "say": "ソックレット?!腕に糸が結ばれてるぞ!",
+  "note": "stern, booming warlord, lively",
+  "file": "hero-iron"
+ },
+ {
+  "key": "9580ff35",
+  "voice": "socklet",
+  "say": "わかってるよ!自分の鼻もかけないんだ!そもそも鼻ないけど!",
+  "note": "cheeky, fast-talking little boy, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "57b5cc5c",
+  "voice": "fishnet",
+  "say": "糸を切って!…やさしく!…それから、まあ、戦ってください。本人もやる気みたいですし。",
+  "note": "eager, quick young scout, lively",
+  "file": "story"
+ },
+ {
+  "key": "9a5f0cdb",
+  "voice": "socklet",
+  "say": "ボクはやりたくないの!でも足がやる気なの!",
+  "note": "cheeky, fast-talking little boy, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "01340a1a",
+  "voice": "socklet",
+  "say": "糸が切れた!自由だー!…一週間、靴下の引き出しで寝てくる。",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "story"
+ },
+ {
+  "key": "e41d07bc",
+  "voice": "shinobi",
+  "say": "…見ないで。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "story"
+ },
+ {
+  "key": "f85081c1",
+  "voice": "stinky",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "cocky young street brawler, lively",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "a99882ed",
+  "voice": "argyle",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "calm, noble samurai, lively",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "3326e1c3",
+  "voice": "shinobi",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "cool, quiet ninja woman, lively",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "9216fd8b",
+  "voice": "gran",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "very old, creaky, wheezy grandmother, lively",
+  "file": "hero-gran"
+ },
+ {
+  "key": "444738d9",
+  "voice": "baby",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "squeaky, bratty toddler, lively",
+  "file": "hero-baby"
+ },
+ {
+  "key": "ac1cbb25",
+  "voice": "kneehi",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "booming, jolly sumo wrestler, lively",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "081d5441",
+  "voice": "robo",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "flat, monotone robot, lively",
+  "file": "hero-robo"
+ },
+ {
+  "key": "394fbd36",
+  "voice": "ghost",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "soft, whispery, eerie ghost girl, lively",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "383d4242",
+  "voice": "lint",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "hero-lint"
+ },
+ {
+  "key": "dd5e5e38",
+  "voice": "socklet",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "5907fbfc",
+  "voice": "holey",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "nervous, whiny coward, lively",
+  "file": "hero-holey"
+ },
+ {
+  "key": "04ece922",
+  "voice": "steel",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "gruff, deep construction worker, lively",
+  "file": "hero-steel"
+ },
+ {
+  "key": "eaae905c",
+  "voice": "king",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "pompous, theatrical king, lively",
+  "file": "hero-king"
+ },
+ {
+  "key": "76d1830e",
+  "voice": "demon",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "deep, growling demon lord, lively",
+  "file": "hero-demon"
+ },
+ {
+  "key": "ff1eb508",
+  "voice": "bleach",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "snobbish, sneering aristocrat, lively",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "0e9621ac",
+  "voice": "cling",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "sultry, smug villainess queen, lively",
+  "file": "hero-cling"
+ },
+ {
+  "key": "19852dfb",
+  "voice": "iron",
+  "say": "トウ・シノビ!お前まで操り人形に?!",
+  "note": "stern, booming warlord, lively",
+  "file": "hero-iron"
+ },
+ {
+  "key": "82af4363",
+  "voice": "shinobi",
+  "say": "忍びは静かで、見えないもの。なのに糸に鈴をつけられた。動くたびに、チリンって鳴るの。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "story"
+ },
+ {
+  "key": "65d09164",
+  "voice": "shinobi",
+  "say": "チリン。…ほらね?",
+  "note": "cool, quiet ninja woman, confused, questioning",
+  "file": "story"
+ },
+ {
+  "key": "1fb3be68",
+  "voice": "fishnet",
+  "say": "こんなに忍んでない忍者、初めて見ました。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "03545a9b",
+  "voice": "shinobi",
+  "say": "早く倒して。誰かに踊れって言われる前に。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "story"
+ },
+ {
+  "key": "bb656025",
+  "voice": "narr",
+  "say": "スポットライトが舞台の真ん中を照らす。紙の王冠に毛糸の髪、大きなぎょろ目の靴下人形が、胸を張って現れた。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "5fadf5d2",
+  "voice": "puppet",
+  "say": "レディース・アンド・ジェントルソックス!僕こそがパペッティーニ王子!舞台のスター!引き出しのアイドル!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "fc62741d",
+  "voice": "stinky",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "cocky young street brawler, confused, questioning",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "eb428679",
+  "voice": "argyle",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "calm, noble samurai, confused, questioning",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "fc94891b",
+  "voice": "shinobi",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "cool, quiet ninja woman, confused, questioning",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "7daaa233",
+  "voice": "gran",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "file": "hero-gran"
+ },
+ {
+  "key": "955231c5",
+  "voice": "baby",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "squeaky, bratty toddler, confused, questioning",
+  "file": "hero-baby"
+ },
+ {
+  "key": "a4ef4541",
+  "voice": "kneehi",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "4a67169d",
+  "voice": "robo",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "flat, monotone robot, confused, questioning",
+  "file": "hero-robo"
+ },
+ {
+  "key": "ffca24d6",
+  "voice": "ghost",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "841aad42",
+  "voice": "lint",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
+  "file": "hero-lint"
+ },
+ {
+  "key": "ce0404d4",
+  "voice": "socklet",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "b32d2aa8",
+  "voice": "holey",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "nervous, whiny coward, confused, questioning",
+  "file": "hero-holey"
+ },
+ {
+  "key": "41b323a2",
+  "voice": "steel",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "gruff, deep construction worker, confused, questioning",
+  "file": "hero-steel"
+ },
+ {
+  "key": "4af4fe88",
+  "voice": "king",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "pompous, theatrical king, confused, questioning",
+  "file": "hero-king"
+ },
+ {
+  "key": "88d84afe",
+  "voice": "demon",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "deep, growling demon lord, confused, questioning",
+  "file": "hero-demon"
+ },
+ {
+  "key": "b89f6464",
+  "voice": "bleach",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "e57ccf58",
+  "voice": "cling",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "sultry, smug villainess queen, confused, questioning",
+  "file": "hero-cling"
+ },
+ {
+  "key": "b8fd18e3",
+  "voice": "iron",
+  "say": "みんなに糸をつけてるのは、お前か?",
+  "note": "stern, booming warlord, confused, questioning",
+  "file": "hero-iron"
+ },
+ {
+  "key": "225ef5fe",
+  "voice": "puppet",
+  "say": "偉大なショーにはキャストが必要さ!それに靴下って、すっごく動かしやすいんだ。ちょっと…手を入れるだけでね。",
+  "note": "flamboyant, hammy stage prince, dramatic showman, lively",
+  "file": "story"
+ },
+ {
+  "key": "32ffe54e",
+  "voice": "fishnet",
+  "say": "…手を入れる?",
+  "note": "eager, quick young scout, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "fea28ef1",
+  "voice": "puppet",
+  "say": "…今のはナシ。手のことは忘れて。手なんて、ない!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "b46a5500",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…スティンキー・タビの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "b53ccf89",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…アーガイルさんの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "b10680e9",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…トウ・シノビの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "887eff2a",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ストッキング・グランの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-gran"
+ },
+ {
+  "key": "3897127c",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ベビー・ブーティーの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-baby"
+ },
+ {
+  "key": "00c47aeb",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ニーハイ・カズオの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "8f21c0ad",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…メカソックス・エックスの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-robo"
+ },
+ {
+  "key": "85d4543d",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ロスト・ソックの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "2c461107",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…リント・バニーの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-lint"
+ },
+ {
+  "key": "7bb4ea99",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ソックレットの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "e4aa2b73",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ホーリー・モーリーの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-holey"
+ },
+ {
+  "key": "3a5485ab",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…スチール・トウの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-steel"
+ },
+ {
+  "key": "470db427",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…キング・ニーソックの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-king"
+ },
+ {
+  "key": "7a299a60",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ドライヤー・デーモンの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-demon"
+ },
+ {
+  "key": "17f4fa91",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…ブリーチ・バロンの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "7ac0fd57",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…クリング・クイーンの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-cling"
+ },
+ {
+  "key": "ec279d26",
+  "voice": "puppet",
+  "say": "ショーを続けよう!今夜の演目は…アイロン・ショーグンの、悲劇の敗北!",
+  "note": "flamboyant, hammy stage prince, dramatic showman, excited, emphatic",
+  "file": "hero-iron"
+ },
+ {
+  "key": "09f15157",
+  "voice": "puppet",
+  "say": "ブラボー…ブラボー…",
+  "note": "flamboyant, hammy stage prince, dramatic showman, conversational",
+  "file": "story"
+ },
+ {
+  "key": "edef34ff",
+  "voice": "narr",
+  "say": "人形の中で、何かがもぞもぞ動く。ぽんっと飛び出したのは…小さくて不機嫌な、毛糸のミトンだった。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "3eeb588a",
+  "voice": "mitten",
+  "say": "おい!誰だ、電気つけたのは!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, lively",
+  "file": "story"
+ },
+ {
+  "key": "2d9ff6bd",
+  "voice": "stinky",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "cocky young street brawler, lively",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "90a204b1",
+  "voice": "argyle",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "calm, noble samurai, lively",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "8a6fa3e3",
+  "voice": "shinobi",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "cool, quiet ninja woman, lively",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "b09487db",
+  "voice": "gran",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "very old, creaky, wheezy grandmother, lively",
+  "file": "hero-gran"
+ },
+ {
+  "key": "03c23245",
+  "voice": "baby",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "squeaky, bratty toddler, lively",
+  "file": "hero-baby"
+ },
+ {
+  "key": "adf98819",
+  "voice": "kneehi",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "booming, jolly sumo wrestler, lively",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "2ab83a3d",
+  "voice": "robo",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "flat, monotone robot, lively",
+  "file": "hero-robo"
+ },
+ {
+  "key": "6b89931c",
+  "voice": "ghost",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "soft, whispery, eerie ghost girl, lively",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "0d1a1d80",
+  "voice": "lint",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "hero-lint"
+ },
+ {
+  "key": "d78f7d32",
+  "voice": "socklet",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "2b559a0e",
+  "voice": "holey",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "nervous, whiny coward, lively",
+  "file": "hero-holey"
+ },
+ {
+  "key": "e58825a0",
+  "voice": "steel",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "gruff, deep construction worker, lively",
+  "file": "hero-steel"
+ },
+ {
+  "key": "3176ba2e",
+  "voice": "king",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "pompous, theatrical king, lively",
+  "file": "hero-king"
+ },
+ {
+  "key": "36dffde4",
+  "voice": "demon",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "deep, growling demon lord, lively",
+  "file": "hero-demon"
+ },
+ {
+  "key": "f0034b02",
+  "voice": "bleach",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "snobbish, sneering aristocrat, lively",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "fb6f29fe",
+  "voice": "cling",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "sultry, smug villainess queen, lively",
+  "file": "hero-cling"
+ },
+ {
+  "key": "2e5fa44b",
+  "voice": "iron",
+  "say": "ミトン?!人形の中の手は、ずっとお前だったのか!",
+  "note": "stern, booming warlord, lively",
+  "file": "hero-iron"
+ },
+ {
+  "key": "c1cca555",
+  "voice": "mitten",
+  "say": "あたりまえだ!靴下ばっかりいい思いしやがって!歌に、引き出しに、クリスマスの靴下!ミトンは何がもらえる?バスに置き忘れられるだけだ!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "85382720",
+  "voice": "fishnet",
+  "say": "…それは、ちょっと悲しいですね。",
+  "note": "eager, quick young scout, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "f77509c1",
+  "voice": "mitten",
+  "say": "同情するな!オレ様はグランド・ミトン!世界中の靴下を操り人形にしてやる!ミトン山脈まで来てみろ…寒さに耐えられるならな!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "4ffd7250",
+  "voice": "stinky",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "563b448c",
+  "voice": "argyle",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "451132b2",
+  "voice": "shinobi",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "6b663b7a",
+  "voice": "gran",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "very old, creaky, wheezy grandmother, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "02b50008",
+  "voice": "baby",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "87968c24",
+  "voice": "kneehi",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "3d2fb4d0",
+  "voice": "robo",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "1e56c787",
+  "voice": "ghost",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "e6559163",
+  "voice": "lint",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "f1d5dfb9",
+  "voice": "socklet",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "e42adbcd",
+  "voice": "holey",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "299f9f83",
+  "voice": "steel",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "ac344ded",
+  "voice": "king",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "16bc909f",
+  "voice": "demon",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "9c43fae9",
+  "voice": "bleach",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "6d07751d",
+  "voice": "cling",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "e3bd984a",
+  "voice": "iron",
+  "say": "オレたち靴下だぞ。足をあっためるのが仕事だ。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
+ },
+ {
+  "key": "e8418f2d",
+  "voice": "mitten",
+  "say": "…しまった。",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "6c578a6c",
+  "voice": "narr",
+  "say": "ミトン山脈。雪。風。凍りついた、失くし物の手袋とミトンの山。頭の上で、スキーリフトがきしんでいる。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "db1f16b7",
+  "voice": "stinky",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "86d2114b",
+  "voice": "argyle",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "ac7bc919",
+  "voice": "shinobi",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "5da66ff1",
+  "voice": "gran",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "very old, creaky, wheezy grandmother, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "e5ecf31f",
+  "voice": "baby",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "78466dd3",
+  "voice": "kneehi",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "1cd5d137",
+  "voice": "robo",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "9f97fe20",
+  "voice": "ghost",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "16a4ced4",
+  "voice": "lint",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "44d7ac92",
+  "voice": "socklet",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "8c3a0a9e",
+  "voice": "holey",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "952e9734",
+  "voice": "steel",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "1f1b26fe",
+  "voice": "king",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "c8a390a8",
+  "voice": "demon",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "0f5d0c02",
+  "voice": "bleach",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "e4f9bdae",
+  "voice": "cling",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "06af0b81",
+  "voice": "iron",
+  "say": "さ、さむい。かかとの感覚がない。つま先が口をきいてくれない。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
+ },
+ {
+  "key": "27a9b1a1",
+  "voice": "fishnet",
+  "say": "私、穴でできてるんです、騎士様。風が体をそのまま通り抜けて。自分のこだまが聞こえます。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "c8ba1ad6",
+  "voice": "lint",
+  "say": "スノー・バニー!ボクはもうスノー・バニーなんだ!見て、このふわふわ!",
+  "note": "tiny, squeaky, fluffy creature, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "cd5c27e8",
+  "voice": "stinky",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "cocky young street brawler, confused, questioning",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "d91d800c",
+  "voice": "argyle",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "calm, noble samurai, confused, questioning",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "0f31276a",
+  "voice": "shinobi",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "cool, quiet ninja woman, confused, questioning",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "254b3d22",
+  "voice": "gran",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "very old, creaky, wheezy grandmother, confused, questioning",
+  "file": "hero-gran"
+ },
+ {
+  "key": "abe23a30",
+  "voice": "baby",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "squeaky, bratty toddler, confused, questioning",
+  "file": "hero-baby"
+ },
+ {
+  "key": "58f73ef4",
+  "voice": "kneehi",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "af2e6668",
+  "voice": "robo",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "flat, monotone robot, confused, questioning",
+  "file": "hero-robo"
+ },
+ {
+  "key": "4af2d3a7",
+  "voice": "ghost",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "624ed04b",
+  "voice": "lint",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
+  "file": "hero-lint"
+ },
+ {
+  "key": "cb187969",
+  "voice": "socklet",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "69adb7c5",
+  "voice": "holey",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "nervous, whiny coward, confused, questioning",
+  "file": "hero-holey"
+ },
+ {
+  "key": "6aba6fab",
+  "voice": "steel",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "gruff, deep construction worker, confused, questioning",
+  "file": "hero-steel"
+ },
+ {
+  "key": "cecec1a5",
+  "voice": "king",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "pompous, theatrical king, confused, questioning",
+  "file": "hero-king"
+ },
+ {
+  "key": "5721be4f",
+  "voice": "demon",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "deep, growling demon lord, confused, questioning",
+  "file": "hero-demon"
+ },
+ {
+  "key": "ebdf3999",
+  "voice": "bleach",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "b1506895",
+  "voice": "cling",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "sultry, smug villainess queen, confused, questioning",
+  "file": "hero-cling"
+ },
+ {
+  "key": "2a23b7b2",
+  "voice": "iron",
+  "say": "リント・バニー?!こんなところで何してるんだ?",
+  "note": "stern, booming warlord, confused, questioning",
+  "file": "hero-iron"
+ },
+ {
+  "key": "46ec1c2d",
+  "voice": "lint",
+  "say": "ミトンがね、雪の王様にしてくれるって!雪って、空の綿ぼこりみたいなもんだし!はっ…はっ…ハックション!",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "story"
+ },
+ {
+  "key": "6a54789a",
+  "voice": "narr",
+  "say": "くしゃみから、ちっちゃなリント団が二匹転がり出て…すぐに雪合戦を始めた。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "ca0ba42d",
+  "voice": "lint",
+  "say": "勝負だ!負けたら雪だるま作りね!…勝っても雪だるま作りね。ボク、雪だるまが大好きなの。",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "story"
+ },
+ {
+  "key": "cd77d35d",
+  "voice": "robo",
+  "say": "ケイコク。キオン、トテモ ヒクイ。カンセツ、トウケツ。プライドモ、トウケツ。",
+  "note": "flat, monotone robot, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "bc4efe62",
+  "voice": "stinky",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "cocky young street brawler, lively",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "83d817fe",
+  "voice": "argyle",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "calm, noble samurai, lively",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "38a024b8",
+  "voice": "shinobi",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "cool, quiet ninja woman, lively",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "4f0f4a10",
+  "voice": "gran",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "very old, creaky, wheezy grandmother, lively",
+  "file": "hero-gran"
+ },
+ {
+  "key": "74e8c0ca",
+  "voice": "baby",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "squeaky, bratty toddler, lively",
+  "file": "hero-baby"
+ },
+ {
+  "key": "11fb4ae6",
+  "voice": "kneehi",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "booming, jolly sumo wrestler, lively",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "c7ce00e2",
+  "voice": "robo",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "flat, monotone robot, lively",
+  "file": "hero-robo"
+ },
+ {
+  "key": "1e814875",
+  "voice": "ghost",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "soft, whispery, eerie ghost girl, lively",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "523903c1",
+  "voice": "lint",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "tiny, squeaky, fluffy creature, lively",
+  "file": "hero-lint"
+ },
+ {
+  "key": "f8acedb3",
+  "voice": "socklet",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "cheeky, fast-talking little boy, lively",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "822c4bf7",
+  "voice": "holey",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "nervous, whiny coward, lively",
+  "file": "hero-holey"
+ },
+ {
+  "key": "3220cda1",
+  "voice": "steel",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "gruff, deep construction worker, lively",
+  "file": "hero-steel"
+ },
+ {
+  "key": "84b1cfd7",
+  "voice": "king",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "pompous, theatrical king, lively",
+  "file": "hero-king"
+ },
+ {
+  "key": "197e619d",
+  "voice": "demon",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "deep, growling demon lord, lively",
+  "file": "hero-demon"
+ },
+ {
+  "key": "31761e43",
+  "voice": "bleach",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "snobbish, sneering aristocrat, lively",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "197ad2a7",
+  "voice": "cling",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "sultry, smug villainess queen, lively",
+  "file": "hero-cling"
+ },
+ {
+  "key": "46cd2640",
+  "voice": "iron",
+  "say": "メカソックス!大丈夫か?!",
+  "note": "stern, booming warlord, lively",
+  "file": "hero-iron"
+ },
+ {
+  "key": "2c16e08c",
+  "voice": "robo",
+  "say": "ヤマミチノ ケイビヲ メイジラレマシタ。ミッカカン、ココニ タッテイマス。アタマニ トリガ スヲ ツクリマシタ。",
+  "note": "flat, monotone robot, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "1625edd6",
+  "voice": "fishnet",
+  "say": "わあ。とってもいい巣ですね。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "a4ddbf28",
+  "voice": "robo",
+  "say": "アリガトウ。ケビント ナヅケマシタ。…セントウモード、ヒツヨウ。ボウリョクデ カイトウ シテクダサイ。",
+  "note": "flat, monotone robot, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "547b86c7",
+  "voice": "narr",
+  "say": "山頂に、巨大な毛糸のミトンがそびえ立つ。ポンポンつき。ものすごく、怒っている。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "312240c3",
+  "voice": "mitten",
+  "say": "またお前か!よくも人形劇を台無しにしたな!今度は本気のサイズで相手してやる!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "b05b9438",
+  "voice": "stinky",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "cocky young street brawler, excited, emphatic",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "a89fa36c",
+  "voice": "argyle",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "calm, noble samurai, excited, emphatic",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "3451d4da",
+  "voice": "shinobi",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "cool, quiet ninja woman, excited, emphatic",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "cb1ebbb2",
+  "voice": "gran",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "very old, creaky, wheezy grandmother, excited, emphatic",
+  "file": "hero-gran"
+ },
+ {
+  "key": "f8f64ee0",
+  "voice": "baby",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "squeaky, bratty toddler, excited, emphatic",
+  "file": "hero-baby"
+ },
+ {
+  "key": "5ab52f94",
+  "voice": "kneehi",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "booming, jolly sumo wrestler, excited, emphatic",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "bbda96b8",
+  "voice": "robo",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "flat, monotone robot, excited, emphatic",
+  "file": "hero-robo"
+ },
+ {
+  "key": "aeec4b63",
+  "voice": "ghost",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "soft, whispery, eerie ghost girl, excited, emphatic",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "81a6e8a7",
+  "voice": "lint",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "tiny, squeaky, fluffy creature, excited, emphatic",
+  "file": "hero-lint"
+ },
+ {
+  "key": "352060a5",
+  "voice": "socklet",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "cheeky, fast-talking little boy, excited, emphatic",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "b98c0ac1",
+  "voice": "holey",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "nervous, whiny coward, excited, emphatic",
+  "file": "hero-holey"
+ },
+ {
+  "key": "b69e2a07",
+  "voice": "steel",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "gruff, deep construction worker, excited, emphatic",
+  "file": "hero-steel"
+ },
+ {
+  "key": "43eb42a1",
+  "voice": "king",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "pompous, theatrical king, excited, emphatic",
+  "file": "hero-king"
+ },
+ {
+  "key": "4a1cf02b",
+  "voice": "demon",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "deep, growling demon lord, excited, emphatic",
+  "file": "hero-demon"
+ },
+ {
+  "key": "45132235",
+  "voice": "bleach",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "snobbish, sneering aristocrat, excited, emphatic",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "49352d31",
+  "voice": "cling",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "sultry, smug villainess queen, excited, emphatic",
+  "file": "hero-cling"
+ },
+ {
+  "key": "557d8c22",
+  "voice": "iron",
+  "say": "一時間前は、ちっちゃかっただろ!",
+  "note": "stern, booming warlord, excited, emphatic",
+  "file": "hero-iron"
+ },
+ {
+  "key": "e70b99c2",
+  "voice": "mitten",
+  "say": "毛糸は寒いとふくらむんだ!これが冬のサイズだ!…あと、腕立てもしてた。",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, lively",
+  "file": "story"
+ },
+ {
+  "key": "f1211a09",
+  "voice": "mitten",
+  "say": "千年もの間、靴下ばっかり愛されてきた!ふわふわ靴下!おやすみ靴下!ラッキー靴下!「ラッキーミトン」って言ったやつ、一人でもいるか?!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "1019a777",
+  "voice": "fishnet",
+  "say": "…いないですね。一人も。",
+  "note": "eager, quick young scout, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "9e54bc77",
+  "voice": "mitten",
+  "say": "だろ!だから世界中の靴下をオレ様の操り人形にする!そうすれば世界は、ついに手をつなぐんだ…オレ様と!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "5a824d45",
+  "voice": "stinky",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "f00c46d9",
+  "voice": "argyle",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "e080c153",
+  "voice": "shinobi",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "e1616e9b",
+  "voice": "gran",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "very old, creaky, wheezy grandmother, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "3ff5a25d",
+  "voice": "baby",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "4ed78c11",
+  "voice": "kneehi",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "abce1cc5",
+  "voice": "robo",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "5fb83c90",
+  "voice": "ghost",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "b6e74204",
+  "voice": "lint",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "ab85e0de",
+  "voice": "socklet",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "9a6092ba",
+  "voice": "holey",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "876fe924",
+  "voice": "steel",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "69f6fe5a",
+  "voice": "king",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "8dd59188",
+  "voice": "demon",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "d546802e",
+  "voice": "bleach",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "3f2127aa",
+  "voice": "cling",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "349fe24b",
+  "voice": "iron",
+  "say": "それ…ちょっと素敵だけど、めちゃくちゃ怖い。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
+ },
+ {
+  "key": "11f779f3",
+  "voice": "mitten",
+  "say": "ありがとよ!さあ、勝負だ!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "e0bb481c",
+  "voice": "mitten",
+  "say": "…失くしたミトンなんて、誰も探しに来ないんだ。",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, conversational",
+  "file": "story"
+ },
+ {
+  "key": "4bd4597d",
+  "voice": "narr",
+  "say": "暖かいオレンジ色の光が、山を登ってくる。誰かが、ぜえぜえ言いながら山道を登ってくる。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "80086b62",
+  "voice": "demon",
+  "say": "はあ、はあ…失礼。ここに、グランド・ミトンはいるか?今は宮殿のクロークで働いている者だ。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "a63e8908",
+  "voice": "demon",
+  "say": "これが届けられていてな。落とし物係に…えー、札によると…千年ほど預かっていた。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "10a45b39",
+  "voice": "narr",
+  "say": "魔王が、もう片方のミトンを差し出す。まったく同じ柄だ。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "36cee938",
+  "voice": "mitten",
+  "say": "…オレの片方?片方を、見つけてくれたのか?!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "c89bc779",
+  "voice": "demon",
+  "say": "お忘れ物は千年以内にお返しします。改善中だと言っただろう。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "7f8f0580",
+  "voice": "narr",
+  "say": "二つのミトンが抱き合う。雪がやむ。どこかで、スキーリフトがまた動き出した。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "0e4a7817",
+  "voice": "fishnet",
+  "say": "…他に泣いてる人います?私の涙、小さなつららになってます。",
+  "note": "eager, quick young scout, crying and sobbing",
+  "file": "story"
+ },
+ {
+  "key": "89ad13ba",
+  "voice": "stinky",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "ee881d9e",
+  "voice": "argyle",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "d21b6930",
+  "voice": "shinobi",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "ca449ed8",
+  "voice": "gran",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "very old, creaky, wheezy grandmother, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "41a79d92",
+  "voice": "baby",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "a6a9adb6",
+  "voice": "kneehi",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "8f5bef3a",
+  "voice": "robo",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "a99c2ae7",
+  "voice": "ghost",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "102338db",
+  "voice": "lint",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "c58ed305",
+  "voice": "socklet",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "8b8ddf61",
+  "voice": "holey",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "aa90213b",
+  "voice": "steel",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "0616cb41",
+  "voice": "king",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "edd3053f",
+  "voice": "demon",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "db47c515",
+  "voice": "bleach",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "cc35d491",
+  "voice": "cling",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "90fc0b48",
+  "voice": "iron",
+  "say": "さあ、帰ろう。それと、もう二度と、靴下に手を入れるのはやめような。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
  },
  {
   "key": "c2526c4e",
