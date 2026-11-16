@@ -77,7 +77,7 @@ const PERSONA = {
   cling: 'sultry, smug villainess queen',
   iron: 'stern, booming warlord',
   mismatch: 'huge, deep, rumbling patchwork golem, a little dim-witted',
-  lefty: 'smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge',
+  lefty: 'sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice',
   puppet: 'flamboyant, hammy stage prince, dramatic showman',
   mitten: 'big, grumpy, woolly voice, jealous and dramatic',
   flipflop: 'laid-back, goofy surfer dude',
@@ -148,6 +148,8 @@ function japanese(text, heroId) {
   return /[぀-ヿ一-鿿A-Za-z]/.test(out) ? out : ''; // '…' alone = silent
 }
 
+// Gran's back really hurts on these lines (the game's GRAN_OUCH acts it out on the same lines)
+const GRAN_OUCH = /oh, my back|was my back|my back hurts|ow ow/i;
 const names = Object.keys(raw).filter(k => k !== 'ROSTER');
 const roster = raw.ROSTER.filter(([id]) => id !== 'mysock'); // [id, NAME] (MY SOCK is not in the story)
 const jobs = new Map();
@@ -160,7 +162,7 @@ function add(speaker, shown, voice, say, file, text, who) {
   // ...and she is 98: she speaks VERY slowly, pausing after every phrase (the pauses are written into her lines)
   if (voice === 'gran') say = say.replace(/、/g, '、…').replace(/。(?!$)/g, '。……').replace(/([!！])(?!$)/g, '$1…').replace(/([?？])(?!$)/g, '$1…');
   if (voice === 'gran') say = say.replace(/[さすせそざずぜぞサスセソザズゼゾ]/g, c => ({ さ: 'しゃ', す: 'しゅ', せ: 'しぇ', そ: 'しょ', ざ: 'じゃ', ず: 'じゅ', ぜ: 'じぇ', ぞ: 'じょ', サ: 'シャ', ス: 'シュ', セ: 'シェ', ソ: 'ショ', ザ: 'ジャ', ズ: 'ジュ', ゼ: 'ジェ', ゾ: 'ジョ' })[c]);
-  if (who === 'gran' && /my back|my hip|ow ow/i.test(text)) {
+  if (who === 'gran' && GRAN_OUCH.test(text)) {
     say = say.replace(/[。!?…\s]*$/, '') + '…いったぁ〜い…いったぁ〜い…いったぁ〜い…';
     note = (PERSONA[voice] || '') + ', in real pain, groaning and wincing, three long drawn-out ouches';
   }

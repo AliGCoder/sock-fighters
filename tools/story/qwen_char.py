@@ -13,9 +13,19 @@ from qwen_tts import Qwen3TTSModel
 
 QF.KBPS = 32
 cid = sys.argv[1]
-OUT = os.path.join(HERE, 'story_clips.json')
-jobs = [j for j in json.load(open(os.path.join(HERE, 'jobs.json'), encoding='utf-8')) if j['voice'] == cid]
-done = json.load(open(OUT, encoding='utf-8'))
+def _arg(name, default):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else default
+
+
+# (a SAMPLE uses its own files, --jobs and --out, so it never touches the real ones while they record)
+OUT = os.path.join(HERE, _arg('--out', 'story_clips.json'))
+jobs = [j for j in json.load(open(os.path.join(HERE, _arg('--jobs', 'jobs.json')), encoding='utf-8')) if j['voice'] == cid]
+done = json.load(open(OUT, encoding='utf-8')) if os.path.exists(OUT) else {}
+if '--all' not in sys.argv:  # only the lines that have no voice yet (--all: every line again)
+    jobs = [j for j in jobs if j['key'] not in done]
+if not jobs:
+    print(f'{cid}: nothing new to record', flush=True)
+    sys.exit(0)
 base = Qwen3TTSModel.from_pretrained('Qwen/Qwen3-TTS-12Hz-1.7B-Base', device_map='cuda:0',
                                      dtype=torch.bfloat16, attn_implementation='sdpa')
 prompt = base.create_voice_clone_prompt(ref_audio=os.path.join(ANN, 'refs', f'fighter_{cid}.wav'), ref_text=QF.ref_line(cid))

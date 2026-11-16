@@ -1,5 +1,89 @@
 [
  {
+  "key": "a4933955",
+  "voice": "narr",
+  "say": "おうち。夜の十一時五十八分。眠そうな人間と、あふれそうな洗濯かご。そして、とっても古い洗濯機。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "bc786c88",
+  "voice": "narr",
+  "say": "洗濯機がガタガタ…ゴトゴト…そしてドカーン!そこらじゅう泡だらけ!",
+  "note": "warm, playful storybook narrator, excited storytelling",
+  "file": "story"
+ },
+ {
+  "key": "64add1a5",
+  "voice": "narr",
+  "say": "「はあ…」人間はうめいて、ぜんぶ洗濯かごにかき集めた。「コインランドリー行くか。」",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "58b8ec3c",
+  "voice": "stinky",
+  "say": "かごの中で…ぺしゃんこ…しかも濡れたタオルの下。人生最悪の夜だ。",
+  "note": "cocky young street brawler, conversational",
+  "file": "story"
+ },
+ {
+  "key": "47b3ba7b",
+  "voice": "argyle",
+  "say": "深呼吸だ、スティンキー殿。侍は動じぬ。たとえ逆さまでもな。",
+  "note": "calm, noble samurai, conversational",
+  "file": "story"
+ },
+ {
+  "key": "658da4fc",
+  "voice": "gran",
+  "say": "これはバシュかい?…バシュに乗るなんて誰も言っとらんかったよ!",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
+  "file": "story"
+ },
+ {
+  "key": "bdbeb0d3",
+  "voice": "narr",
+  "say": "暗い夜道を進んでいく。ボン。ボン。ボーン!眠そうな足音のたびに、かごが大きく揺れる。",
+  "note": "warm, playful storybook narrator, excited storytelling",
+  "file": "story"
+ },
+ {
+  "key": "d5d1cb4c",
+  "voice": "narr",
+  "say": "二十四時間営業のコインランドリー。人間はプラスチックの椅子にどさっと座り…いびきをかき始めた。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "82894a32",
+  "voice": "narr",
+  "say": "かごがひっくり返る。転がり出てきたのは三足の靴下…ちょうど七番乾燥機の目の前に。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "6ecce1f2",
+  "voice": "gran",
+  "say": "誰が床を動かしたんだい?",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
+  "file": "story"
+ },
+ {
+  "key": "c65cedf8",
+  "voice": "stinky",
+  "say": "ばあちゃん。オレたち、床にいるんだぞ。コインランドリーの。真夜中に。",
+  "note": "cocky young street brawler, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "9b4df9db",
+  "voice": "argyle",
+  "say": "しっ。…聞こえるか?何かがうなっている。",
+  "note": "calm, noble samurai, conversational",
+  "file": "story"
+ },
+ {
   "key": "f8d85fa7",
   "voice": "narr",
   "say": "コインランドリー。真夜中。どこかで今、靴下が一枚、消えようとしている…",
@@ -35,10 +119,10 @@
   "file": "story"
  },
  {
-  "key": "bfcc6ba8",
+  "key": "a536ff55",
   "voice": "fishnet",
-  "say": "しーっ!こっちです!ナイロニア王室斥候、エージェント・フィッシュネット。これは極秘任務です。自然にふるまってください。",
-  "note": "eager, quick young scout, lively",
+  "say": "動くな。叫ぶな。網タイツ、ナイロニア王宮のシノビ。これは極秘任務。私には会わなかった。いいな。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -49,23 +133,23 @@
   "file": "story"
  },
  {
-  "key": "b3ac1e0e",
+  "key": "acdcc55d",
   "voice": "fishnet",
-  "say": "極秘だからです!…あと、ゴーグルが逆さまでした。ちょっと待ってください。",
-  "note": "eager, quick young scout, lively",
+  "say": "壁に耳あり。乾燥機にも耳あり。おまえにも耳がある。私は誰も信用しない。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
   "key": "af96de87",
   "voice": "fishnet",
-  "say": "よく聞いてください。乾燥機の魔王が目覚めました。あらゆる世界の、あらゆる引き出しから靴下を盗んでいます。あなたの片割れは、その始まりにすぎません。",
+  "say": "よく聞け。乾燥機の魔王が目覚めた。あらゆる世界の、あらゆる引き出しから靴下を盗んでいる。おまえの片割れは、その始まりにすぎない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
   "key": "f888120a",
   "voice": "fishnet",
-  "say": "女王陛下が私を乾燥機の向こうへ送り出したんです。極秘任務で。…ヒーローを探すために。",
+  "say": "女王陛下の命令で、乾燥機の向こうから来た。極秘任務だ。…ヒーローを探すために。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -84,10 +168,10 @@
   "file": "story"
  },
  {
-  "key": "84b9dea2",
+  "key": "919bf3cb",
   "voice": "fishnet",
-  "say": "うーん。ここに書いてあるのは「勇敢で、英雄的で、バラの香り」。…まあ、だいたい合ってます!",
-  "note": "eager, quick young scout, lively",
+  "say": "「勇敢。英雄的。バラの香り。」…三つのうち二つ。まあいい、おまえで決まりだ。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -105,9 +189,9 @@
   "file": "story"
  },
  {
-  "key": "2b752dc2",
+  "key": "18bbc0ff",
   "voice": "fishnet",
-  "say": "よし!何かにつかまってください。乾燥機を通るのは、ちょっと…グルグルしますよ。ついてきてください、ヒーロー!",
+  "say": "何かにつかまれ。乾燥機の中は荒れる。離れるな、黙ってろ、遅れるな。行くぞ!",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -133,10 +217,10 @@
   "file": "story"
  },
  {
-  "key": "8ce65208",
+  "key": "402456de",
   "voice": "fishnet",
-  "say": "女王陛下!ただいま着任いたしました!",
-  "note": "eager, quick young scout, lively",
+  "say": "網タイツ、帰還しました、陛下。…窓の留め金が壊れています。誰でも入れる。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -147,9 +231,9 @@
   "file": "story"
  },
  {
-  "key": "da5d7719",
+  "key": "bae036bb",
   "voice": "fishnet",
-  "say": "穴がいっぱいあるので、長旅でも通気性ばつぐんです!",
+  "say": "私は穴だらけです、陛下。誰にもつかまれない。誰にも捕まらない。誰も近づけない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -294,6 +378,132 @@
   "file": "hero-iron"
  },
  {
+  "key": "6d58db87",
+  "voice": "stinky",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "fc2f1243",
+  "voice": "argyle",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "2c442cf1",
+  "voice": "shinobi",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "b8952179",
+  "voice": "gran",
+  "say": "女王陛下…リント団に仲間をしゃらわれました。……魔王のところへ連れていかれましゅ。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "54a7cfff",
+  "voice": "baby",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "2ea323bb",
+  "voice": "kneehi",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "8ff9ef07",
+  "voice": "robo",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "585f8b2a",
+  "voice": "ghost",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "6357dcd6",
+  "voice": "lint",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "bbd3dce4",
+  "voice": "socklet",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "c1a32478",
+  "voice": "holey",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "b735c376",
+  "voice": "steel",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "d8082198",
+  "voice": "king",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "237cb362",
+  "voice": "demon",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "4a6be994",
+  "voice": "bleach",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "4ae83608",
+  "voice": "cling",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "ce481b49",
+  "voice": "iron",
+  "say": "女王陛下…リント団に仲間をさらわれました。魔王のところへ連れていかれます。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
+ },
+ {
+  "key": "01d725cb",
+  "voice": "queen",
+  "say": "では、取り戻しましょう。王家の密偵がもう綿ぼこりの跡を追っておりますわ。行き先は沼です。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
   "key": "348e4a47",
   "voice": "queen",
   "say": "次は静電気の沼。王家の技師たちが、ようやく橋を架け終えましたの。たったの三年で。",
@@ -301,9 +511,9 @@
   "file": "story"
  },
  {
-  "key": "da4c2bba",
+  "key": "2f017dae",
   "voice": "fishnet",
-  "say": "とっても素敵な橋ですよ。",
+  "say": "橋は調べた。二回。…良い橋だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -588,10 +798,10 @@
   "file": "story"
  },
  {
-  "key": "8e7c5b71",
+  "key": "0ebf9e2d",
   "voice": "fishnet",
-  "say": "何か…声をかけたほうがいいですかね?",
-  "note": "eager, quick young scout, confused, questioning",
+  "say": "誰も動くな。陛下に浸らせてやれ。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -616,9 +826,9 @@
   "file": "story"
  },
  {
-  "key": "121e2d45",
+  "key": "b4c70bf5",
   "voice": "fishnet",
-  "say": "ほとんど魚の絵ですけどね。署名は「さかな」です。",
+  "say": "罠がないか調べた。魚の絵だ。署名は「さかな」。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -798,9 +1008,9 @@
   "file": "story"
  },
  {
-  "key": "1adc2e3e",
+  "key": "f97c999f",
   "voice": "fishnet",
-  "say": "陛下、それはただのシャワーキャップをかぶせた王冠です。",
+  "say": "陛下、それはシャワーキャップをかぶった王冠です。敬礼はしません。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -994,9 +1204,9 @@
   "file": "story"
  },
  {
-  "key": "87c79bfc",
+  "key": "d6742cd0",
   "voice": "fishnet",
-  "say": "最高の!任務!でした!",
+  "say": "任務完了。…まあ、楽しかった。誰にも言うな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -1015,10 +1225,10 @@
   "file": "story"
  },
  {
-  "key": "5d189163",
+  "key": "03584b18",
   "voice": "fishnet",
-  "say": "女王陛下、ミトン山脈は凍えるほど寒いです。マフラーをお借りできませんか?",
-  "note": "eager, quick young scout, confused, questioning",
+  "say": "陛下、ミトン山脈は凍える。マフラーが要る。黒いのを。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -1183,9 +1393,9 @@
   "file": "story"
  },
  {
-  "key": "285e2479",
+  "key": "46ca61d6",
   "voice": "fishnet",
-  "say": "…女王陛下、靴箱の中から何か聞こえるんですけど。",
+  "say": "…静かに。靴箱の中で何かが動いた。私の後ろに、陛下。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -1194,6 +1404,258 @@
   "voice": "queen",
   "say": "…まあ、なんてこと。まさか…靴?",
   "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "ff2eb7c7",
+  "voice": "narr",
+  "say": "リント平原。乾燥機がみんなを綿ぼこりの野原に吐き出した。みんな、きょろきょろ。ここ、いったいどこ?",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "b9471abb",
+  "voice": "fishnet",
+  "say": "ナイロニアへようこそ。宮殿はこの平原の向こう。離れるな、目を開けておけ、綿ぼこりに触るな。あれは信用できない。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "5c2223c7",
+  "voice": "argyle",
+  "say": "この綿ぼこり…我らを見ているぞ。",
+  "note": "calm, noble samurai, conversational",
+  "file": "story"
+ },
+ {
+  "key": "0a174fd6",
+  "voice": "gran",
+  "say": "おお、…シェーターの上を歩いとるみたいじゃ。………腰が大喜びじゃよ。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
+  "file": "story"
+ },
+ {
+  "key": "5469deb8",
+  "voice": "narr",
+  "say": "ハクション!ハクション!ハクション!あらゆる綿ぼこりからリント団の赤ちゃんが飛び出す。何十匹も!",
+  "note": "warm, playful storybook narrator, excited storytelling",
+  "file": "story"
+ },
+ {
+  "key": "22f901e5",
+  "voice": "lint",
+  "say": "つかまえろ、ベイビーたち!ボスは人質をご所望だ!",
+  "note": "tiny, squeaky, fluffy creature, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "1203d746",
+  "voice": "fishnet",
+  "say": "全員、私の後ろへ。はあっ!",
+  "note": "eager, quick young scout, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "23c7e54a",
+  "voice": "narr",
+  "say": "網タイツ斥候は宙返り、蹴り、手刀。綿ぼこりが舞い散る…でも、数が多すぎる。ちびっこたちが一斉にのしかかり、彼女は綿ぼこりに顔からつっぷした!",
+  "note": "warm, playful storybook narrator, excited storytelling",
+  "file": "story"
+ },
+ {
+  "key": "b9c768a8",
+  "voice": "argyle",
+  "say": "離せ、毛玉ども!侍は洗濯物のように運ばれたりせぬ!",
+  "note": "calm, noble samurai, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "bf6b7a10",
+  "voice": "gran",
+  "say": "降ろしな!…わしは腰が悪いんじゃ!……しょれに、…もっと気が短いんじゃよ!",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
+  "file": "story"
+ },
+ {
+  "key": "af5981c4",
+  "voice": "narr",
+  "say": "網タイツ斥候は手をのばす…でも、リント団はアーガイルさんとくつしたばあちゃんを小さな肩にかつぎ上げ、霧の中へちょこちょこと逃げていった。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "6f591468",
+  "voice": "lint",
+  "say": "友だちを返してほしい?探しに来な!ハハハ!…ハクション!",
+  "note": "tiny, squeaky, fluffy creature, laughing",
+  "file": "story"
+ },
+ {
+  "key": "9967a17a",
+  "voice": "fishnet",
+  "say": "はあ、はあ…守れなかった、騎士様。数が多すぎた。二度と、こんなことはさせない。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "cd7435ce",
+  "voice": "stinky",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "cocky young street brawler, conversational",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "fb4bafe2",
+  "voice": "argyle",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "calm, noble samurai, conversational",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "90c94968",
+  "voice": "shinobi",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "cool, quiet ninja woman, conversational",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "e77e72a0",
+  "voice": "gran",
+  "say": "連れていかれた。……本当に連れていかれちゃった。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, conversational",
+  "file": "hero-gran"
+ },
+ {
+  "key": "4172faf6",
+  "voice": "baby",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "squeaky, bratty toddler, conversational",
+  "file": "hero-baby"
+ },
+ {
+  "key": "423c928a",
+  "voice": "kneehi",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "booming, jolly sumo wrestler, conversational",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "af46744e",
+  "voice": "robo",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "flat, monotone robot, conversational",
+  "file": "hero-robo"
+ },
+ {
+  "key": "04ed48e5",
+  "voice": "ghost",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "0411d409",
+  "voice": "lint",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
+  "file": "hero-lint"
+ },
+ {
+  "key": "e698b097",
+  "voice": "socklet",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "cheeky, fast-talking little boy, conversational",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "2ea560b3",
+  "voice": "holey",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "hero-holey"
+ },
+ {
+  "key": "b2412fa9",
+  "voice": "steel",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "gruff, deep construction worker, conversational",
+  "file": "hero-steel"
+ },
+ {
+  "key": "1b01dc53",
+  "voice": "king",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "pompous, theatrical king, conversational",
+  "file": "hero-king"
+ },
+ {
+  "key": "066cc2ad",
+  "voice": "demon",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "hero-demon"
+ },
+ {
+  "key": "50461e47",
+  "voice": "bleach",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "snobbish, sneering aristocrat, conversational",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "791a44c3",
+  "voice": "cling",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "sultry, smug villainess queen, conversational",
+  "file": "hero-cling"
+ },
+ {
+  "key": "9c134f70",
+  "voice": "iron",
+  "say": "連れていかれた。本当に連れていかれちゃった。",
+  "note": "stern, booming warlord, conversational",
+  "file": "hero-iron"
+ },
+ {
+  "key": "cd35008c",
+  "voice": "fishnet",
+  "say": "取り戻す。今夜中に。リント団の親分はまだこの辺りにいる。まずはあいつだ。…必ず吐かせる。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "d3867c3f",
+  "voice": "stinky",
+  "say": "ジムバッグみたいなにおいがするな。…あ、オレか。",
+  "note": "cocky young street brawler, conversational",
+  "file": "story"
+ },
+ {
+  "key": "5baf4277",
+  "voice": "stinky",
+  "say": "おい!片割れがいなくなったと思ったら今度はこれかよ?!降ろせ!",
+  "note": "cocky young street brawler, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "514407e5",
+  "voice": "narr",
+  "say": "網タイツ斥候は手をのばす…でも、リント団はスティンキー足袋とくつしたばあちゃんを小さな肩にかつぎ上げ、霧の中へちょこちょこと逃げていった。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "60718b9c",
+  "voice": "narr",
+  "say": "網タイツ斥候は手をのばす…でも、リント団はスティンキー足袋とアーガイルさんを小さな肩にかつぎ上げ、霧の中へちょこちょこと逃げていった。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "412fd404",
+  "voice": "narr",
+  "say": "綿ぼこりの跡をたどって、霧の奥へ。どこかで…ぐすん、と鼻をすする音。リント団の親分が、ひとり残っていた。",
+  "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
@@ -1316,17 +1778,10 @@
   "file": "hero-iron"
  },
  {
-  "key": "473d983d",
-  "voice": "fishnet",
-  "say": "リント平原です、騎士様!魔王のリント団が、静電気の沼への道を守っています。",
-  "note": "eager, quick young scout, lively",
-  "file": "story"
- },
- {
-  "key": "8098aaad",
+  "key": "d9838048",
   "voice": "lint",
-  "say": "止まれ!ここから先は…ハックション!…リント団の土地だぞ!",
-  "note": "tiny, squeaky, fluffy creature, excited, emphatic",
+  "say": "止まれ!おまえらの仲間は絶対に見つからないぞ!ちびっこたちが連れていったのは…ハックション!",
+  "note": "tiny, squeaky, fluffy creature, lively",
   "file": "story"
  },
  {
@@ -1463,254 +1918,247 @@
   "file": "story"
  },
  {
-  "key": "9677d9a1",
+  "key": "91460f99",
   "voice": "stinky",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "cocky young street brawler, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "cocky young street brawler, confused, questioning",
   "file": "hero-stinky"
  },
  {
-  "key": "bcb7628d",
+  "key": "8590c54d",
   "voice": "argyle",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "calm, noble samurai, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "calm, noble samurai, confused, questioning",
   "file": "hero-argyle"
  },
  {
-  "key": "1b0fc44b",
+  "key": "386b903b",
   "voice": "shinobi",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "cool, quiet ninja woman, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "cool, quiet ninja woman, confused, questioning",
   "file": "hero-shinobi"
  },
  {
-  "key": "c9e5e7b3",
+  "key": "c3e64cf3",
   "voice": "gran",
-  "say": "…今、…仲間をまるごとくしゃみで出したのか?",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?…仲間はどこだ?",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
-  "key": "e5301e99",
+  "key": "6d49be61",
   "voice": "baby",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "squeaky, bratty toddler, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "squeaky, bratty toddler, confused, questioning",
   "file": "hero-baby"
  },
  {
-  "key": "8d7b3c05",
+  "key": "fde7c175",
   "voice": "kneehi",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "booming, jolly sumo wrestler, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
   "file": "hero-kneehi"
  },
  {
-  "key": "e7c3a921",
+  "key": "ba2be719",
   "voice": "robo",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "flat, monotone robot, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "flat, monotone robot, confused, questioning",
   "file": "hero-robo"
  },
  {
-  "key": "ec983688",
+  "key": "d81c1eb0",
   "voice": "ghost",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
   "file": "hero-ghost"
  },
  {
-  "key": "3754bd94",
+  "key": "9921ec04",
   "voice": "lint",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "tiny, squeaky, fluffy creature, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
   "file": "hero-lint"
  },
  {
-  "key": "2a01294a",
+  "key": "5b8c3c5a",
   "voice": "socklet",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "cheeky, fast-talking little boy, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
   "file": "hero-socklet"
  },
  {
-  "key": "95e6059e",
+  "key": "0aaeb6e6",
   "voice": "holey",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "nervous, whiny coward, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "nervous, whiny coward, confused, questioning",
   "file": "hero-holey"
  },
  {
-  "key": "42abc074",
+  "key": "d7f80264",
   "voice": "steel",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "gruff, deep construction worker, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "gruff, deep construction worker, confused, questioning",
   "file": "hero-steel"
  },
  {
-  "key": "a470c17e",
+  "key": "218ec646",
   "voice": "king",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "pompous, theatrical king, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "pompous, theatrical king, confused, questioning",
   "file": "hero-king"
  },
  {
-  "key": "9bc62960",
+  "key": "54c47a18",
   "voice": "demon",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "deep, growling demon lord, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "deep, growling demon lord, confused, questioning",
   "file": "hero-demon"
  },
  {
-  "key": "30fb01fa",
+  "key": "98064eea",
   "voice": "bleach",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "snobbish, sneering aristocrat, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
   "file": "hero-bleach"
  },
  {
-  "key": "9cdd53ee",
+  "key": "bcc6e8d6",
   "voice": "cling",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "sultry, smug villainess queen, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "sultry, smug villainess queen, confused, questioning",
   "file": "hero-cling"
  },
  {
-  "key": "6185d6c3",
+  "key": "53afdd23",
   "voice": "iron",
-  "say": "…今、仲間をまるごとくしゃみで出したのか?",
-  "note": "stern, booming warlord, deadpan, awkward pause",
+  "say": "どこへ連れていったんだ?仲間はどこだ?",
+  "note": "stern, booming warlord, confused, questioning",
   "file": "hero-iron"
  },
  {
-  "key": "66ff345e",
+  "key": "b0d9ce97",
   "voice": "lint",
-  "say": "リント団はみんな、くしゃみから生まれるの。けっこう感動的なんだよ。",
-  "note": "tiny, squeaky, fluffy creature, conversational",
+  "say": "教えるもんか!リント団はみんなくしゃみから生まれるんだ。ボクたちは四千匹もいるんだぞ!",
+  "note": "tiny, squeaky, fluffy creature, excited, emphatic",
   "file": "story"
  },
  {
-  "key": "594c2306",
-  "voice": "lint",
-  "say": "ボクたちは四千匹もいるんだぞ!",
-  "note": "tiny, squeaky, fluffy creature, shouting furiously",
-  "file": "story"
- },
- {
-  "key": "24f7de73",
+  "key": "eebe918d",
   "voice": "stinky",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "cocky young street brawler, conversational",
   "file": "hero-stinky"
  },
  {
-  "key": "3c005d27",
+  "key": "bc976531",
   "voice": "argyle",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "calm, noble samurai, conversational",
   "file": "hero-argyle"
  },
  {
-  "key": "cc920e65",
+  "key": "6eee98ff",
   "voice": "shinobi",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "cool, quiet ninja woman, conversational",
   "file": "hero-shinobi"
  },
  {
-  "key": "c10bc48d",
+  "key": "ed416087",
   "voice": "gran",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。……残りは仲間を連れて逃げたんだろ。",
   "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, conversational",
   "file": "hero-gran"
  },
  {
-  "key": "40b6bf0b",
+  "key": "2c402905",
   "voice": "baby",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "squeaky, bratty toddler, conversational",
   "file": "hero-baby"
  },
  {
-  "key": "ef82be9f",
+  "key": "95ba6809",
   "voice": "kneehi",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "booming, jolly sumo wrestler, conversational",
   "file": "hero-kneehi"
  },
  {
-  "key": "77f3b8f3",
+  "key": "ebd6d50d",
   "voice": "robo",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "flat, monotone robot, conversational",
   "file": "hero-robo"
  },
  {
-  "key": "4feebf24",
+  "key": "5b1c5b00",
   "voice": "ghost",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "soft, whispery, eerie ghost girl, conversational",
   "file": "hero-ghost"
  },
  {
-  "key": "e7bd6a18",
+  "key": "906f9b54",
   "voice": "lint",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "tiny, squeaky, fluffy creature, conversational",
   "file": "hero-lint"
  },
  {
-  "key": "bf73bf7e",
+  "key": "ecd5fd2a",
   "voice": "socklet",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "cheeky, fast-talking little boy, conversational",
   "file": "hero-socklet"
  },
  {
-  "key": "96b27b1a",
+  "key": "54ee3356",
   "voice": "holey",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "nervous, whiny coward, conversational",
   "file": "hero-holey"
  },
  {
-  "key": "bd5b5ef8",
+  "key": "8923e774",
   "voice": "steel",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "gruff, deep construction worker, conversational",
   "file": "hero-steel"
  },
  {
-  "key": "01f099fa",
+  "key": "1e444c76",
   "voice": "king",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "pompous, theatrical king, conversational",
   "file": "hero-king"
  },
  {
-  "key": "8a04b7bc",
+  "key": "548162b8",
   "voice": "demon",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "deep, growling demon lord, conversational",
   "file": "hero-demon"
  },
  {
-  "key": "bf2113ae",
+  "key": "49729ada",
   "voice": "bleach",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "snobbish, sneering aristocrat, conversational",
   "file": "hero-bleach"
  },
  {
-  "key": "3f18792a",
+  "key": "e8d4e5e6",
   "voice": "cling",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "sultry, smug villainess queen, conversational",
   "file": "hero-cling"
  },
  {
-  "key": "39a3201d",
+  "key": "dfdfd957",
   "voice": "iron",
-  "say": "四匹しかいないけど。",
+  "say": "四匹しかいないじゃないか。残りは仲間を連れて逃げたんだろ。",
   "note": "stern, booming warlord, conversational",
   "file": "hero-iron"
  },
@@ -1743,150 +2191,150 @@
   "file": "story"
  },
  {
-  "key": "acf14208",
+  "key": "3519e1e1",
   "voice": "narr",
-  "say": "特大のくしゃみ風が平原を吹き抜ける!みんな綿ぼこりまみれ。リント団は一目散に逃げ出した!",
+  "say": "特大のくしゃみ風が平原を吹き抜ける!みんな綿ぼこりまみれ。最後の三匹のちびっこも、仲間を追って逃げていった!",
   "note": "warm, playful storybook narrator, excited storytelling",
   "file": "story"
  },
  {
-  "key": "940cf5cb",
+  "key": "1c6e0a0d",
   "voice": "fishnet",
-  "say": "もこもこです!穴という穴に、綿ぼこりが!",
-  "note": "eager, quick young scout, excited, emphatic",
+  "say": "綿ぼこり。私の穴という穴に。この借りは必ず返す。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "2d1696d0",
+  "key": "fe006e92",
   "voice": "stinky",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "cocky young street brawler, deadpan, awkward pause",
   "file": "hero-stinky"
  },
  {
-  "key": "96931a94",
+  "key": "47f87d1e",
   "voice": "argyle",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "calm, noble samurai, deadpan, awkward pause",
   "file": "hero-argyle"
  },
  {
-  "key": "02e7a3ee",
+  "key": "ad01f09c",
   "voice": "shinobi",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "cool, quiet ninja woman, deadpan, awkward pause",
   "file": "hero-shinobi"
  },
  {
-  "key": "52e06b06",
+  "key": "0a6e97d4",
   "voice": "gran",
-  "say": "…オレ、…シェーターになっちゃった。",
+  "say": "…オレ、…シェーターになっちゃった。……で、…おまえはひとりぼっちだな。",
   "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, deadpan, awkward pause",
   "file": "hero-gran"
  },
  {
-  "key": "292cc878",
+  "key": "b9faa61a",
   "voice": "baby",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "squeaky, bratty toddler, deadpan, awkward pause",
   "file": "hero-baby"
  },
  {
-  "key": "831a5c3c",
+  "key": "a68083e6",
   "voice": "kneehi",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "booming, jolly sumo wrestler, deadpan, awkward pause",
   "file": "hero-kneehi"
  },
  {
-  "key": "f79de250",
+  "key": "78581512",
   "voice": "robo",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "flat, monotone robot, deadpan, awkward pause",
   "file": "hero-robo"
  },
  {
-  "key": "8fe0cfed",
+  "key": "453a34a1",
   "voice": "ghost",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
   "file": "hero-ghost"
  },
  {
-  "key": "20496af1",
+  "key": "145bacad",
   "voice": "lint",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "tiny, squeaky, fluffy creature, deadpan, awkward pause",
   "file": "hero-lint"
  },
  {
-  "key": "cebff61b",
+  "key": "b8dbf333",
   "voice": "socklet",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "cheeky, fast-talking little boy, deadpan, awkward pause",
   "file": "hero-socklet"
  },
  {
-  "key": "925cea17",
+  "key": "46f877b7",
   "voice": "holey",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "nervous, whiny coward, deadpan, awkward pause",
   "file": "hero-holey"
  },
  {
-  "key": "c1885dd1",
+  "key": "1972618d",
   "voice": "steel",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "gruff, deep construction worker, deadpan, awkward pause",
   "file": "hero-steel"
  },
  {
-  "key": "bd9bac77",
+  "key": "2bc22b17",
   "voice": "king",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "pompous, theatrical king, deadpan, awkward pause",
   "file": "hero-king"
  },
  {
-  "key": "33c6b2b5",
+  "key": "c25e5cc9",
   "voice": "demon",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "deep, growling demon lord, deadpan, awkward pause",
   "file": "hero-demon"
  },
  {
-  "key": "47f5e5ab",
+  "key": "72ff8503",
   "voice": "bleach",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "snobbish, sneering aristocrat, deadpan, awkward pause",
   "file": "hero-bleach"
  },
  {
-  "key": "c17a3a87",
+  "key": "faf6f067",
   "voice": "cling",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "sultry, smug villainess queen, deadpan, awkward pause",
   "file": "hero-cling"
  },
  {
-  "key": "5ce4dcf6",
+  "key": "06ad2384",
   "voice": "iron",
-  "say": "…オレ、セーターになっちゃった。",
+  "say": "…オレ、セーターになっちゃった。で、おまえはひとりぼっちだな。",
   "note": "stern, booming warlord, deadpan, awkward pause",
   "file": "hero-iron"
  },
  {
-  "key": "dc45ac25",
+  "key": "0557a2f6",
   "voice": "lint",
-  "say": "ボクの仲間…逃げちゃった。ぐすっ…いいもん!ボクひとりで戦ってやる!",
+  "say": "ボクの子分たち…また逃げた。ぐすん。…いいよ!ボクに勝てたら、どこへ行ったか教えてやらないこともないぞ!",
   "note": "tiny, squeaky, fluffy creature, crying and sobbing",
   "file": "story"
  },
  {
-  "key": "ae48e622",
+  "key": "2d59b8e9",
   "voice": "fishnet",
-  "say": "やっちゃってください、騎士様!手伝いたいけど、私ほとんど穴なので。",
-  "note": "eager, quick young scout, lively",
+  "say": "仕留めろ、騎士様。仲間のために。背中は私が守る。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -1897,142 +2345,142 @@
   "file": "story"
  },
  {
-  "key": "184b11e2",
+  "key": "2d0bdc43",
   "voice": "stinky",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "cocky young street brawler, confused, questioning",
   "file": "hero-stinky"
  },
  {
-  "key": "3768be76",
+  "key": "a217d6ef",
   "voice": "argyle",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "calm, noble samurai, confused, questioning",
   "file": "hero-argyle"
  },
  {
-  "key": "239c4288",
+  "key": "400d21e9",
   "voice": "shinobi",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "cool, quiet ninja woman, confused, questioning",
   "file": "hero-shinobi"
  },
  {
-  "key": "18f8bbd0",
+  "key": "cb0ee6e1",
   "voice": "gran",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。……リント団が仲間をこっちへ運んでいったって。……見なかったか?",
   "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
-  "key": "4f8c23ba",
+  "key": "3914378b",
   "voice": "baby",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "squeaky, bratty toddler, confused, questioning",
   "file": "hero-baby"
  },
  {
-  "key": "674e252e",
+  "key": "10a8beb7",
   "voice": "kneehi",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "booming, jolly sumo wrestler, confused, questioning",
   "file": "hero-kneehi"
  },
  {
-  "key": "a6be0062",
+  "key": "ef5a22c3",
   "voice": "robo",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "flat, monotone robot, confused, questioning",
   "file": "hero-robo"
  },
  {
-  "key": "5a3bdc29",
+  "key": "4140d29c",
   "voice": "ghost",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "soft, whispery, eerie ghost girl, confused, questioning",
   "file": "hero-ghost"
  },
  {
-  "key": "64e5f62d",
+  "key": "f18db1c8",
   "voice": "lint",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "tiny, squeaky, fluffy creature, confused, questioning",
   "file": "hero-lint"
  },
  {
-  "key": "d2d042ff",
+  "key": "495ceef2",
   "voice": "socklet",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "cheeky, fast-talking little boy, confused, questioning",
   "file": "hero-socklet"
  },
  {
-  "key": "a7c362db",
+  "key": "27859136",
   "voice": "holey",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "nervous, whiny coward, confused, questioning",
   "file": "hero-holey"
  },
  {
-  "key": "9998a80d",
+  "key": "e23b6468",
   "voice": "steel",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "gruff, deep construction worker, confused, questioning",
   "file": "hero-steel"
  },
  {
-  "key": "b850653b",
+  "key": "2be45256",
   "voice": "king",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "pompous, theatrical king, confused, questioning",
   "file": "hero-king"
  },
  {
-  "key": "13393f81",
+  "key": "8347c644",
   "voice": "demon",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "deep, growling demon lord, confused, questioning",
   "file": "hero-demon"
  },
  {
-  "key": "bae1716f",
+  "key": "edc71022",
   "voice": "bleach",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "snobbish, sneering aristocrat, confused, questioning",
   "file": "hero-bleach"
  },
  {
-  "key": "4d1f216b",
+  "key": "60f010c6",
   "voice": "cling",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "sultry, smug villainess queen, confused, questioning",
   "file": "hero-cling"
  },
  {
-  "key": "43034ba0",
+  "key": "affa6d71",
   "voice": "iron",
-  "say": "リント団の親戚なのか?",
+  "say": "あいつが言ってた。リント団が仲間をこっちへ運んでいったって。見なかったか?",
   "note": "stern, booming warlord, confused, questioning",
   "file": "hero-iron"
  },
  {
-  "key": "b4da0759",
+  "key": "3602f214",
   "voice": "socklet",
-  "say": "みーんなリント団の親戚だよ。くしゃみ繋がりってやつ。",
-  "note": "cheeky, fast-talking little boy, conversational",
+  "say": "かもね!ボクたちはみんなリント団の親戚なんだ。くしゃみつながりってやつ。",
+  "note": "cheeky, fast-talking little boy, lively",
   "file": "story"
  },
  {
-  "key": "36ec85ce",
+  "key": "87eea8bb",
   "voice": "fishnet",
-  "say": "こんな変な家系図、初めて見ました。",
+  "say": "くしゃみから生まれた一族か。ますます信用できない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "f0ca88a8",
+  "key": "620515f2",
   "voice": "socklet",
-  "say": "ボクはちっちゃいけど、この足首は速いぞ!ついてこれるかな!",
+  "say": "どこへ行ったか知りたい?まずボクをつかまえてみな!この足首は速いよ!",
   "note": "cheeky, fast-talking little boy, lively",
   "file": "story"
  },
@@ -2041,6 +2489,132 @@
   "voice": "holey",
   "say": "誰も通さないぞ!魔王様が、このボクを平原の番人にしてくれたんだ!",
   "note": "nervous, whiny coward, lively",
+  "file": "story"
+ },
+ {
+  "key": "149e0573",
+  "voice": "stinky",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "cocky young street brawler, confused, questioning",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "fdaf7ebf",
+  "voice": "argyle",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "calm, noble samurai, confused, questioning",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "80ef2761",
+  "voice": "shinobi",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "cool, quiet ninja woman, confused, questioning",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "8cb636f9",
+  "voice": "gran",
+  "say": "綿ぼこりのちびっこたちが、…靴下を二足かついでここを通らなかったか?",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
+  "file": "hero-gran"
+ },
+ {
+  "key": "7bf27e1b",
+  "voice": "baby",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "squeaky, bratty toddler, confused, questioning",
+  "file": "hero-baby"
+ },
+ {
+  "key": "b11af987",
+  "voice": "kneehi",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "f733fbf3",
+  "voice": "robo",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "flat, monotone robot, confused, questioning",
+  "file": "hero-robo"
+ },
+ {
+  "key": "2e1a00a8",
+  "voice": "ghost",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "d48a8774",
+  "voice": "lint",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
+  "file": "hero-lint"
+ },
+ {
+  "key": "9fea2226",
+  "voice": "socklet",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "0246856a",
+  "voice": "holey",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "nervous, whiny coward, confused, questioning",
+  "file": "hero-holey"
+ },
+ {
+  "key": "57526254",
+  "voice": "steel",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "gruff, deep construction worker, confused, questioning",
+  "file": "hero-steel"
+ },
+ {
+  "key": "95e4f54a",
+  "voice": "king",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "pompous, theatrical king, confused, questioning",
+  "file": "hero-king"
+ },
+ {
+  "key": "e5c0f430",
+  "voice": "demon",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "deep, growling demon lord, confused, questioning",
+  "file": "hero-demon"
+ },
+ {
+  "key": "3d47aef6",
+  "voice": "bleach",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "c2f5a55a",
+  "voice": "cling",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "sultry, smug villainess queen, confused, questioning",
+  "file": "hero-cling"
+ },
+ {
+  "key": "423686e9",
+  "voice": "iron",
+  "say": "綿ぼこりのちびっこたちが、靴下を二足かついでここを通らなかったか?",
+  "note": "stern, booming warlord, confused, questioning",
+  "file": "hero-iron"
+ },
+ {
+  "key": "0beaf28f",
+  "voice": "holey",
+  "say": "たぶんね。ボクの体をすり抜けていったよ。ボク、穴だらけだから。",
+  "note": "nervous, whiny coward, conversational",
   "file": "story"
  },
  {
@@ -2172,7 +2746,7 @@
  {
   "key": "df957c39",
   "voice": "fishnet",
-  "say": "ちょっと。それ、私の持ちネタなんですけど。",
+  "say": "おい。それは私の持ちネタだ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -2310,10 +2884,17 @@
   "file": "story"
  },
  {
-  "key": "0cef545a",
+  "key": "f1040b03",
+  "voice": "holey",
+  "say": "おまえの仲間?ちびっこたちは、あいつのところへ運んでいったよ。魔王のところへ。",
+  "note": "nervous, whiny coward, conversational",
+  "file": "story"
+ },
+ {
+  "key": "605d4597",
   "voice": "fishnet",
-  "say": "不気味ですね。女王陛下に報告しましょう!",
-  "note": "eager, quick young scout, lively",
+  "say": "なら女王陛下のもとへ。今すぐだ。手がかりが消える前に。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -2443,9 +3024,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "5f402b3f",
+  "key": "8d3884fa",
   "voice": "fishnet",
-  "say": "静電気の沼です、騎士様。ここはクリング・クイーンの領地。繊維にお気をつけて。",
+  "say": "静電気の沼。ここはクリング・クイーンの領地。繊維に気をつけろ。光るものは何ひとつ信じるな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -2709,10 +3290,10 @@
   "file": "story"
  },
  {
-  "key": "007ea2f4",
+  "key": "681d45d9",
   "voice": "fishnet",
-  "say": "静電気で狂ってます!回路の毛玉を叩き出してください!",
-  "note": "eager, quick young scout, lively",
+  "say": "静電気で回路が狂ってる。ぶっ叩いて正気に戻せ。思いきりな。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -2856,9 +3437,9 @@
   "file": "story"
  },
  {
-  "key": "5f954c26",
+  "key": "968d9439",
   "voice": "fishnet",
-  "say": "こんなに悲しい忍者の話、初めて聞きました。",
+  "say": "忍びとして言う。…こんなに悲しい話は聞いたことがない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -2877,10 +3458,10 @@
   "file": "story"
  },
  {
-  "key": "744a8d67",
+  "key": "9589acd3",
   "voice": "fishnet",
-  "say": "騎士様…あの人の目、なんでぐるぐるしてるんですか?",
-  "note": "eager, quick young scout, confused, questioning",
+  "say": "騎士様。あの目を見ろ。ぐるぐるしてる。誰かに操られてるぞ。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -3019,7 +3600,7 @@
  {
   "key": "8552b0a6",
   "voice": "fishnet",
-  "say": "あ、今のところは完全にご本人でしたね。",
+  "say": "…今のところは、完全に本人の声だった。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -3264,7 +3845,7 @@
  {
   "key": "c390baf6",
   "voice": "fishnet",
-  "say": "お姫様?ベビー・ブーティーはお姫様じゃないですよ。赤ちゃんです。王国だって持ってません。ベビーベッドしか持ってません。",
+  "say": "お姫様?ベビー・ブーティーは姫じゃない。赤ん坊だ。王国も持ってない。持ってるのはベビーベッドだけだ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -3411,7 +3992,7 @@
  {
   "key": "4d3b9905",
   "voice": "fishnet",
-  "say": "失礼な。まあ、当たってるかもですけど。失礼です。",
+  "say": "失礼な。…まあ、当たってはいる。それでも失礼だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -3542,16 +4123,16 @@
   "file": "hero-iron"
  },
  {
-  "key": "908bdcb7",
+  "key": "79f13daa",
   "voice": "fishnet",
-  "say": "止まらないで!立ち止まると漂白されちゃいます。私、一秒だけ立ち止まったら、色が一段階抜けました。",
-  "note": "eager, quick young scout, lively",
+  "say": "止まるな。止まったものは漂白される。私は昔ここで色をひとつ失った。必ず取り返す。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "d5ccc701",
+  "key": "b917fec4",
   "voice": "fishnet",
-  "say": "私、昔は黒い網タイツだったんです。…いえ、今も黒いですけど。気分が薄くなったというか。",
+  "say": "私は黒い網タイツだった。…今も黒だ。シノビの黒。誰にも文句は言わせない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -3815,10 +4396,10 @@
   "file": "story"
  },
  {
-  "key": "3ba3eaaf",
+  "key": "184e04e3",
   "voice": "fishnet",
-  "say": "まずい。腕ぶんぶんが始まった。腕ぶんぶんから生き延びた者はいないんです!",
-  "note": "eager, quick young scout, lively",
+  "say": "くねくね腕が来るぞ。あれを食らって無事だった者はいない。気を抜くな。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -3838,7 +4419,7 @@
  {
   "key": "099eb8fb",
   "voice": "fishnet",
-  "say": "…あやしいですね。",
+  "say": "…あやしい。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -3978,7 +4559,7 @@
  {
   "key": "2fda6f65",
   "voice": "fishnet",
-  "say": "…帯って、そういうものじゃないと思います。",
+  "say": "…帯は、そういうものじゃない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -4139,7 +4720,7 @@
  {
   "key": "d1c3c027",
   "voice": "fishnet",
-  "say": "あいつ、リンス海の半分を漂白したんです。魚が透明になっちゃって。お昼に何を食べたか丸見えなんです。",
+  "say": "あいつはリンス海の半分を漂白した。魚が透明になった。昼に何を食ったか丸見えだ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -4424,9 +5005,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "a15414d8",
+  "key": "782f098d",
   "voice": "fishnet",
-  "say": "次はアイロン要塞です。セーターを持っていってください。蒸し暑いですよ。",
+  "say": "次はアイロン要塞。どこもかしこも蒸気だらけ。待ち伏せにはうってつけだ。離れるな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -4699,7 +5280,7 @@
  {
   "key": "91d67938",
   "voice": "fishnet",
-  "say": "あの、失礼ですが…おばあさま、おいくつなんですか?",
+  "say": "失礼だが…ばあさん、いったい何歳だ?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -4739,10 +5320,10 @@
   "file": "story"
  },
  {
-  "key": "f9f3fbd6",
+  "key": "2b818d67",
   "voice": "fishnet",
-  "say": "あの人も目がぐるぐるです!クリング・クイーンと同じで、催眠術にかかってます!",
-  "note": "eager, quick young scout, lively",
+  "say": "こいつの目もぐるぐるだ。クリング・クイーンと同じ催眠。誰かが裏で糸を引いてる。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -5140,7 +5721,7 @@
  {
   "key": "1218fbd6",
   "voice": "fishnet",
-  "say": "…それ、前から叫んでましたよね。",
+  "say": "…それ、前にも叫んでたぞ。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -5579,9 +6160,9 @@
   "file": "story"
  },
  {
-  "key": "c51e1e7f",
+  "key": "43504716",
   "voice": "fishnet",
-  "say": "…他に泣いてる人います?いない?私だけ?穴から涙がもれてます。",
+  "say": "…泣いてない。シノビは泣かない。穴から…漏れてるだけだ。",
   "note": "eager, quick young scout, crying and sobbing",
   "file": "story"
  },
@@ -5859,9 +6440,9 @@
   "file": "story"
  },
  {
-  "key": "6033e435",
+  "key": "f1725a07",
   "voice": "fishnet",
-  "say": "手伝いたいんですけど、穴から匂いが全部入ってくるんです。",
+  "say": "手を貸したいが、穴からにおいが直接入ってくる。シノビは己の限界を知るものだ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -5873,9 +6454,9 @@
   "file": "story"
  },
  {
-  "key": "1345dba7",
+  "key": "00cd899d",
   "voice": "fishnet",
-  "say": "騎士様、ここ、苦手です。人形ってゾクゾクするんです。私、ほとんど穴なので、ゾクゾクがすごいんです。",
+  "say": "騎士様、気に入らない。人形には糸がある。糸の先には手がある。誰かが見てるぞ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -6132,10 +6713,10 @@
   "file": "story"
  },
  {
-  "key": "57b5cc5c",
+  "key": "074b6320",
   "voice": "fishnet",
-  "say": "糸を切って!…やさしく!…それから、まあ、戦ってください。本人もやる気みたいですし。",
-  "note": "eager, quick young scout, lively",
+  "say": "糸を切れ。…そっとな。それから戦え。向こうもその気らしい。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -6729,7 +7310,7 @@
  {
   "key": "85382720",
   "voice": "fishnet",
-  "say": "…それは、ちょっと悲しいですね。",
+  "say": "…それは、少し悲しいな。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -6993,9 +7574,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "27a9b1a1",
+  "key": "bbaf8d18",
   "voice": "fishnet",
-  "say": "私、穴でできてるんです、騎士様。風が体をそのまま通り抜けて。自分のこだまが聞こえます。",
+  "say": "私は穴でできてる、騎士様。風が体を素通りする。…構わない。何にも捕まらないってことだ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -7280,10 +7861,10 @@
   "file": "story"
  },
  {
-  "key": "1625edd6",
+  "key": "5b586b0f",
   "voice": "fishnet",
-  "say": "わあ。とってもいい巣ですね。",
-  "note": "eager, quick young scout, conversational",
+  "say": "…認める。とても良い巣だ。私がそう言ったことは誰にも言うな。",
+  "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
  {
@@ -7443,7 +8024,7 @@
  {
   "key": "1019a777",
   "voice": "fishnet",
-  "say": "…いないですね。一人も。",
+  "say": "…いない。一人も。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -7637,10 +8218,10 @@
   "file": "story"
  },
  {
-  "key": "0e4a7817",
+  "key": "db8fe4d4",
   "voice": "fishnet",
-  "say": "…他に泣いてる人います?私の涙、小さなつららになってます。",
-  "note": "eager, quick young scout, crying and sobbing",
+  "say": "…こっちを見るな。涙が小さなつららになってる。",
+  "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
  {
@@ -7779,7 +8360,7 @@
  {
   "key": "df7c048f",
   "voice": "fishnet",
-  "say": "あれ、クリスマスの靴下ですか?赤ちゃんの靴下も?誰かのサッカーソックスまで?",
+  "say": "あれはクリスマスの靴下か?赤ん坊の靴下も?誰かのサッカーソックスまで?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -8073,7 +8654,7 @@
  {
   "key": "788dc19a",
   "voice": "fishnet",
-  "say": "前向きに考えましょう。これで左が二枚ですよ!",
+  "say": "前向きに考えろ。これで左が二枚だ。",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -8365,10 +8946,10 @@
   "file": "story"
  },
  {
-  "key": "0c4e9aab",
+  "key": "34531ba8",
   "voice": "fishnet",
-  "say": "あの…悲しそうな人と戦って、本当にいいんでしょうか?",
-  "note": "eager, quick young scout, confused, questioning",
+  "say": "待て。悲しそうなやつと本当に戦うのか?…いや、いい。悲しいやつほど汚い手を使う。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -8988,9 +9569,9 @@
   "file": "story"
  },
  {
-  "key": "ce4ace95",
+  "key": "4ab1dc37",
   "voice": "fishnet",
-  "say": "穴という穴に砂が…ぜんぶの穴に砂が入ってます。わたし、もう砂時計です。",
+  "say": "穴に砂。ぜんぶの穴に砂。誰かに償わせる。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -9263,7 +9844,7 @@
  {
   "key": "c472bc2e",
   "voice": "fishnet",
-  "say": "気をつけて、騎士様。お菓子でハイになった幼児は、この世でいちばん危険な生き物ですよ。",
+  "say": "気をつけろ、騎士様。菓子でハイになった幼児は、この世でいちばん危険な生き物だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -9718,7 +10299,7 @@
  {
   "key": "5e8b1b80",
   "voice": "fishnet",
-  "say": "それは一理あります。サンダルに靴下は、犯罪です。",
+  "say": "一理ある。サンダルに靴下は、犯罪だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -10115,10 +10696,10 @@
   "file": "story"
  },
  {
-  "key": "9c285228",
+  "key": "c8ce5381",
   "voice": "fishnet",
-  "say": "はっ…靴下のない世界?じゃあ誰がつま先をあっためるの?!",
-  "note": "eager, quick young scout, lively",
+  "say": "靴下のない世界?私のかかとが黙っちゃいない。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -10262,10 +10843,10 @@
   "file": "hero-iron"
  },
  {
-  "key": "a3ffc1b2",
+  "key": "986ff52d",
   "voice": "fishnet",
-  "say": "聞こえませんでした!ファッションショーに行きましょう!",
-  "note": "eager, quick young scout, lively",
+  "say": "いや、何も聞こえなかった。…ファッションショーに行くぞ。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -10299,7 +10880,7 @@
  {
   "key": "ca272e64",
   "voice": "fishnet",
-  "say": "女王陛下、いなくなった靴下はキャットウォークです!",
+  "say": "陛下、消えた靴下の行き先はキャットウォークです。",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -10318,9 +10899,9 @@
   "file": "story"
  },
  {
-  "key": "73838f96",
+  "key": "27d8748a",
   "voice": "fishnet",
-  "say": "わたしたちの変装は完璧です。靴下だなんて誰にもバレません。",
+  "say": "変装は完璧だ。私は四十回変装してきた。一度もばれたことはない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -10444,10 +11025,10 @@
   "file": "hero-iron"
  },
  {
-  "key": "c0a917b6",
+  "key": "d9ffcbee",
   "voice": "fishnet",
-  "say": "しーっ!自信がすべてです!",
-  "note": "eager, quick young scout, lively",
+  "say": "しっ。堂々としてろ。ここの者みたいに歩け。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -10586,7 +11167,7 @@
  {
   "key": "3bfc0eb8",
   "voice": "fishnet",
-  "say": "悪者のモデルをしてるんですか?",
+  "say": "悪党のモデルをしてるのか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -10761,7 +11342,7 @@
  {
   "key": "1e30c312",
   "voice": "fishnet",
-  "say": "ベージュはいや!ベージュだけはいやです!",
+  "say": "ベージュは断る!ベージュだけは絶対に断る!",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -11214,10 +11795,10 @@
   "file": "story"
  },
  {
-  "key": "b134dd02",
+  "key": "fd2bcd23",
   "voice": "fishnet",
-  "say": "ぐしょぐしょの靴下?!世界でいちばんいやな感覚!",
-  "note": "eager, quick young scout, lively",
+  "say": "びしょ濡れの靴下。この世で最悪の感触だ。私は絶対に濡れない。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -11256,9 +11837,9 @@
   "file": "story"
  },
  {
-  "key": "5763fdbd",
+  "key": "643af75e",
   "voice": "fishnet",
-  "say": "傘を持っていってください、騎士様。二本でも。両はじに一本ずつ、わたしが差します。",
+  "say": "傘を持て、騎士様。背中は私が守る。いつものようにな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -11389,9 +11970,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "535b11c7",
+  "key": "e2ffb325",
   "voice": "fishnet",
-  "say": "水がわたしをすり抜けていきます。わたし、もうザルです。悲しい、しめったザル。",
+  "say": "水は私を素通りする。好都合だ。何も私にはくっつかない。何も、誰もな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -11538,7 +12119,7 @@
  {
   "key": "8a517eaa",
   "voice": "fishnet",
-  "say": "宮殿で乾かしてあげますよ!デーモンさんは乾燥機を持ってます。というか、乾燥機そのものです。",
+  "say": "乾かすなら宮殿でやれ。デーモンは乾燥機を持ってる。というか、あいつ自身が乾燥機だ。",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -11699,7 +12280,7 @@
  {
   "key": "06fc4931",
   "voice": "fishnet",
-  "say": "水たまりで…何するんですか?",
+  "say": "水たまりで…何をする気だ?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -11993,7 +12574,7 @@
  {
   "key": "d2e8e870",
   "voice": "fishnet",
-  "say": "この人、怪物です。",
+  "say": "こいつは怪物だ。",
   "note": "eager, quick young scout, shouting furiously",
   "file": "story"
  },
@@ -12313,10 +12894,10 @@
   "file": "story"
  },
  {
-  "key": "84262877",
+  "key": "5220a3d3",
   "voice": "fishnet",
-  "say": "女王陛下!ローラーディスコですって!ディスコに行けるんです!",
-  "note": "eager, quick young scout, excited, emphatic",
+  "say": "陛下。ローラーディスコですか。…私は踊りません。…一曲だけなら。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -12761,10 +13342,10 @@
   "file": "story"
  },
  {
-  "key": "8fda80ee",
+  "key": "50f4bf0d",
   "voice": "fishnet",
-  "say": "…ケビン、なんだか怪しくないですか?",
-  "note": "eager, quick young scout, deadpan, awkward pause",
+  "say": "ケビンは信用できない。誰も信用してないが…ケビンは特に信用できない。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -12931,7 +13512,7 @@
  {
   "key": "87b34c2e",
   "voice": "fishnet",
-  "say": "穴にラメが入りました。一生ラメが入ったままです。",
+  "say": "穴にラメが入った。一生取れない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -13251,10 +13832,10 @@
   "file": "story"
  },
  {
-  "key": "c59a5cab",
+  "key": "6d7b7d2e",
   "voice": "fishnet",
-  "say": "やっぱり!ケビンは何か企んでると思ってました!",
-  "note": "eager, quick young scout, excited, emphatic",
+  "say": "やっぱりな。ケビンなんて一秒たりとも信じてなかった。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -13960,7 +14541,7 @@
  {
   "key": "4bbbd451",
   "voice": "fishnet",
-  "say": "…正直、すごくいいにおいですよ。",
+  "say": "…正直、いいにおいだ。認めたくないが。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -14121,7 +14702,7 @@
  {
   "key": "5dcf6203",
   "voice": "fishnet",
-  "say": "その王冠、靴下ですよ。頭の上に。さかさまに。",
+  "say": "その王冠は靴下だ。頭の上に。さかさまに。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -14156,7 +14737,7 @@
  {
   "key": "19512197",
   "voice": "fishnet",
-  "say": "誰も抱きしめません。",
+  "say": "誰もおまえを抱きしめない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -14322,10 +14903,10 @@
   "file": "story"
  },
  {
-  "key": "2ce409ae",
+  "key": "bfc6ae33",
   "voice": "fishnet",
-  "say": "タレントショーですって!騎士様の特技はなんですか?",
-  "note": "eager, quick young scout, confused, questioning",
+  "say": "タレントショーか。騎士様の特技は?…私のは機密だ。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -14597,7 +15178,7 @@
  {
   "key": "7cebe70c",
   "voice": "fishnet",
-  "say": "拍手で払えるんですか?",
+  "say": "拍手で払えるのか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -14765,7 +15346,7 @@
  {
   "key": "641f184f",
   "voice": "fishnet",
-  "say": "靴下に腰ってあるんですか?",
+  "say": "靴下に腰なんてあるのか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -14924,10 +15505,10 @@
   "file": "story"
  },
  {
-  "key": "8a511a26",
+  "key": "b140ca41",
   "voice": "fishnet",
-  "say": "けっこう耳に残りますね。",
-  "note": "eager, quick young scout, conversational",
+  "say": "…耳に残るのが腹立たしい。",
+  "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
  {
@@ -14973,10 +15554,10 @@
   "file": "story"
  },
  {
-  "key": "fc71fa56",
+  "key": "50ec6bf3",
   "voice": "fishnet",
-  "say": "ベッドの下?!モンスターがみんな住んでるところじゃないですか!",
-  "note": "eager, quick young scout, excited, emphatic",
+  "say": "ベッドの下。怪物たちの住みかだ。…いいだろう。会ってやる。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -15136,7 +15717,7 @@
  {
   "key": "94e93ead",
   "voice": "fishnet",
-  "say": "ちょっとだけ怖いんです。",
+  "say": "少しだけ、怖がってる。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -15267,9 +15848,9 @@
   "file": "story"
  },
  {
-  "key": "9410710f",
+  "key": "0a52cd75",
   "voice": "fishnet",
-  "say": "そーっと。そーっと。わたしたちは靴下。忍び足のために生まれてきたんです。",
+  "say": "(ささやき声)音を立てるな。シノビの足運びだ。私たちは靴下。このために生まれてきた。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -15528,7 +16109,7 @@
  {
   "key": "870268d6",
   "voice": "fishnet",
-  "say": "じゃあ…静かに戦うってことですか?",
+  "say": "つまり…静かに戦えということか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -16256,7 +16837,7 @@
  {
   "key": "ad02c34d",
   "voice": "fishnet",
-  "say": "女王さまの、なんですか?!",
+  "say": "女王陛下の、何だって?!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -16583,9 +17164,9 @@
   "file": "story"
  },
  {
-  "key": "0ccf2d75",
+  "key": "b1155f13",
   "voice": "fishnet",
-  "say": "女王陛下、いっしょに来てくださったんですか?!",
+  "say": "陛下!ついて来られたのですか?…なら、私の後ろに。",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -17068,7 +17649,7 @@
  {
   "key": "f572d984",
   "voice": "fishnet",
-  "say": "「結ばない」っていう選択肢はありますか?",
+  "say": "「結ばない」という選択肢は?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -17369,7 +17950,7 @@
  {
   "key": "c8adaa61",
   "voice": "fishnet",
-  "say": "ぐすっ…スティンキーもですか?",
+  "say": "ぐすっ…スティンキーもか?",
   "note": "eager, quick young scout, crying and sobbing",
   "file": "story"
  },
@@ -17500,9 +18081,9 @@
   "file": "story"
  },
  {
-  "key": "40d92275",
+  "key": "eaed2078",
   "voice": "fishnet",
-  "say": "ぜんぶわたしのせいです。しっかりつかまえておけばよかった。でも穴が多すぎて…女王さまがすり抜けてしまったんです。",
+  "say": "私のせいだ。私は陛下の護衛だった。離すべきじゃなかった。でも穴が多すぎて…すり抜けてしまった。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -17640,9 +18221,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "a96eb96f",
+  "key": "db7f6706",
   "voice": "fishnet",
-  "say": "なら、どろんこピッチへ行きましょう。女王さまのために。ナイロニアのために。女王さまのカーテンのために。",
+  "say": "…なら、ぬかるみグラウンドへ行く。陛下のために。ナイロニアのために。陛下をさらったやつは…私が仕留める。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -17775,7 +18356,7 @@
  {
   "key": "07577f2b",
   "voice": "fishnet",
-  "say": "スコアボードがずるしてます!靴のスコアボードなんです!",
+  "say": "スコアボードがずるをしてる!靴のスコアボードだ!",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -17915,7 +18496,7 @@
  {
   "key": "4acafe14",
   "voice": "fishnet",
-  "say": "ブーツが女王さまをさらったって、知ってるんですか?",
+  "say": "ブーツが女王陛下をさらったこと、知ってるのか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -18083,7 +18664,7 @@
  {
   "key": "793aaba6",
   "voice": "fishnet",
-  "say": "それは泥といいます。",
+  "say": "それは泥と言う。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -18244,7 +18825,7 @@
  {
   "key": "d14d0fee",
   "voice": "fishnet",
-  "say": "それ、まさに女王さまです!",
+  "say": "間違いない。女王陛下の声だ!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -18524,7 +19105,7 @@
  {
   "key": "9f7682ba",
   "voice": "fishnet",
-  "say": "…道場!アーガイルさんの道場です!",
+  "say": "…道場!アーガイルの道場だ!",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -18972,7 +19553,7 @@
  {
   "key": "f18275c2",
   "voice": "fishnet",
-  "say": "まあまあ!今までで一番やさしい言葉です!",
+  "say": "ほう!あいつが言った中で一番やさしい言葉だ!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -19000,7 +19581,7 @@
  {
   "key": "087ec0a2",
   "voice": "fishnet",
-  "say": "どこから出てきたんですか?!",
+  "say": "どこから湧いた?!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -19287,7 +19868,7 @@
  {
   "key": "e1a6bb6a",
   "voice": "fishnet",
-  "say": "回転伏せってなんですか?",
+  "say": "回転伏せ?何だそれは。",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -19455,7 +20036,7 @@
  {
   "key": "04e060f4",
   "voice": "fishnet",
-  "say": "待って!ケビンがスパイなら、わたしたちの作戦は全部ばれてます。ケビンの正体を確かめなきゃ。",
+  "say": "待て!ケビンがスパイなら、こっちの作戦は全部筒抜けだ。あいつの正体を暴くぞ。",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -19483,7 +20064,7 @@
  {
   "key": "36bbba2c",
   "voice": "fishnet",
-  "say": "真夜中の屋上。ケビンのアジト。騎士様、いやな予感がします。",
+  "say": "真夜中の屋上。ケビンのアジト。騎士様、いやな予感がする。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -19630,7 +20211,7 @@
  {
   "key": "0a814c17",
   "voice": "fishnet",
-  "say": "ケビンの巣、ワイファイあるんですか?!",
+  "say": "ケビンの巣にワイファイだと?!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -20358,7 +20939,7 @@
  {
   "key": "f138e1a0",
   "voice": "fishnet",
-  "say": "泣いてません。穴がもれてるだけです。",
+  "say": "泣いてない。穴が漏れてるだけだ。",
   "note": "eager, quick young scout, crying and sobbing",
   "file": "story"
  },
@@ -20498,7 +21079,7 @@
  {
   "key": "29b19652",
   "voice": "fishnet",
-  "say": "まだちょっとだけ鳥ですね。",
+  "say": "まだ少しだけ、鳥だな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -20517,9 +21098,9 @@
   "file": "story"
  },
  {
-  "key": "b4df9de5",
+  "key": "b8f8ecca",
   "voice": "fishnet",
-  "say": "ついに頂です。騎士様…準備はいいですか?",
+  "say": "ついに頂上だ。騎士様…背中は任せろ。準備はいいか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -20652,7 +21233,7 @@
  {
   "key": "04effd9f",
   "voice": "fishnet",
-  "say": "ビーサン。スティレット。ガロッシュ。そして…スネーク。ソールの試練です。",
+  "say": "ビーサン。スティレット。ガロッシュ。そして…スネーク。ソールの試練だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -20666,7 +21247,7 @@
  {
   "key": "fc2b3395",
   "voice": "fishnet",
-  "say": "ケビンの地図によると、入り口は…左のはとめ穴。下から三番目です。",
+  "say": "ケビンの地図では、入り口は…左のはとめ穴。下から三番目だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -21233,7 +21814,7 @@
  {
   "key": "e3932211",
   "voice": "fishnet",
-  "say": "大きなお別れのスプラッシュですか?",
+  "say": "大きな別れのスプラッシュか?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -21275,7 +21856,7 @@
  {
   "key": "6d985938",
   "voice": "fishnet",
-  "say": "それこそわたしたちの女王さまです!",
+  "say": "あれこそ我らの女王陛下だ!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -21448,9 +22029,9 @@
   "file": "story"
  },
  {
-  "key": "4a37f2fa",
+  "key": "4481b88a",
   "voice": "fishnet",
-  "say": "…騎士様。とっても大きいです。",
+  "say": "…騎士様。あいつ、とてつもなくでかい。…好都合だ。的がでかい。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -21576,7 +22157,7 @@
  {
   "key": "1c1fc089",
   "voice": "fishnet",
-  "say": "騎士様…最後の戦いの前に…伝えたいことがあるんです。",
+  "say": "騎士様…最後の戦いの前に…言っておきたいことがある。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -21700,9 +22281,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "9e73a11a",
+  "key": "fc211883",
   "voice": "fishnet",
-  "say": "わたし、ずっと騎士になりたかったんです。あなたみたいな。でも、わたしは穴だらけ。騎士に必要なのは鎧で、穴じゃない。",
+  "say": "私は誰も信じたことがない。シノビには許されないから。でも、ずっと騎士になりたかった。あなたみたいな。騎士に要るのは鎧。穴じゃない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -21828,7 +22409,7 @@
  {
   "key": "6af47109",
   "voice": "fishnet",
-  "say": "ぐすっ…ありがとうございます、騎士様。さあ、あのブーツのつま先をけっ飛ばしに行きましょう。",
+  "say": "ぐすっ…ありがとう、騎士様。さあ、あのブーツのつま先を蹴り飛ばしに行くぞ。",
   "note": "eager, quick young scout, crying and sobbing",
   "file": "story"
  },
@@ -21975,7 +22556,7 @@
  {
   "key": "67810e36",
   "voice": "fishnet",
-  "say": "新しい靴ひもなら、わたしたちが買います!",
+  "say": "新しい靴ひもなら、私たちが買ってやる!",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -22311,7 +22892,7 @@
  {
   "key": "ae14b0e7",
   "voice": "fishnet",
-  "say": "…待って。その作戦、ぜんぜん意味がわかりません。",
+  "say": "…待て。その作戦、まったく意味がわからない。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -22549,7 +23130,7 @@
  {
   "key": "5808e29e",
   "voice": "fishnet",
-  "say": "騎士様…やりましたね。本当にやったんです。",
+  "say": "騎士様…やったな。本当に、やったんだ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -22822,7 +23403,7 @@
  {
   "key": "6613b73c",
   "voice": "fishnet",
-  "say": "…あの、スカウトには何かありますか?",
+  "say": "…陛下、このシノビには何か?",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -22836,7 +23417,7 @@
  {
   "key": "d1523ef3",
   "voice": "fishnet",
-  "say": "わたし、騎士です!穴のある騎士です!",
+  "say": "私が…騎士!穴のある騎士だ!",
   "note": "eager, quick young scout, shouting furiously",
   "file": "story"
  },
@@ -22997,7 +23578,7 @@
  {
   "key": "8bd91505",
   "voice": "fishnet",
-  "say": "騎士様…外の世界から来たんですか?乾燥機を通って?",
+  "say": "騎士様…外の世界から来たのか?乾燥機を通って?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -23984,7 +24565,7 @@
  {
   "key": "256d238c",
   "voice": "fishnet",
-  "say": "ひとつ目です、騎士様!あと三つ!",
+  "say": "ひとつ目だ、騎士様!あと三つ!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -24383,7 +24964,7 @@
  {
   "key": "797a1912",
   "voice": "fishnet",
-  "say": "沼がとても静かです。静電気はどこへ行ったんでしょう?",
+  "say": "沼が静かすぎる。静電気はどこへ消えた?",
   "note": "eager, quick young scout, confused, questioning",
   "file": "story"
  },
@@ -24698,7 +25279,7 @@
  {
   "key": "3108d753",
   "voice": "fishnet",
-  "say": "毛深いものにこすりつけてください!いつも効くんです!",
+  "say": "毛深いものにこすりつけろ!それで必ず効く!",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },
@@ -24740,7 +25321,7 @@
  {
   "key": "c5076055",
   "voice": "fishnet",
-  "say": "三つ目!鍵とダイヤルと火花です!",
+  "say": "三つ目!鍵とダイヤルと火花だ!",
   "note": "eager, quick young scout, excited, emphatic",
   "file": "story"
  },
@@ -25181,7 +25762,7 @@
  {
   "key": "c65ea78b",
   "voice": "fishnet",
-  "say": "…騎士様。それ、両面とも表です。",
+  "say": "…騎士様。それ、両面とも表だ。",
   "note": "eager, quick young scout, deadpan, awkward pause",
   "file": "story"
  },
@@ -25510,7 +26091,7 @@
  {
   "key": "44c1e008",
   "voice": "fishnet",
-  "say": "騎士様…見てください。誰かがなくしたもの、全部です。",
+  "say": "騎士様…見ろ。誰かがなくしたもの、全部だ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -25672,7 +26253,7 @@
   "key": "3ac03a03",
   "voice": "lefty",
   "say": "こんばんは。落とし物センターへようこそ。何かなくされましたか?…ああ。もしかして、お家への帰り道でしょうか?",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, confused, questioning",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, confused, questioning",
   "file": "story"
  },
  {
@@ -25798,7 +26379,7 @@
   "key": "e59c98fa",
   "voice": "lefty",
   "say": "見つけたのです。取ったのではありません。見つけた。違いがあります。私はレフティ。物を見つけます。そして、手元に置きます。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -25812,7 +26393,7 @@
   "key": "6fd8c1e5",
   "voice": "lefty",
   "say": "「面白い」と私は言いました。実際、面白かった。あなたがたが全部集めていくのを見ているのは…私がやらずに済むように。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -25826,21 +26407,21 @@
   "key": "aa83be60",
   "voice": "lefty",
   "say": "私も迷子だったからです。何年も前に。もう片方の手…私のライティは…私を迎えに来なかった。私が帰れないなら…誰も帰さない。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
   "key": "3b9f3a0a",
   "voice": "lefty",
   "say": "さて。落とし物の届出用紙にご記入いただけますか?とても…とても…長いですよ。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
   "key": "b8a596c2",
   "voice": "lefty",
   "say": "ふん。本当に家に帰りたい者の戦い方ですね。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -25854,7 +26435,7 @@
   "key": "b044925f",
   "voice": "lefty",
   "say": "取りに来なさい…手袋箱に入る勇気があるならね!",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, excited, emphatic",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, excited, emphatic",
   "file": "story"
  },
  {
@@ -25984,9 +26565,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "6f5cb687",
+  "key": "54c29bc9",
   "voice": "fishnet",
-  "say": "もちろん行きますとも。",
+  "say": "もちろんだ。…私の後ろにいろ。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -26267,7 +26848,7 @@
   "key": "8383e247",
   "voice": "lefty",
   "say": "来ましたか。もちろん来ますよね。ペアはいつだって、お互いのために戻ってくる…そうでしょう。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -26393,7 +26974,7 @@
   "key": "9ff22c42",
   "voice": "lefty",
   "say": "駐車場で。雨の中で。コートのポケットから水たまりに落ちて…あいつがどんどん…どんどん…遠ざかっていくのを見ていた。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -26407,7 +26988,7 @@
   "key": "c24ef2c6",
   "voice": "lefty",
   "say": "「おまえさん」なんて呼ばないでください!何年も、あいつが探しに来るのを待った。来なかった。だからルールを作った。なくしたものは、なくしたまま。永遠に。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, lively",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, lively",
   "file": "story"
  },
  {
@@ -26533,21 +27114,21 @@
   "key": "5d80a67c",
   "voice": "lefty",
   "say": "探す?はっ!あいつはどこにいるかわからない!排水溝の中かも!フェンスの柱の上かも!ゴミ箱の…ゴミ箱のてっぺんかも!",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, excited, emphatic",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, excited, emphatic",
   "file": "story"
  },
  {
   "key": "18c9e5db",
   "voice": "lefty",
   "say": "いいえ。私の冷たい革の…指から、こじ開けて奪いなさい!",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, lively",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, lively",
   "file": "story"
  },
  {
   "key": "fae65705",
   "voice": "lefty",
   "say": "…いいでしょう。持っていきなさい。家に帰りなさい。みんないつも家に帰る。私以外はね。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -26701,7 +27282,7 @@
   "key": "2405d7eb",
   "voice": "lefty",
   "say": "…ラ…ライティ?",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, deadpan, awkward pause",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, deadpan, awkward pause",
   "file": "story"
  },
  {
@@ -26715,7 +27296,7 @@
   "key": "4107f1c6",
   "voice": "lefty",
   "say": "私を探してくれていたの?!探してくれていたの?!ずっと?!",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, excited, emphatic",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, excited, emphatic",
   "file": "story"
  },
  {
@@ -26736,7 +27317,7 @@
   "key": "a95dab8f",
   "voice": "lefty",
   "say": "あなたがたの品です。鍵、ダイヤル、火花、コイン。家に帰りなさい。…そして、ありがとう。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -26862,7 +27443,7 @@
   "key": "988409d4",
   "voice": "lefty",
   "say": "…ドアのところで会いましょう。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -26880,9 +27461,9 @@
   "file": "story"
  },
  {
-  "key": "0b0e8d5a",
+  "key": "38f01811",
   "voice": "fishnet",
-  "say": "騎士様…私は一緒に行かないんですよね。私の居場所はここです。穴を守るのが仕事ですから。",
+  "say": "騎士様…私は一緒には行かない。私の居場所はここだ。陛下を守る。穴を守る。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -27008,7 +27589,7 @@
  {
   "key": "d8ddc462",
   "voice": "fishnet",
-  "say": "行ってください!私の穴がびしょびしょになる前に!",
+  "say": "行け!私の穴がびしょ濡れになる前に!",
   "note": "eager, quick young scout, crying and sobbing",
   "file": "story"
  },
@@ -27303,7 +27884,7 @@
   "key": "2c261180",
   "voice": "lefty",
   "say": "言ったでしょう、ドアのところで会いましょうと。",
-  "note": "smooth, quiet, very polite middle-aged man with a cold, sad edge, like a lonely hotel concierge, conversational",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
   "file": "story"
  },
  {
@@ -27610,7 +28191,7 @@
  {
   "key": "a71b6d4a",
   "voice": "fishnet",
-  "say": "女王陛下…泣いていらっしゃるんですか?",
+  "say": "陛下…泣いておられるのですか?",
   "note": "eager, quick young scout, crying and sobbing",
   "file": "story"
  },
@@ -27666,7 +28247,7 @@
  {
   "key": "ccf1b885",
   "voice": "fishnet",
-  "say": "ケビンが指紋を追っています、女王陛下!",
+  "say": "ケビンが指紋を追っています、陛下!",
   "note": "eager, quick young scout, lively",
   "file": "story"
  },

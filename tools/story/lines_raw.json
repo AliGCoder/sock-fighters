@@ -2,6 +2,54 @@
  "PROLOGUE": [
   {
    "who": "narr",
+   "text": "*HOME. 11:58 PM. A sleepy human, an overflowing laundry basket, and one very old washing machine.*"
+  },
+  {
+   "who": "narr",
+   "text": "*The washing machine shudders... rattles... and goes BANG! Bubbles EVERYWHERE!*"
+  },
+  {
+   "who": "narr",
+   "text": "*\"Ugh,\" groans the human, scooping everything into the basket. \"Coin laundry it is.\"*"
+  },
+  {
+   "who": "stinky",
+   "text": "Squashed... in a basket... under a WET TOWEL. This is the worst night of my life."
+  },
+  {
+   "who": "argyle",
+   "text": "Breathe, Stinky-san. A samurai stays calm. Even upside down."
+  },
+  {
+   "who": "gran",
+   "text": "Is this the bus? Nobody told me there was a bus!"
+  },
+  {
+   "who": "narr",
+   "text": "*Down the dark street they go. Bump. Bump. BUMP! The basket swings with every sleepy stomp.*"
+  },
+  {
+   "who": "narr",
+   "text": "*COIN LAUNDRY 24H. The human flops into a plastic chair... and starts to snore.*"
+  },
+  {
+   "who": "narr",
+   "text": "*The basket tips over. Out roll three socks... right in front of Dryer No. 7.*"
+  },
+  {
+   "who": "gran",
+   "text": "Who moved the floor?"
+  },
+  {
+   "who": "stinky",
+   "text": "Gran. We're on the FLOOR. Of a LAUNDRETTE. At MIDNIGHT."
+  },
+  {
+   "who": "argyle",
+   "text": "Shh. ...Do you hear that? Something is humming."
+  },
+  {
+   "who": "narr",
    "text": "The coin laundry. Midnight. Somewhere, a sock is about to go missing..."
   },
   {
@@ -22,7 +70,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Psst! Down here! Agent Fishnet, Royal Scout of Nylonia. This is a SECRET mission. Act natural."
+   "text": "Don't move. Don't scream. Agent Fishnet, shinobi of the Royal Court of Nylonia. This mission is SECRET. You never saw me."
   },
   {
    "who": "argyle",
@@ -30,7 +78,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Because it's SECRET! ...Also my goggles are on upside down. Hold on."
+   "text": "Because walls have ears. Dryers have ears. YOU might have ears. I trust nobody."
   },
   {
    "who": "fishnet",
@@ -50,7 +98,7 @@
   },
   {
    "who": "fishnet",
-   "text": "*checks a tiny notebook* Hmm. It says here: \"brave, heroic, smells of roses.\" ...Close enough!"
+   "text": "*checks a tiny notebook* \"Brave. Heroic. Smells of roses.\" ...Two out of three. You will do."
   },
   {
    "who": "stinky",
@@ -62,7 +110,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Great! Hold on to something. Going through the dryer is a bit... TUMBLY. Follow me, hero!"
+   "text": "Hold on to something. The dryer is rough. Stay close, keep quiet, and do NOT fall behind. Move!"
   }
  ],
  "PALACE_ARRIVAL": [
@@ -80,7 +128,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Reporting for duty, Your Majesty!"
+   "text": "Agent Fishnet. Reporting, Your Majesty. ...Your window latch is broken. Anyone could get in."
   },
   {
    "who": "queen",
@@ -88,7 +136,7 @@
   },
   {
    "who": "fishnet",
-   "text": "I've got lots of holes, so I'm very breathable on long trips."
+   "text": "I have holes, Your Majesty. Nobody can grab me. Nobody can hold me. Nobody gets close."
   },
   {
    "who": "queen",
@@ -109,12 +157,20 @@
    "text": "It tripped ME."
   },
   {
+   "who": "hero",
+   "text": "Your Majesty... the Lint Gang took our friends. They're taking them to the Demon."
+  },
+  {
+   "who": "queen",
+   "text": "Then We shall get them back. Our royal spies are already following the fluff. It leads to the swamp."
+  },
+  {
    "who": "queen",
    "text": "Next: the STATIC SWAMP. Our royal engineers have FINALLY finished the bridge. It only took them three years."
   },
   {
    "who": "fishnet",
-   "text": "It's a very nice bridge."
+   "text": "I checked the bridge. Twice. ...It's a very nice bridge."
   },
   {
    "who": "queen",
@@ -156,7 +212,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Should we... say something?"
+   "text": "Nobody move. Let her have her moment."
   },
   {
    "who": "queen",
@@ -174,7 +230,7 @@
   },
   {
    "who": "fishnet",
-   "text": "It's mostly just a drawing of a fish. Signed: 'a fish'."
+   "text": "I checked it for traps. It's a drawing of a fish. Signed: 'a fish'."
   },
   {
    "who": "queen",
@@ -216,7 +272,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Your Majesty, that is just a crown with a shower cap on it."
+   "text": "Your Majesty, that is a crown with a shower cap on it. I will not be saluting it."
   },
   {
    "who": "queen",
@@ -266,7 +322,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Best. Mission. EVER."
+   "text": "Mission complete. ...Fine. It was fun. Tell no one."
   }
  ],
  "PALACE_AFTER_CH6": [
@@ -280,7 +336,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Your Majesty, the Mitten Peaks are freezing. Might we borrow a scarf?"
+   "text": "Your Majesty, the Mitten Peaks are freezing. I need a scarf. A DARK one."
   },
   {
    "who": "queen",
@@ -314,25 +370,211 @@
   },
   {
    "who": "fishnet",
-   "text": "...Your Majesty, I think I hear something in the shoe cupboard."
+   "text": "...Quiet. Something is moving in the shoe cupboard. Stay behind me, Your Majesty."
   },
   {
    "who": "queen",
    "text": "...Oh no. Not the SHOES."
   }
  ],
+ "CH1_KIDNAP": [
+  {
+   "who": "narr",
+   "text": "*THE LINT PLAINS. The dryer spits everyone out into a field of fluff. They look around. Where ARE they?*"
+  },
+  {
+   "who": "fishnet",
+   "text": "Welcome to Nylonia. The palace is past these plains. Stay close, eyes open, and do NOT touch the fluff. I don't trust it."
+  },
+  {
+   "who": "argyle",
+   "text": "This fluff is... watching us."
+  },
+  {
+   "who": "gran",
+   "text": "Ooh, it's like walking on a sweater. ...My back LOVES it."
+  },
+  {
+   "who": "narr",
+   "text": "*A-CHOO! A-CHOO! A-CHOO! Lint Gang babies pop out of every fluff ball. Dozens of them!*"
+  },
+  {
+   "who": "lint",
+   "text": "GET THEM, BABIES! The boss wants HOSTAGES!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Get behind me. ALL of you. HI-YAH!"
+  },
+  {
+   "who": "narr",
+   "text": "*Fishnet Scout flips, kicks and karate-chops. Lint flies everywhere... but there are just too many of them. The babies dogpile her, face-down in the fluff!*"
+  },
+  {
+   "who": "argyle",
+   "text": "Unhand me, you fuzz! A samurai does NOT get carried like LAUNDRY!"
+  },
+  {
+   "who": "gran",
+   "text": "Put me down! I have a BAD BACK! ...And a WORSE TEMPER!"
+  },
+  {
+   "who": "narr",
+   "text": "*Fishnet reaches out a hand... but the Lint Gang hoists Argyle-san and Stocking Gran onto their tiny shoulders and scurries off into the fog.*"
+  },
+  {
+   "who": "lint",
+   "text": "Want your friends back? Come and FIND them! HAHAHA! ...ACHOO!"
+  },
+  {
+   "who": "fishnet",
+   "text": "*panting* ...I failed them, Sir Knight. There were too many. That won't happen again."
+  },
+  {
+   "who": "hero",
+   "text": "They took them. They actually took them."
+  },
+  {
+   "who": "fishnet",
+   "text": "We get them back. Tonight. The Lint Gang's leader is still out here. We start with him... and he WILL talk."
+  }
+ ],
+ "CH1_KIDNAP_ARGYLE": [
+  {
+   "who": "narr",
+   "text": "*THE LINT PLAINS. The dryer spits everyone out into a field of fluff. They look around. Where ARE they?*"
+  },
+  {
+   "who": "fishnet",
+   "text": "Welcome to Nylonia. The palace is past these plains. Stay close, eyes open, and do NOT touch the fluff. I don't trust it."
+  },
+  {
+   "who": "stinky",
+   "text": "Smells like a gym bag in here. ...Wait, that's me."
+  },
+  {
+   "who": "gran",
+   "text": "Ooh, it's like walking on a sweater. ...My back LOVES it."
+  },
+  {
+   "who": "narr",
+   "text": "*A-CHOO! A-CHOO! A-CHOO! Lint Gang babies pop out of every fluff ball. Dozens of them!*"
+  },
+  {
+   "who": "lint",
+   "text": "GET THEM, BABIES! The boss wants HOSTAGES!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Get behind me. ALL of you. HI-YAH!"
+  },
+  {
+   "who": "narr",
+   "text": "*Fishnet Scout flips, kicks and karate-chops. Lint flies everywhere... but there are just too many of them. The babies dogpile her, face-down in the fluff!*"
+  },
+  {
+   "who": "stinky",
+   "text": "HEY! My other half is gone and NOW this?! PUT ME DOWN!"
+  },
+  {
+   "who": "gran",
+   "text": "Put me down! I have a BAD BACK! ...And a WORSE TEMPER!"
+  },
+  {
+   "who": "narr",
+   "text": "*Fishnet reaches out a hand... but the Lint Gang hoists Stinky Tabi and Stocking Gran onto their tiny shoulders and scurries off into the fog.*"
+  },
+  {
+   "who": "lint",
+   "text": "Want your friends back? Come and FIND them! HAHAHA! ...ACHOO!"
+  },
+  {
+   "who": "fishnet",
+   "text": "*panting* ...I failed them, Sir Knight. There were too many. That won't happen again."
+  },
+  {
+   "who": "hero",
+   "text": "They took them. They actually took them."
+  },
+  {
+   "who": "fishnet",
+   "text": "We get them back. Tonight. The Lint Gang's leader is still out here. We start with him... and he WILL talk."
+  }
+ ],
+ "CH1_KIDNAP_GRAN": [
+  {
+   "who": "narr",
+   "text": "*THE LINT PLAINS. The dryer spits everyone out into a field of fluff. They look around. Where ARE they?*"
+  },
+  {
+   "who": "fishnet",
+   "text": "Welcome to Nylonia. The palace is past these plains. Stay close, eyes open, and do NOT touch the fluff. I don't trust it."
+  },
+  {
+   "who": "stinky",
+   "text": "Smells like a gym bag in here. ...Wait, that's me."
+  },
+  {
+   "who": "argyle",
+   "text": "This fluff is... watching us."
+  },
+  {
+   "who": "narr",
+   "text": "*A-CHOO! A-CHOO! A-CHOO! Lint Gang babies pop out of every fluff ball. Dozens of them!*"
+  },
+  {
+   "who": "lint",
+   "text": "GET THEM, BABIES! The boss wants HOSTAGES!"
+  },
+  {
+   "who": "fishnet",
+   "text": "Get behind me. ALL of you. HI-YAH!"
+  },
+  {
+   "who": "narr",
+   "text": "*Fishnet Scout flips, kicks and karate-chops. Lint flies everywhere... but there are just too many of them. The babies dogpile her, face-down in the fluff!*"
+  },
+  {
+   "who": "stinky",
+   "text": "HEY! My other half is gone and NOW this?! PUT ME DOWN!"
+  },
+  {
+   "who": "argyle",
+   "text": "Unhand me, you fuzz! A samurai does NOT get carried like LAUNDRY!"
+  },
+  {
+   "who": "narr",
+   "text": "*Fishnet reaches out a hand... but the Lint Gang hoists Stinky Tabi and Argyle-san onto their tiny shoulders and scurries off into the fog.*"
+  },
+  {
+   "who": "lint",
+   "text": "Want your friends back? Come and FIND them! HAHAHA! ...ACHOO!"
+  },
+  {
+   "who": "fishnet",
+   "text": "*panting* ...I failed them, Sir Knight. There were too many. That won't happen again."
+  },
+  {
+   "who": "hero",
+   "text": "They took them. They actually took them."
+  },
+  {
+   "who": "fishnet",
+   "text": "We get them back. Tonight. The Lint Gang's leader is still out here. We start with him... and he WILL talk."
+  }
+ ],
  "CH1_INTRO": [
+  {
+   "who": "narr",
+   "text": "*They follow the trail of fluff into the fog. Somewhere ahead... a sniffle. The gang's leader stayed behind.*"
+  },
   {
    "who": "hero",
    "text": "Ugh. It's like walking on a sweater that gave up."
   },
   {
-   "who": "fishnet",
-   "text": "The LINT PLAINS, Sir Knight! The Demon's Lint Gang guards the way to the Static Swamp."
-  },
-  {
    "who": "lint",
-   "text": "HALT! You are entering the land of the... *ACHOO!* ...LINT GANG!"
+   "text": "HALT! You will never find your friends! The babies took them to the... *ACHOO!*"
   },
   {
    "who": "narr",
@@ -348,19 +590,15 @@
   },
   {
    "who": "hero",
-   "text": "...Did you just sneeze out your whole GANG?"
+   "text": "Took them WHERE? Where are our friends?"
   },
   {
    "who": "lint",
-   "text": "Every Lint Gang member is born from a sneeze. It's beautiful, actually."
-  },
-  {
-   "who": "lint",
-   "text": "We are FOUR THOUSAND strong!"
+   "text": "Not telling! Every Lint Gang member is born from a sneeze, and we are FOUR THOUSAND strong!"
   },
   {
    "who": "hero",
-   "text": "There are four of you."
+   "text": "There are four of you. The rest ran off with our friends."
   },
   {
    "who": "lint",
@@ -380,23 +618,23 @@
   },
   {
    "who": "narr",
-   "text": "*A MASSIVE sneeze-wind blasts across the plains! Everybody is covered in fluff. The Lint Gang runs for it!*"
+   "text": "*A MASSIVE sneeze-wind blasts across the plains! Everybody is covered in fluff. His last three babies run off after the others!*"
   },
   {
    "who": "fishnet",
-   "text": "I'm FUZZY! There's lint in ALL my holes!"
+   "text": "Lint. In every one of my holes. Somebody is going to PAY for this."
   },
   {
    "who": "hero",
-   "text": "...I'm a sweater now."
+   "text": "...I'm a sweater now. And YOU are all alone."
   },
   {
    "who": "lint",
-   "text": "My gang... ran away. *sniff* ...FINE! I'll fight you MYSELF!"
+   "text": "My gang... ran away. AGAIN. *sniff* ...FINE! Beat me and MAYBE I'll tell you where they went!"
   },
   {
    "who": "fishnet",
-   "text": "Go get him, Sir Knight! I'd help, but I'm mostly holes."
+   "text": "Take him, Sir Knight. For our friends. I'll watch your back."
   }
  ],
  "CH1_MID": [
@@ -406,25 +644,33 @@
   },
   {
    "who": "hero",
-   "text": "You're related to the Lint Gang?"
+   "text": "He told us the gang carried our friends this way. Seen them?"
   },
   {
    "who": "socklet",
-   "text": "We're ALL related to the Lint Gang. It's a whole sneeze thing."
+   "text": "Maybe! We're ALL related to the Lint Gang. It's a whole sneeze thing."
   },
   {
    "who": "fishnet",
-   "text": "This is the weirdest family tree I have ever seen."
+   "text": "A family born from sneezes. I trust them even less now."
   },
   {
    "who": "socklet",
-   "text": "I may be tiny, but these ankles are FAST. Try to keep up!"
+   "text": "Want to know where they went? Catch me first! These ankles are FAST!"
   }
  ],
  "CH1_BOSS": [
   {
    "who": "holey",
    "text": "Nobody passes! The Demon made ME guardian of the plains!"
+  },
+  {
+   "who": "hero",
+   "text": "Did a gang of lint babies carry two socks past here?"
+  },
+  {
+   "who": "holey",
+   "text": "Maybe. They went straight through me. I'm very... holey."
   },
   {
    "who": "hero",
@@ -453,8 +699,12 @@
    "text": "Nobody knows. He just keeps muttering... 'Not her. Not her. NOT HER.'"
   },
   {
+   "who": "holey",
+   "text": "Your friends? The babies were taking them to HIM. To the Demon."
+  },
+  {
    "who": "fishnet",
-   "text": "Spooky. Let's report back to the Queen!"
+   "text": "Then we go to the Queen. Now. Before the trail goes cold."
   }
  ],
  "CH2_INTRO": [
@@ -468,7 +718,7 @@
   },
   {
    "who": "fishnet",
-   "text": "The STATIC SWAMP, Sir Knight. Cling Queen rules here. Watch your fibres."
+   "text": "The STATIC SWAMP. Cling Queen rules here. Watch your fibres, and trust nothing that sparkles."
   },
   {
    "who": "robo",
@@ -492,7 +742,7 @@
   },
   {
    "who": "fishnet",
-   "text": "He's static-scrambled! Knock the fuzz out of his circuits!"
+   "text": "He's static-scrambled. Knock the fuzz out of his circuits. Hard."
   }
  ],
  "CH2_MID": [
@@ -514,7 +764,7 @@
   },
   {
    "who": "fishnet",
-   "text": "That's the saddest ninja story I've ever heard."
+   "text": "As a ninja... that is the saddest story I have ever heard."
   },
   {
    "who": "shinobi",
@@ -528,7 +778,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Sir Knight... why are her eyes doing that swirly thing?"
+   "text": "Sir Knight. Her eyes. That swirly thing. Something is controlling her."
   },
   {
    "who": "cling",
@@ -660,11 +910,11 @@
   },
   {
    "who": "fishnet",
-   "text": "Keep moving! Anything that stands still gets bleached. I stood still for ONE second once and lost a whole shade."
+   "text": "Keep moving. Anything that stands still gets bleached. I lost a whole shade here once. I want it BACK."
   },
   {
    "who": "fishnet",
-   "text": "I used to be BLACK fishnet. ...Okay, I'm still black. But I FEEL lighter."
+   "text": "I used to be BLACK fishnet. ...I'm still black. Shinobi black. Don't let anyone tell you otherwise."
   },
   {
    "who": "baby",
@@ -688,7 +938,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Oh no. He's doing the floppy-arm thing. NOBODY survives the floppy-arm thing!"
+   "text": "He's doing the floppy-arm thing. Nobody survives the floppy-arm thing. Stay sharp."
   }
  ],
  "CH3_MID": [
@@ -786,7 +1036,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Next stop: the Ironing Fortress. Pack a jumper. It gets STEAMY."
+   "text": "Next: the Ironing Fortress. Steam everywhere. Perfect cover for an ambush. Stay close."
   }
  ],
  "CH4_INTRO": [
@@ -842,7 +1092,7 @@
   },
   {
    "who": "fishnet",
-   "text": "His eyes are swirly too! He's been hypnotised, just like Cling Queen!"
+   "text": "His eyes are swirly too. Hypnotised, like Cling Queen. Somebody is pulling the strings."
   },
   {
    "who": "gran",
@@ -1016,7 +1266,7 @@
   },
   {
    "who": "fishnet",
-   "text": "...Is anyone else crying? No? Just me? My holes are leaking."
+   "text": "...I am not crying. Shinobi do not cry. My holes are just... leaking."
   }
  ],
  "CH5_INTRO": [
@@ -1050,7 +1300,7 @@
   },
   {
    "who": "fishnet",
-   "text": "I'd help, but my holes let the smell straight in."
+   "text": "I'd help, but my holes let the smell straight in. A shinobi knows her limits."
   }
  ],
  "CH6_INTRO": [
@@ -1060,7 +1310,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Sir Knight, I don't like this. Puppets give me the shivers. And I'm mostly holes, so I shiver a LOT."
+   "text": "Sir Knight, I don't like this. Puppets have strings. Strings have hands. Somebody is watching us."
   },
   {
    "who": "hero",
@@ -1080,7 +1330,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Cut the strings! ...Gently! ...Then fight him, I suppose. He looks like he wants to."
+   "text": "Cut the strings. ...Gently. Then fight him. He looks like he wants to."
   },
   {
    "who": "socklet",
@@ -1196,7 +1446,7 @@
   },
   {
    "who": "fishnet",
-   "text": "I'm made of holes, Sir Knight. The wind goes straight THROUGH me. I can hear my own echo."
+   "text": "I'm made of holes, Sir Knight. The wind goes straight through me. ...I don't mind. Nothing can catch me."
   },
   {
    "who": "lint",
@@ -1234,7 +1484,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Aww. It is a very nice nest."
+   "text": "...Fine. It is a very nice nest. Don't tell anyone I said that."
   },
   {
    "who": "robo",
@@ -1314,7 +1564,7 @@
   },
   {
    "who": "fishnet",
-   "text": "...Is anyone else crying? My tears are freezing into little icicles."
+   "text": "...Nobody look at me. My tears are freezing into little icicles."
   },
   {
    "who": "hero",
@@ -1416,7 +1666,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Uh... are we sure we should fight the sad one?"
+   "text": "Wait. Are we sure we should fight the sad one? ...Never mind. Sad ones fight dirty."
   },
   {
    "who": "demon",
@@ -1520,7 +1770,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Sand in my holes. Sand in ALL my holes. I am basically an hourglass now."
+   "text": "Sand in my holes. ALL my holes. Someone will answer for this."
   },
   {
    "who": "baby",
@@ -1658,7 +1908,7 @@
   },
   {
    "who": "fishnet",
-   "text": "*gasps* A world without socks? Who would keep the toes WARM?!"
+   "text": "A world without socks? Over my dead heel."
   },
   {
    "who": "flipflop",
@@ -1678,7 +1928,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Nope! Let's go to a fashion show!"
+   "text": "No. I heard nothing. ...Let's go to a fashion show."
   }
  ],
  "PALACE_AFTER_CH8": [
@@ -1714,7 +1964,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Our disguises are PERFECT. Nobody will ever know we are socks."
+   "text": "Our disguises are perfect. I have worn forty disguises. Nobody has ever known."
   },
   {
    "who": "hero",
@@ -1722,7 +1972,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Shh! Confidence is everything!"
+   "text": "Shh. Confidence is everything. Walk like you belong."
   },
   {
    "who": "cling",
@@ -1848,7 +2098,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Soggy socks?! The WORST feeling in the whole world!"
+   "text": "Soggy socks. The worst feeling in the whole world. I will NOT be soggy."
   },
   {
    "who": "narr",
@@ -1874,7 +2124,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Take an umbrella, Sir Knight. Or two. I will hold one over each of your ends."
+   "text": "Take an umbrella, Sir Knight. I will cover your back. As always."
   }
  ],
  "CH10_INTRO": [
@@ -1888,7 +2138,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Water goes straight through me. I am basically a sieve. A sad, damp sieve."
+   "text": "Water goes straight through me. Good. Nothing sticks to me. Nothing and nobody."
   },
   {
    "who": "ghost",
@@ -2040,7 +2290,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Your Majesty! A roller disco! We get to go to a DISCO!"
+   "text": "Your Majesty. A roller disco. ...I do NOT disco. ...Maybe one song."
   },
   {
    "who": "queen",
@@ -2108,7 +2358,7 @@
   },
   {
    "who": "fishnet",
-   "text": "...Does Kevin seem a bit suspicious to anyone else?"
+   "text": "I don't trust Kevin. I don't trust anyone... but I REALLY don't trust Kevin."
   },
   {
    "who": "narr",
@@ -2202,7 +2452,7 @@
   },
   {
    "who": "fishnet",
-   "text": "I KNEW it! I knew Kevin was up to something!"
+   "text": "I KNEW it. I never trusted Kevin. Not for one second."
   },
   {
    "who": "robo",
@@ -2376,7 +2626,7 @@
   },
   {
    "who": "fishnet",
-   "text": "A talent show! Sir Knight, what is your talent?"
+   "text": "A talent show. Sir Knight, what is your talent? ...Mine is classified."
   },
   {
    "who": "hero",
@@ -2470,7 +2720,7 @@
   },
   {
    "who": "fishnet",
-   "text": "It's actually very catchy."
+   "text": "...I hate that it's catchy."
   },
   {
    "who": "tapper",
@@ -2500,7 +2750,7 @@
   },
   {
    "who": "fishnet",
-   "text": "UNDER THE BED?! That is where all the monsters live!"
+   "text": "UNDER THE BED. Where the monsters live. ...Good. I want to meet them."
   },
   {
    "who": "tapper",
@@ -2544,7 +2794,7 @@
   },
   {
    "who": "fishnet",
-   "text": "*whispering* Tiptoe. Tiptoe. We are SOCKS. Tiptoeing is what we were BORN for."
+   "text": "*whispering* Silent steps. Shinobi steps. We are SOCKS. We were BORN for this."
   },
   {
    "who": "hero",
@@ -2730,7 +2980,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Your Majesty, you came with us?!"
+   "text": "Your Majesty! You came with us? ...Then stay behind me."
   },
   {
    "who": "queen",
@@ -2878,7 +3128,7 @@
   },
   {
    "who": "fishnet",
-   "text": "This is all my fault. I should have held on to her. But I have so many holes... she slipped right through."
+   "text": "This is my fault. I was her guard. I should have held on. But I have so many holes... she slipped right through."
   },
   {
    "who": "demon",
@@ -2894,7 +3144,7 @@
   },
   {
    "who": "fishnet",
-   "text": "*wipes a tear* ...Then we go to the Muddy Pitch. For the Queen. For Nylonia. For her curtains."
+   "text": "*wipes a tear* ...Then we go to the Muddy Pitch. For the Queen. For Nylonia. And whoever took her... is MINE."
   }
  ],
  "CH16_INTRO": [
@@ -3352,7 +3602,7 @@
   },
   {
    "who": "fishnet",
-   "text": "The Summit. Finally. Sir Knight... are you ready?"
+   "text": "The Summit. Finally. Sir Knight... I have your back. Are you ready?"
   },
   {
    "who": "hero",
@@ -3510,7 +3760,7 @@
   },
   {
    "who": "fishnet",
-   "text": "...Sir Knight. He is VERY big."
+   "text": "...Sir Knight. He is VERY big. ...Good. Bigger target."
   },
   {
    "who": "hero",
@@ -3528,7 +3778,7 @@
   },
   {
    "who": "fishnet",
-   "text": "I always wanted to be a knight. Like you. But I am mostly holes. Knights need armour, not holes."
+   "text": "I have never trusted anyone. Shinobi aren't allowed to. But I always wanted to be a knight. Like you. And knights need armour, not holes."
   },
   {
    "who": "hero",
@@ -4290,7 +4540,7 @@
   },
   {
    "who": "fishnet",
-   "text": "*gulps* Of course we are."
+   "text": "Of course we are. ...Stay behind me."
   }
  ],
  "CH26_INTRO": [
@@ -4426,7 +4676,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Sir Knight... I'm not coming with you, am I. My place is here. Guarding the holes."
+   "text": "Sir Knight... I'm not coming with you. My place is here. Guarding the Queen. Guarding the holes."
   },
   {
    "who": "hero",

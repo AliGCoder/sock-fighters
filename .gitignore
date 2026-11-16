@@ -32,3 +32,7 @@ tools/announcer/.venv-vox/
 tools/story/story_clips_english_partial.json
 tools/story/refs/unused/
 tools/tests/out/
+tools/irodori/
+tools/.uvcache/
+tools/.uvpy/
+tools/story/work/

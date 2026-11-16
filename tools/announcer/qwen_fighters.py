@@ -164,6 +164,21 @@ CAST = {
                      superv=['ストンパゲドンだあああ!'], throwv=['どけえ!'], hurt=['ぬっ!', 'ぐっ!', 'むう!'],
                      hurtBig=['わしの革がぁ!', 'ぐおおお!'], ko=['わしは…ただの…ブーツ…'], laugh=['ぐわっはっは!'],
                      win=['靴下は踏まれるものだ。'], dizzy=['ぬう…足元が…']), None),
+    # CHAPTER 3: Lefty, the Lost Glove — a lonely, chillingly polite concierge
+    'lefty': (MALE, 'A sly, quick-talking young Japanese man: a creepy villain who drops into a raspy, sinister whisper, '
+                    'but also hilariously over-the-top dramatic and fussy, like a pompous hotel manager, '
+                    'with a lonely, sad crack in his voice underneath it all.',
+              dict(light=['はっ。', 'ふっ。', 'そこ。'], heavy=['お預かりします。', 'はあっ。'], special=['見つけました。', '拾得物です。'],
+                   superv=['ファイブ・フィンガー・フレンジー。'], throwv=['お引き取りを。'], hurt=['くっ。', 'うっ。', '失礼。'],
+                   hurtBig=['ぐうっ…'], ko=['私は…また…なくすのか…'], laugh=['ふふふ…'], win=['お忘れ物は、ございませんか。'],
+                   dizzy=['…手が…しびれる…']), None),
+    # Agent Fishnet: a secret shinobi of the royal court. Brave, fierce, and she trusts NOBODY.
+    'fishnet': (FEMALE, 'A Japanese woman in her late twenties, a secret shinobi agent: a low, cool, controlled voice, '
+                        'clipped and fierce, guarded and suspicious of everyone, brave and steely, with a dry, deadpan edge; '
+                        'she speaks in short, sharp sentences, never girly or cute.',
+                dict(light=['はっ。', 'ふっ。', 'せいっ。'], heavy=['はあっ!', '甘い。'], special=['逃がさない。', '終わりだ。'],
+                     superv=['影縫い。'], throwv=['消えろ。'], hurt=['くっ。', 'ちっ。'], hurtBig=['ぐっ…まだだ。'],
+                     ko=['不覚…'], laugh=['ふん。'], win=['任務完了。'], dizzy=['…視界が…']), None),
 }
 
 
@@ -200,7 +215,7 @@ OLDEST = {
 OLDEST_PICK = {'gran': 'energy'}
 # the line a voice is designed with (and cloned from). Gran's is an angry telling-off, so every line she says
 # carries that anger.
-REF_TEXT = {'gran': 'こらっ!背筋を伸ばしなさいって何度言ったらわかるんだい!…あれ、何の話だっけ?まあいい、とにかく伸ばしな!'}
+REF_TEXT = {'fishnet': '動くな。私は誰も信用しない。…だが、おまえの背中は私が守る。行くぞ。', 'gran':'こらっ!背筋を伸ばしなさいって何度言ったらわかるんだい!…あれ、何の話だっけ?まあいい、とにかく伸ばしな!'}
 
 
 def age_cues(y):
