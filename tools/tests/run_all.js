@@ -17,6 +17,9 @@ const TESTS = [
   ['test_skills', 'Skill tree balance: stats, perks, charms, XP and villain scaling'],
   ['test_saves', 'Story save games: each has its own hero, episodes and skill tree'],
   ['test_escape', 'Escape in story mode pauses (never skips a fight)'],
+  ['test_gamepad', 'Xbox and PS5 controllers: menus, both players, attack, pause'],
+  ['test_install', 'Installs as an app: icons, offline copy, INSTALL button, opens offline'],
+  ['test_friends', 'Friends list: codes, add, online status, invite, accept into a match'],
   ...(quick ? [] : [['test_full', 'Story mode: all 3 chapters (27 episodes), credits, palace scenes']])
 ];
 const problems = [];

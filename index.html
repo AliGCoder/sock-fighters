@@ -86,6 +86,23 @@
         padding: 7px 8px;
         cursor: pointer;
       }
+      /* INSTALL GAME: shown when the browser can install the game as an app */
+      #install {
+        position: fixed;
+        top: 8px;
+        right: 190px;
+        z-index: 5;
+        display: none;
+        font:
+          10px 'Press Start 2P',
+          monospace;
+        color: #0b0614;
+        background: #ffe234;
+        border: 2px solid #fff;
+        border-radius: 6px;
+        padding: 7px 8px;
+        cursor: pointer;
+      }
       /* full-screen button, left of the sound button; and the tip shown on iPhones */
       #fullscreen {
         position: fixed;
@@ -215,6 +232,177 @@
         border-radius: 10px;
         cursor: pointer;
       }
+      #online .pcard {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin: 8px 0;
+        padding: 8px;
+        background: #1b1230;
+        border: 2px solid #3fe8a0;
+        border-radius: 10px;
+        text-align: left;
+      }
+      #online .pcard img {
+        width: 96px;
+        height: 109px;
+        flex: none;
+        background: radial-gradient(#3b2a6e, #1b1230);
+        border-radius: 8px;
+      }
+      #online .pinfo {
+        flex: 1;
+        min-width: 0;
+      }
+      #online .pname {
+        font-size: 14px;
+        color: #ffe234;
+      }
+      #online .pst {
+        font-size: 9px;
+        margin: 2px 0;
+      }
+      #online .pst .dot {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+      #online .pstats {
+        font-size: 8px;
+        line-height: 1.9;
+        color: #cfc8e8;
+      }
+      #online .pstats b {
+        color: #3fe8a0;
+      }
+      #online .dot.away {
+        background: #ffb03a;
+      }
+      #online .dot.busy {
+        background: #ff4fa3;
+      }
+      #online .frow button.who {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #online .frow button.who small {
+        display: block;
+        color: #9a92b0;
+        font-size: 8px;
+      }
+      #online select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        font:
+          11px 'Press Start 2P',
+          monospace;
+        color: #fff;
+        background: #2a1d48;
+        border: 2px solid #ffe234;
+        border-radius: 8px;
+      }
+      #online p.ok {
+        color: #3fff8a;
+      }
+      #online .frow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+        padding: 6px;
+        background: #1b1230;
+        border-radius: 8px;
+        text-align: left;
+      }
+      #online .frow .who {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 10px;
+      }
+      #online .frow .who small {
+        display: block;
+        color: #9a92b0;
+        font-size: 8px;
+      }
+      #online .frow button {
+        width: auto;
+        margin: 0;
+        padding: 8px 10px;
+        font-size: 9px;
+      }
+      #online .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex: none;
+        background: #5a5470;
+      }
+      #online .dot.on {
+        background: #3fff8a;
+        box-shadow: 0 0 8px #3fff8a;
+      }
+      #online .dot.wait {
+        background: #ffe234;
+      }
+      #online .addrow {
+        display: flex;
+        gap: 6px;
+      }
+      #online .addrow input {
+        flex: 1;
+      }
+      #online .addrow button {
+        width: auto;
+        margin: 0;
+      }
+      #friend-invite {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 12px;
+        transform: translateX(-50%);
+        z-index: 12;
+        width: min(460px, 92vw);
+        box-sizing: border-box;
+        font:
+          11px 'Press Start 2P',
+          monospace;
+        line-height: 1.7;
+        color: #fff;
+        text-align: center;
+        background: rgba(20, 10, 32, 0.97);
+        border: 3px solid #3fff8a;
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 0 24px rgba(63, 255, 138, 0.5);
+      }
+      #friend-invite button {
+        margin: 8px 6px 0;
+        padding: 10px 14px;
+        font:
+          11px 'Press Start 2P',
+          monospace;
+        color: #fff;
+        background: #2a1d48;
+        border: 3px solid #3fff8a;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      #friend-invite button.alt {
+        border-color: #6b6290;
+      }
       #online button.alt {
         border-color: #6b6290;
         font-size: 10px;
@@ -267,6 +455,8 @@
     <div id="wrap"><canvas id="c" tabindex="0"></canvas></div>
     <button id="mute" title="Sound on/off (M)">♪ ON</button>
     <button id="fullscreen" title="Full screen">⛶ FULL</button>
+    <button id="install" title="Install Sock Fighters on this computer or phone">⬇ INSTALL GAME</button>
+    <div id="friend-invite"></div>
     <div id="fullscreen-tip"></div>
     <div id="online"></div>
     <div id="touch">
@@ -2035,6 +2225,123 @@
           button.addEventListener('pointerleave', up);
         });
       })();
+
+      /* ---- installing the game as an app ---- */
+      (function setUpInstall() {
+        // the app details (name, icons) only on a website: opened as a file, the browser would refuse them
+        if (/^https?:$/.test(location.protocol)) {
+          const link = document.createElement('link');
+          link.rel = 'manifest';
+          link.href = 'manifest.webmanifest';
+          document.head.appendChild(link);
+        }
+        const button = document.getElementById('install');
+        let offer = null;
+        const installed = () => matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches || navigator.standalone;
+        addEventListener('beforeinstallprompt', e => {
+          e.preventDefault(); // we show our own button instead of the browser's pop-up
+          offer = e;
+          if (!installed()) button.style.display = 'block';
+        });
+        addEventListener('appinstalled', () => {
+          button.style.display = 'none';
+          offer = null;
+        });
+        button.addEventListener('click', async e => {
+          e.target.blur();
+          canvas.focus();
+          if (!offer) return;
+          offer.prompt();
+          try {
+            await offer.userChoice;
+          } catch (err) {}
+          offer = null;
+          button.style.display = 'none';
+        });
+        // the offline copy (only on the real website, not inside itch.io or a file on disk)
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || /^(localhost|127.0.0.1)$/.test(location.hostname)) && !/itch\.(io|zone)$/.test(location.hostname))
+          addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+      })();
+
+      /* ---- Xbox / PlayStation controllers (Gamepad API, standard layout) ----
+         Controller 1 = Player 1's keys, controller 2 = Player 2's keys. Buttons:
+           A / ✕ attack    B / ○ kick (and BACK in menus)    X / □ special    Y / △ throw
+           RB R1 / RT R2 super    LB L1 taunt    LT L2 throw    START / OPTIONS pause    stick or d-pad: move */
+      const PAD_BUTTONS = [[0, 'punch'], [1, 'kick'], [2, 'special'], [3, 'throw'], [4, 'taunt'], [5, 'super'], [6, 'throw'], [7, 'super']];
+      const Pads = { count: 0, kind: 'xbox', held: {}, since: {}, toast: null };
+      const padKind = id => (/054c|dualsense|dualshock|playstation|wireless controller|ps5|ps4/i.test(id || '') ? 'ps' : 'xbox');
+      function setPadKey(n, code, on) {
+        const k = n + ':' + code;
+        if (on && !Pads.held[k]) {
+          keysPressed[code] = true;
+          keysDown[code] = true;
+          Pads.since[k] = game.time;
+        } else if (on && game.screen !== 'fight' && /^(Key[WASD]|Arrow)/.test(code)) {
+          // menus: holding a direction repeats it, like a held key
+          const held = game.time - Pads.since[k];
+          if (held > 22 && held % 6 === 0) keysPressed[code] = true;
+        } else if (!on && Pads.held[k]) keysDown[code] = false;
+        Pads.held[k] = !!on;
+      }
+      function pollGamepads() {
+        let pads = [];
+        try {
+          pads = navigator.getGamepads ? Array.from(navigator.getGamepads()).filter(p => p && p.connected) : [];
+        } catch (e) {}
+        if (pads.length) Pads.kind = padKind(pads[0].id);
+        Pads.count = pads.length;
+        const want = [{}, {}];
+        pads.slice(0, 2).forEach((gp, n) => {
+          const map = n === 0 ? P1_KEYS : P2_KEYS,
+            w = want[n];
+          const b = i => !!(gp.buttons[i] && (gp.buttons[i].pressed || gp.buttons[i].value > 0.5));
+          const ax = gp.axes[0] || 0,
+            ay = gp.axes[1] || 0;
+          w[map.left] = b(14) || ax < -0.5;
+          w[map.right] = b(15) || ax > 0.5;
+          w[map.up] = b(12) || ay < -0.6;
+          w[map.down] = b(13) || ay > 0.6;
+          for (const [i, act] of PAD_BUTTONS) w[map[act]] = w[map[act]] || b(i);
+          w.Escape = b(9);
+          w.Backspace = game.screen !== 'fight' && (b(1) || b(8));
+          if (b(0) || b(9)) Sound.init();
+        });
+        // press / release only on changes, so a controller never fights with the keyboard
+        for (const k in Pads.held) {
+          const [n, code] = [+k.split(':')[0], k.slice(k.indexOf(':') + 1)];
+          if (Pads.held[k] && !want[n][code]) setPadKey(n, code, false);
+        }
+        want.forEach((w, n) => {
+          for (const code in w) setPadKey(n, code, w[code]);
+        });
+      }
+      addEventListener('gamepadconnected', e => {
+        const n = Array.from(navigator.getGamepads()).filter(p => p && p.connected).length;
+        Pads.toast = { text: (padKind(e.gamepad.id) === 'ps' ? 'PLAYSTATION' : 'XBOX') + ' CONTROLLER ' + Math.min(n, 2) + ' CONNECTED', t: 180 };
+      });
+      addEventListener('gamepaddisconnected', () => (Pads.toast = { text: 'CONTROLLER DISCONNECTED', t: 150 }));
+      /** A keyboard key's name, or the controller button that presses it when a controller is plugged in. */
+      function padLabel(lab) {
+        if (!Pads.count) return lab;
+        const ps = Pads.kind === 'ps';
+        const M = { W: '↑', A: '←', S: '↓', D: '→', SPACE: ps ? '✕' : 'A', E: ps ? '○' : 'B', F: ps ? '□' : 'X', Q: ps ? '△' : 'Y', R: ps ? 'R1' : 'RB', T: ps ? 'L1' : 'LB', ESC: ps ? 'OPTIONS' : 'START' };
+        return M[lab] || lab;
+      }
+      function drawPadToast() {
+        const T = Pads.toast;
+        if (!T || T.t <= 0) return;
+        T.t--;
+        ctx.save();
+        ctx.globalAlpha = Math.min(1, T.t / 30);
+        roundRectPath(ctx, W / 2 - 200, 10, 400, 34, 12);
+        ctx.fillStyle = 'rgba(15,8,30,0.92)';
+        ctx.fill();
+        ctx.strokeStyle = '#3ff0ff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        drawText('🎮 ' + T.text, W / 2, 28, 11, FONT_PIXEL, '#3ff0ff', INK, 0);
+        ctx.restore();
+      }
 
       /* ---- controllers: a fighter reads left/right/up/down and take(action) from one of these ---- */
 
@@ -5615,6 +5922,23 @@
         bleach2: { name: 'SILK BOW TIE', color: '#7fe3ff' },
         cling2: { name: 'LILY PARASOL', color: '#4fae3a' },
         iron2: { name: 'STARCH SPRAY', color: '#3f9be0' },
+        // each hero's THIRD accessory (key = hero id + '3'): 25 wins with them, or clear a ladder or chapter with them
+        stinky3: { name: 'FLY SQUAD', color: '#2b2f38', noScale: true },
+        argyle3: { name: 'HACHIMAKI HEADBAND', color: '#ffffff', hat: true },
+        shinobi3: { name: 'GRAPPLING HOOK', color: '#c9d1de', noScale: true },
+        gran3: { name: 'HAIR CURLERS', color: '#ff8fc8', hat: true },
+        baby3: { name: 'PACIFIER', color: '#ff8fc8', noScale: true },
+        kneehi3: { name: 'SALT POUCH', color: '#f4f1ea' },
+        robo3: { name: 'LED VISOR', color: '#ff2f6a', noScale: true },
+        ghost3: { name: 'BALL AND CHAIN', color: '#7a7f8c' },
+        lint3: { name: 'DUST BUNNY PET', color: '#c9c3d9', noScale: true },
+        socklet3: { name: 'STOPWATCH', color: '#c9d1de' },
+        holey3: { name: 'NEEDLE SWORD', color: '#d9dde6', noScale: true },
+        steel3: { name: 'GIANT WRENCH', color: '#9aa3b2', noScale: true },
+        king3: { name: 'ROYAL MEDAL', color: '#ffd23f' },
+        demon3: { name: 'PITCHFORK', color: '#c8202f', noScale: true },
+        bleach3: { name: 'POCKET WATCH', color: '#d4a017' },
+        iron3: { name: 'KABUTO CREST', color: '#ffd23f', noScale: true },
         // Cling Queen's royal wardrobe (unlocked with her second accessory). hat: replaces her lily crown
         cling3: { name: 'FANCY CAPE', color: '#7a1f9a', cape: true },
         cling4: { name: 'FANCY SCEPTRE', color: '#3fd0ff' },
@@ -5983,15 +6307,44 @@
           }
           // ---- body ----
           case 'mysock5': {
-            // hero cape
-            const wave = Math.sin(t * 0.12) * 6;
-            c.beginPath();
-            c.moveTo(sh.x + 10, sh.y - 10);
-            c.quadraticCurveTo(sh.x - 46, sh.y + 30, -64 + wave, -2);
-            c.lineTo(-6, -2);
-            c.quadraticCurveTo(sh.x - 4, sh.y + 26, sh.x + 20, sh.y - 4);
-            c.closePath();
+            // hero cape: tied at the shoulders, hanging down the back and flaring out behind, a fluttering hem
+            // (it used to hide behind the body and only poke out at the bottom like a fin)
+            const wave = Math.sin(t * 0.12) * 6,
+              flap = Math.sin(t * 0.21) * 3;
+            const capePath = () => {
+              c.beginPath();
+              c.moveTo(sh.x + 14, sh.y - 16);
+              c.bezierCurveTo(sh.x - 38, sh.y - 14, -70 + wave, sh.y * 0.45, -84 + wave, -6);
+              // the hem: three soft points, fluttering
+              c.quadraticCurveTo(-72 + wave, 2 + flap, -58 + wave * 0.7, -6);
+              c.quadraticCurveTo(-44 + wave * 0.5, 2 - flap, -30 + wave * 0.3, -6);
+              c.quadraticCurveTo(-18, 2 + flap, -6, -8);
+              c.bezierCurveTo(-14, sh.y * 0.5, sh.x - 6, sh.y + 20, sh.x + 22, sh.y - 6);
+              c.closePath();
+            };
+            capePath();
             fillStroke(col);
+            // the darker inside of the cape along its inner edge
+            c.save();
+            capePath();
+            c.clip();
+            c.strokeStyle = dark;
+            c.lineWidth = 12;
+            c.beginPath();
+            c.moveTo(sh.x + 16, sh.y - 6);
+            c.bezierCurveTo(sh.x - 4, sh.y + 30, -10, sh.y * 0.45, -8, -4);
+            c.stroke();
+            c.restore();
+            capePath();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.stroke();
+            // a gold clasp at the neck
+            c.beginPath();
+            c.arc(sh.x + 16, sh.y - 12, 6, 0, 7);
+            c.fillStyle = '#ffd23f';
+            c.fill();
+            c.stroke();
             break;
           }
           case 'mysock8': // adventure backpack
@@ -6098,12 +6451,126 @@
           c.rotate(Math.atan2(-a.nx, a.ny));
         };
         const k = ankleBand(spine);
-        if (/\d$/.test(acc) && !ACCESSORIES[acc].hat) {
+        if (/\d$/.test(acc) && !ACCESSORIES[acc].hat && !ACCESSORIES[acc].noScale) {
           // second (and royal) accessories are drawn a bit bigger, grown out from where they sit (the back or the ankle)
           const at = layer === 'behind' ? sh : k.mid;
           c.translate(at.x, at.y);
           c.scale(1.3, 1.3);
           c.translate(-at.x, -at.y);
+        }
+        if (layer === 'behind' && ['shinobi3', 'holey3', 'steel3', 'demon3'].includes(acc)) {
+          if (acc === 'shinobi3') {
+            // GRAPPLING HOOK: a coil of rope on the back, the hook peeking over the shoulder
+            c.save();
+            c.translate(sh.x - 34, sh.y + 44);
+            c.rotate(0.3);
+            for (let i = 0; i < 3; i++)
+              for (const [cc, w] of [[INK, 9], ['#c9a36a', 5]]) {
+                c.strokeStyle = cc;
+                c.lineWidth = w;
+                c.beginPath();
+                c.ellipse(0, 0, 22 - i * 5, 30 - i * 6, 0, 0, 7);
+                c.stroke();
+              }
+            c.restore();
+            c.save();
+            c.translate(sh.x - 12, sh.y + 6);
+            c.rotate(0.35);
+            c.fillStyle = col;
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            roundRectPath(c, -3, -48, 6, 48, 3);
+            c.fill();
+            c.stroke();
+            for (const s of [-1, 0, 1]) {
+              c.beginPath();
+              c.moveTo(0, -46);
+              c.quadraticCurveTo(s * 16, -54, s * 14, s === 0 ? -66 : -40);
+              c.lineWidth = 7;
+              c.strokeStyle = INK;
+              c.stroke();
+              c.lineWidth = 4;
+              c.strokeStyle = col;
+              c.stroke();
+            }
+            c.restore();
+          } else if (acc === 'holey3') {
+            // NEEDLE SWORD: a giant sewing needle across the back, a red thread trailing from its eye
+            c.translate(sh.x - 26, sh.y + 84);
+            c.rotate(-0.42);
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(-6, 0);
+            c.lineTo(6, 0);
+            c.lineTo(3, -120);
+            c.lineTo(0, -132);
+            c.lineTo(-3, -120);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#3a2a44';
+            c.beginPath();
+            c.ellipse(0, -10, 2.5, 6, 0, 0, 7);
+            c.fill();
+            c.strokeStyle = '#e8333a';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(0, -10);
+            for (let i = 1; i <= 8; i++) c.lineTo(-8 - i * 6, -6 + Math.sin(t * 0.15 + i) * 6 + i * 4);
+            c.stroke();
+          } else if (acc === 'steel3') {
+            // GIANT WRENCH slung across the back
+            c.translate(sh.x - 26, sh.y + 86);
+            c.rotate(-0.42);
+            c.scale(0.9, 0.9);
+            c.fillStyle = col;
+            roundRectPath(c, -7, -96, 14, 100, 6);
+            c.fill();
+            c.stroke();
+            c.beginPath();
+            c.arc(0, -104, 18, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#5a5470';
+            c.beginPath();
+            c.moveTo(-7, -124);
+            c.lineTo(-6, -102);
+            c.lineTo(6, -102);
+            c.lineTo(7, -124);
+            c.closePath();
+            c.fill();
+            c.fillStyle = 'rgba(255,255,255,0.4)';
+            c.fillRect(-3, -90, 3, 80);
+          } else {
+            // PITCHFORK over the shoulder
+            c.translate(sh.x - 24, sh.y + 96);
+            c.rotate(-0.38);
+            c.scale(0.82, 0.82);
+            c.fillStyle = '#4a1f1f';
+            roundRectPath(c, -4, -120, 8, 130, 4);
+            c.fill();
+            c.stroke();
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(-22, -118);
+            c.quadraticCurveTo(0, -108, 22, -118);
+            c.lineTo(22, -150);
+            c.lineTo(17, -140);
+            c.lineTo(17, -124);
+            c.lineTo(4, -124);
+            c.lineTo(4, -158);
+            c.lineTo(0, -148);
+            c.lineTo(-4, -158);
+            c.lineTo(-4, -124);
+            c.lineTo(-17, -124);
+            c.lineTo(-17, -140);
+            c.lineTo(-22, -150);
+            c.closePath();
+            c.fill();
+            c.stroke();
+          }
+          c.restore();
+          return;
         }
         if (layer === 'behind') {
           if (acc === 'argyle') {
@@ -6533,6 +7000,75 @@
           c.restore();
           return;
         }
+        if (layer === 'face' && ['stinky3', 'baby3', 'robo3'].includes(acc)) {
+          const [e0, e1] = eyePositions(spine);
+          if (acc === 'stinky3') {
+            // FLY SQUAD: three little flies buzzing round his head (they love him)
+            const hx = (e0.x + e1.x) / 2,
+              hy = (e0.y + e1.y) / 2 - 10;
+            for (let i = 0; i < 3; i++) {
+              const a = t * (0.07 + i * 0.015) + (i * Math.PI * 2) / 3,
+                fx = hx + Math.cos(a) * (52 + i * 6),
+                fy = hy + Math.sin(a * 1.3) * 26 - 12,
+                flap = Math.sin(t * 1.7 + i) * 0.5 + 0.6;
+              c.fillStyle = 'rgba(220,240,255,0.85)';
+              c.lineWidth = 1.5;
+              for (const s of [-1, 1]) {
+                c.beginPath();
+                c.ellipse(fx + s * 3, fy - 5, 4, 6 * flap, s * 0.5, 0, 7);
+                c.fill();
+                c.stroke();
+              }
+              c.fillStyle = col;
+              c.beginPath();
+              c.ellipse(fx, fy, 5, 4, 0, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+          } else if (acc === 'baby3') {
+            // PACIFIER, bobbing as he sucks it
+            const bob = Math.sin(t * 0.25) * 1.5,
+              px = e1.x + e1.r * 0.4,
+              py = e1.y + e1.r * 2.5 + bob;
+            c.fillStyle = col;
+            c.beginPath();
+            c.ellipse(px, py, 14, 9, 0, 0, 7);
+            c.fill();
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 6;
+            c.beginPath();
+            c.arc(px + 4, py + 2, 8, -0.4, Math.PI * 1.6);
+            c.stroke();
+            c.strokeStyle = '#7fd8ff';
+            c.lineWidth = 3;
+            c.stroke();
+          } else {
+            // LED VISOR across both eyes, with a scanning light
+            const x0 = e0.x - e0.r - 6,
+              x1 = e1.x + e1.r + 6,
+              y = (e0.y + e1.y) / 2 + 16; // over the eyes (they sit a little lower than their centre points)
+            roundRectPath(c, x0, y - 12, x1 - x0, 24, 10);
+            c.fillStyle = '#1a1220';
+            c.fill();
+            c.stroke();
+            c.save();
+            roundRectPath(c, x0 + 3, y - 9, x1 - x0 - 6, 18, 8);
+            c.clip();
+            c.fillStyle = 'rgba(255,47,106,0.35)';
+            c.fillRect(x0, y - 12, x1 - x0, 24);
+            const sx = x0 + ((Math.sin(t * 0.08) + 1) / 2) * (x1 - x0);
+            const g = c.createLinearGradient(sx - 18, 0, sx + 18, 0);
+            g.addColorStop(0, 'rgba(255,47,106,0)');
+            g.addColorStop(0.5, col);
+            g.addColorStop(1, 'rgba(255,47,106,0)');
+            c.fillStyle = g;
+            c.fillRect(sx - 18, y - 12, 36, 24);
+            c.restore();
+          }
+          c.restore();
+          return;
+        }
         if (layer === 'face') {
           if (acc === 'bleach') {
             // a monocle on the front eye, with a little chain
@@ -6573,6 +7109,258 @@
           c.lineWidth = 3;
         };
         switch (acc) {
+          case 'argyle3': {
+            // HACHIMAKI: a white headband with a red rising sun, tails fluttering
+            headFrame(0.16);
+            c.fillStyle = col;
+            roundRectPath(c, -30, 6, 60, 12, 4);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#e8333a';
+            c.beginPath();
+            c.arc(4, 12, 5, 0, 7);
+            c.fill();
+            drawBandTailsAt(c, -26, 12, col, t);
+            break;
+          }
+          case 'gran3': {
+            // HAIR CURLERS: four pink rollers with pins
+            headFrame(0.16);
+            for (const [x, r] of [[-22, -0.2], [-8, -0.05], [6, 0.05], [20, 0.2]]) {
+              c.save();
+              c.translate(x, 0);
+              c.rotate(r);
+              roundRectPath(c, -6, -16, 12, 18, 5);
+              c.fillStyle = col;
+              c.fill();
+              c.stroke();
+              c.strokeStyle = 'rgba(0,0,0,0.25)';
+              c.lineWidth = 2;
+              for (const yy of [-10, -4]) {
+                c.beginPath();
+                c.moveTo(-5, yy);
+                c.lineTo(5, yy);
+                c.stroke();
+              }
+              c.strokeStyle = INK;
+              c.lineWidth = 3;
+              c.restore();
+            }
+            break;
+          }
+          case 'lint3': {
+            // DUST BUNNY PET sitting on her head, blinking
+            headFrame(0.16);
+            const bob = Math.abs(Math.sin(t * 0.12)) * 4;
+            c.translate(4, -14 - bob);
+            c.fillStyle = col;
+            c.beginPath();
+            for (let i = 0; i < 14; i++) {
+              const a = (i / 14) * Math.PI * 2,
+                r = i % 2 ? 14 : 18;
+              c.lineTo(Math.cos(a) * r, Math.sin(a) * r * 0.85);
+            }
+            c.closePath();
+            c.fill();
+            c.stroke();
+            for (const s of [-1, 1]) {
+              c.beginPath();
+              c.ellipse(s * 7, -16, 4, 9, s * 0.3, 0, 7);
+              c.fill();
+              c.stroke();
+            }
+            const blink = t % 120 < 6;
+            c.fillStyle = INK;
+            for (const s of [-1, 1]) {
+              c.beginPath();
+              c.ellipse(s * 5, -1, 2.5, blink ? 0.6 : 3, 0, 0, 7);
+              c.fill();
+            }
+            break;
+          }
+          case 'iron3': {
+            // KABUTO CREST: a golden crescent rising from a dark helmet plate
+            headFrame(0.16);
+            c.fillStyle = '#2b2f38';
+            c.beginPath();
+            c.ellipse(0, 2, 16, 8, 0, Math.PI, 0);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(-6, -2);
+            c.quadraticCurveTo(-40, -14, -38, -52);
+            c.quadraticCurveTo(-26, -24, 0, -12);
+            c.quadraticCurveTo(26, -24, 38, -52);
+            c.quadraticCurveTo(40, -14, 6, -2);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            break;
+          }
+          case 'kneehi3': {
+            // SALT POUCH at the back of the ankle: a pinch flies out now and then (sumo salt throw!)
+            const p = along(0.12);
+            c.strokeStyle = '#8a5a2a';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(p.x, p.y);
+            c.lineTo(p.x + 4, p.y + 14);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.fillStyle = col;
+            c.beginPath();
+            c.moveTo(p.x - 4, p.y + 14);
+            c.quadraticCurveTo(p.x - 14, p.y + 34, p.x + 4, p.y + 36);
+            c.quadraticCurveTo(p.x + 22, p.y + 34, p.x + 12, p.y + 14);
+            c.closePath();
+            c.fill();
+            c.stroke();
+            if (t % 90 < 24)
+              for (let i = 0; i < 6; i++) {
+                const k2 = (t % 90) / 24;
+                c.fillStyle = '#fff';
+                c.fillRect(p.x + 4 + i * 4 * k2 * 3, p.y + 10 - k2 * 30 + i * 3 * k2 * 4 - k2 * k2 * 10, 3, 3);
+              }
+            break;
+          }
+          case 'ghost3': {
+            // BALL AND CHAIN: chain links round the ankle, dragging an iron ball (ooOOoo)
+            for (let i = 0; i <= 6; i++) {
+              const p = along(i / 6);
+              c.strokeStyle = INK;
+              c.lineWidth = 5;
+              c.beginPath();
+              c.ellipse(p.x, p.y, 6, 4, i % 2 ? 0.6 : -0.6, 0, 7);
+              c.stroke();
+              c.strokeStyle = col;
+              c.lineWidth = 2.5;
+              c.stroke();
+            }
+            const bx = k.back.x - 26,
+              by = k.back.y + 34;
+            for (let i = 1; i <= 3; i++) {
+              const x = k.back.x + ((bx - k.back.x) * i) / 4,
+                y = k.back.y + ((by - k.back.y) * i) / 4;
+              c.strokeStyle = INK;
+              c.lineWidth = 5;
+              c.beginPath();
+              c.ellipse(x, y, 5, 3.5, i % 2 ? 0.9 : -0.3, 0, 7);
+              c.stroke();
+              c.strokeStyle = col;
+              c.lineWidth = 2.5;
+              c.stroke();
+            }
+            c.fillStyle = '#3a3d48';
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.beginPath();
+            c.arc(bx, by, 13, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = 'rgba(255,255,255,0.35)';
+            c.beginPath();
+            c.arc(bx - 4, by - 4, 4, 0, 7);
+            c.fill();
+            break;
+          }
+          case 'socklet3': {
+            // STOPWATCH on a cord, the hand racing round
+            const p = along(0.8),
+              x = p.x + 6,
+              y = p.y + 24 + Math.sin(t * 0.15) * 2;
+            c.strokeStyle = '#3a2a44';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(p.x, p.y);
+            c.lineTo(x, y - 12);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.fillStyle = col;
+            c.fillRect(x - 3, y - 16, 6, 5);
+            c.strokeRect(x - 3, y - 16, 6, 5);
+            c.beginPath();
+            c.arc(x, y, 11, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#fff';
+            c.beginPath();
+            c.arc(x, y, 7.5, 0, 7);
+            c.fill();
+            c.strokeStyle = '#e8333a';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(x, y);
+            c.lineTo(x + Math.sin(t * 0.3) * 6, y - Math.cos(t * 0.3) * 6);
+            c.stroke();
+            break;
+          }
+          case 'king3': {
+            // ROYAL MEDAL on a red-and-blue ribbon
+            const p = along(0.7),
+              x = p.x + 4,
+              y = p.y + 26;
+            for (const [dx, cc] of [[-4, '#c8202f'], [4, '#2f5fd0']]) {
+              c.fillStyle = cc;
+              c.beginPath();
+              c.moveTo(p.x + dx - 4, p.y);
+              c.lineTo(p.x + dx + 4, p.y);
+              c.lineTo(x + dx * 0.5 + 3, y - 8);
+              c.lineTo(x + dx * 0.5 - 3, y - 8);
+              c.closePath();
+              c.fill();
+              c.stroke();
+            }
+            c.fillStyle = col;
+            c.beginPath();
+            c.arc(x, y, 11, 0, 7);
+            c.fill();
+            c.stroke();
+            starPath(c, x, y, 6, 0);
+            c.fillStyle = '#fff6c8';
+            c.fill();
+            break;
+          }
+          case 'bleach3': {
+            // POCKET WATCH on a gold chain, ticking
+            const a = along(0.15),
+              b = along(0.85),
+              x = a.x - 6,
+              y = a.y + 26;
+            c.strokeStyle = col;
+            c.lineWidth = 2;
+            c.setLineDash([3, 2]);
+            c.beginPath();
+            c.moveTo(b.x, b.y);
+            c.quadraticCurveTo((a.x + b.x) / 2, a.y + 30, x, y - 11);
+            c.stroke();
+            c.setLineDash([]);
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.fillStyle = col;
+            c.beginPath();
+            c.arc(x, y, 12, 0, 7);
+            c.fill();
+            c.stroke();
+            c.fillStyle = '#fffdf2';
+            c.beginPath();
+            c.arc(x, y, 8, 0, 7);
+            c.fill();
+            c.strokeStyle = INK;
+            c.lineWidth = 1.5;
+            const tick = Math.floor(t / 30);
+            c.beginPath();
+            c.moveTo(x, y);
+            c.lineTo(x + Math.sin(tick * 0.5) * 6, y - Math.cos(tick * 0.5) * 6);
+            c.moveTo(x, y);
+            c.lineTo(x + 4, y);
+            c.stroke();
+            c.lineWidth = 3;
+            break;
+          }
           case 'stinky2': {
             // a gym towel round the ankle, one end hanging down
             band(12, col);
@@ -7106,7 +7894,14 @@
               { wins: 0, online: 0, arenas: {}, heroWins: {}, winsBy: {}, clearedBy: {}, storyBy: {}, villainWins: {}, throws: 0, quickWins: 0 },
               d.stats || {}
             ),
-            announced: d.announced || {}
+            announced: d.announced || {},
+            // friends (see FRIENDS): my code and name, the list, recent online opponents, my favourite hero
+            friendCode: typeof d.friendCode === 'string' ? d.friendCode : '',
+            friendName: typeof d.friendName === 'string' ? d.friendName : '',
+            friendsOn: !!d.friendsOn,
+            friends: Array.isArray(d.friends) ? d.friends.filter(f => f && typeof f.code === 'string').slice(0, 100) : [],
+            recentPlayers: Array.isArray(d.recentPlayers) ? d.recentPlayers.slice(0, 5) : [],
+            favHero: typeof d.favHero === 'string' ? d.favHero : ''
           };
           for (const id in d.looks || {}) this.data.looks[id] = sanitizeStyle(d.looks[id]);
         },
@@ -7129,6 +7924,7 @@
           const hero = accOwner(id),
             st = this.data.stats;
           if (id === hero) return (st.winsBy[hero] || 0) >= 8;
+          if (id === hero + '3' && hero !== 'cling') return (st.winsBy[hero] || 0) >= 25 || !!st.clearedBy[hero];
           return (st.winsBy[hero] || 0) >= 15 || !!(st.storyBy || {})[hero];
         },
         /** How to unlock each of a hero's items, in words. */
@@ -7137,6 +7933,7 @@
           if (kind === 'skin1') return 'WIN 3 FIGHTS AS ' + def.name + ' (' + Math.min(3, wins) + '/3)';
           if (kind === 'skin2') return 'CLEAR A LADDER OR CHAPTER AS ' + def.name;
           if (kind === 'acc2') return 'WIN 15 FIGHTS (' + Math.min(15, wins) + '/15) OR BEAT THE STORY AS ' + def.name;
+          if (kind === 'acc3') return 'WIN 25 FIGHTS (' + Math.min(25, wins) + '/25) OR CLEAR A LADDER OR CHAPTER AS ' + def.name;
           return 'WIN 8 FIGHTS AS ' + def.name + ' (' + Math.min(8, wins) + '/8)';
         },
         /** Pop-ups for any of this hero's items that just became unlocked. */
@@ -7146,7 +7943,8 @@
             [id + '1', () => this.hasSkin(id + '1'), 'NEW SKIN: ' + (SKIN_FX[id + '1'] || {}).name],
             [id + '2', () => this.hasSkin(id + '2'), 'NEW SKIN: ' + (SKIN_FX[id + '2'] || {}).name],
             [id + 'acc', () => this.hasAcc(id), 'NEW ACCESSORY: ' + (ACCESSORIES[id] || {}).name],
-            [id + 'acc2', () => this.hasAcc(id + '2'), 'NEW ACCESSORY: ' + (ACCESSORIES[id + '2'] || {}).name]
+            [id + 'acc2', () => this.hasAcc(id + '2'), 'NEW ACCESSORY: ' + (ACCESSORIES[id + '2'] || {}).name],
+            ...(id !== 'cling' && ACCESSORIES[id + '3'] ? [[id + 'acc3', () => this.hasAcc(id + '3'), 'NEW ACCESSORY: ' + ACCESSORIES[id + '3'].name]] : [])
           ];
           for (const [key, has, text] of items)
             if (!this.data.announced[key] && has()) {
@@ -15745,7 +16543,7 @@
         ctx.restore();
         drawText('靴下ファイターズ', W / 2, 300, 40, FONT_JAPANESE, '#ff4fa3', INK, 10);
         drawText('~ TURBO RINSE EDITION ~', W / 2, 346, 14, FONT_PIXEL, '#3ff0ff', INK, 5);
-        if (t % 60 < 40) drawText(IS_TOUCH ? 'TAP TO START' : 'PRESS ENTER TO START', W / 2, 420, 18, FONT_PIXEL, '#fff', INK, 6);
+        if (t % 60 < 40) drawText(IS_TOUCH && !Pads.count ? 'TAP TO START' : Pads.count ? 'PRESS ' + padLabel('SPACE') + ' TO START' : 'PRESS ENTER TO START', W / 2, 420, 18, FONT_PIXEL, '#fff', INK, 6);
         drawText(
           '© 2026 LINT-COM  •  INSERT SOCK',
           W / 2,
@@ -15775,6 +16573,7 @@
         ? [
             ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
             ['VS BATTLE', '1 PLAYER OR 2 PLAYERS', 'versus'],
+            ['FRIENDS', 'GAMER CODE, FRIENDS & PROFILES', 'friends'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['SOCK MAKER', 'SKINS, ACCESSORIES & CUSTOM HERO', 'bag'],
             ['DAILY CHALLENGES', '3 NEW GOALS EVERY DAY', 'daily'],
@@ -15783,6 +16582,7 @@
         : [
             ['STORY MODE', 'LOST IN THE SPIN CYCLE', 'adventure'],
             ['VS BATTLE', '1 PLAYER, 2 PLAYERS OR ONLINE', 'versus'],
+            ['FRIENDS', 'GAMER CODE, FRIENDS & PROFILES', 'friends'],
             ['TROPHIES', 'ACHIEVEMENTS & UNLOCKS', 'awards'],
             ['SOCK MAKER', 'SKINS, ACCESSORIES & CUSTOM HERO', 'bag'],
             ['DAILY CHALLENGES', '3 NEW GOALS EVERY DAY', 'daily'],
@@ -15845,6 +16645,7 @@
             openOnlineLobby();
             return;
           }
+          if (action === 'friends') return openFriendsScreen();
           if (action === 'adventure') {
             startAdventure();
             return;
@@ -15936,6 +16737,7 @@
           awards: ['#5a3d0a', '#e0a526'],
           bag: ['#1f4f5a', '#3fb8c9'],
           daily: ['#1f5a32', '#4fcf6a'],
+          friends: ['#1f5a44', '#3fe8a0'],
           howto: ['#2a2a4a', '#5b6bd8'],
           cpu: ['#2a3a5a', '#4f8fe8'],
           '2p': ['#5a2a4a', '#e84fa3'],
@@ -16137,6 +16939,31 @@
           ctx.stroke();
           ctx.restore();
           if (open) drawSparkles(cx, cy - 6, 34, t, 6, '#ffe234');
+        } else if (action === 'friends') {
+          // two socks waving at each other across a phone screen, with a green ONLINE dot and a speech bubble
+          const k = Math.sin(t * 0.12);
+          sock('stinky', cx - side * 0.62, 1, 0.34, p => {
+            p.front = { x: 46, y: -96 + k * 14 };
+            p.mouth = 'grin';
+            p.eyes = 'happy';
+          });
+          sock('argyle', cx + side * 0.62, -1, 0.34, p => {
+            p.front = { x: 46, y: -96 - k * 14 };
+            p.mouth = 'grin';
+          });
+          roundRectPath(ctx, cx - 40, top + 16, 80, 46, 10);
+          ctx.fillStyle = '#fff';
+          ctx.fill();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.fillStyle = '#3fff8a';
+          ctx.beginPath();
+          ctx.arc(cx - 24, top + 39, 7 + Math.abs(k) * 2, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          drawText('+1', cx + 12, top + 40, 14, FONT_PIXEL, INK, null, 0);
+          label('ONLINE!', cx, top + 76, '#3fff8a');
         } else if (action === 'howto') {
           // the W A S D keys lighting up in turn, and a sock doing each move
           const k = ((t / 14) | 0) % 4;
@@ -17592,9 +18419,55 @@
       ];
 
       /** A keyboard key drawn as a little cap. */
+      // controller symbols the pixel font has no letters for: drawn as shapes (PlayStation colours)
+      const CAP_SHAPES = { '✕': '#7fa6ff', '○': '#ff6b81', '□': '#ff8fd8', '△': '#3fd9a6', '←': INK, '→': INK, '↑': INK, '↓': INK };
+      function drawCapShape(label, cx, cy, s) {
+        ctx.save();
+        ctx.strokeStyle = CAP_SHAPES[label];
+        ctx.fillStyle = INK;
+        ctx.lineWidth = Math.max(1.6, s * 0.22);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        if (label === '✕') {
+          ctx.moveTo(cx - s / 2, cy - s / 2);
+          ctx.lineTo(cx + s / 2, cy + s / 2);
+          ctx.moveTo(cx + s / 2, cy - s / 2);
+          ctx.lineTo(cx - s / 2, cy + s / 2);
+          ctx.stroke();
+        } else if (label === '○') {
+          ctx.arc(cx, cy, s / 2, 0, 7);
+          ctx.stroke();
+        } else if (label === '□') {
+          ctx.rect(cx - s / 2, cy - s / 2, s, s);
+          ctx.stroke();
+        } else if (label === '△') {
+          ctx.moveTo(cx, cy - s / 2);
+          ctx.lineTo(cx + s / 2, cy + s / 2);
+          ctx.lineTo(cx - s / 2, cy + s / 2);
+          ctx.closePath();
+          ctx.stroke();
+        } else {
+          // a solid arrow
+          const a = { '→': 0, '↓': Math.PI / 2, '←': Math.PI, '↑': -Math.PI / 2 }[label];
+          ctx.translate(cx, cy);
+          ctx.rotate(a);
+          ctx.moveTo(s / 2, 0);
+          ctx.lineTo(-s / 6, -s / 2);
+          ctx.lineTo(-s / 6, -s / 5);
+          ctx.lineTo(-s / 2, -s / 5);
+          ctx.lineTo(-s / 2, s / 5);
+          ctx.lineTo(-s / 6, s / 5);
+          ctx.lineTo(-s / 6, s / 2);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
       function drawKeyCap(x, y, label, h) {
         ctx.font = `${Math.round(h * 0.5)}px ${FONT_PIXEL}`;
-        const w = Math.max(h, ctx.measureText(label).width + h * 0.6);
+        const shape = !!CAP_SHAPES[label];
+        const w = shape ? h : Math.max(h, ctx.measureText(label).width + h * 0.6);
         roundRectPath(ctx, x, y - h / 2 + 2, w, h, 5);
         ctx.fillStyle = '#9a92b0';
         ctx.fill();
@@ -17604,7 +18477,8 @@
         ctx.strokeStyle = INK;
         ctx.lineWidth = 2;
         ctx.stroke();
-        drawText(label, x + w / 2, y - 1, Math.round(h * 0.5), FONT_PIXEL, INK, INK, 0);
+        if (shape) drawCapShape(label, x + w / 2, y - 1, h * 0.5);
+        else drawText(label, x + w / 2, y - 1, Math.round(h * 0.5), FONT_PIXEL, INK, INK, 0);
         return w;
       }
 
@@ -17627,7 +18501,7 @@
             cx += 34;
             continue;
           }
-          const lab = t === 'FWD' ? fwdK : t === 'BACK' ? backK : t;
+          const lab = padLabel(t === 'FWD' ? fwdK : t === 'BACK' ? backK : t);
           cx += drawKeyCap(cx, y, lab, h) + 4;
         }
         return cx - x;
@@ -20082,8 +20956,9 @@
             .filter(id => !MY_ITEMS[id])
             .map(id => {
               const d = findCharacter(accOwner(id));
-              const first = id === accOwner(id);
-              return { kind: 'acc', id, name: ACCESSORIES[id].name, owner: d, have: Progress.hasAcc(id), hint: Progress.unlockHint(first ? 'acc' : 'acc2', d) };
+              const first = id === accOwner(id),
+                third = id === accOwner(id) + '3' && accOwner(id) !== 'cling';
+              return { kind: 'acc', id, name: ACCESSORIES[id].name, owner: d, have: Progress.hasAcc(id), hint: Progress.unlockHint(first ? 'acc' : third ? 'acc3' : 'acc2', d) };
             });
         return MY_ITEM_IDS.map(id => {
           const a = ACHIEVEMENT_BY_ID[MY_ITEMS[id].ach];
@@ -20856,6 +21731,7 @@
         if (!Progress.hasSkin(D.def.id + '2')) locked.push(Progress.unlockHint('skin2', D.def));
         if (!Progress.hasAcc(D.def.id)) locked.push(Progress.unlockHint('acc', D.def));
         if (ACCESSORIES[D.def.id + '2'] && !Progress.hasAcc(D.def.id + '2')) locked.push(Progress.unlockHint('acc2', D.def));
+        if (D.def.id !== 'cling' && ACCESSORIES[D.def.id + '3'] && !Progress.hasAcc(D.def.id + '3')) locked.push(Progress.unlockHint('acc3', D.def));
         if (D.phase === 'edit' && locked.length) {
           drawText('🔒 STILL LOCKED FOR THIS HERO:', 250, 108, 8, FONT_PIXEL, '#ffe234', INK, 3);
           locked.forEach((l, i) => drawText(l, 250, 124 + i * 14, 7, FONT_PIXEL, '#fff', INK, 3));
@@ -28470,6 +29346,14 @@
             }
             if (Net.role === 'host' && game.screen === 'online') onConnected();
             break;
+          case 'fcard':
+            if (msg.from && FRIEND_CODE_RE.test(msg.from.code || '') && msg.from.code !== myFriendCode()) {
+              const R = (Progress.data.recentPlayers = (Progress.data.recentPlayers || []).filter(r => r.code !== msg.from.code));
+              R.unshift({ code: msg.from.code, name: cleanFriendName(msg.from.name) || 'PLAYER' });
+              R.length = Math.min(R.length, 5);
+              Progress.save();
+            }
+            break;
           case 'ver':
             netLost('Your friend has a different version of the game. Both of you refresh the page, then try again.');
             break;
@@ -28507,6 +29391,9 @@
       /** Connected: both players go to character select. */
       function onConnected() {
         clearTimeout(Net.connectTimer);
+        try {
+          netSend({ t: 'fcard', from: meCard() });
+        } catch (e) {}
         hideOnlinePanel();
         Net.match = 0;
         Net.remotePicks = {};
@@ -28710,6 +29597,7 @@
         peer.on('open', () => {
           Net.code = code;
           showOnlinePanel('hosting');
+          if (Friends.outgoing) friendSendInvite();
         });
         // while you're off in another app sending the code, the phone may drop the matchmaking link: get it back
         peer.on('disconnected', () => {
@@ -28875,7 +29763,8 @@
       /** Show the lobby in a state: menu, hosting, join, connecting, lost. `note` = an error or message. */
       function showOnlinePanel(state, note) {
         onlinePanelState = state;
-        const msg = note ? `<p class="${state === 'lost' ? '' : 'err'}">${escapeHtml(note)}</p>` : '';
+        const good = /^(Friend added|Copied|Shared|Invite sent|Your code is)/.test(note || '');
+        const msg = note ? `<p class="${state === 'lost' ? '' : good ? 'ok' : 'err'}">${escapeHtml(note)}</p>` : '';
         let html = '<h2>ONLINE BATTLE</h2>';
         if (state === 'menu') {
           html +=
@@ -28885,7 +29774,44 @@
             '<button data-on="host">HOST A GAME</button>' +
             '<button data-on="join">JOIN A GAME</button>' +
             '<p class="small">Play a friend: one of you hosts and shares the 4-letter code; the other joins with it.</p>' +
+            '<button data-on="friends" style="border-color:#3fff8a">FRIENDS</button>' +
+            '<p class="small">Add friends with their friend code, see who is online, and invite them to fight.</p>' +
             '<button class="alt" data-on="back">◀ BACK</button>';
+        } else if (state === 'friends') {
+          const favOpts = ROSTER.filter(d => d.mysock || Progress.heroUnlocked(d.id))
+            .map(d => `<option value="${d.id}"${myProfile().hero === d.id ? ' selected' : ''}>${escapeHtml(d.mysock ? 'MY CUSTOM SOCK' : d.name)}</option>`)
+            .join('');
+          html =
+            '<h2>FRIENDS</h2>' +
+            '<p>YOUR GAMER CODE</p><div class="code" style="font-size:30px">' +
+            myFriendCode() +
+            '</div><button class="alt" data-on="fcopy">SHARE MY GAMER CODE</button>' +
+            '<p class="small">MY PROFILE (what friends see)</p>' +
+            '<div id="my-profile">' +
+            profileHtml(myFriendName(), myFriendCode(), myProfile(), 'on', true) +
+            '</div>' +
+            '<p class="small">FAVOURITE HERO</p>' +
+            `<select id="fav-hero">${favOpts}</select>` +
+            '<p class="small">YOUR NAME (friends see this)</p>' +
+            `<input id="friend-name" maxlength="16" autocomplete="off" spellcheck="false" style="font-size:14px;letter-spacing:1px" value="${escapeHtml(myFriendName())}">` +
+            '<p class="small">ADD A FRIEND: TYPE THEIR CODE</p>' +
+            '<div class="addrow"><input id="friend-add" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" style="font-size:16px;letter-spacing:3px"><button data-on="fadd">ADD</button></div>' +
+            msg +
+            '<div id="friend-rows">' +
+            friendRowsHtml() +
+            '</div>' +
+            '<button class="alt" data-on="fclose">◀ BACK</button>';
+        } else if (state === 'fprofile') {
+          const f = friendList().find(x => x.code === Friends.viewing) || { code: Friends.viewing, name: 'FRIEND' };
+          const st = Friends.status[f.code] || 'wait';
+          html =
+            '<h2>PROFILE</h2>' +
+            profileHtml(f.name || 'FRIEND', f.code, Friends.profiles[f.code], st, false) +
+            (Friends.profiles[f.code] ? '' : '<p class="small">Their profile shows up when they are online.</p>') +
+            msg +
+            (st === 'on' || st === 'away' ? `<button data-on="ffight" data-code="${f.code}" style="border-color:#3fff8a">FIGHT!</button>` : '') +
+            `<button class="alt" data-on="fremove" data-code="${f.code}">REMOVE FRIEND</button>` +
+            '<button class="alt" data-on="fopen">◀ FRIENDS</button>';
         } else if (state === 'hosting') {
           html += Net.code
             ? '<p>YOUR ROOM CODE</p><div class="code">' +
@@ -28915,6 +29841,24 @@
         }
         onlinePanel.innerHTML = html;
         onlinePanel.style.display = 'block';
+        const nameBox = document.getElementById('friend-name');
+        if (nameBox)
+          nameBox.addEventListener('change', () => {
+            Progress.data.friendName = cleanFriendName(nameBox.value) || myFriendName();
+            Progress.save();
+            nameBox.value = Progress.data.friendName;
+          });
+        const fav = document.getElementById('fav-hero');
+        if (fav)
+          fav.addEventListener('change', () => {
+            Progress.data.friendsOn = true;
+            Progress.data.favHero = fav.value;
+            Progress.save();
+            const box = document.getElementById('my-profile');
+            if (box) box.innerHTML = profileHtml(myFriendName(), myFriendCode(), myProfile(), 'on', true);
+          });
+        const addBox = document.getElementById('friend-add');
+        if (addBox) addBox.addEventListener('keydown', e => e.key === 'Enter' && friendAdd(addBox.value));
         const input = document.getElementById('online-code');
         if (input) {
           input.addEventListener('keydown', e => {
@@ -28937,6 +29881,18 @@
           if (input) input.value = MY_NAMES[1 + ((Math.random() * (MY_NAMES.length - 1)) | 0)];
           return;
         }
+        if (action === 'friends') return friendsOpen();
+        if (action === 'fadd') return friendAdd(document.getElementById('friend-add').value);
+        if (action === 'fcopy') return friendCopyCode();
+        if (action === 'ffight') return friendFight(button.dataset.code);
+        if (action === 'fremove') return friendRemove(button.dataset.code);
+        if (action === 'fback') return friendAdd(button.dataset.code, button.dataset.name);
+        if (action === 'fclose') return friendsBack();
+        if (action === 'fopen') return friendsOpen();
+        if (action === 'fview') {
+          Friends.viewing = button.dataset.code;
+          return showOnlinePanel('fprofile');
+        }
         if (action === 'quick') netQuick();
         else if (action === 'host') netHost();
         else if (action === 'join') {
@@ -28945,9 +29901,13 @@
         } else if (action === 'go') netJoin(document.getElementById('online-code').value);
         else if (action === 'share') shareInvite();
         else if (action === 'cancel') {
+          const wasFriends = onlinePanelState === 'friends' || !!Friends.outgoing;
+          Friends.outgoing = null;
           netClose();
           Net.role = null;
-          showOnlinePanel('menu');
+          if (wasFriends && Friends.fromScreen === 'friends') game.screen = 'friends';
+          if (wasFriends) friendsOpen();
+          else showOnlinePanel('menu');
         } else if (action === 'back' || action === 'ok') closeOnlineLobby();
       });
 
@@ -28968,6 +29928,379 @@
         }
       }
 
+      /* ---------------- FRIENDS ----------------
+         Everyone has a permanent FRIEND CODE. While the game is open it waits at its own spot on the free
+         matchmaking server ("sockfighters-friend-CODE"), so friends can see it is online and send invites.
+         FIGHT hosts a normal online room and sends its 4-letter code to the friend; ACCEPT joins that room.
+         The list is kept on this device (no accounts). */
+      const FRIEND_PREFIX = 'sockfighters-friend-';
+      const FRIEND_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      const FRIEND_CODE_RE = /^[A-Z2-9]{6}$/;
+      const Friends = { peer: null, ready: false, status: {}, profiles: {}, requests: {}, invite: null, outgoing: null, pollTimer: 0, inviteTimer: 0, viewing: null };
+      const friendList = () => (Progress.data.friends = Progress.data.friends || []);
+      const cleanFriendName = s =>
+        String(s || '')
+          .replace(/[<>"&]/g, '')
+          .trim()
+          .slice(0, 16)
+          .toUpperCase();
+      function myFriendCode() {
+        const d = Progress.data;
+        if (!FRIEND_CODE_RE.test(d.friendCode || '')) {
+          let c = '';
+          for (let i = 0; i < 6; i++) c += FRIEND_CHARS[(realRandom() * FRIEND_CHARS.length) | 0];
+          d.friendCode = c;
+          Progress.save();
+        }
+        return d.friendCode;
+      }
+      function myFriendName() {
+        const d = Progress.data;
+        if (d.friendName) return d.friendName;
+        const m = (d.mysocks || [])[0];
+        return cleanFriendName(m && (m.custom || MY_NAMES[m.name])) || 'SOCK FIGHTER';
+      }
+      const meCard = () => ({ code: myFriendCode(), name: myFriendName(), v: NET_VERSION, st: myPresence(), prof: myProfile() });
+
+      /** Be findable by friends (from now on, every time the game opens). */
+      async function friendsStart() {
+        if (Friends.peer && !Friends.peer.destroyed) return;
+        if (!Progress.data.friendsOn) {
+          Progress.data.friendsOn = true;
+          Progress.save();
+        }
+        try {
+          await loadPeerJS();
+        } catch (e) {
+          return;
+        }
+        if (Friends.peer && !Friends.peer.destroyed) return;
+        const peer = new Peer(FRIEND_PREFIX + myFriendCode());
+        Friends.peer = peer;
+        peer.on('open', () => {
+          Friends.ready = true;
+          friendsPoll();
+        });
+        peer.on('disconnected', () => setTimeout(() => !peer.destroyed && peer.disconnected && peer.reconnect(), 3000));
+        peer.on('connection', conn => conn.on('data', msg => friendMessage(conn, msg)));
+        peer.on('error', err => {
+          if (err.type === 'peer-unavailable') {
+            const m = /friend-([A-Z2-9]{6})/.exec(err.message || '');
+            if (m) {
+              Friends.status[m[1]] = 'off';
+              refreshFriendRows();
+            }
+          } else if (err.type === 'unavailable-id') Friends.ready = false; // the game is already open in another tab
+        });
+      }
+      /** Send one message to a friend's game; onReply gets their answer (or null if they did not answer). */
+      function friendSend(code, msg, onReply) {
+        if (!Friends.ready || !Friends.peer) return onReply && onReply(null);
+        let done = false;
+        const conn = Friends.peer.connect(FRIEND_PREFIX + code, { reliable: true, serialization: 'json' });
+        const finish = reply => {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          setTimeout(() => {
+            try {
+              conn.close();
+            } catch (e) {}
+          }, 300);
+          if (onReply) onReply(reply);
+          refreshFriendRows();
+        };
+        const timer = setTimeout(() => finish(null), 9000);
+        conn.on('open', () => conn.send(msg));
+        conn.on('data', finish);
+        conn.on('error', () => finish(null));
+      }
+      /** Who is online: ask every friend's game, again every so often. */
+      function friendsPoll() {
+        clearTimeout(Friends.pollTimer);
+        if (!Friends.ready) return;
+        for (const f of friendList()) {
+          if (!Friends.status[f.code]) Friends.status[f.code] = 'wait';
+          friendSend(f.code, { t: 'fping', from: meCard(), friend: true }, reply => {
+            if (reply && reply.t === 'fpong') {
+              Friends.status[f.code] = (reply.from && reply.from.v !== NET_VERSION ? 'old' : (reply.from && PRESENCE[reply.from.st] && reply.from.st) || 'on');
+              if (reply.from && reply.from.prof && typeof reply.from.prof === 'object') Friends.profiles[f.code] = reply.from.prof;
+              const n = cleanFriendName(reply.from && reply.from.name);
+              if (n && n !== f.name) {
+                f.name = n;
+                Progress.save();
+              }
+            } else Friends.status[f.code] = 'off';
+          });
+        }
+        refreshFriendRows();
+        Friends.pollTimer = setTimeout(friendsPoll, (onlinePanelState === 'friends' || onlinePanelState === 'fprofile') && (game.screen === 'online' || game.screen === 'friends') ? 12000 : 60000);
+      }
+      /** A message from another player's game. */
+      function friendMessage(conn, msg) {
+        if (!msg || !msg.from || !FRIEND_CODE_RE.test(msg.from.code || '')) return;
+        const from = { code: msg.from.code, name: cleanFriendName(msg.from.name) || 'PLAYER' };
+        const f = friendList().find(x => x.code === from.code);
+        if (f) {
+          Friends.status[from.code] = msg.from.v && msg.from.v !== NET_VERSION ? 'old' : (PRESENCE[msg.from.st] && msg.from.st) || 'on';
+          if (msg.from.prof && typeof msg.from.prof === 'object') Friends.profiles[from.code] = msg.from.prof;
+          if (f.name !== from.name) {
+            f.name = from.name;
+            Progress.save();
+          }
+        } else if (msg.t === 'fping' || msg.t === 'finvite') Friends.requests[from.code] = from.name; // they added me
+        if (msg.t === 'fping') conn.send({ t: 'fpong', from: meCard() });
+        else if (msg.t === 'finvite') {
+          const free =
+            game.screen === 'title' ||
+            game.screen === 'mode' ||
+            ((game.screen === 'online' || game.screen === 'friends') && (onlinePanelState === 'menu' || onlinePanelState === 'friends' || onlinePanelState === 'fprofile'));
+          if (!free || Friends.invite) return conn.send({ t: 'fbusy', from: meCard() });
+          conn.send({ t: 'fseen', from: meCard() });
+          const room = String(msg.room || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+          if (room.length === 4) showFriendInvite({ ...from, room, v: msg.from.v });
+        } else if (msg.t === 'fdecline' && Friends.outgoing === from.code && onlinePanelState === 'hosting')
+          showOnlinePanel('hosting', from.name + ' said no thanks this time.');
+        refreshFriendRows();
+      }
+
+      function friendRowsHtml() {
+        const L = friendList();
+        let s = '';
+        const reqs = Object.entries(Friends.requests).filter(([c]) => !L.some(f => f.code === c));
+        for (const [code, name] of reqs)
+          s += `<div class="frow"><div class="dot on"></div><div class="who">${escapeHtml(name)}<small>ADDED YOU · ${code}</small></div><button data-on="fback" data-code="${code}" data-name="${escapeHtml(name)}">ADD BACK</button></div>`;
+        if (!L.length) s += '<p class="small">No friends yet. Swap friend codes with a friend and add each other!</p>';
+        const order = { on: 0, old: 1, away: 2, fight: 3, story: 3, wait: 4, off: 5 };
+        for (const f of L.slice().sort((a, b) => (order[Friends.status[a.code] || 'wait'] - order[Friends.status[b.code] || 'wait']) || a.name.localeCompare(b.name))) {
+          const st = Friends.status[f.code] || 'wait';
+          const [label, cls] = PRESENCE[st] || PRESENCE.off;
+          s +=
+            `<div class="frow"><div class="dot ${cls}"></div>` +
+            `<button class="who" data-on="fview" data-code="${f.code}">${escapeHtml(f.name || 'FRIEND')}<small>${label} · ${f.code} · PROFILE ▸</small></button>` +
+            (st === 'on' || st === 'away' ? `<button data-on="ffight" data-code="${f.code}" style="border-color:#3fff8a">FIGHT!</button>` : '') +
+            `<button class="alt" data-on="fremove" data-code="${f.code}" title="Remove">✕</button></div>`;
+        }
+        const recent = (Progress.data.recentPlayers || []).filter(r => !L.some(f => f.code === r.code));
+        if (recent.length) {
+          s += '<p class="small">RECENT ONLINE PLAYERS</p>';
+          for (const r of recent)
+            s += `<div class="frow"><div class="dot"></div><div class="who">${escapeHtml(r.name)}<small>${r.code}</small></div><button data-on="fback" data-code="${r.code}" data-name="${escapeHtml(r.name)}">+ ADD</button></div>`;
+        }
+        return s;
+      }
+      function refreshFriendRows() {
+        const box = document.getElementById('friend-rows');
+        if (box && onlinePanelState === 'friends') box.innerHTML = friendRowsHtml();
+        if (onlinePanelState === 'fprofile' && !document.activeElement.matches('input, select')) showOnlinePanel('fprofile');
+      }
+      function friendsOpen() {
+        friendsStart();
+        showOnlinePanel('friends');
+        if (Friends.ready) friendsPoll();
+      }
+      function openFriendsScreen() {
+        game.screen = 'friends';
+        friendsOpen();
+      }
+      function closeFriendsScreen() {
+        Friends.outgoing = null;
+        netClose();
+        Net.role = null;
+        hideOnlinePanel();
+        game.screen = 'mode';
+        setModeSub(null, MODE_MAIN.findIndex(m => m[2] === 'friends'));
+      }
+      function updateFriendsScreen() {
+        if (wasPressed('Escape', 'Backspace') && !document.activeElement.matches('input, select')) {
+          if (onlinePanelState === 'friends') closeFriendsScreen();
+          else if (onlinePanelState === 'hosting') {
+            Friends.outgoing = null;
+            netClose();
+            Net.role = null;
+            friendsOpen();
+          } else friendsOpen();
+        }
+        game.click = null;
+      }
+      function drawFriendsScreen() {
+        drawStage(0.7);
+        drawText('FRIENDS', W / 2, 52, 52, FONT_COMIC, '#3fe8a0', INK, 10);
+      }
+      /** Back from the friends page: to the main menu, or to the online lobby it was opened from. */
+      function friendsBack() {
+        if (game.screen === 'friends') closeFriendsScreen();
+        else showOnlinePanel('menu');
+      }
+
+      /* --- presence: ONLINE / AWAY (game open, nobody playing) / IN A FIGHT / PLAYING STORY --- */
+      Friends.lastInput = performance.now();
+      for (const type of ['keydown', 'pointerdown', 'touchstart']) addEventListener(type, () => (Friends.lastInput = performance.now()), { passive: true });
+      function myPresence() {
+        if (game.screen === 'fight' || game.screen === 'vs' || (game.mode === 'online' && game.screen !== 'online' && game.screen !== 'friends')) return 'fight';
+        if (inStory()) return 'story';
+        if (document.hidden || performance.now() - Friends.lastInput > 180000) return 'away';
+        return 'on';
+      }
+      const PRESENCE = {
+        on: ['ONLINE', 'on'],
+        away: ['AWAY', 'away'],
+        fight: ['IN A FIGHT', 'busy'],
+        story: ['PLAYING STORY', 'busy'],
+        old: ['ONLINE · OTHER VERSION', 'on'],
+        wait: ['CHECKING…', 'wait'],
+        off: ['OFFLINE', '']
+      };
+      /* --- profiles --- */
+      function myProfile() {
+        const d = Progress.data,
+          st = d.stats;
+        let fav = d.favHero;
+        if (!fav || !findCharacter(fav)) {
+          // the hero I've won with most
+          const w = st.winsBy || {};
+          fav = Object.keys(w).sort((a, b) => w[b] - w[a])[0] || 'stinky';
+        }
+        return {
+          hero: fav,
+          my: fav === 'mysock' ? myDesigns()[0] : undefined,
+          wins: st.wins | 0,
+          trophies: Object.keys(d.ach || {}).length,
+          episodes: Object.keys((d.adv && d.adv.cleared) || {}).length,
+          online: st.online | 0,
+          friends: friendList().length
+        };
+      }
+      const portraitCache = new Map();
+      /** A little picture of a hero (or a custom sock design) for a profile. */
+      function heroPortraitURL(id, my) {
+        const key = id + JSON.stringify(my || null);
+        if (portraitCache.has(key)) return portraitCache.get(key);
+        let url = '';
+        try {
+          const base = findCharacter(id) || findCharacter('stinky');
+          const def = base.mysock ? mySockDef(my || MY_DEFAULT) : withSkin(base, 0);
+          const c = document.createElement('canvas');
+          c.width = 150;
+          c.height = 170;
+          const g = c.getContext('2d');
+          const p = basePose();
+          p.mouth = 'grin';
+          drawSock(g, def, p, 70, 164, 1, fitScale(def, 0.62), { x: 3, y: 0 });
+          url = c.toDataURL();
+        } catch (e) {}
+        portraitCache.set(key, url);
+        return url;
+      }
+      function profileHtml(name, code, prof, stKey, mine) {
+        prof = prof || {};
+        const def = findCharacter(prof.hero) || null;
+        const [label, cls] = PRESENCE[stKey] || PRESENCE.off;
+        const img = heroPortraitURL(prof.hero || 'stinky', prof.my);
+        return (
+          '<div class="pcard">' +
+          (img ? `<img src="${img}" alt="">` : '') +
+          '<div class="pinfo">' +
+          `<div class="pname">${escapeHtml(name)}</div>` +
+          (mine ? '' : `<div class="pst"><span class="dot ${cls}"></span>${label}</div>`) +
+          `<div class="small">CODE ${code}</div>` +
+          `<div class="small">FAVOURITE: ${escapeHtml(prof.hero === 'mysock' ? 'CUSTOM SOCK' : def ? def.name : '?')}</div>` +
+          `<div class="pstats"><b>${prof.wins | 0}</b> WINS · <b>${prof.trophies | 0}</b> TROPHIES<br><b>${prof.episodes | 0}</b> STORY EPISODES · <b>${prof.online | 0}</b> ONLINE MATCHES</div>` +
+          '</div></div>'
+        );
+      }
+      function friendAdd(code, name) {
+        code = String(code || '')
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, '');
+        if (!FRIEND_CODE_RE.test(code)) return showOnlinePanel('friends', 'A friend code has 6 letters and numbers.');
+        if (code === myFriendCode()) return showOnlinePanel('friends', "That's your own code! Ask your friend for theirs.");
+        if (friendList().some(f => f.code === code)) return showOnlinePanel('friends', 'They are already on your list.');
+        friendList().push({ code, name: cleanFriendName(name) || Friends.requests[code] || 'NEW FRIEND', added: Date.now() });
+        delete Friends.requests[code];
+        Progress.save();
+        Friends.status[code] = 'wait';
+        showOnlinePanel('friends', 'Friend added! They will see you added them.');
+        friendsStart().then(() => Friends.ready && friendsPoll());
+      }
+      function friendRemove(code) {
+        const L = friendList();
+        const i = L.findIndex(f => f.code === code);
+        if (i < 0) return;
+        if (!confirm('Remove ' + (L[i].name || 'this friend') + ' from your friends?')) return;
+        L.splice(i, 1);
+        Progress.save();
+        if (onlinePanelState === 'fprofile') friendsOpen();
+        else refreshFriendRows();
+      }
+      async function friendCopyCode() {
+        const text = 'Add me in Sock Fighters! My gamer code is ' + myFriendCode();
+        try {
+          if (navigator.share && IS_TOUCH) await navigator.share({ title: 'Sock Fighters', text });
+          else await navigator.clipboard.writeText(myFriendCode());
+          showOnlinePanel('friends', 'Copied! Send your code to your friend.');
+        } catch (e) {
+          if (!(e && e.name === 'AbortError')) showOnlinePanel('friends', 'Your code is ' + myFriendCode() + ' — tell it to your friend.');
+        }
+      }
+      /** FIGHT a friend: host a room, then invite them to it. */
+      function friendFight(code) {
+        Friends.outgoing = code;
+        Friends.fromScreen = game.screen; // the online room needs the online screen; CANCEL comes back here
+        game.screen = 'online';
+        netHost();
+      }
+      function friendSendInvite() {
+        const code = Friends.outgoing,
+          f = friendList().find(x => x.code === code);
+        const name = (f && f.name) || 'your friend';
+        showOnlinePanel('hosting', 'Inviting ' + name + '…');
+        friendSend(code, { t: 'finvite', from: meCard(), room: Net.code }, reply => {
+          if (onlinePanelState !== 'hosting' || Friends.outgoing !== code) return;
+          if (reply && reply.t === 'fseen') showOnlinePanel('hosting', 'Invite sent to ' + name + '! Waiting for them to accept…');
+          else if (reply && reply.t === 'fbusy') showOnlinePanel('hosting', name + ' is busy right now (in a fight or the story). Try again soon.');
+          else showOnlinePanel('hosting', name + " didn't answer. They may have just closed the game.");
+        });
+      }
+      /** The pop-up on the friend's screen. */
+      const friendInviteBox = document.getElementById('friend-invite');
+      function showFriendInvite(inv) {
+        Friends.invite = inv;
+        SFX.confirm();
+        friendInviteBox.innerHTML =
+          '<p><b style="color:#3fff8a">' +
+          escapeHtml(inv.name) +
+          '</b> wants to fight!</p>' +
+          (inv.v && inv.v !== NET_VERSION ? '<p style="color:#ff6b81;font-size:9px">You have different versions of the game: both refresh first.</p>' : '') +
+          '<button data-on="iaccept">ACCEPT</button><button class="alt" data-on="idecline">NO THANKS</button>';
+        friendInviteBox.style.display = 'block';
+        clearTimeout(Friends.inviteTimer);
+        Friends.inviteTimer = setTimeout(() => closeFriendInvite(false), 30000);
+      }
+      function closeFriendInvite(accept) {
+        const inv = Friends.invite;
+        clearTimeout(Friends.inviteTimer);
+        friendInviteBox.style.display = 'none';
+        Friends.invite = null;
+        if (!inv) return;
+        if (accept) {
+          for (const code in keysPressed) keysPressed[code] = false;
+          if (game.screen !== 'online') {
+            game.screen = 'online';
+            showOnlinePanel('menu');
+          }
+          netJoin(inv.room);
+        } else friendSend(inv.code, { t: 'fdecline', from: meCard() });
+      }
+      friendInviteBox.addEventListener('click', e => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        Sound.init();
+        closeFriendInvite(b.dataset.on === 'iaccept');
+      });
+      // friends can find you whenever the game is open (once you have opened FRIENDS)
+      if (Progress.data.friendsOn) setTimeout(friendsStart, 1500);
+
       function openOnlineLobby() {
         game.screen = 'online';
         showOnlinePanel('menu');
@@ -28984,6 +30317,7 @@
       function updateOnlineLobby() {
         if (wasPressed('Escape')) {
           if (onlinePanelState === 'menu' || onlinePanelState === 'lost') closeOnlineLobby();
+          else if (onlinePanelState === 'friends') showOnlinePanel('menu');
           else {
             netClose();
             Net.role = null;
@@ -29075,6 +30409,7 @@
       // Each screen has an update (logic, 60 times a second) and a draw function.
       const SCREENS = {
         title: { update: updateTitle, draw: drawTitle },
+        friends: { update: updateFriendsScreen, draw: drawFriendsScreen },
         mode: { update: updateModeMenu, draw: drawModeMenu },
         select: { update: updateSelect, draw: drawSelect },
         vs: { update: updateVersus, draw: drawVersusScreen },
@@ -29210,6 +30545,7 @@
         const screen = SCREENS[game.screen];
         if (screen) screen.draw();
         if (game.storyPause) drawStoryPause();
+        drawPadToast();
         if (game.whiteFlash > 0) {
           ctx.fillStyle = `rgba(255,255,255,${game.whiteFlash / 12})`;
           ctx.fillRect(0, 0, W, H);
@@ -29256,7 +30592,7 @@
           drawMoveList(130, true);
           if (IS_TOUCH) drawBackButton('QUIT');
           drawText(
-            IS_TOUCH ? 'TAP ANYWHERE: RESUME    ◀ QUIT: BACK TO TITLE' : 'ESC / TAP: RESUME    Q: QUIT',
+            Pads.count ? padLabel('ESC') + ': RESUME    ' + padLabel('Q') + ': QUIT' : IS_TOUCH ? 'TAP ANYWHERE: RESUME    ◀ QUIT: BACK TO TITLE' : 'ESC / TAP: RESUME    Q: QUIT',
             W / 2,
             500,
             11,
@@ -29284,6 +30620,7 @@
       }
 
       function runFrame(now) {
+        pollGamepads();
         const dt = Math.min(0.1, (now - lastFrameTime) / 1000);
         lastFrameTime = now;
         frameTimeAccumulator += dt * (game.slowMotion > 0 ? 0.32 : 1);
@@ -29356,6 +30693,14 @@
         FighterVoice,
         hubItems: () => HUB_ITEMS(),
         startChapter,
+        /** tests: the friends list */
+        openOnlineLobbyForTest: () => openOnlineLobby(),
+        openFriendsScreen: () => openFriendsScreen(),
+        friendsPollNow: () => friendsPoll(),
+        myFriendCode: () => myFriendCode(),
+        get Friends() {
+          return Friends;
+        },
         StoryVoices,
         storyVoiceKey,
         /** tests: jump straight to step i of chapter ch */
