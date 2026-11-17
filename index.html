@@ -21650,7 +21650,8 @@
       /** The sock in the drum, turned by `angle`, centred at (x, y). */
       function drawTumblingSock(def, x, y, size, angle, t) {
         const p = idleAnim(basePose(), t);
-        p.eyes = 'happy';
+        // eyes open, so a custom sock's chosen EYES and EYE COLOUR show (happy eyes are squeezed shut and hid them)
+        p.eyes = def.mysock ? 'normal' : 'happy';
         p.mouth = 'grin';
         ctx.save();
         ctx.translate(x, y);
