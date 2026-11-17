@@ -74,7 +74,7 @@
       #mute {
         position: fixed;
         top: 8px;
-        right: 10px;
+        right: 60px;
         z-index: 5;
         font:
           10px 'Press Start 2P',
@@ -90,7 +90,7 @@
       #install {
         position: fixed;
         top: 8px;
-        right: 190px;
+        right: 240px;
         z-index: 5;
         display: none;
         font:
@@ -107,7 +107,7 @@
       #fullscreen {
         position: fixed;
         top: 8px;
-        right: 96px;
+        right: 146px;
         z-index: 5;
         font:
           10px 'Press Start 2P',
@@ -231,6 +231,325 @@
         border: 3px solid #ff4fa3;
         border-radius: 10px;
         cursor: pointer;
+      }
+      /* MY PROFILE: the avatar button and the side panel */
+      #avatar {
+        position: fixed;
+        top: 5px;
+        right: 8px;
+        z-index: 6;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 3px solid #ffe234;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #2a1d48;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(255, 226, 52, 0.45);
+      }
+      #avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      #avatar img.hero {
+        transform: scale(1.75);
+        transform-origin: 54% 22%;
+      }
+      #avatar .badge {
+        position: absolute;
+        right: -2px;
+        bottom: -2px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #3fff8a;
+        border: 2px solid #1b1230;
+        display: none;
+      }
+      #pp-shade {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        background: rgba(8, 4, 18, 0.55);
+      }
+      #profile-pane {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 11;
+        width: min(400px, 94vw);
+        box-sizing: border-box;
+        overflow-y: auto;
+        transform: translateX(105%);
+        transition: transform 0.22s ease-out;
+        font:
+          10px 'Press Start 2P',
+          monospace;
+        line-height: 1.8;
+        color: #fff;
+        background: rgba(20, 10, 32, 0.98);
+        border-left: 3px solid #ffe234;
+        padding: 12px 14px 24px;
+      }
+      #profile-pane.open {
+        transform: none;
+      }
+      #profile-pane h2 {
+        margin: 4px 0 8px;
+        font-size: 15px;
+        color: #ffe234;
+      }
+      #profile-pane .pp-close {
+        float: right;
+        width: auto;
+        margin: 0;
+        padding: 6px 10px;
+      }
+      #profile-pane .pp-tabs {
+        display: flex;
+        gap: 4px;
+        margin: 6px 0 12px;
+        clear: both;
+      }
+      #profile-pane .pp-tabs button {
+        flex: 1;
+        margin: 0;
+        padding: 9px 2px;
+        font-size: 8px;
+      }
+      #profile-pane .pp-tabs button.on {
+        background: #ff4fa3;
+        border-color: #fff;
+      }
+      #profile-pane button {
+        display: block;
+        width: 100%;
+        margin: 6px 0;
+        padding: 10px 8px;
+        font:
+          10px 'Press Start 2P',
+          monospace;
+        color: #fff;
+        background: #2a1d48;
+        border: 3px solid #ff4fa3;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      #profile-pane button.alt {
+        border-color: #6b6290;
+        font-size: 9px;
+      }
+      #profile-pane input,
+      #profile-pane select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        font:
+          11px 'Press Start 2P',
+          monospace;
+        color: #fff;
+        background: #2a1d48;
+        border: 2px solid #ffe234;
+        border-radius: 8px;
+      }
+      #profile-pane .small {
+        font-size: 8px;
+        color: #bdb3d9;
+        margin: 10px 0 4px;
+      }
+      #profile-pane .bigav {
+        display: block;
+        width: 128px;
+        height: 128px;
+        margin: 4px auto 6px;
+        border-radius: 50%;
+        border: 4px solid #ffe234;
+        object-fit: cover;
+        background: radial-gradient(#3b2a6e, #1b1230);
+      }
+      #profile-pane .pname {
+        text-align: center;
+        font-size: 15px;
+        color: #ffe234;
+      }
+      #profile-pane .code {
+        text-align: center;
+        font-size: 26px;
+        letter-spacing: 4px;
+        color: #3ff0ff;
+        margin: 4px 0;
+      }
+      #profile-pane .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        margin: 8px 0;
+      }
+      #profile-pane .grid div {
+        background: #1b1230;
+        border-radius: 8px;
+        padding: 8px;
+        text-align: center;
+        font-size: 8px;
+        color: #cfc8e8;
+      }
+      #profile-pane .grid b {
+        display: block;
+        font-size: 16px;
+        color: #3fe8a0;
+      }
+      #profile-pane .tro {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        margin: 6px 0;
+        padding: 8px;
+        background: #1b1230;
+        border: 2px solid #3a2d58;
+        border-radius: 8px;
+      }
+      #profile-pane .tro.done {
+        border-color: #ffd23f;
+        background: #3a2a0a;
+      }
+      #profile-pane .tro .star {
+        font-size: 18px;
+        color: #3a2d58;
+      }
+      #profile-pane .tro.done .star {
+        color: #ffd23f;
+      }
+      #profile-pane .tro .tn {
+        font-size: 10px;
+      }
+      #profile-pane .tro .td {
+        font-size: 7px;
+        color: #bdb3d9;
+      }
+      #profile-pane .bar {
+        height: 6px;
+        margin-top: 4px;
+        background: #2a1d48;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      #profile-pane .bar i {
+        display: block;
+        height: 100%;
+        background: #3fe8a0;
+      }
+      #profile-pane label.check {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 8px;
+        margin: 8px 0;
+        cursor: pointer;
+      }
+      #profile-pane label.check input {
+        width: 18px;
+        height: 18px;
+      }
+      #profile-pane p.ok {
+        color: #3fff8a;
+      }
+      #profile-pane p.err {
+        color: #ff6b81;
+      }
+      #profile-pane .frow {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin: 6px 0;
+        padding: 6px;
+        background: #1b1230;
+        border-radius: 8px;
+      }
+      #profile-pane .frow button {
+        width: auto;
+        margin: 0;
+        padding: 8px 10px;
+        font-size: 9px;
+      }
+      #profile-pane .frow button.who {
+        flex: 1;
+        min-width: 0;
+        text-align: left;
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #profile-pane .frow button.who small {
+        display: block;
+        color: #9a92b0;
+        font-size: 8px;
+      }
+      #profile-pane .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex: none;
+        background: #5a5470;
+      }
+      #profile-pane .dot.on {
+        background: #3fff8a;
+        box-shadow: 0 0 8px #3fff8a;
+      }
+      #profile-pane .dot.wait {
+        background: #ffe234;
+      }
+      #profile-pane .dot.away {
+        background: #ffb03a;
+      }
+      #profile-pane .dot.busy {
+        background: #ff4fa3;
+      }
+      #profile-pane .addrow {
+        display: flex;
+        gap: 6px;
+      }
+      #profile-pane .addrow button {
+        width: auto;
+        margin: 0;
+      }
+      #profile-pane .pcard {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin: 8px 0;
+        padding: 8px;
+        background: #1b1230;
+        border: 2px solid #3fe8a0;
+        border-radius: 10px;
+      }
+      #profile-pane .pcard img {
+        width: 96px;
+        height: 109px;
+        flex: none;
+        object-fit: cover;
+        background: radial-gradient(#3b2a6e, #1b1230);
+        border-radius: 8px;
+      }
+      #profile-pane .pinfo {
+        flex: 1;
+        min-width: 0;
+      }
+      #profile-pane .pstats {
+        font-size: 8px;
+        line-height: 1.9;
+        color: #cfc8e8;
+      }
+      #profile-pane .pstats b {
+        color: #3fe8a0;
       }
       #online .pcard {
         display: flex;
@@ -457,6 +776,9 @@
     <button id="fullscreen" title="Full screen">⛶ FULL</button>
     <button id="install" title="Install Sock Fighters on this computer or phone">⬇ INSTALL GAME</button>
     <div id="friend-invite"></div>
+    <button id="avatar" title="My profile, trophies and friends"><img id="avatar-img" alt="Me" /><span class="badge"></span></button>
+    <div id="pp-shade"></div>
+    <div id="profile-pane" role="dialog" aria-label="My profile"></div>
     <div id="fullscreen-tip"></div>
     <div id="online"></div>
     <div id="touch">
@@ -2461,10 +2783,6 @@
           ],
           cpuDamage: 1.15,
           ai: {
-            closeWaitRandom: 8,
-            closeWaitMin: 4,
-            waitRandom: 10,
-            waitMin: 5,
             reactionFrames: 10,
             blockChance: 0.82,
             readLowChance: 1,
@@ -2490,10 +2808,6 @@
           description: ['3 NEW VILLAINS, then', 'THE DRYER DEMON returns', 'For true sock masters'],
           cpuDamage: 1.2,
           ai: {
-            closeWaitRandom: 7,
-            closeWaitMin: 3,
-            waitRandom: 9,
-            waitMin: 4,
             reactionFrames: 9,
             blockChance: 0.86,
             readLowChance: 1,
@@ -7901,14 +8215,19 @@
             friendsOn: !!d.friendsOn,
             friends: Array.isArray(d.friends) ? d.friends.filter(f => f && typeof f.code === 'string').slice(0, 100) : [],
             recentPlayers: Array.isArray(d.recentPlayers) ? d.recentPlayers.slice(0, 5) : [],
-            favHero: typeof d.favHero === 'string' ? d.favHero : ''
+            favHero: typeof d.favHero === 'string' ? d.favHero : '',
+            avatarPhoto: typeof d.avatarPhoto === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(d.avatarPhoto) && d.avatarPhoto.length < 60000 ? d.avatarPhoto : '',
+            showPhoto: !!d.showPhoto
           };
           for (const id in d.looks || {}) this.data.looks[id] = sanitizeStyle(d.looks[id]);
         },
         save() {
           try {
             localStorage.setItem(this.KEY, JSON.stringify(this.data));
-          } catch (e) {}
+            return true;
+          } catch (e) {
+            return false; // storage full, or a private window that refuses saving
+          }
         },
         /** A hero skin: skin 1 after 3 wins with that hero, skin 2 after clearing a ladder or chapter with them. */
         hasSkin(fx) {
@@ -16645,7 +16964,7 @@
             openOnlineLobby();
             return;
           }
-          if (action === 'friends') return openFriendsScreen();
+          if (action === 'friends') return openPane('friends');
           if (action === 'adventure') {
             startAdventure();
             return;
@@ -22879,7 +23198,9 @@
           A = advData(),
           s = d.activeSlot >= 0 && storySlots()[d.activeSlot];
         if (!s) return true;
-        return JSON.stringify([s.hero, s.cleared, s.skills]) !== JSON.stringify([A.hero, A.cleared, d.skills || {}]);
+        // everything SAVE GAME keeps (see stashSlot), so a new look or newly seen scenes count as unsaved too
+        const keep = (o, sk) => JSON.stringify([o.hero, o.look, !!o.prologue, o.cleared || {}, o.seen || {}, sk || {}]);
+        return keep(s, s.skills) !== keep(A, d.skills);
       }
       /** SAVE GAME: into this game's save (the first time, a new one). */
       function saveGame() {
@@ -22896,7 +23217,11 @@
         }
         stashSlot();
         d.storySlots[d.activeSlot] = JSON.parse(JSON.stringify(d.storySlots[d.activeSlot])); // the save keeps its own copy
-        Progress.save();
+        if (!Progress.save()) {
+          SFX.block();
+          Toasts.push({ head: 'COULD NOT SAVE', name: 'THIS BROWSER REFUSED', text: 'Storage is full or this is a private window. Free some space or use a normal window.' });
+          return;
+        }
         SFX.confirm();
         Toasts.push({ head: 'GAME SAVED', name: 'SAVE ' + (d.activeSlot + 1), text: advHero().name + ' • ' + Object.keys(advData().cleared || {}).length + ' episodes' });
       }
@@ -23129,7 +23454,11 @@
 
         /** Start downloading a voice file (once). */
         load(file) {
-          if (this.files[file]) return;
+          const st = this.files[file];
+          if (st === 'failed') {
+            const f = (this.fails = this.fails || {})[file] || { n: 0, at: 0 };
+            if (f.n >= 3 || performance.now() - f.at < 15000) return;
+          } else if (st) return;
           this.files[file] = 'loading';
           try {
             const tag = document.createElement('script');
@@ -23141,7 +23470,12 @@
               const S = game.adv && game.adv.scene;
               if (S && S.i >= 0 && S.i < S.lines.length && !this.source && S.t - (S.lineAt || 0) < 90) sceneVoice(S.lines[S.i], S);
             };
-            tag.onerror = () => (this.files[file] = 'failed');
+            tag.onerror = () => {
+              this.files[file] = 'failed';
+              const F = (this.fails = this.fails || {});
+              F[file] = { n: ((F[file] && F[file].n) || 0) + 1, at: performance.now() };
+              tag.remove();
+            };
             document.head.appendChild(tag);
           } catch (e) {
             this.files[file] = 'failed';
@@ -30093,6 +30427,9 @@
       function refreshFriendRows() {
         const box = document.getElementById('friend-rows');
         if (box && onlinePanelState === 'friends') box.innerHTML = friendRowsHtml();
+        const pbox = document.getElementById('pp-friend-rows');
+        if (pbox && Pane.open) pbox.innerHTML = friendRowsHtml();
+        if (Pane.open && Pane.viewing && !document.activeElement.matches('input, select')) drawPane();
         if (onlinePanelState === 'fprofile' && !document.activeElement.matches('input, select')) showOnlinePanel('fprofile');
       }
       function friendsOpen() {
@@ -30134,6 +30471,278 @@
         else showOnlinePanel('menu');
       }
 
+      /* ---------------- MY PROFILE (the avatar in the corner and its side panel) ---------------- */
+      const Pane = { open: false, tab: 'profile', note: null, viewing: null, avatarKey: '' };
+      const paneEl = document.getElementById('profile-pane'),
+        paneShade = document.getElementById('pp-shade'),
+        avatarBtn = document.getElementById('avatar'),
+        avatarImg = document.getElementById('avatar-img');
+      /** My avatar picture: my photo, or my favourite hero. */
+      function myAvatarURL() {
+        const d = Progress.data;
+        if (d.avatarPhoto) return d.avatarPhoto;
+        const pr = myProfile();
+        return heroPortraitURL(pr.hero, pr.my);
+      }
+      /** A friend's avatar: their photo if they chose to show it, or their hero. */
+      function profileAvatarURL(prof) {
+        if (prof && typeof prof.photo === 'string' && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(prof.photo) && prof.photo.length < 60000) return prof.photo;
+        return heroPortraitURL((prof && prof.hero) || 'stinky', prof && prof.my);
+      }
+      function refreshAvatar() {
+        const d = Progress.data;
+        const key = (d.avatarPhoto ? d.avatarPhoto.length + d.avatarPhoto.slice(-24) : '') + '|' + myProfile().hero + JSON.stringify(myProfile().my || 0);
+        if (key !== Pane.avatarKey) {
+          Pane.avatarKey = key;
+          avatarImg.src = myAvatarURL();
+          avatarImg.className = d.avatarPhoto ? '' : 'hero'; // a hero: zoom in on the face
+        }
+        // a green dot when a friend is online
+        avatarBtn.querySelector('.badge').style.display = Object.values(Friends.status).some(s => s === 'on') ? 'block' : 'none';
+      }
+      /** The corner avatar: hidden during fights (no accidental taps), shown everywhere else. */
+      function updateAvatarButton() {
+        const hide = game.screen === 'fight' || game.screen === 'vs' || game.screen === 'loading';
+        const want = hide ? 'none' : 'block';
+        if (avatarBtn.style.display !== want) avatarBtn.style.display = want;
+        if (!hide && game.time % 30 === 0) refreshAvatar();
+      }
+      function openPane(tab) {
+        Pane.open = true;
+        Pane.tab = tab || Pane.tab || 'profile';
+        Pane.note = null;
+        Pane.viewing = null;
+        for (const code in keysPressed) keysPressed[code] = false;
+        paneShade.style.display = 'block';
+        drawPane();
+        requestAnimationFrame(() => paneEl.classList.add('open'));
+        if (Pane.tab === 'friends') friendsStart().then(() => Friends.ready && friendsPoll());
+        else if (Progress.data.friendsOn) friendsStart();
+        SFX.select();
+      }
+      function closePane() {
+        Pane.open = false;
+        paneEl.classList.remove('open');
+        paneShade.style.display = 'none';
+        if (document.activeElement && paneEl.contains(document.activeElement)) document.activeElement.blur();
+        for (const code in keysPressed) keysPressed[code] = false;
+        refreshAvatar();
+      }
+      function paneNote(text, good) {
+        Pane.note = { text, good };
+        drawPane();
+      }
+      /** Draw the panel for the current tab. */
+      function drawPane() {
+        if (!Pane.open) return;
+        const d = Progress.data,
+          pr = myProfile();
+        const tab = (id, label) => `<button data-pp="tab" data-tab="${id}" class="${Pane.tab === id ? 'on' : ''}">${label}</button>`;
+        let html =
+          '<button class="pp-close alt" data-pp="close">✕</button><h2>MY PROFILE</h2>' +
+          '<div class="pp-tabs">' +
+          tab('profile', 'PROFILE') +
+          tab('trophies', 'TROPHIES') +
+          tab('friends', 'FRIENDS') +
+          '</div>';
+        const note = Pane.note ? `<p class="${Pane.note.good ? 'ok' : 'err'}">${escapeHtml(Pane.note.text)}</p>` : '';
+        if (Pane.tab === 'profile') {
+          const favOpts = ROSTER.filter(x => x.mysock || Progress.heroUnlocked(x.id))
+            .map(x => `<option value="${x.id}"${pr.hero === x.id ? ' selected' : ''}>${escapeHtml(x.mysock ? 'MY CUSTOM SOCK' : x.name)}</option>`)
+            .join('');
+          const heroesOpen = ROSTER.filter(x => !x.mysock && Progress.heroUnlocked(x.id)).length;
+          html +=
+            `<img class="bigav" src="${myAvatarURL()}" alt="">` +
+            `<div class="pname">${escapeHtml(myFriendName())}</div>` +
+            '<button data-pp="photo">📷 CHOOSE MY PHOTO</button>' +
+            (d.avatarPhoto ? '<button class="alt" data-pp="nophoto">USE MY FAVOURITE HERO INSTEAD</button>' : '') +
+            `<label class="check"><input type="checkbox" id="pp-showphoto"${d.showPhoto ? ' checked' : ''}> SHOW MY PHOTO TO MY FRIENDS (otherwise they see my hero)</label>` +
+            note +
+            '<p class="small">MY NAME</p>' +
+            `<input id="pp-name" maxlength="16" autocomplete="off" spellcheck="false" value="${escapeHtml(myFriendName())}">` +
+            '<p class="small">FAVOURITE HERO</p>' +
+            `<select id="pp-fav">${favOpts}</select>` +
+            '<p class="small">MY GAMER CODE</p>' +
+            `<div class="code">${myFriendCode()}</div>` +
+            '<button class="alt" data-pp="share">SHARE MY GAMER CODE</button>' +
+            '<div class="grid">' +
+            `<div><b>${pr.wins}</b>WINS</div>` +
+            `<div><b>${pr.trophies}/${ACHIEVEMENTS.length}</b>TROPHIES</div>` +
+            `<div><b>${pr.episodes}</b>STORY EPISODES</div>` +
+            `<div><b>${pr.online}</b>ONLINE MATCHES</div>` +
+            `<div><b>${heroesOpen}</b>HEROES UNLOCKED</div>` +
+            `<div><b>${pr.friends}</b>FRIENDS</div>` +
+            '</div>' +
+            '<input type="file" id="pp-file" accept="image/*" style="display:none">';
+        } else if (Pane.tab === 'trophies') {
+          const st = d.stats,
+            got = ACHIEVEMENTS.filter(a => d.ach[a.id]).length;
+          html += `<p>TROPHIES & ACHIEVEMENTS<br><span style="color:#ffd23f;font-size:16px">${got} / ${ACHIEVEMENTS.length}</span></p>`;
+          html += `<div class="bar" style="height:10px"><i style="width:${Math.round((got / ACHIEVEMENTS.length) * 100)}%"></i></div>`;
+          for (const a of ACHIEVEMENTS.slice().sort((x, y) => !!d.ach[y.id] - !!d.ach[x.id])) {
+            const done = !!d.ach[a.id];
+            let prog = '';
+            if (!done && a.goal && a.stat) {
+              const v = st[a.stat],
+                n = Math.min(a.goal, typeof v === 'object' && v ? Object.keys(v).length : v | 0);
+              prog = `<div class="td">${n} / ${a.goal}</div><div class="bar"><i style="width:${Math.round((n / a.goal) * 100)}%"></i></div>`;
+            }
+            const reward = rewardText(a);
+            html +=
+              `<div class="tro${done ? ' done' : ''}"><div class="star">★</div><div style="flex:1">` +
+              `<div class="tn">${escapeHtml(a.name)}</div><div class="td">${escapeHtml(a.desc)}</div>` +
+              (reward ? `<div class="td" style="color:#3ff0ff">${escapeHtml(reward)}</div>` : '') +
+              prog +
+              '</div></div>';
+          }
+        } else if (Pane.viewing) {
+          // a friend's profile
+          const f = friendList().find(x => x.code === Pane.viewing) || { code: Pane.viewing, name: 'FRIEND' };
+          const st = Friends.status[f.code] || 'wait';
+          const prof = Friends.profiles[f.code];
+          html +=
+            profileHtml(f.name || 'FRIEND', f.code, prof, st, false).replace(/<img src="[^"]*"/, `<img src="${profileAvatarURL(prof)}"`) +
+            (prof ? '' : '<p class="small">Their profile shows up when they are online.</p>') +
+            note +
+            (st === 'on' || st === 'away' ? `<button data-on="ffight" data-code="${f.code}" style="border-color:#3fff8a">FIGHT!</button>` : '') +
+            `<button class="alt" data-on="fremove" data-code="${f.code}">REMOVE FRIEND</button>` +
+            '<button class="alt" data-pp="back">◀ ALL FRIENDS</button>';
+        } else {
+          html +=
+            '<p class="small">MY GAMER CODE</p>' +
+            `<div class="code">${myFriendCode()}</div>` +
+            '<button class="alt" data-pp="share">SHARE MY GAMER CODE</button>' +
+            '<p class="small">ADD A FRIEND: TYPE THEIR GAMER CODE</p>' +
+            '<div class="addrow"><input id="pp-add" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC123" style="letter-spacing:3px"><button data-pp="add">ADD</button></div>' +
+            note +
+            '<div id="pp-friend-rows">' +
+            friendRowsHtml() +
+            '</div>';
+        }
+        paneEl.innerHTML = html;
+        const name = document.getElementById('pp-name');
+        if (name)
+          name.addEventListener('change', () => {
+            Progress.data.friendName = cleanFriendName(name.value) || myFriendName();
+            Progress.save();
+            drawPane();
+          });
+        const fav = document.getElementById('pp-fav');
+        if (fav)
+          fav.addEventListener('change', () => {
+            Progress.data.favHero = fav.value;
+            Progress.save();
+            refreshAvatar();
+            drawPane();
+          });
+        const show = document.getElementById('pp-showphoto');
+        if (show)
+          show.addEventListener('change', () => {
+            Progress.data.showPhoto = show.checked;
+            Progress.save();
+          });
+        const file = document.getElementById('pp-file');
+        if (file) file.addEventListener('change', () => file.files[0] && setAvatarPhoto(file.files[0]));
+        const add = document.getElementById('pp-add');
+        if (add) add.addEventListener('keydown', e => e.key === 'Enter' && paneAddFriend(add.value));
+      }
+      /** A photo the player picked: cropped square, shrunk to 128x128 and saved on this device only. */
+      function setAvatarPhoto(file) {
+        if (!/^image\//.test(file.type)) return paneNote('That is not a picture. Pick a photo.');
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          const s = Math.min(img.width, img.height),
+            c = document.createElement('canvas');
+          c.width = c.height = 128;
+          c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 128, 128);
+          URL.revokeObjectURL(url);
+          const data = c.toDataURL('image/jpeg', 0.8);
+          if (data.length > 60000) return paneNote('That photo is too big. Try another one.');
+          Progress.data.avatarPhoto = data;
+          if (!Progress.save()) return paneNote('Could not save the photo (storage full or a private window).');
+          refreshAvatar();
+          paneNote('Looking good! Your new photo is saved.', true);
+        };
+        img.onerror = () => paneNote('Could not open that picture. Try another one.');
+        img.src = url;
+      }
+      function paneAddFriend(code) {
+        code = String(code || '')
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, '');
+        if (!FRIEND_CODE_RE.test(code)) return paneNote('A gamer code has 6 letters and numbers.');
+        if (code === myFriendCode()) return paneNote("That's your own code! Ask your friend for theirs.");
+        if (friendList().some(f => f.code === code)) return paneNote('They are already on your list.');
+        friendList().push({ code, name: Friends.requests[code] || 'NEW FRIEND', added: Date.now() });
+        delete Friends.requests[code];
+        Progress.save();
+        Friends.status[code] = 'wait';
+        paneNote('Friend added! They will see you added them.', true);
+        friendsStart().then(() => Friends.ready && friendsPoll());
+      }
+      async function paneShareCode() {
+        const text = 'Add me in Sock Fighters! My gamer code is ' + myFriendCode();
+        try {
+          if (navigator.share && IS_TOUCH) await navigator.share({ title: 'Sock Fighters', text });
+          else await navigator.clipboard.writeText(myFriendCode());
+          paneNote('Copied! Send your gamer code to your friend.', true);
+        } catch (e) {
+          if (!(e && e.name === 'AbortError')) paneNote('Your gamer code is ' + myFriendCode() + ' — tell it to your friend.', true);
+        }
+      }
+      avatarBtn.addEventListener('click', e => {
+        e.preventDefault();
+        Sound.init();
+        Pane.open ? closePane() : openPane('profile');
+      });
+      paneShade.addEventListener('click', closePane);
+      paneEl.addEventListener('click', e => {
+        const b = e.target.closest('button');
+        if (!b) return;
+        Sound.init();
+        SFX.select();
+        const pp = b.dataset.pp,
+          on = b.dataset.on;
+        if (pp === 'close') return closePane();
+        if (pp === 'tab') {
+          Pane.tab = b.dataset.tab;
+          Pane.note = null;
+          Pane.viewing = null;
+          if (Pane.tab === 'friends') friendsStart().then(() => Friends.ready && friendsPoll());
+          return drawPane();
+        }
+        if (pp === 'photo') return document.getElementById('pp-file').click();
+        if (pp === 'nophoto') {
+          Progress.data.avatarPhoto = '';
+          Progress.save();
+          refreshAvatar();
+          return drawPane();
+        }
+        if (pp === 'share') return paneShareCode();
+        if (pp === 'add') return paneAddFriend(document.getElementById('pp-add').value);
+        if (pp === 'back') {
+          Pane.viewing = null;
+          return drawPane();
+        }
+        // the friend list's own buttons
+        if (on === 'fview') {
+          Pane.viewing = b.dataset.code;
+          Pane.note = null;
+          return drawPane();
+        }
+        if (on === 'fback') return paneAddFriend(b.dataset.code);
+        if (on === 'fremove') {
+          friendRemove(b.dataset.code);
+          Pane.viewing = null;
+          return drawPane();
+        }
+        if (on === 'ffight') {
+          closePane();
+          return friendFight(b.dataset.code);
+        }
+      });
+
       /* --- presence: ONLINE / AWAY (game open, nobody playing) / IN A FIGHT / PLAYING STORY --- */
       Friends.lastInput = performance.now();
       for (const type of ['keydown', 'pointerdown', 'touchstart']) addEventListener(type, () => (Friends.lastInput = performance.now()), { passive: true });
@@ -30169,7 +30778,8 @@
           trophies: Object.keys(d.ach || {}).length,
           episodes: Object.keys((d.adv && d.adv.cleared) || {}).length,
           online: st.online | 0,
-          friends: friendList().length
+          friends: friendList().length,
+          photo: d.showPhoto && d.avatarPhoto ? d.avatarPhoto : undefined
         };
       }
       const portraitCache = new Map();
@@ -30197,7 +30807,7 @@
         prof = prof || {};
         const def = findCharacter(prof.hero) || null;
         const [label, cls] = PRESENCE[stKey] || PRESENCE.off;
-        const img = heroPortraitURL(prof.hero || 'stinky', prof.my);
+        const img = mine ? myAvatarURL() : profileAvatarURL(prof);
         return (
           '<div class="pcard">' +
           (img ? `<img src="${img}" alt="">` : '') +
@@ -30506,6 +31116,13 @@
       function updateGame() {
         game.time++;
         if (game.slowMotion > 0) game.slowMotion--;
+        updateAvatarButton();
+        if (Pane.open) {
+          if (wasPressed('Escape') && !document.activeElement.matches('input, select')) closePane();
+          for (const code in keysPressed) keysPressed[code] = false;
+          game.click = null;
+          return;
+        }
         if (game.storyPause) {
           updateStoryPause();
           game.click = null;
@@ -30697,6 +31314,12 @@
         /** tests: the friends list */
         openOnlineLobbyForTest: () => openOnlineLobby(),
         openFriendsScreen: () => openFriendsScreen(),
+        openPane: tab => openPane(tab),
+        ACHIEVEMENTS_N: ACHIEVEMENTS.length,
+        closePane: () => closePane(),
+        get Pane() {
+          return Pane;
+        },
         friendsPollNow: () => friendsPoll(),
         myFriendCode: () => myFriendCode(),
         get Friends() {

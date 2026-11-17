@@ -20,6 +20,7 @@ const TESTS = [
   ['test_gamepad', 'Xbox and PS5 controllers: menus, both players, attack, pause'],
   ['test_install', 'Installs as an app: icons, offline copy, INSTALL button, opens offline'],
   ['test_friends', 'Friends list: codes, add, online status, invite, accept into a match'],
+  ['test_profile', 'My profile: avatar, photo, trophies, friends tab, kept after reload'],
   ...(quick ? [] : [['test_full', 'Story mode: all 3 chapters (27 episodes), credits, palace scenes']])
 ];
 const problems = [];
