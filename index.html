@@ -28722,6 +28722,8 @@
         }
         return ('0000000' + h.toString(16)).slice(-8);
       }
+      // story voice file versions (written by tools/story/pack.js — do not edit by hand)
+      const VOICE_FILE_VER = {"hero-argyle":"92da0d2b","hero-baby":"e78b6a6b","hero-bleach":"b2a51631","hero-cling":"3809b9f1","hero-demon":"47f4c84a","hero-ghost":"8abc40b7","hero-gran":"b17c3537","hero-holey":"532fe54c","hero-iron":"35269cc8","hero-king":"c02bebc3","hero-kneehi":"36032139","hero-lint":"829e942f","hero-robo":"d461ad97","hero-shinobi":"ad181a73","hero-socklet":"098a17ea","hero-steel":"ddc9a50a","hero-stinky":"ff70db94","story":"9f441296"};
       const StoryVoices = {
         files: {}, // file name -> 'loading' | 'ready' | 'failed'
         buffers: {}, // key -> { buffer, offset }
@@ -28738,7 +28740,8 @@
           this.files[file] = 'loading';
           try {
             const tag = document.createElement('script');
-            tag.src = 'voices/' + file + '.js';
+            // the version stamp makes phones fetch a changed voice file instead of playing an old saved copy
+            tag.src = 'voices/' + file + '.js' + (VOICE_FILE_VER[file] ? '?v=' + VOICE_FILE_VER[file] : '');
             tag.async = true;
             tag.onload = () => {
               this.files[file] = 'ready';

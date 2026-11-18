@@ -27,3 +27,14 @@ for (const [name, map] of Object.entries(files)) {
   console.log(name.padEnd(14), String(Object.keys(map).length).padStart(4), 'lines', (body.length / 1e6).toFixed(2), 'MB');
 }
 console.log('total', (total / 1e6).toFixed(1), 'MB;', missing, 'lines not recorded yet');
+// version stamps: a short hash of every voice file, written into the game so changed files are fetched fresh
+const crypto = require('crypto');
+const ver = {};
+for (const name of Object.keys(files).sort())
+  ver[name] = crypto.createHash('md5').update(fs.readFileSync(path.join(outDir, name + '.js'))).digest('hex').slice(0, 8);
+const gamePath = path.join(__dirname, '..', '..', 'index.html');
+const game = fs.readFileSync(gamePath, 'utf8');
+const re = /const VOICE_FILE_VER = {[^}]*};/;
+if (!re.test(game)) throw new Error('VOICE_FILE_VER not found in index.html');
+fs.writeFileSync(gamePath, game.replace(re, () => 'const VOICE_FILE_VER = ' + JSON.stringify(ver) + ';'));
+console.log('version stamps written for', Object.keys(ver).length, 'voice files');
