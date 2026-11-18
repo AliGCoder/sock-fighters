@@ -27,7 +27,28 @@ const path = require('path');
   const res = {};
   const step = n => p.evaluate(n => { for (let i = 0; i < n; i++) updateGame(); renderGame(); }, n);
   for (const { id, fight } of games) {
-    if (fight) {
+    if (id === 'combos') {
+      // COMBO TRIALS: land JAB > KICK on the dummy, and trial 1 clears
+      const r = await p.evaluate(() => {
+        const S = window.__sock;
+        S.startMini('combos');
+        S.miniBegin();
+        for (let i = 0; i < 120; i++) updateGame();
+        S.f1.x = 400;
+        S.f2.x = 500;
+        keysPressed.Space = true; keysDown.Space = true; updateGame(); delete keysDown.Space;
+        for (let i = 0; i < 9; i++) updateGame();
+        keysPressed.KeyE = true; keysDown.KeyE = true; updateGame(); delete keysDown.KeyE;
+        for (let i = 0; i < 60; i++) updateGame();
+        const n = S.game.mini.g.n, score = S.game.mini.g.score;
+        renderGame();
+        return { n, score };
+      });
+      if (shot) { await p.waitForTimeout(600); await p.screenshot({ path: shot + '_combos.png' }); }
+      await p.evaluate(() => window.__sock.game.mini.g.end());
+      res[id] = r;
+      checks['plays combos'] = r.n === 1 && r.score > 0;
+    } else if (fight) {
       // the READY screen, then the first fight
       await p.evaluate(id => window.__sock.startMini(id), id);
       if (shot) { await p.waitForTimeout(400); await p.screenshot({ path: shot + '_' + id + '_ready.png' }); }

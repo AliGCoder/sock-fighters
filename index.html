@@ -16296,6 +16296,10 @@
 
       /** On every landed hit: the 3-kick SOCK-NADO and 5-hit combos. */
       function trackHitAchievements(attacker, victim, move) {
+        if (game.mf && game.mini && game.mini.g && !game.mini.g.over) {
+          const m = miniDef(game.mini.id);
+          if (m.onHit) m.onHit(game.mini.g, attacker, victim, move);
+        }
         if (!isMine(attacker.side)) return;
         if (move === MOVES.kick3) Progress.award('socknado');
         if (victim.combo >= 5) Progress.award('combo5');
@@ -16463,6 +16467,11 @@
           return;
         }
 
+        if (game.mf && game.mini && game.mini.g && !game.mini.g.over) {
+          const m = miniDef(game.mini.id);
+          if (m.tick) m.tick(game.mini.g);
+          if (game.screen !== 'fight') return; // the challenge just ended
+        }
         updateFX();
         game.shake *= 0.86;
         if (game.cheer > 0) game.cheer--;
@@ -31680,8 +31689,11 @@
         const S = game.mini,
           m = S && miniDef(S.id);
         if (!m || !S.g) return;
-        mgPanel(W / 2 - 170, 96, 340, 30, 'rgba(20,10,36,0.82)', m.bg[1]);
-        drawText(m.hud(S.g), W / 2, 112, 9, FONT_PIXEL, '#fff', INK, 3);
+        const text = m.hud(S.g);
+        ctx.font = '9px ' + FONT_PIXEL;
+        const w = Math.max(340, ctx.measureText(text).width + 34);
+        mgPanel(W / 2 - w / 2, 96, w, 30, 'rgba(20,10,36,0.82)', m.bg[1]);
+        drawText(text, W / 2, 112, 9, FONT_PIXEL, '#fff', INK, 3);
       }
 
       const MINI_GAMES = [
@@ -31792,12 +31804,2208 @@
           winText: () => 'ONE HIT!',
           loseText: 'ONE HIT... YOU',
           hud: g => 'DUEL ' + g.n + ' / 14   •   WINS ' + g.score
+        },
+        /* 4. COMBO TRIALS: Socklet pulls off the listed combos on a practice dummy */
+        {
+          id: 'combos',
+          name: 'COMBO TRIALS',
+          jp: 'コンボチャレンジ',
+          hero: 'socklet',
+          fight: true,
+          how: 'Land each combo on the practice dummy. The keys are shown on screen. 11 trials, 2 minutes. Faster = more points.',
+          bg: ['#14325a', '#3fb8ff'],
+          stars: [600, 1000, 1400],
+          trials: [
+            ['JAB > KICK', 'SPACE then E', ['punch', 'kick']],
+            ['LOW JAB > KICK', 'S+SPACE then E', ['cpunch', 'kick']],
+            ['NOODLE UPPERCUT', 'FWD+SPACE', ['upper']],
+            ['SOCK-HOP HEADBUTT', 'FWD+E', ['headbutt']],
+            ['SLAP-SLAP FRENZY', 'BACK+SPACE', ['slap']],
+            ['BELLY FLOP', 'BACK+E', ['flop']],
+            ['SOCK-NADO', 'E, E, E', ['kick', 'kick2', 'kick3']],
+            ['JAB > SWEEP', 'SPACE then S+E', ['punch', 'sweep']],
+            ['SPECIAL MOVE', 'F', ['special']],
+            ['JAB > KICK > SPIN HEEL', 'SPACE, E, E', ['punch', 'kick', 'kick2']],
+            ['THE FULL STRING', 'SPACE, E, E, E', ['punch', 'kick', 'kick2', 'kick3']]
+          ],
+          begin(g) {
+            g.n = 0;
+            g.left = 120 * 60;
+            g.seq = [];
+            g.since = 0;
+            mfFight('socklet', 'socklet', { tier: 'easy', stage: 'dojo', title: 'COMBO TRIALS', sub: 'コンボ', color: '#3fb8ff' });
+            this.dummy();
+          },
+          dummy() {
+            // the practice dummy stands still and never gets knocked out
+            controller2 = { step() {}, take: () => false, left: false, right: false, up: false, down: false };
+            f2.hpMax = f2.hp = f2.hpShow = 99999;
+            f2.noChip = true;
+          },
+          tick(g) {
+            if (game.phase !== 'fight') return;
+            f2.hp = f2.hpShow = f2.hpMax;
+            game.timer = 99;
+            g.since++;
+            if (--g.left <= 0) g.end();
+            // keep the dummy in front of Socklet (no running away into a corner)
+            if (f2.state === 'idle' && Math.abs(f2.x - f1.x) > 260) f2.x = clamp(f1.x + f1.face * 140, 60, W - 60);
+          },
+          onHit(g, a, v) {
+            if (a !== f1) return;
+            const name = a.state === 'atk' ? a.move : a.state.indexOf('super') === 0 ? 'super' : 'special';
+            if (v.combo <= 1) g.seq = [];
+            if (g.seq[g.seq.length - 1] !== name) g.seq.push(name);
+            const want = this.trials[g.n][2];
+            const tail = g.seq.slice(-want.length);
+            if (tail.length === want.length && tail.every((x, i) => x === want[i])) {
+              const pts = 100 + Math.max(0, 60 - Math.floor(g.since / 60)) * 2;
+              g.score += pts;
+              g.n++;
+              g.seq = [];
+              g.since = 0;
+              addText(f2.x, f2.y - 220, 'TRIAL CLEARED! +' + pts, '#3fff8a', 34);
+              SFX.coin();
+              if (g.n >= this.trials.length) {
+                g.score += Math.floor(g.left / 60) * 5;
+                g.end();
+              }
+            }
+          },
+          after(g) {
+            g.end();
+          },
+          winText: () => 'TRIAL!',
+          hud: function (g) {
+            const t = this.trials[Math.min(g.n, this.trials.length - 1)];
+            return 'TRIAL ' + Math.min(g.n + 1, 11) + '/11: ' + t[0] + '  [' + t[1] + ']   ⏱' + Math.ceil(g.left / 60);
+          }
+        },
+        /* 5. THRONE DEFENCE: King Knee-Sock holds the throne while challengers come for it */
+        {
+          id: 'throne',
+          name: 'THRONE DEFENCE',
+          jp: '王座防衛',
+          hero: 'king',
+          fight: true,
+          how: 'Stand on the royal carpet to score points. Challengers keep coming to knock you off. K.O. them for a bonus. 90 seconds.',
+          bg: ['#4a3a0a', '#ffd23f'],
+          stars: [800, 1500, 2300],
+          foes: ['stinky', 'argyle', 'kneehi', 'robo', 'shinobi', 'steel', 'ghost', 'iron', 'cling', 'bleach'],
+          zone: { x: W / 2 - 110, w: 220 },
+          begin(g) {
+            g.left = 90 * 60;
+            g.n = 0;
+            g.hp = null;
+            g.on = 0;
+            this.next(g);
+          },
+          next(g) {
+            const id = this.foes[g.n % this.foes.length];
+            g.n++;
+            mfFight('king', id, { tier: g.n < 3 ? 'medium' : g.n < 6 ? 'hard' : 'nightmare', stage: 'throne', hp1: g.hp, hp2Mul: 0.7, title: 'CHALLENGER ' + g.n, sub: findCharacter(id).name, color: '#ffd23f' });
+          },
+          tick(g) {
+            if (game.phase !== 'fight') return;
+            game.timer = 99; // (the challenge has its own clock)
+            const Z = this.zone;
+            g.on = f1.x > Z.x && f1.x < Z.x + Z.w && !['hit', 'knockdown', 'fall', 'getup', 'ko', 'grabbed', 'thrown'].includes(f1.state);
+            if (g.on && game.time % 6 === 0) g.score++;
+            if (--g.left <= 0) g.end();
+          },
+          after(g, won) {
+            if (!won) return g.end();
+            g.score += 200;
+            g.hp = Math.min(f1.hpMax, f1.hp + f1.hpMax * 0.2);
+            this.next(g);
+          },
+          drawFloor(g) {
+            const Z = this.zone,
+              glow = g.on ? 0.55 + Math.sin(game.time * 0.2) * 0.2 : 0.25;
+            ctx.save();
+            ctx.fillStyle = `rgba(200,30,60,${0.5 + glow * 0.3})`;
+            ctx.beginPath();
+            ctx.moveTo(Z.x - 20, GROUND + 6);
+            ctx.lineTo(Z.x + Z.w + 20, GROUND + 6);
+            ctx.lineTo(Z.x + Z.w, GROUND - 14);
+            ctx.lineTo(Z.x, GROUND - 14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.strokeStyle = `rgba(255,210,63,${glow + 0.3})`;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            drawText('♛', W / 2, GROUND - 4, 16, FONT_COMIC, '#ffd23f', INK, 3);
+            ctx.restore();
+          },
+          winText: () => 'CHALLENGER CRUSHED!',
+          loseText: 'DETHRONED!',
+          hud: g => (g.on ? '♛ ON THE THRONE ♛' : 'GET BACK ON THE CARPET!') + '   SCORE ' + g.score + '   ⏱' + Math.ceil(g.left / 60)
+        },
+        /* 6. IAIDO DUEL: Argyle-San's quick draw */
+        {
+          id: 'iaido',
+          name: 'IAIDO DUEL',
+          jp: '居合の決闘',
+          hero: 'argyle',
+          how: 'The enemy charges. STRIKE (tap / SPACE) the moment they enter the red ring. Too early or too late and they hit you. Watch out for fake-outs! 3 lives.',
+          bg: ['#3a1414', '#e8833f'],
+          stars: [800, 1800, 3000],
+          foes: ['stinky', 'kneehi', 'robo', 'shinobi', 'baby', 'steel', 'ghost', 'gran', 'iron', 'cling', 'king', 'demon'],
+          start(g) {
+            g.lives = 3;
+            g.round = 0;
+            g.fx = [];
+            this.next(g);
+          },
+          next(g) {
+            g.round++;
+            g.foe = this.foes[(g.round - 1) % this.foes.length];
+            g.phase = 'wait';
+            g.wait = mgInt(50, 130);
+            g.x = 800; // the enemy's x
+            g.speed = 9 + Math.min(10, g.round * 0.7);
+            g.feint = g.round > 3 && Math.random() < 0.4 ? mgRnd(560, 680) : 0;
+            g.pause = 0;
+            g.res = null;
+            g.t0 = 0;
+          },
+          // the perfect moment: the enemy's x at the red ring
+          RING: 330,
+          update(g, I) {
+            if (g.phase === 'wait') {
+              if (I.act) return this.strike(g);
+              if (--g.wait <= 0) {
+                g.phase = 'charge';
+                SFX.whoosh();
+              }
+              return;
+            }
+            if (g.phase === 'charge') {
+              if (g.feint && g.x <= g.feint && !g.pause) g.pause = 40; // stops dead... then charges again
+              if (g.pause > 1) g.pause--;
+              else {
+                if (g.pause === 1) {
+                  g.pause = -1;
+                  g.feint = 0;
+                }
+                g.x -= g.speed;
+              }
+              if (I.act) return this.strike(g);
+              if (g.x <= 230) this.hurt(g, 'TOO LATE!');
+              return;
+            }
+            if (g.phase === 'done' && --g.wait <= 0) {
+              if (g.lives <= 0) return g.end();
+              this.next(g);
+            }
+          },
+          strike(g) {
+            const d = g.x - this.RING,
+              win = g.phase === 'charge' && g.pause <= 1 && Math.abs(d) <= 42;
+            g.slash = 14;
+            SFX.slap();
+            if (!win) return this.hurt(g, g.phase === 'wait' || d > 42 ? 'TOO EARLY!' : 'TOO LATE!');
+            const perfect = Math.abs(d) <= 12;
+            const pts = (perfect ? 300 : 150) + g.round * 20;
+            g.score += pts;
+            g.res = { win: true, text: (perfect ? 'PERFECT CUT! +' : 'CUT! +') + pts };
+            g.phase = 'done';
+            g.wait = 80;
+            g.cutAt = g.x;
+            game.whiteFlash = 6;
+            SFX.thoom();
+          },
+          hurt(g, text) {
+            g.lives--;
+            g.res = { win: false, text };
+            g.phase = 'done';
+            g.wait = 90;
+            game.shake = 10;
+            SFX.crash();
+          },
+          draw(g) {
+            drawStage(0.15, 'dojo');
+            const t = game.time,
+              win = g.res && g.res.win,
+              lost = g.res && !g.res.win;
+            // the red ring on the floor
+            ctx.strokeStyle = g.phase === 'charge' ? '#ff4f6d' : 'rgba(255,79,109,0.4)';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.ellipse(this.RING, GROUND + 4, 46, 12, 0, 0, 7);
+            ctx.stroke();
+            // Argyle: in stance, or across the screen after the cut
+            const ax = win ? 620 : lost ? 200 : 200;
+            mgHero('argyle', ax, GROUND, win ? -1 : 1, 0.8, t, p => {
+              p.bodyH = win || g.slash ? 112 : 96;
+              p.lean = g.phase === 'charge' ? 0.22 : 0.12;
+              p.eyes = g.phase === 'charge' ? 'angry' : 'normal';
+              p.front = win ? { x: 100, y: -90 } : { x: 30, y: -20 };
+              p.back = win ? { x: -40, y: -30 } : { x: 18, y: -26 };
+              if (lost) {
+                p.rot = -0.5;
+                p.eyes = 'spiral';
+              }
+            });
+            // the enemy
+            const ex = win ? g.cutAt : lost ? 260 : g.x;
+            if (!(win && g.wait < 20)) {
+              ctx.save();
+              if (win) ctx.globalAlpha = Math.min(1, g.wait / 40);
+              mgHero(g.foe, ex, GROUND, -1, 0.8, t, p => {
+                if (g.phase === 'charge') {
+                  p.lean = g.pause > 1 ? -0.1 : 0.35;
+                  p.yOff = -Math.abs(Math.sin(t * 0.6)) * 12;
+                  p.front = { x: 60, y: -40 };
+                  p.mouth = 'yell';
+                  p.eyes = 'angry';
+                }
+                if (win) {
+                  p.rot = 0.6 * (1 - g.wait / 80);
+                  p.eyes = 'spiral';
+                }
+                if (lost) p.front = { x: 100, y: -60 };
+              });
+              ctx.restore();
+            }
+            if (g.slash > 0) {
+              g.slash--;
+              ctx.strokeStyle = `rgba(255,255,255,${g.slash / 14})`;
+              ctx.lineWidth = 8;
+              ctx.beginPath();
+              ctx.moveTo(180, GROUND - 160);
+              ctx.lineTo(760, GROUND - 40);
+              ctx.stroke();
+              ctx.strokeStyle = `rgba(63,240,255,${g.slash / 14})`;
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+            if (g.phase === 'wait') drawText('...', W / 2, 200, 40, FONT_COMIC, '#fff', INK, 6);
+            if (g.res) drawText(g.res.text, W / 2, 190, 40, FONT_COMIC, g.res.win ? '#3fff8a' : '#ff4f6d', INK, 8);
+            drawText('♥'.repeat(Math.max(0, g.lives)), W - 110, 80, 22, FONT_COMIC, '#ff4f6d', INK, 4);
+            drawText('DUEL ' + g.round + ' VS ' + findCharacter(g.foe).name, W / 2, 80, 10, FONT_PIXEL, '#fff', INK, 4);
+          }
+        },
+        /* 7. IRON WALL: Steel Toe blocks attackers from both sides */
+        {
+          id: 'ironwall',
+          name: 'IRON WALL',
+          jp: '鉄壁',
+          hero: 'steel',
+          how: 'Fighters rush in from the LEFT and RIGHT. Block that side (◀ / ▶, or tap that half) just as they strike. A last-moment block is PERFECT. 3 lives.',
+          bg: ['#2a3a4a', '#8fb0c8'],
+          stars: [1500, 3000, 5000],
+          foes: ['stinky', 'argyle', 'kneehi', 'robo', 'shinobi', 'baby', 'ghost', 'socklet', 'holey', 'lint', 'cling', 'bleach'],
+          start(g) {
+            g.lives = 3;
+            g.atk = [];
+            g.presses = [];
+            g.next = 50;
+            g.n = 0;
+            g.guard = 1;
+            g.guardT = 0;
+            g.hurtT = 0;
+            g.streak = 0;
+          },
+          update(g, I) {
+            const lvl = Math.min(1, g.n / 40);
+            if (--g.next <= 0) {
+              const side = Math.random() < 0.5 ? -1 : 1;
+              const travel = Math.round(lerp(70, 30, lvl));
+              g.atk.push({ side, foe: pick(this.foes), t: 0, travel, done: null, dt: 0 });
+              g.n++;
+              // later on: two at once from both sides, a few frames apart
+              if (lvl > 0.35 && Math.random() < 0.3) g.atk.push({ side: -side, foe: pick(this.foes), t: -mgInt(8, 16), travel, done: null, dt: 0 });
+              g.next = Math.round(lerp(80, 38, lvl) + mgRnd(0, 20));
+            }
+            let side = 0;
+            if (I.r) side = 1;
+            if (I.l) side = -1;
+            if (I.tap) side = I.tap.x < W / 2 ? -1 : 1;
+            if (side) {
+              g.presses.push({ side, at: g.t });
+              g.guard = side;
+              g.guardT = 14;
+            }
+            if (g.guardT > 0) g.guardT--;
+            if (g.hurtT > 0) g.hurtT--;
+            g.presses = g.presses.filter(p => g.t - p.at < 20);
+            for (const a of g.atk) {
+              a.t++;
+              if (a.done) {
+                a.dt++;
+                continue;
+              }
+              if (a.t < a.travel) continue;
+              // the strike lands now: was there a block on that side in the last 14 frames?
+              const p = g.presses.find(q => q.side === a.side && g.t - q.at <= 14);
+              if (p) {
+                g.presses.splice(g.presses.indexOf(p), 1);
+                const perfect = g.t - p.at <= 4;
+                g.streak++;
+                const pts = (perfect ? 150 : 75) + Math.min(100, g.streak * 5);
+                g.score += pts;
+                a.done = 'blocked';
+                mgPop({ x: W / 2 + a.side * 120, y: GROUND - 200, text: (perfect ? 'PERFECT! +' : 'CLANG! +') + pts, col: perfect ? '#ffe234' : '#3ff0ff' });
+                perfect ? SFX.clonk() : SFX.block();
+              } else {
+                a.done = 'hit';
+                g.lives--;
+                g.streak = 0;
+                g.hurtT = 20;
+                mgPop({ x: W / 2, y: GROUND - 230, text: 'OUCH!', col: '#ff4f6d' });
+                SFX.slap();
+                if (g.lives <= 0) {
+                  g.dead = true;
+                  return g.end();
+                }
+              }
+            }
+            g.atk = g.atk.filter(a => !a.done || a.dt < 30);
+          },
+          draw(g) {
+            drawStage(0.2, 'rooftop');
+            const t = game.time;
+            for (const s of [-1, 1]) drawText(s < 0 ? '◀' : '▶', W / 2 + s * 380, 300, 50, FONT_COMIC, 'rgba(255,255,255,0.12)', null, 0);
+            // warnings: who is coming from which side
+            for (const a of g.atk)
+              if (!a.done && a.t > 0) {
+                const k = a.t / a.travel;
+                drawText('!', W / 2 + a.side * 420, 180, 40 + k * 20, FONT_COMIC, k > 0.7 ? '#ff4f6d' : '#ffe234', INK, 6);
+              }
+            mgHero('steel', W / 2, GROUND, g.guard, 0.8, t, p => {
+              if (g.guardT > 0) {
+                p.front = { x: 34, y: -60 };
+                p.back = { x: 26, y: -44 };
+                p.lean = -0.1;
+                p.eyes = 'angry';
+                p.mouth = 'grit';
+              }
+              if (g.hurtT > 0) {
+                p.rot = -0.3 * g.guard;
+                p.eyes = 'wince';
+              }
+            });
+            for (const a of g.atk) {
+              if (a.t < 0) continue;
+              const k = Math.min(1, a.t / a.travel);
+              let x = W / 2 + a.side * lerp(520, 110, k);
+              let alpha = 1;
+              if (a.done === 'blocked') {
+                x = W / 2 + a.side * (110 + a.dt * 12);
+                alpha = 1 - a.dt / 30;
+              }
+              if (a.done === 'hit') alpha = 1 - a.dt / 30;
+              ctx.save();
+              ctx.globalAlpha = Math.max(0, alpha);
+              mgHero(a.foe, x, GROUND, -a.side, 0.72, t, p => {
+                p.lean = 0.3;
+                p.mouth = 'yell';
+                p.eyes = 'angry';
+                p.yOff = a.done ? 0 : -Math.abs(Math.sin(a.t * 0.6)) * 10;
+                p.front = k > 0.85 && !a.done ? { x: 100, y: -60 } : { x: 50, y: -30 };
+                if (a.done === 'blocked') {
+                  p.rot = 0.4;
+                  p.eyes = 'spiral';
+                }
+              });
+              ctx.restore();
+            }
+            drawText('♥'.repeat(Math.max(0, g.lives)), W - 110, 80, 22, FONT_COMIC, '#ff4f6d', INK, 4);
+            if (g.streak > 2) drawText(g.streak + ' BLOCK STREAK', W / 2, 80, 12, FONT_PIXEL, '#3ff0ff', INK, 4);
+          }
+        },
+        /* 8. CANE PARRY: Stocking Gran bats the junk away */
+        {
+          id: 'cane',
+          name: 'CANE PARRY',
+          jp: '杖パリィ',
+          hero: 'gran',
+          how: 'Junk flies at Gran. SWING (tap / SPACE) as it reaches the yellow ring. But NEVER swing at her CUP OF TEA: let it land! 3 lives.',
+          bg: ['#3a1f3a', '#ff8fc8'],
+          stars: [1500, 3200, 5000],
+          start(g) {
+            g.lives = 3;
+            g.items = [];
+            g.next = 40;
+            g.n = 0;
+            g.swing = 0;
+            g.hurtT = 0;
+            g.streak = 0;
+          },
+          HIT: { x: 300, y: GROUND - 110 },
+          update(g, I) {
+            const lvl = Math.min(1, g.n / 45);
+            if (--g.next <= 0) {
+              const kind = Math.random() < 0.15 ? 'tea' : pick(['shoe', 'can', 'duck', 'boot', 'shoe']);
+              const travel = Math.round(lerp(80, 40, lvl));
+              g.items.push({ kind, t: 0, travel, x0: W + 30, y0: mgRnd(150, 380), arc: mgRnd(-120, 60), done: null, dt: 0, vx: 0, vy: 0, r: 0 });
+              g.n++;
+              g.next = Math.round(lerp(60, 26, lvl) + mgRnd(0, 18));
+            }
+            if (g.swing > 0) g.swing--;
+            if (g.hurtT > 0) g.hurtT--;
+            let swung = false;
+            if (I.act) {
+              swung = true;
+              g.swing = 12;
+              SFX.whoosh();
+            }
+            // the item nearest its arrival is the one the swing is aimed at
+            if (swung) {
+              const it = g.items.filter(q => !q.done).sort((a, b) => b.t / b.travel - a.t / a.travel)[0];
+              const k = it ? it.t / it.travel : 0;
+              if (it && k > 0.78 && k < 1.08) {
+                if (it.kind === 'tea') {
+                  it.done = 'smashed';
+                  g.score = Math.max(0, g.score - 100);
+                  g.streak = 0;
+                  mgPop({ x: this.HIT.x + 40, y: this.HIT.y - 60, text: 'MY TEA!! -100', col: '#ff4f6d' });
+                  SFX.crash();
+                } else {
+                  const perfect = Math.abs(k - 0.95) < 0.05;
+                  g.streak++;
+                  const pts = (perfect ? 120 : 60) + Math.min(100, g.streak * 4);
+                  g.score += pts;
+                  const pp = this.pos(it);
+                  it.x0 = pp.x;
+                  it.y0 = pp.y;
+                  it.done = 'batted';
+                  it.vx = mgRnd(12, 18);
+                  it.vy = mgRnd(-14, -6);
+                  mgPop({ x: this.HIT.x + 60, y: this.HIT.y - 70, text: (perfect ? 'WHACK! +' : 'BONK! +') + pts, col: perfect ? '#ffe234' : '#fff' });
+                  SFX.clonk();
+                }
+              }
+            }
+            for (const it of g.items) {
+              if (it.done) {
+                it.dt++;
+                it.x0 += it.vx;
+                it.y0 += it.vy;
+                it.vy += 0.6;
+                it.r += 0.3;
+                continue;
+              }
+              it.t++;
+              if (it.t > it.travel * 1.08) {
+                if (it.kind === 'tea') {
+                  it.done = 'caught';
+                  g.score += 80;
+                  mgPop({ x: this.HIT.x, y: this.HIT.y - 80, text: 'LOVELY CUPPA! +80', col: '#3fff8a' });
+                  SFX.coin();
+                } else {
+                  it.done = 'hit';
+                  g.lives--;
+                  g.streak = 0;
+                  g.hurtT = 24;
+                  mgPop({ x: this.HIT.x, y: this.HIT.y - 90, text: 'OH MY BACK!', col: '#ff4f6d' });
+                  SFX.slap();
+                  if (g.lives <= 0) {
+                    g.dead = true;
+                    return g.end();
+                  }
+                }
+              }
+            }
+            g.items = g.items.filter(it => !it.done || it.dt < 40);
+          },
+          pos(it) {
+            const k = Math.min(1.08, it.t / it.travel),
+              H0 = this.HIT;
+            return { x: lerp(it.x0, H0.x, k), y: lerp(it.y0, H0.y, k) + Math.sin(k * Math.PI) * it.arc };
+          },
+          junk(kind, x, y, r) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(r);
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            if (kind === 'tea') {
+              ctx.fillStyle = '#fff';
+              ctx.beginPath();
+              ctx.moveTo(-16, -12);
+              ctx.lineTo(16, -12);
+              ctx.lineTo(12, 12);
+              ctx.lineTo(-12, 12);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(19, 0, 7, -1.4, 1.4);
+              ctx.stroke();
+              ctx.fillStyle = '#a0643a';
+              ctx.fillRect(-14, -10, 28, 5);
+              ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+              ctx.beginPath();
+              ctx.moveTo(-4, -18);
+              ctx.quadraticCurveTo(2, -26, -2, -34);
+              ctx.stroke();
+            } else if (kind === 'can') {
+              ctx.fillStyle = '#c8c8d8';
+              ctx.fillRect(-11, -16, 22, 32);
+              ctx.strokeRect(-11, -16, 22, 32);
+              ctx.fillStyle = '#ff4f6d';
+              ctx.fillRect(-11, -6, 22, 12);
+            } else if (kind === 'duck') {
+              ctx.fillStyle = '#ffd23f';
+              ctx.beginPath();
+              ctx.ellipse(0, 4, 18, 12, 0, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(10, -10, 9, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = '#ff9a3f';
+              ctx.fillRect(17, -11, 9, 5);
+            } else {
+              // a shoe or a boot
+              ctx.fillStyle = kind === 'boot' ? '#6b4a2a' : '#3fd0ff';
+              ctx.beginPath();
+              ctx.moveTo(-16, kind === 'boot' ? -24 : -6);
+              ctx.lineTo(0, kind === 'boot' ? -24 : -8);
+              ctx.lineTo(4, 0);
+              ctx.lineTo(20, 4);
+              ctx.lineTo(20, 12);
+              ctx.lineTo(-16, 12);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(-16, 8, 36, 4);
+            }
+            ctx.restore();
+          },
+          draw(g) {
+            drawStage(0.25, 'laundry');
+            const t = game.time,
+              H0 = this.HIT;
+            // the swing ring
+            ctx.strokeStyle = `rgba(255,226,52,${0.45 + Math.sin(t * 0.15) * 0.2})`;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(H0.x + 20, H0.y, 46, 0, 7);
+            ctx.stroke();
+            mgHero('gran', 190, GROUND, 1, 0.82, t, p => {
+              if (g.swing > 0) {
+                const k = g.swing / 12;
+                p.front = { x: 50 + (1 - k) * 60, y: -100 + (1 - k) * 80 };
+                p.lean = 0.15;
+                p.mouth = 'yell';
+              }
+              if (g.hurtT > 0) {
+                p.rot = -0.42;
+                p.eyes = 'wince';
+                p.mouth = 'yell';
+              }
+            });
+            // her cane, swinging
+            const ang = g.swing > 0 ? -1.8 + (1 - g.swing / 12) * 2.6 : -0.5;
+            ctx.save();
+            ctx.translate(232, GROUND - 120);
+            ctx.rotate(ang);
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 9;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(96, 0);
+            ctx.arc(96, -12, 12, Math.PI / 2, -Math.PI / 2, true);
+            ctx.stroke();
+            ctx.strokeStyle = '#a0643a';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+            ctx.restore();
+            for (const it of g.items) {
+              const p = it.done ? { x: it.x0, y: it.y0 } : this.pos(it);
+              if (it.done === 'hit' || it.done === 'caught' || it.done === 'smashed') continue;
+              this.junk(it.kind, p.x, p.y, it.done ? it.r : it.t * 0.12);
+            }
+            drawText('♥'.repeat(Math.max(0, g.lives)), W - 110, 80, 22, FONT_COMIC, '#ff4f6d', INK, 4);
+            if (g.streak > 2) drawText(g.streak + ' IN A ROW', W / 2, 80, 12, FONT_PIXEL, '#ff8fc8', INK, 4);
+          }
+        },
+        /* 9. PRESSING BOARD BLITZ: Iron Shogun slices the wrinkled laundry */
+        {
+          id: 'blitz',
+          name: 'PRESSING BOARD BLITZ',
+          jp: 'アイロン台ブリッツ',
+          hero: 'iron',
+          how: 'SWIPE (drag) through the wrinkled laundry flying up to slice it. Several in one swipe = combo! Never slice a HOT IRON. Keys: arrows aim, SPACE slashes.',
+          bg: ['#1f2a3a', '#5b7bd8'],
+          time: 60,
+          cursor: true,
+          stars: [600, 1200, 2000],
+          start(g) {
+            g.items = [];
+            g.halves = [];
+            g.next = 30;
+            g.trail = [];
+            g.lives = 3;
+            g.last = null;
+            g.swingT = 0;
+          },
+          update(g, I) {
+            const lvl = Math.min(1, g.t / 3000);
+            if (--g.next <= 0) {
+              const n = Math.random() < 0.3 + lvl * 0.3 ? mgInt(2, 4) : 1;
+              for (let i = 0; i < n; i++) {
+                const bomb = Math.random() < 0.12 + lvl * 0.08;
+                const x = mgRnd(160, W - 160);
+                g.items.push({ x, y: H + 30, vx: (W / 2 - x) * mgRnd(0.006, 0.012), vy: -mgRnd(15, 19), r: 0, vr: mgRnd(-0.08, 0.08), kind: bomb ? 'iron' : pick(['shirt', 'sock', 'towel', 'sock']), col: pick(MG_COLS) });
+              }
+              g.next = Math.round(lerp(55, 28, lvl) + mgRnd(0, 20));
+            }
+            for (const it of g.items) {
+              it.x += it.vx;
+              it.y += it.vy;
+              it.vy += 0.32;
+              it.r += it.vr;
+            }
+            for (const hv of g.halves) {
+              hv.x += hv.vx;
+              hv.y += hv.vy;
+              hv.vy += 0.4;
+              hv.r += hv.vr;
+            }
+            g.halves = g.halves.filter(hv => hv.y < H + 80);
+            g.items = g.items.filter(it => !it.cut && it.y < H + 60);
+            // the blade: a swipe of the finger / mouse, or SPACE slashes across where the cursor is
+            let seg = null;
+            if (MG.down && !MG.cur.on) {
+              const pnt = { x: MG.px, y: MG.py };
+              if (g.last) seg = [g.last, pnt];
+              g.last = pnt;
+              g.trail.push({ x: pnt.x, y: pnt.y, t: 8 });
+            } else g.last = null;
+            if (I.key) {
+              seg = [{ x: MG.cur.x - 90, y: MG.cur.y + 30 }, { x: MG.cur.x + 90, y: MG.cur.y - 30 }];
+              for (const q of seg) g.trail.push({ x: q.x, y: q.y, t: 8 });
+              g.swingT = 10;
+              SFX.whoosh();
+            }
+            for (const q of g.trail) q.t--;
+            g.trail = g.trail.filter(q => q.t > 0).slice(-14);
+            if (g.swingT > 0) g.swingT--;
+            if (!seg) return;
+            const [a, b] = seg;
+            const dist = (p) => {
+              const dx = b.x - a.x,
+                dy = b.y - a.y,
+                L = dx * dx + dy * dy || 1;
+              const k = clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / L, 0, 1);
+              return Math.hypot(p.x - (a.x + k * dx), p.y - (a.y + k * dy));
+            };
+            let cuts = 0;
+            for (const it of g.items) {
+              if (it.cut || dist(it) > 34) continue;
+              it.cut = true;
+              g.swingT = 10;
+              if (it.kind === 'iron') {
+                g.lives--;
+                mgPop({ x: it.x, y: it.y - 30, text: 'TSSSS! HOT!', col: '#ff4f6d' });
+                SFX.crash();
+                for (let k = 0; k < 2; k++) g.halves.push({ x: it.x, y: it.y, vx: (k ? 4 : -4), vy: -4, r: it.r, vr: k ? 0.2 : -0.2, kind: 'steam', col: '#fff' });
+                if (g.lives <= 0) {
+                  g.dead = true;
+                  return g.end();
+                }
+                continue;
+              }
+              cuts++;
+              for (let k = 0; k < 2; k++) g.halves.push({ x: it.x, y: it.y, vx: it.vx + (k ? 3 : -3), vy: it.vy * 0.4 - 2, r: it.r, vr: k ? 0.15 : -0.15, kind: it.kind, col: it.col, half: k ? 1 : -1 });
+            }
+            if (cuts) {
+              const pts = cuts * 10 + (cuts > 1 ? cuts * cuts * 10 : 0);
+              g.score += pts;
+              mgPop({ x: b.x, y: b.y - 40, text: cuts > 1 ? cuts + ' SLICE COMBO! +' + pts : '+' + pts, col: cuts > 1 ? '#ffe234' : '#fff' });
+              mgBeep(500 + cuts * 200, 0.07, 'sawtooth', 0.12, 1500);
+            }
+          },
+          cloth(kind, col, x, y, r, half) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(r);
+            if (half) {
+              ctx.beginPath();
+              ctx.rect(half < 0 ? -50 : 0, -50, 50, 100);
+              ctx.clip();
+            }
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            if (kind === 'iron') {
+              ctx.fillStyle = '#d8d4e6';
+              ctx.beginPath();
+              ctx.moveTo(-28, 12);
+              ctx.lineTo(28, 12);
+              ctx.quadraticCurveTo(26, -10, 0, -12);
+              ctx.lineTo(-28, -12);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = '#ff4f6d';
+              ctx.fillRect(-22, -22, 30, 10);
+              ctx.strokeRect(-22, -22, 30, 10);
+              ctx.fillStyle = 'rgba(255,255,255,0.6)';
+              for (let k = 0; k < 3; k++) {
+                ctx.beginPath();
+                ctx.arc(-14 + k * 14, -34 - Math.sin(game.time * 0.2 + k) * 4, 5, 0, 7);
+                ctx.fill();
+              }
+            } else if (kind === 'shirt') {
+              ctx.fillStyle = col;
+              ctx.beginPath();
+              ctx.moveTo(-14, -24);
+              ctx.lineTo(-34, -12);
+              ctx.lineTo(-26, 0);
+              ctx.lineTo(-18, -6);
+              ctx.lineTo(-18, 24);
+              ctx.lineTo(18, 24);
+              ctx.lineTo(18, -6);
+              ctx.lineTo(26, 0);
+              ctx.lineTo(34, -12);
+              ctx.lineTo(14, -24);
+              ctx.quadraticCurveTo(0, -14, -14, -24);
+              ctx.fill();
+              ctx.stroke();
+              ctx.strokeStyle = 'rgba(20,10,32,0.4)';
+              ctx.lineWidth = 2;
+              for (let k = 0; k < 3; k++) {
+                ctx.beginPath();
+                ctx.moveTo(-14, -4 + k * 9);
+                ctx.quadraticCurveTo(0, k * 9 - 9, 14, -4 + k * 9);
+                ctx.stroke();
+              }
+            } else if (kind === 'towel') {
+              ctx.fillStyle = col;
+              ctx.fillRect(-30, -18, 60, 36);
+              ctx.strokeRect(-30, -18, 60, 36);
+              ctx.fillStyle = 'rgba(255,255,255,0.6)';
+              ctx.fillRect(-30, 8, 60, 5);
+            } else if (kind === 'steam') {
+              ctx.fillStyle = 'rgba(255,255,255,0.6)';
+              ctx.beginPath();
+              ctx.arc(0, 0, 20, 0, 7);
+              ctx.fill();
+            } else {
+              ctx.restore();
+              mgSock(x, y, 0.8, col, r, { eyes: false });
+              return;
+            }
+            ctx.restore();
+          },
+          draw(g) {
+            drawStage(0.25, 'fortress');
+            const t = game.time;
+            mgHero('iron', 110, GROUND + 30, 1, 0.75, t, p => {
+              if (g.swingT > 0) {
+                p.front = { x: 90, y: -110 };
+                p.lean = 0.2;
+                p.mouth = 'yell';
+                p.eyes = 'angry';
+              }
+            });
+            for (const it of g.items) this.cloth(it.kind, it.col, it.x, it.y, it.r);
+            for (const hv of g.halves) this.cloth(hv.kind, hv.col, hv.x, hv.y, hv.r, hv.half);
+            // the blade's trail
+            if (g.trail.length > 1) {
+              ctx.strokeStyle = 'rgba(200,240,255,0.85)';
+              ctx.lineWidth = 6;
+              ctx.lineCap = 'round';
+              ctx.beginPath();
+              g.trail.forEach((q, i) => (i ? ctx.lineTo(q.x, q.y) : ctx.moveTo(q.x, q.y)));
+              ctx.stroke();
+              ctx.lineCap = 'butt';
+            }
+            drawText('♥'.repeat(Math.max(0, g.lives)), W - 110, 80, 22, FONT_COMIC, '#ff4f6d', INK, 4);
+          }
+        },
+        /* 10. SHADOW RUN: Toe-Shinobi's rooftop chase */
+        {
+          id: 'shadow',
+          name: 'SHADOW RUN',
+          jp: 'シャドウラン',
+          hero: 'shinobi',
+          how: 'Run the rooftops at night. JUMP: tap the LEFT half / SPACE / ↑ (twice for a double jump). SHURIKEN: tap the RIGHT half / E / →. Lint ninjas: throw or jump over!',
+          bg: ['#0a0a24', '#3a3a8a'],
+          stars: [300, 700, 1300],
+          start(g) {
+            g.y = 0;
+            g.vy = 0;
+            g.jumps = 0;
+            g.dist = 0;
+            g.roofs = [{ x: -100, w: 1200, h: 400 }];
+            g.foes = [];
+            g.stars = [];
+            g.coins = [];
+            g.kills = 0;
+            g.throwT = 0;
+          },
+          FEET: 400,
+          update(g, I) {
+            const sp = 6.5 + Math.min(5, g.t / 700);
+            g.dist += sp;
+            g.score = Math.floor(g.dist / 30) + g.kills * 50 + (g.got || 0) * 25;
+            // build the rooftops ahead: gaps get wider as you go
+            let last = g.roofs[g.roofs.length - 1];
+            while (last.x + last.w < W + 400) {
+              const gap = mgRnd(70, 110 + Math.min(70, g.t / 40));
+              const r = { x: last.x + last.w + gap, w: mgRnd(260, 520), h: clamp(last.h + mgRnd(-60, 60), 330, 440), chimney: Math.random() < 0.35 };
+              g.roofs.push(r);
+              if (Math.random() < 0.55) g.foes.push({ x: r.x + mgRnd(120, r.w - 40), roof: r, alive: true, t: 0 });
+              if (Math.random() < 0.6) for (let k = 0; k < 3; k++) g.coins.push({ x: r.x + 60 + k * 40, y: r.h - 90, got: false });
+              last = r;
+            }
+            for (const o of [...g.roofs, ...g.foes, ...g.coins]) o.x -= sp;
+            for (const s of g.stars) s.x += 16;
+            g.roofs = g.roofs.filter(r => r.x + r.w > -200);
+            g.foes = g.foes.filter(f => f.x > -100);
+            g.coins = g.coins.filter(c => c.x > -50 && !c.got);
+            g.stars = g.stars.filter(s => s.x < W + 40 && !s.hit);
+            // controls
+            const jump = (I.tap && I.tap.x < W / 2) || (I.act && !I.tap) || I.u; // (SPACE arrives as I.act)
+            const thr = (I.tap && I.tap.x >= W / 2) || wasPressed('KeyE', 'KeyF') || I.r;
+            const X = 200;
+            const roof = g.roofs.find(r => X + 14 > r.x && X - 14 < r.x + r.w);
+            const floor = roof ? roof.h : 9999;
+            const feet = this.FEET + g.y;
+            const onGround = roof && Math.abs(feet - floor) < 2 && g.vy >= 0;
+            if (onGround) g.jumps = 0;
+            if (jump && g.jumps < 2) {
+              g.vy = g.jumps ? -11 : -13;
+              g.jumps++;
+              SFX.jump();
+            }
+            if (thr && g.throwT <= 0) {
+              g.stars.push({ x: X + 30, y: feet - 70, hit: false });
+              g.throwT = 14;
+              SFX.whoosh();
+            }
+            if (g.throwT > 0) g.throwT--;
+            g.vy += 0.7;
+            let ny = this.FEET + g.y + g.vy;
+            if (roof && g.vy >= 0 && feet <= floor + 4 && ny >= floor) {
+              ny = floor;
+              g.vy = 0;
+            }
+            // running into the side of a taller roof
+            if (roof && feet > floor + 8) return this.fall(g, 'SPLAT!');
+            g.y = ny - this.FEET;
+            if (ny > H + 60) return this.fall(g, 'FELL!');
+            // shuriken vs lint ninjas; ninjas vs you; scrolls
+            for (const f of g.foes) {
+              if (!f.alive) {
+                f.t++;
+                continue;
+              }
+              const fy = f.roof.h;
+              for (const s of g.stars)
+                if (!s.hit && Math.abs(s.x - f.x) < 26 && Math.abs(s.y - (fy - 34)) < 40) {
+                  s.hit = true;
+                  f.alive = false;
+                  g.kills++;
+                  mgPop({ x: f.x, y: fy - 80, text: '+50', col: '#3ff0ff' });
+                  SFX.slap();
+                }
+              if (f.alive && Math.abs(f.x - X) < 30 && Math.abs(fy - 34 - (ny - 50)) < 50) return this.fall(g, 'CAUGHT!');
+            }
+            for (const c of g.coins)
+              if (Math.abs(c.x - X) < 26 && Math.abs(c.y - (ny - 50)) < 46) {
+                c.got = true;
+                g.got = (g.got || 0) + 1;
+                mgBeep(1300, 0.04, 'triangle', 0.12);
+              }
+          },
+          fall(g, text) {
+            g.dead = true;
+            mgPop({ x: 200, y: 200, text, col: '#ff4f6d' });
+            SFX.crash();
+            g.end();
+          },
+          draw(g) {
+            drawStage(0.35, 'rooftop');
+            const t = game.time;
+            ctx.fillStyle = 'rgba(10,10,36,0.45)';
+            ctx.fillRect(0, 0, W, H);
+            // the moon
+            ctx.fillStyle = '#fff6c8';
+            ctx.beginPath();
+            ctx.arc(780, 110, 46, 0, 7);
+            ctx.fill();
+            for (const r of g.roofs) {
+              ctx.fillStyle = '#1a1838';
+              ctx.fillRect(r.x, r.h, r.w, H - r.h + 10);
+              ctx.strokeStyle = '#3a3a8a';
+              ctx.lineWidth = 4;
+              ctx.strokeRect(r.x, r.h, r.w, H - r.h + 10);
+              ctx.fillStyle = 'rgba(255,226,120,0.5)';
+              for (let wx = r.x + 30; wx < r.x + r.w - 30; wx += 60) for (let wy = r.h + 40; wy < H; wy += 70) if ((wx * 7 + wy) % 3 < 1.2) ctx.fillRect(wx, wy, 22, 30);
+              if (r.chimney) {
+                ctx.fillStyle = '#4a2a2a';
+                ctx.fillRect(r.x + r.w - 80, r.h - 40, 34, 40);
+                ctx.strokeRect(r.x + r.w - 80, r.h - 40, 34, 40);
+              }
+            }
+            for (const c of g.coins) {
+              ctx.fillStyle = '#fff3d0';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              ctx.fillRect(c.x - 9, c.y - 12, 18, 24);
+              ctx.strokeRect(c.x - 9, c.y - 12, 18, 24);
+              ctx.fillStyle = '#ff4f6d';
+              ctx.fillRect(c.x - 9, c.y - 3, 18, 6);
+            }
+            for (const f of g.foes) {
+              if (!f.alive && f.t > 30) continue;
+              ctx.save();
+              if (!f.alive) ctx.globalAlpha = 1 - f.t / 30;
+              mgHero('lint', f.x, f.roof.h + (f.alive ? 0 : f.t * 3), -1, 0.42, t, p => {
+                p.eyes = f.alive ? 'angry' : 'spiral';
+                if (!f.alive) p.rot = 0.8;
+              });
+              ctx.restore();
+            }
+            for (const s of g.stars) {
+              ctx.save();
+              ctx.translate(s.x, s.y);
+              ctx.rotate(t * 0.6);
+              ctx.fillStyle = '#c8c8d8';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              for (let k = 0; k < 8; k++) {
+                const r = k % 2 ? 4 : 13,
+                  a = (k / 8) * Math.PI * 2;
+                ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+              }
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            }
+            const air = g.vy !== 0;
+            mgHero('shinobi', 200, this.FEET + g.y, 1, 0.55, t, p => {
+              p.lean = 0.35;
+              if (!air) {
+                const w = Math.sin(t * 0.7);
+                p.yOff = -Math.abs(w) * 8;
+                p.front = { x: 44, y: -12 + w * 10 };
+                p.back = { x: -24, y: -20 - w * 10 };
+              } else {
+                p.bodyH = 112;
+                p.front = { x: 30, y: -60 };
+              }
+              if (g.throwT > 8) p.front = { x: 80, y: -70 };
+              if (g.dead) p.eyes = 'spiral';
+            });
+            drawText(Math.floor(g.dist / 30) + ' m   ⚔ ' + g.kills, W - 140, 80, 10, FONT_PIXEL, '#fff', INK, 4);
+            if (IS_TOUCH && g.t < 240) {
+              drawText('◀ TAP: JUMP', W * 0.25, H - 40, 10, FONT_PIXEL, '#fff', INK, 3);
+              drawText('TAP: SHURIKEN ▶', W * 0.75, H - 40, 10, FONT_PIXEL, '#fff', INK, 3);
+            }
+          }
+        },
+        /* 11. MECHA GALLERY: Mecha-Sock X's arm cannon */
+        {
+          id: 'mecha',
+          name: 'MECHA GALLERY',
+          jp: 'メカ射撃場',
+          hero: 'robo',
+          how: 'Blast the lint DRONES (tap / click them, or aim with the arrows + SPACE). Never hit the innocent socks! 6 shots, then RELOAD (R, or tap the RELOAD button).',
+          bg: ['#0a2a2a', '#3fc8c8'],
+          time: 45,
+          cursor: true,
+          stars: [1500, 4000, 7000],
+          start(g) {
+            g.ammo = 6;
+            g.reload = 0;
+            g.targets = [];
+            g.next = 20;
+            g.beam = null;
+            g.fx = [];
+            g.streak = 0;
+          },
+          RELOAD: { x: W - 150, y: H - 70, w: 130, h: 50 },
+          update(g, I) {
+            const lvl = Math.min(1, g.t / 2400);
+            if (--g.next <= 0) {
+              const civ = Math.random() < 0.25;
+              const kind = civ ? 'sock' : Math.random() < 0.12 ? 'gold' : 'drone';
+              const fromL = Math.random() < 0.5;
+              const lane = mgInt(0, 2);
+              g.targets.push({ kind, x: fromL ? -40 : W + 40, y: 150 + lane * 95, vx: (fromL ? 1 : -1) * mgRnd(2.5, 4.5) * (1 + lvl) * (kind === 'gold' ? 1.6 : 1), col: pick(MG_COLS), t: 0, dead: 0, foe: pick(['stinky', 'argyle', 'baby', 'kneehi', 'socklet']) });
+              g.next = Math.round(lerp(40, 18, lvl) + mgRnd(0, 16));
+            }
+            for (const tg of g.targets) {
+              tg.t++;
+              if (tg.dead) tg.dead++;
+              else tg.x += tg.vx;
+            }
+            g.targets = g.targets.filter(tg => tg.x > -80 && tg.x < W + 80 && tg.dead < 20);
+            for (const f of g.fx) f.t++;
+            g.fx = g.fx.filter(f => f.t < 12);
+            if (g.beam && --g.beam.t <= 0) g.beam = null;
+            if (g.reload > 0 && --g.reload === 0) {
+              g.ammo = 6;
+              mgBeep(600, 0.1, 'square', 0.1, 900);
+            }
+            const wantReload = wasPressed('KeyR') || (I.tap && mgIn(I.tap, this.RELOAD));
+            if (wantReload && g.reload <= 0 && g.ammo < 6) {
+              g.reload = 45;
+              SFX.zap();
+              return;
+            }
+            if (!I.tap || mgIn(I.tap, this.RELOAD)) return;
+            if (g.reload > 0) return;
+            if (g.ammo <= 0) {
+              mgPop({ x: I.tap.x, y: I.tap.y - 20, text: 'RELOAD!', col: '#ff4f6d' });
+              mgBeep(150, 0.08);
+              return;
+            }
+            g.ammo--;
+            g.beam = { x: I.tap.x, y: I.tap.y, t: 6 };
+            SFX.zap();
+            g.fx.push({ x: I.tap.x, y: I.tap.y, t: 0 });
+            const hit = g.targets.find(tg => !tg.dead && Math.hypot(tg.x - I.tap.x, tg.y - I.tap.y) < (tg.kind === 'sock' ? 30 : 34));
+            if (!hit) {
+              g.streak = 0;
+              return;
+            }
+            hit.dead = 1;
+            if (hit.kind === 'sock') {
+              g.score = Math.max(0, g.score - 150);
+              g.streak = 0;
+              mgPop({ x: hit.x, y: hit.y - 40, text: 'INNOCENT! -150', col: '#ff4f6d' });
+              SFX.boo();
+            } else {
+              g.streak++;
+              const pts = (hit.kind === 'gold' ? 250 : 100) + Math.min(150, g.streak * 10);
+              g.score += pts;
+              mgPop({ x: hit.x, y: hit.y - 40, text: '+' + pts, col: hit.kind === 'gold' ? '#ffe234' : '#3fff8a' });
+              SFX.crash();
+            }
+          },
+          draw(g) {
+            drawStage(0.4, 'laundry');
+            const t = game.time;
+            // the shelves the targets ride along
+            for (let k = 0; k < 3; k++) {
+              ctx.fillStyle = 'rgba(20,10,36,0.6)';
+              ctx.fillRect(0, 186 + k * 95, W, 8);
+            }
+            for (const tg of g.targets) {
+              ctx.save();
+              if (tg.dead) ctx.globalAlpha = 1 - tg.dead / 20;
+              if (tg.kind === 'sock') mgHero(tg.foe, tg.x, tg.y + 34, tg.vx > 0 ? 1 : -1, 0.3, t, p => (p.mouth = tg.dead ? 'yell' : 'grin'));
+              else {
+                ctx.translate(tg.x, tg.y + (tg.dead ? tg.dead * 3 : Math.sin(tg.t * 0.2) * 4));
+                ctx.fillStyle = tg.kind === 'gold' ? '#ffd23f' : '#8f889e';
+                ctx.strokeStyle = INK;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                for (let i = 0; i < 14; i++) {
+                  const a = (i / 14) * Math.PI * 2,
+                    r = 20 + (i % 2 ? 4 : 0);
+                  ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                // propeller and red eye
+                ctx.fillStyle = '#c8c8d8';
+                ctx.fillRect(-22 + Math.sin(tg.t) * 8, -30, 44 - Math.sin(tg.t) * 16, 5);
+                ctx.fillStyle = '#ff4f6d';
+                ctx.beginPath();
+                ctx.arc(0, 0, 7, 0, 7);
+                ctx.fill();
+                ctx.stroke();
+              }
+              ctx.restore();
+            }
+            // Mecha-Sock X and the beam from his arm
+            const aim = g.beam || (MG.cur.on ? MG.cur : { x: MG.px, y: MG.py });
+            mgHero('robo', 110, H + 6, 1, 0.62, t, p => {
+              p.front = { x: 80, y: -90 };
+              p.lean = 0.1;
+              p.eyes = 'angry';
+            });
+            if (g.beam) {
+              ctx.strokeStyle = '#3ff0ff';
+              ctx.lineWidth = 8;
+              ctx.beginPath();
+              ctx.moveTo(190, H - 120);
+              ctx.lineTo(aim.x, aim.y);
+              ctx.stroke();
+              ctx.strokeStyle = '#fff';
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+            for (const f of g.fx) {
+              ctx.strokeStyle = `rgba(63,240,255,${1 - f.t / 12})`;
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.arc(f.x, f.y, 8 + f.t * 3, 0, 7);
+              ctx.stroke();
+            }
+            // ammo and RELOAD
+            for (let k = 0; k < 6; k++) {
+              ctx.fillStyle = k < g.ammo ? '#3ff0ff' : 'rgba(255,255,255,0.15)';
+              ctx.fillRect(W - 300 + k * 22, H - 60, 14, 34);
+            }
+            const R = this.RELOAD;
+            mgPanel(R.x, R.y, R.w, R.h, g.ammo === 0 && t % 30 < 15 ? '#ff4f6d' : 'rgba(20,10,36,0.9)', '#3ff0ff');
+            drawText(g.reload > 0 ? 'LOADING' : 'RELOAD', R.x + R.w / 2, R.y + R.h / 2 + 1, 10, FONT_PIXEL, '#fff', INK, 3);
+            if (!IS_TOUCH) drawText('R', R.x + R.w - 12, R.y + 10, 7, FONT_PIXEL, '#3ff0ff', INK, 2);
+          }
+        },
+        /* 12. PHANTOM DODGE: The Lost Sock in a spinning dryer full of flying buttons */
+        {
+          id: 'phantom',
+          name: 'PHANTOM DODGE',
+          jp: 'ファントム回避',
+          hero: 'ghost',
+          how: 'Float around the dryer (drag, or arrows / WASD) and dodge the flying buttons and coins. SPACE (or a quick double tap) = PHASE: untouchable for a moment. 3 lives.',
+          bg: ['#1a0a2a', '#7b4bc8'],
+          stars: [400, 900, 1600],
+          C: { x: W / 2, y: 290, r: 230 },
+          start(g) {
+            g.x = W / 2;
+            g.y = 380;
+            g.lives = 3;
+            g.shots = [];
+            g.ang = 0;
+            g.inv = 0;
+            g.phase = 0;
+            g.cool = 0;
+            g.pattern = 0;
+            g.pt = 0;
+            g.gems = [];
+            g.lastTap = -99;
+          },
+          update(g, I) {
+            const C = this.C,
+              lvl = Math.min(1, g.t / 3600);
+            g.score = Math.floor(g.t / 6) + (g.gemN || 0) * 50;
+            // moving
+            const sp = 5;
+            if (keysDown.KeyA || keysDown.ArrowLeft) g.x -= sp;
+            if (keysDown.KeyD || keysDown.ArrowRight) g.x += sp;
+            if (keysDown.KeyW || keysDown.ArrowUp) g.y -= sp;
+            if (keysDown.KeyS || keysDown.ArrowDown) g.y += sp;
+            if (MG.down) {
+              g.x += clamp(MG.px - g.x, -9, 9);
+              g.y += clamp(MG.py - 40 - g.y, -9, 9);
+            }
+            const d = Math.hypot(g.x - C.x, g.y - C.y);
+            if (d > C.r - 24) {
+              g.x = C.x + ((g.x - C.x) / d) * (C.r - 24);
+              g.y = C.y + ((g.y - C.y) / d) * (C.r - 24);
+            }
+            // PHASE
+            let phase = I.act && !I.tap; // SPACE
+            if (I.tap) {
+              if (g.t - g.lastTap < 16) phase = true;
+              g.lastTap = g.t;
+            }
+            if (phase && g.cool <= 0) {
+              g.phase = 50;
+              g.cool = 240;
+              SFX.poof();
+            }
+            if (g.phase > 0) g.phase--;
+            if (g.cool > 0) g.cool--;
+            if (g.inv > 0) g.inv--;
+            // patterns from the middle: spirals, rings and aimed bursts
+            g.ang += 0.05 + lvl * 0.04;
+            g.pt++;
+            const every = Math.round(lerp(12, 6, lvl));
+            if (g.pt % every === 0) {
+              const kind = Math.floor(g.t / 420) % 3;
+              const v = 2.6 + lvl * 2;
+              if (kind === 0) for (let k = 0; k < 2; k++) this.shoot(g, g.ang + k * Math.PI, v);
+              else if (kind === 1 && g.pt % (every * 4) === 0) for (let k = 0; k < 12; k++) this.shoot(g, (k / 12) * Math.PI * 2 + g.ang, v * 0.9);
+              else if (kind === 2 && g.pt % (every * 3) === 0) {
+                const a = Math.atan2(g.y - C.y, g.x - C.x);
+                for (let k = -1; k <= 1; k++) this.shoot(g, a + k * 0.22, v * 1.2);
+              }
+            }
+            if (g.t % 300 === 150) g.gems.push({ x: C.x + mgRnd(-150, 150), y: C.y + mgRnd(-150, 150), t: 0 });
+            for (const s of g.shots) {
+              s.x += s.vx;
+              s.y += s.vy;
+            }
+            g.shots = g.shots.filter(s => Math.hypot(s.x - C.x, s.y - C.y) < C.r + 20);
+            for (const gm of g.gems) {
+              gm.t++;
+              if (Math.hypot(gm.x - g.x, gm.y - g.y) < 34) {
+                gm.got = true;
+                g.gemN = (g.gemN || 0) + 1;
+                mgPop({ x: gm.x, y: gm.y - 20, text: '+50', col: '#ffe234' });
+                SFX.coin();
+              }
+            }
+            g.gems = g.gems.filter(gm => !gm.got && gm.t < 400);
+            if (g.phase > 0 || g.inv > 0) return;
+            for (const s of g.shots)
+              if (Math.hypot(s.x - g.x, s.y - g.y) < 16 + s.r) {
+                s.x = 9999;
+                g.lives--;
+                g.inv = 70;
+                SFX.boo();
+                mgPop({ x: g.x, y: g.y - 50, text: 'BOO-HOO!', col: '#ff4f6d' });
+                if (g.lives <= 0) {
+                  g.dead = true;
+                  return g.end();
+                }
+                break;
+              }
+          },
+          shoot(g, a, v) {
+            const C = this.C;
+            g.shots.push({ x: C.x, y: C.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() < 0.3 ? 10 : 7, col: pick(['#ff4fa3', '#ffd23f', '#3fd0ff']) });
+          },
+          draw(g) {
+            const C = this.C,
+              t = game.time;
+            drawStage(0.5, 'dryer');
+            // the drum
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(C.x, C.y, C.r, 0, 7);
+            ctx.fillStyle = 'rgba(20,10,40,0.75)';
+            ctx.fill();
+            ctx.clip();
+            ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+            ctx.lineWidth = 18;
+            for (let k = 0; k < 6; k++) {
+              const a = g.ang * 0.5 + (k * Math.PI) / 3;
+              ctx.beginPath();
+              ctx.moveTo(C.x, C.y);
+              ctx.lineTo(C.x + Math.cos(a) * C.r, C.y + Math.sin(a) * C.r);
+              ctx.stroke();
+            }
+            for (const gm of g.gems) drawText('★', gm.x, gm.y + Math.sin(gm.t * 0.1) * 4, 30, FONT_COMIC, '#ffe234', INK, 4);
+            for (const s of g.shots) {
+              ctx.fillStyle = s.col;
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(s.x, s.y, s.r, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = INK;
+              ctx.fillRect(s.x - 3, s.y - 1, 2, 2);
+              ctx.fillRect(s.x + 1, s.y - 1, 2, 2);
+            }
+            ctx.save();
+            ctx.globalAlpha = g.phase > 0 ? 0.35 : g.inv > 0 && t % 8 < 4 ? 0.4 : 0.95;
+            mgHero('ghost', g.x, g.y + 36, g.x < C.x ? 1 : -1, 0.3, t, p => {
+              p.eyes = g.inv > 0 ? 'wince' : 'normal';
+              p.mouth = 'o';
+            });
+            ctx.restore();
+            ctx.restore();
+            ctx.strokeStyle = '#d8d4e6';
+            ctx.lineWidth = 14;
+            ctx.beginPath();
+            ctx.arc(C.x, C.y, C.r + 7, 0, 7);
+            ctx.stroke();
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            drawText('♥'.repeat(Math.max(0, g.lives)), W - 110, 80, 22, FONT_COMIC, '#ff4f6d', INK, 4);
+            drawText(g.cool > 0 ? 'PHASE ' + Math.ceil(g.cool / 60) + 's' : 'PHASE READY!', 120, 80, 10, FONT_PIXEL, g.cool > 0 ? '#888' : '#3fff8a', INK, 3);
+          }
+        },
+        /* 13. DEMON ESCAPE: Holey Moley runs from the Dryer Demon */
+        {
+          id: 'escape',
+          name: 'DEMON ESCAPE',
+          jp: '魔王から逃げろ',
+          hero: 'holey',
+          how: 'RUN! The Dryer Demon is right behind you. JUMP: tap the TOP half / SPACE / ↑.  SLIDE: tap the BOTTOM half / ↓. Each trip lets him catch up. Grab socks for a burst of speed.',
+          bg: ['#2a0a0a', '#c83f3f'],
+          stars: [200, 500, 900],
+          start(g) {
+            g.y = 0;
+            g.vy = 0;
+            g.slide = 0;
+            g.gap = 260; // how far ahead of the Demon you are
+            g.obs = [];
+            g.socks = [];
+            g.next = 60;
+            g.dist = 0;
+            g.trip = 0;
+          },
+          FEET: 440,
+          update(g, I) {
+            const sp = 7 + Math.min(5, g.t / 600);
+            g.dist += sp;
+            g.score = Math.floor(g.dist / 30);
+            // the Demon slowly closes in
+            g.gap -= 0.06 + Math.min(0.12, g.t / 20000);
+            if (--g.next <= 0) {
+              const high = Math.random() < 0.4;
+              g.obs.push({ x: W + 40, high, hit: false });
+              if (Math.random() < 0.3) g.socks.push({ x: W + 200, y: this.FEET - mgRnd(40, 150), got: false });
+              g.next = Math.round(mgRnd(50, 95) * (7 / sp) * 1.3);
+            }
+            for (const o of g.obs) o.x -= sp;
+            for (const s of g.socks) s.x -= sp;
+            g.obs = g.obs.filter(o => o.x > -60);
+            g.socks = g.socks.filter(s => s.x > -40 && !s.got);
+            const ground = g.y >= 0;
+            const jump = (I.tap && I.tap.y < H / 2) || I.u || (I.act && !I.tap);
+            const slide = (I.tap && I.tap.y >= H / 2) || I.d;
+            if (jump && ground && g.slide <= 0) {
+              g.vy = -14;
+              SFX.jump();
+            }
+            if (slide && ground) {
+              g.slide = 34;
+              SFX.whoosh();
+            }
+            if (g.slide > 0) g.slide--;
+            g.vy += 0.8;
+            g.y = Math.min(0, g.y + g.vy);
+            if (g.y >= 0) g.vy = 0;
+            if (g.trip > 0) g.trip--;
+            const X = 420;
+            for (const o of g.obs) {
+              if (o.hit || Math.abs(o.x - X) > 26) continue;
+              // a low hurdle: jump it; a high beam: slide under it
+              const ok = o.high ? g.slide > 0 : g.y < -36;
+              if (!ok) {
+                o.hit = true;
+                g.gap -= 85;
+                g.trip = 24;
+                SFX.crash();
+                mgPop({ x: X, y: this.FEET - 160, text: 'TRIPPED!', col: '#ff4f6d' });
+              }
+            }
+            for (const s of g.socks)
+              if (Math.abs(s.x - X) < 30 && Math.abs(s.y - (this.FEET + g.y - 50)) < 60) {
+                s.got = true;
+                g.gap = Math.min(300, g.gap + 45);
+                mgPop({ x: X, y: s.y - 30, text: 'SPEED!', col: '#3fff8a' });
+                SFX.coin();
+              }
+            if (g.gap <= 0) {
+              g.dead = true;
+              SFX.thoom();
+              mgPop({ x: X - 60, y: 200, text: 'CHOMP!', col: '#ff4f6d' });
+              g.end();
+            }
+          },
+          draw(g) {
+            drawStage(0.45, 'dryer');
+            const t = game.time;
+            ctx.fillStyle = '#2a1414';
+            ctx.fillRect(0, this.FEET, W, H - this.FEET);
+            for (let k = 0; k < 12; k++) {
+              const x = ((k * 100 - g.dist) % 1200 + 1200) % 1200 - 100;
+              ctx.fillStyle = '#4a2424';
+              ctx.fillRect(x, this.FEET + 14, 50, 8);
+            }
+            for (const o of g.obs) {
+              ctx.fillStyle = o.high ? '#8a8396' : '#c8833f';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 3;
+              if (o.high) {
+                ctx.fillRect(o.x - 30, this.FEET - 150, 60, 70);
+                ctx.strokeRect(o.x - 30, this.FEET - 150, 60, 70);
+                ctx.fillRect(o.x - 4, 0, 8, this.FEET - 150);
+              } else {
+                ctx.fillRect(o.x - 22, this.FEET - 44, 44, 44);
+                ctx.strokeRect(o.x - 22, this.FEET - 44, 44, 44);
+              }
+            }
+            for (const s of g.socks) mgSock(s.x, s.y, 0.6, '#3fff8a', Math.sin(t * 0.2) * 0.3, { eyes: false });
+            // Holey Moley, running scared
+            mgHero('holey', 420, this.FEET + g.y + (g.slide > 0 ? 0 : 0), 1, 0.55, t, p => {
+              p.mouth = 'yell';
+              p.eyes = 'wince';
+              if (g.slide > 0) {
+                p.bodyH = 60;
+                p.rot = 0.5;
+              } else if (g.y < 0) p.bodyH = 124;
+              else {
+                const w = Math.sin(t * 0.8);
+                p.lean = 0.3;
+                p.yOff = -Math.abs(w) * 10;
+                p.front = { x: 40, y: -60 + w * 20 };
+                p.back = { x: -20, y: -60 - w * 20 };
+              }
+              if (g.trip > 0) p.rot = -0.4;
+            });
+            // the Demon behind, closer as the gap shrinks
+            const dx = 420 - g.gap - 150;
+            mgHero('demon', dx, this.FEET, 1, 0.95, t, p => {
+              p.mouth = 'yell';
+              p.eyes = 'angry';
+              p.lean = 0.25;
+              p.front = { x: 110, y: -80 + Math.sin(t * 0.3) * 20 };
+              p.yOff = -Math.abs(Math.sin(t * 0.4)) * 10;
+            });
+            // danger meter
+            mgPanel(W / 2 - 160, 70, 320, 22);
+            const k = clamp(1 - g.gap / 300, 0, 1);
+            ctx.fillStyle = k > 0.7 ? '#ff4f6d' : '#ffe234';
+            ctx.fillRect(W / 2 - 154, 75, 308 * k, 12);
+            drawText('DEMON', W / 2 - 200, 81, 9, FONT_PIXEL, '#ff4f6d', INK, 3);
+          }
+        },
+        /* 14. STATIC SURGE: Cling Queen's chain lightning */
+        {
+          id: 'surge',
+          name: 'STATIC SURGE',
+          jp: '静電気サージ',
+          hero: 'cling',
+          how: 'Tap an enemy to ZAP it. The lightning jumps to every enemy close by: bigger chains score MUCH more. Each zap uses charge. Do not let 14 crowd the room!',
+          bg: ['#2a0a3a', '#d84fff'],
+          time: 60,
+          cursor: true,
+          stars: [1200, 2600, 4500],
+          start(g) {
+            g.foes = [];
+            g.charge = 100;
+            g.bolts = [];
+            g.next = 0;
+            for (let k = 0; k < 5; k++) this.spawn(g);
+          },
+          spawn(g) {
+            const side = Math.random() < 0.5 ? -1 : 1;
+            g.foes.push({ x: side < 0 ? -30 : W + 30, y: mgRnd(170, 440), vx: side * -mgRnd(0.6, 1.4), vy: mgRnd(-0.6, 0.6), id: pick(['lint', 'socklet', 'holey', 'baby', 'stinky']), dead: 0, t: mgInt(0, 99) });
+          },
+          update(g, I) {
+            const lvl = Math.min(1, g.t / 3000);
+            if (--g.next <= 0) {
+              this.spawn(g);
+              if (Math.random() < lvl) this.spawn(g);
+              g.next = Math.round(lerp(60, 30, lvl));
+            }
+            g.charge = Math.min(100, g.charge + 0.35);
+            for (const f of g.foes) {
+              f.t++;
+              if (f.dead) {
+                f.dead++;
+                continue;
+              }
+              // they drift and cluster together
+              f.x += f.vx;
+              f.y += f.vy;
+              if (f.x < 40 || f.x > W - 40) f.vx = Math.abs(f.vx) * (f.x < 40 ? 1 : -1);
+              if (f.y < 160 || f.y > 450) f.vy *= -1;
+              if (g.t % 30 === 0) {
+                f.vx += mgRnd(-0.3, 0.3);
+                f.vy += mgRnd(-0.3, 0.3);
+              }
+            }
+            g.foes = g.foes.filter(f => f.dead < 24);
+            for (const b of g.bolts) b.t++;
+            g.bolts = g.bolts.filter(b => b.t < 14);
+            if (g.foes.filter(f => !f.dead).length >= 14) {
+              mgPop({ x: W / 2, y: 200, text: 'OVERRUN!', col: '#ff4f6d' });
+              g.dead = true;
+              return g.end();
+            }
+            if (!I.tap) return;
+            if (g.charge < 25) {
+              mgPop({ x: I.tap.x, y: I.tap.y - 20, text: 'NO CHARGE!', col: '#ff4f6d' });
+              return mgBeep(150, 0.08);
+            }
+            const first = g.foes.find(f => !f.dead && Math.hypot(f.x - I.tap.x, f.y - 30 - I.tap.y) < 46);
+            if (!first) return;
+            g.charge -= 25;
+            // the chain: from each zapped enemy to the nearest un-zapped one within reach
+            const chain = [first];
+            first.dead = 1;
+            let cur = first;
+            for (;;) {
+              const nx = g.foes.filter(f => !f.dead).sort((a, b) => Math.hypot(a.x - cur.x, a.y - cur.y) - Math.hypot(b.x - cur.x, b.y - cur.y))[0];
+              if (!nx || Math.hypot(nx.x - cur.x, nx.y - cur.y) > 170) break;
+              nx.dead = 1;
+              chain.push(nx);
+              cur = nx;
+            }
+            g.bolts.push({ pts: [{ x: W / 2, y: H - 120 }, ...chain.map(f => ({ x: f.x, y: f.y - 30 }))], t: 0 });
+            const pts = chain.length * chain.length * 15;
+            g.score += pts;
+            mgPop({ x: cur.x, y: cur.y - 70, text: (chain.length > 1 ? chain.length + ' CHAIN! +' : '+') + pts, col: chain.length > 2 ? '#ffe234' : '#fff' });
+            SFX.zap();
+            if (chain.length > 3) game.whiteFlash = 3;
+          },
+          draw(g) {
+            drawStage(0.45, 'swamp');
+            const t = game.time;
+            for (const f of g.foes) {
+              ctx.save();
+              if (f.dead) ctx.globalAlpha = 1 - f.dead / 24;
+              mgHero(f.id, f.x, f.y + 40, f.vx > 0 ? 1 : -1, 0.3, f.t, p => {
+                if (f.dead) {
+                  p.eyes = 'spiral';
+                  p.mouth = 'yell';
+                  p.flash = f.dead % 4 < 2;
+                }
+              });
+              ctx.restore();
+            }
+            for (const b of g.bolts) {
+              ctx.strokeStyle = `rgba(230,180,255,${1 - b.t / 14})`;
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              b.pts.forEach((q, i) => {
+                if (!i) return ctx.moveTo(q.x, q.y);
+                const pr = b.pts[i - 1];
+                for (let k = 1; k <= 4; k++) ctx.lineTo(lerp(pr.x, q.x, k / 4) + (k < 4 ? mgRnd(-14, 14) : 0), lerp(pr.y, q.y, k / 4) + (k < 4 ? mgRnd(-14, 14) : 0));
+              });
+              ctx.stroke();
+              ctx.strokeStyle = `rgba(255,255,255,${1 - b.t / 14})`;
+              ctx.lineWidth = 2;
+              ctx.stroke();
+            }
+            mgHero('cling', W / 2, H + 30, 1, 0.62, t, p => {
+              p.front = { x: 40, y: -110 };
+              p.back = { x: -30, y: -110 };
+              p.eyes = 'angry';
+            });
+            mgPanel(30, H - 46, 220, 26);
+            ctx.fillStyle = g.charge >= 25 ? '#d84fff' : '#555';
+            ctx.fillRect(36, H - 40, 208 * (g.charge / 100), 14);
+            drawText('CHARGE', 140, H - 58, 9, FONT_PIXEL, '#fff', INK, 3);
+            const alive = g.foes.filter(f => !f.dead).length;
+            drawText('ENEMIES ' + alive + ' / 14', W - 130, 80, 10, FONT_PIXEL, alive > 10 ? '#ff4f6d' : '#fff', INK, 4);
+          }
+        },
+        /* 15. SUMO RING-OUT: Knee-Hi Kazuo on a spinning washer lid */
+        {
+          id: 'sumo',
+          name: 'SUMO RING-OUT',
+          jp: '洗濯機の土俵',
+          hero: 'kneehi',
+          how: 'MASH (tap / SPACE) to shove your opponent off the spinning washer lid. When HEAVE! flashes, press ↑ (or tap the top) for a huge push. When they wind up, press ↓ (or tap the bottom) to BRACE!',
+          bg: ['#3a2a14', '#e8b83f'],
+          stars: [400, 900, 1500],
+          foes: ['stinky', 'robo', 'steel', 'king', 'iron', 'demon', 'mismatch'],
+          start(g) {
+            g.round = 0;
+            this.next(g);
+          },
+          next(g) {
+            g.round++;
+            g.foe = this.foes[(g.round - 1) % this.foes.length];
+            g.pos = 0; // -1 = you are at the edge, 1 = they are
+            g.phase = 'ready';
+            g.wait = 70;
+            g.str = 0.004 + g.round * 0.0009; // how hard they push
+            g.prompt = null;
+            g.nextPrompt = mgInt(80, 160);
+            g.res = null;
+            g.shove = 0;
+            g.t0 = g.t;
+          },
+          update(g, I) {
+            if (g.phase === 'ready') {
+              if (--g.wait <= 0) {
+                g.phase = 'push';
+                SFX.thoom();
+              }
+              return;
+            }
+            if (g.phase === 'done') {
+              if (--g.wait <= 0) {
+                if (!g.res.win) return g.end();
+                this.next(g);
+              }
+              return;
+            }
+            // their push, and the lid's spin pulling you one way and then the other
+            g.pos -= g.str + Math.sin(g.t * 0.02) * 0.0015;
+            const mash = (I.act && !(I.tap && (I.tap.y < 200 || I.tap.y > H - 150))) || false;
+            if (mash) {
+              g.pos += 0.05;
+              g.shove = 6;
+              mgBeep(200 + Math.random() * 60, 0.03, 'square', 0.06);
+            }
+            if (g.shove > 0) g.shove--;
+            if (--g.nextPrompt <= 0 && !g.prompt) {
+              g.prompt = { kind: Math.random() < 0.5 ? 'heave' : 'brace', t: 0 };
+              SFX.select();
+            }
+            if (g.prompt) {
+              const P = g.prompt;
+              P.t++;
+              const up = I.u || (I.tap && I.tap.y < 200);
+              const down = I.d || (I.tap && I.tap.y > H - 150);
+              if (P.kind === 'heave' && up) {
+                g.pos += 0.22;
+                mgPop({ x: W / 2, y: 180, text: 'HEAVE!!', col: '#3fff8a' });
+                SFX.clonk();
+                g.prompt = null;
+              } else if (P.kind === 'brace' && down) {
+                mgPop({ x: W / 2, y: 180, text: 'BRACED!', col: '#3ff0ff' });
+                SFX.block();
+                g.prompt = null;
+              } else if (P.t > 40) {
+                // missed it: a brace you didn't do lets their big shove through
+                if (P.kind === 'brace') {
+                  g.pos -= 0.25;
+                  mgPop({ x: W / 2, y: 180, text: 'OOF!', col: '#ff4f6d' });
+                  SFX.slap();
+                }
+                g.prompt = null;
+              }
+              if (!g.prompt) g.nextPrompt = mgInt(70, 150);
+            }
+            g.pos = clamp(g.pos, -1, 1);
+            if (g.pos >= 1 || g.pos <= -1) {
+              const win = g.pos >= 1;
+              g.phase = 'done';
+              g.wait = 100;
+              if (win) {
+                const pts = 100 + Math.max(0, 600 - (g.t - g.t0)) / 3;
+                g.score += Math.round(pts);
+                g.res = { win: true, text: 'RING OUT! YOU WIN!' };
+                SFX.fanfare();
+              } else {
+                g.res = { win: false, text: 'RING OUT... YOU LOSE' };
+                g.dead = true;
+                SFX.boo();
+              }
+            }
+          },
+          draw(g) {
+            drawStage(0.4, 'laundry');
+            const t = game.time,
+              cx = W / 2,
+              cy = 430;
+            // the washer lid, spinning
+            ctx.fillStyle = '#d8d4e6';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, 330, 60, 0, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(20,10,32,0.3)';
+            ctx.lineWidth = 3;
+            for (let k = 0; k < 8; k++) {
+              const a = t * 0.03 + (k * Math.PI) / 4;
+              ctx.beginPath();
+              ctx.moveTo(cx, cy);
+              ctx.lineTo(cx + Math.cos(a) * 320, cy + Math.sin(a) * 56);
+              ctx.stroke();
+            }
+            ctx.strokeStyle = '#c83f3f';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, 300, 50, 0, 0, 7);
+            ctx.stroke();
+            // the two wrestlers: the clash point moves with g.pos
+            const clash = cx + g.pos * 270;
+            const done = g.phase === 'done';
+            const fly = done ? (100 - g.wait) * 6 : 0;
+            mgHero('kneehi', clash - 70 - (done && !g.res.win ? fly : 0), cy + 10 + (done && !g.res.win ? fly * 0.6 : 0), 1, 0.78, t, p => {
+              p.lean = 0.35;
+              p.front = { x: 70 + (g.shove ? 14 : 0), y: -60 };
+              p.back = { x: 60, y: -40 };
+              p.mouth = 'grit';
+              p.eyes = 'angry';
+              if (done && !g.res.win) p.rot = -1;
+            });
+            mgHero(g.foe, clash + 70 + (done && g.res.win ? fly : 0), cy + 10 + (done && g.res.win ? fly * 0.6 : 0), -1, 0.78, t + 20, p => {
+              p.lean = 0.35;
+              p.front = { x: 70, y: -60 };
+              p.back = { x: 60, y: -40 };
+              p.mouth = 'grit';
+              if (g.prompt && g.prompt.kind === 'brace') {
+                p.lean = -0.1;
+                p.front = { x: 20, y: -110 };
+                p.eyes = 'angry';
+              }
+              if (done && g.res.win) p.rot = 1;
+            });
+            // the balance bar
+            mgPanel(cx - 200, 120, 400, 24);
+            ctx.fillStyle = '#ff4f6d';
+            ctx.fillRect(cx - 194, 126, 194 * clamp(-g.pos, 0, 1) + 0, 12);
+            ctx.fillStyle = '#3fff8a';
+            ctx.fillRect(cx, 126, 194 * clamp(g.pos, 0, 1), 12);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(cx - 2 + g.pos * 194, 122, 4, 20);
+            if (g.prompt) {
+              const heave = g.prompt.kind === 'heave';
+              drawText(heave ? '↑ HEAVE!' : '↓ BRACE!', cx, heave ? 200 : 250, 40 + Math.sin(t * 0.5) * 4, FONT_COMIC, heave ? '#3fff8a' : '#3ff0ff', INK, 8);
+            }
+            if (g.phase === 'ready') drawText('HAKKEYOI!', cx, 230, 50, FONT_COMIC, '#ffe234', INK, 8);
+            if (g.phase === 'push' && !g.prompt) drawText('MASH!', cx, 230, 30, FONT_COMIC, 'rgba(255,255,255,0.5)', INK, 5);
+            if (g.res) drawText(g.res.text, cx, 230, 40, FONT_COMIC, g.res.win ? '#3fff8a' : '#ff4f6d', INK, 8);
+            drawText('BOUT ' + g.round + ' VS ' + findCharacter(g.foe).name, cx, 80, 10, FONT_PIXEL, '#fff', INK, 4);
+          }
+        },
+        /* 16. PENALTY SHOOTOUT: Studs McGoal vs The Big Boot in goal */
+        {
+          id: 'penalty',
+          name: 'PENALTY SHOOTOUT',
+          jp: 'PK戦',
+          hero: 'studs',
+          how: '10 penalties. TAP to lock your aim (the target drifts!), then TAP again to set the power. The Big Boot dives: aim for the corners. Top corners score double.',
+          bg: ['#143a14', '#4fc84f'],
+          stars: [300, 600, 1000],
+          GOAL: { x: W / 2 - 230, y: 120, w: 460, h: 200 },
+          start(g) {
+            g.shots = 10;
+            g.goals = 0;
+            this.reset(g);
+          },
+          reset(g) {
+            g.phase = 'aim';
+            g.ax = W / 2;
+            g.ay = 220;
+            g.pow = 0;
+            g.pt = 0;
+            g.ball = null;
+            g.keeper = { x: W / 2, dive: 0, dir: 0 };
+            g.res = null;
+          },
+          update(g, I) {
+            const G = this.GOAL,
+              go = I.act;
+            const keeperSkill = Math.min(0.85, 0.35 + (10 - g.shots) * 0.05);
+            if (g.phase === 'aim') {
+              // the aim drifts around the goal on its own
+              g.pt++;
+              g.ax = W / 2 + Math.sin(g.pt * 0.045) * (G.w / 2 + 20);
+              g.ay = G.y + G.h / 2 + Math.sin(g.pt * 0.071 + 1) * (G.h / 2 + 15);
+              if (go) {
+                g.phase = 'power';
+                g.pt = 0;
+                mgBeep(500);
+              }
+            } else if (g.phase === 'power') {
+              g.pt++;
+              g.pow = Math.abs(Math.sin(g.pt * 0.05));
+              if (go) {
+                // too little power: weak and slow; too much: it flies high
+                const over = g.pow > 0.9 ? (g.pow - 0.9) * 600 : 0;
+                g.ball = { x: W / 2, y: 470, tx: g.ax, ty: g.ay - over, t: 0, dur: Math.round(lerp(40, 18, g.pow)), weak: g.pow < 0.35 };
+                g.phase = 'shot';
+                SFX.slap();
+                // the keeper guesses: better guesses as the shootout goes on
+                const read = Math.random() < keeperSkill;
+                const guess = read ? g.ax : G.x + Math.random() * G.w;
+                g.keeper.dir = Math.sign(guess - W / 2) || 1;
+                g.keeper.target = clamp(guess, G.x + 40, G.x + G.w - 40);
+              }
+            } else if (g.phase === 'shot') {
+              const b = g.ball;
+              b.t++;
+              const k = Math.min(1, b.t / b.dur);
+              b.x = lerp(W / 2, b.tx, k);
+              b.y = lerp(470, b.ty, k) - Math.sin(k * Math.PI) * 40;
+              g.keeper.dive = Math.min(1, b.t / (b.dur * (b.weak ? 0.7 : 1.1)));
+              g.keeper.x = lerp(W / 2, g.keeper.target, g.keeper.dive);
+              if (k >= 1) {
+                const inGoal = b.tx > G.x + 8 && b.tx < G.x + G.w - 8 && b.ty > G.y + 8 && b.ty < G.y + G.h;
+                const reach = b.weak ? 110 : 75;
+                const saved = inGoal && Math.abs(g.keeper.x - b.tx) < reach && b.ty > G.y + 10;
+                let pts = 0,
+                  text;
+                if (!inGoal) text = 'MISSED!';
+                else if (saved) text = 'SAVED BY THE BIG BOOT!';
+                else {
+                  const top = b.ty < G.y + 60,
+                    corner = Math.abs(b.tx - W / 2) > G.w / 2 - 80;
+                  pts = 100 * (top && corner ? 2 : 1);
+                  text = top && corner ? 'TOP BINS!!' : 'GOAL!';
+                  g.goals++;
+                }
+                g.score += pts;
+                g.res = { text: text + (pts ? ' +' + pts : ''), good: pts > 0 };
+                pts ? SFX.fanfare() : SFX.boo();
+                g.phase = 'done';
+                g.pt = 0;
+                g.shots--;
+              }
+            } else if (g.phase === 'done' && ++g.pt > 80) {
+              if (g.shots <= 0) return g.end();
+              this.reset(g);
+            }
+          },
+          draw(g) {
+            drawStage(0.3, 'pitch');
+            const G = this.GOAL,
+              t = game.time;
+            ctx.fillStyle = '#3a8a3a';
+            ctx.fillRect(0, 330, W, H - 330);
+            // the goal and its net
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ctx.lineWidth = 1;
+            for (let x = G.x; x <= G.x + G.w; x += 20) {
+              ctx.beginPath();
+              ctx.moveTo(x, G.y);
+              ctx.lineTo(x, G.y + G.h);
+              ctx.stroke();
+            }
+            for (let y = G.y; y <= G.y + G.h; y += 20) {
+              ctx.beginPath();
+              ctx.moveTo(G.x, y);
+              ctx.lineTo(G.x + G.w, y);
+              ctx.stroke();
+            }
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(G.x, G.y + G.h);
+            ctx.lineTo(G.x, G.y);
+            ctx.lineTo(G.x + G.w, G.y);
+            ctx.lineTo(G.x + G.w, G.y + G.h);
+            ctx.stroke();
+            // The Big Boot, diving
+            const K = g.keeper;
+            mgHero('bigboot', K.x, G.y + G.h + 4, -1, 0.55, t, p => {
+              p.front = { x: 40, y: -100 };
+              p.back = { x: -40, y: -100 };
+              if (K.dive > 0) {
+                p.rot = K.dir * K.dive * 1.1;
+                p.yOff = -K.dive * 40;
+              }
+            });
+            // the aim
+            if (g.phase === 'aim' || g.phase === 'power') {
+              ctx.strokeStyle = '#ffe234';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.arc(g.ax, g.ay, 18, 0, 7);
+              ctx.moveTo(g.ax - 28, g.ay);
+              ctx.lineTo(g.ax + 28, g.ay);
+              ctx.moveTo(g.ax, g.ay - 28);
+              ctx.lineTo(g.ax, g.ay + 28);
+              ctx.stroke();
+            }
+            // Studs and the ball
+            mgHero('studs', W / 2 - 70, 520, 1, 0.6, t, p => {
+              if (g.phase === 'shot' || g.phase === 'done') {
+                p.lean = 0.25;
+                p.back = { x: 60, y: -10 };
+              }
+            });
+            const b = g.ball || { x: W / 2, y: 470, t: 0 };
+            const s = g.ball ? lerp(1, 0.55, Math.min(1, b.t / b.dur)) : 1;
+            ctx.save();
+            ctx.translate(b.x, b.y);
+            ctx.rotate(b.t * 0.4);
+            ctx.scale(s, s);
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(0, 0, 16, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = INK;
+            ctx.beginPath();
+            ctx.arc(0, 0, 5, 0, 7);
+            ctx.fill();
+            ctx.restore();
+            if (g.phase === 'power') {
+              mgPanel(W / 2 + 60, 470, 200, 24);
+              ctx.fillStyle = g.pow > 0.9 ? '#ff4f6d' : g.pow < 0.35 ? '#888' : '#3fff8a';
+              ctx.fillRect(W / 2 + 66, 476, 188 * g.pow, 12);
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(W / 2 + 66 + 188 * 0.9, 472, 2, 20);
+            }
+            drawText(g.phase === 'aim' ? 'TAP: LOCK AIM' : g.phase === 'power' ? 'TAP: POWER (not into the red!)' : '', W / 2, 360, 10, FONT_PIXEL, '#fff', INK, 3);
+            if (g.res) drawText(g.res.text, W / 2, 90, 34, FONT_COMIC, g.res.good ? '#3fff8a' : '#ff4f6d', INK, 7);
+            drawText('GOALS ' + g.goals + '   SHOTS LEFT ' + g.shots, W - 170, 60, 9, FONT_PIXEL, '#fff', INK, 3);
+          }
+        },
+        /* 17. ROLLER DERBY: Rolla Disco races through the laundromat */
+        {
+          id: 'derby',
+          name: 'ROLLER DERBY',
+          jp: 'ローラーダービー',
+          hero: 'skate',
+          how: 'Switch lanes with ↑ ↓ (or tap above / below Rolla). Dodge carts and soap puddles. SPACE / double tap = BOOST: while boosting, barge rivals out of the way for points!',
+          bg: ['#3a0a3a', '#ff4fd8'],
+          time: 60,
+          stars: [800, 1600, 2600],
+          LANES: [300, 380, 460],
+          start(g) {
+            g.lane = 1;
+            g.y = this.LANES[1];
+            g.speed = 7;
+            g.boost = 100;
+            g.boosting = 0;
+            g.obs = [];
+            g.next = 40;
+            g.dist = 0;
+            g.stun = 0;
+            g.lastTap = -99;
+            g.barged = 0;
+          },
+          update(g, I) {
+            const base = 7 + Math.min(4, g.t / 600);
+            g.speed = g.stun > 0 ? base * 0.4 : g.boosting > 0 ? base * 1.7 : base;
+            g.dist += g.speed;
+            g.score = Math.floor(g.dist / 25) + g.barged * 60;
+            let move = 0;
+            if (I.u) move = -1;
+            if (I.d) move = 1;
+            let boost = I.act && !I.tap;
+            if (I.tap) {
+              if (g.t - g.lastTap < 16) boost = true;
+              else if (I.tap.y < g.y - 50) move = -1;
+              else if (I.tap.y > g.y + 10) move = 1;
+              g.lastTap = g.t;
+            }
+            if (move) {
+              g.lane = clamp(g.lane + move, 0, 2);
+              SFX.whoosh();
+            }
+            if (boost && g.boost >= 40 && g.boosting <= 0) {
+              g.boosting = 70;
+              g.boost -= 40;
+              SFX.rocket();
+            }
+            if (g.boosting > 0) g.boosting--;
+            else g.boost = Math.min(100, g.boost + 0.25);
+            if (g.stun > 0) g.stun--;
+            g.y += (this.LANES[g.lane] - g.y) * 0.3;
+            if (--g.next <= 0) {
+              const kind = pick(['cart', 'puddle', 'rival', 'rival', 'cart']);
+              const lane = mgInt(0, 2);
+              g.obs.push({ kind, lane, x: W + 60, v: kind === 'rival' ? mgRnd(3, 5) : 0, id: pick(['stiletto', 'galosh', 'flipflop', 'tapper', 'slipper']), hit: false, fly: 0 });
+              g.next = Math.round(mgRnd(30, 60) * (8 / base));
+            }
+            for (const o of g.obs) {
+              o.x -= g.speed - o.v;
+              if (o.fly) o.fly++;
+            }
+            g.obs = g.obs.filter(o => o.x > -100 && o.x < W + 200 && o.fly < 40);
+            const X = 200;
+            for (const o of g.obs) {
+              if (o.hit || o.lane !== g.lane || Math.abs(o.x - X) > 40) continue;
+              o.hit = true;
+              if (o.kind === 'rival' && g.boosting > 0) {
+                o.fly = 1;
+                g.barged++;
+                mgPop({ x: o.x, y: this.LANES[o.lane] - 120, text: 'BARGED! +60', col: '#ffe234' });
+                SFX.slap();
+              } else if (o.kind === 'puddle') {
+                g.stun = 40;
+                mgPop({ x: X, y: g.y - 120, text: 'SLIPPY!', col: '#3ff0ff' });
+                SFX.boing();
+              } else {
+                g.stun = 70;
+                g.boosting = 0;
+                mgPop({ x: X, y: g.y - 120, text: 'CRASH!', col: '#ff4f6d' });
+                SFX.crash();
+              }
+            }
+          },
+          draw(g) {
+            drawStage(0.35, 'rink');
+            const t = game.time;
+            // the track
+            ctx.fillStyle = 'rgba(40,10,50,0.75)';
+            ctx.fillRect(0, 250, W, 240);
+            for (const ly of this.LANES) {
+              for (let k = 0; k < 14; k++) {
+                const x = ((k * 80 - g.dist) % 1120 + 1120) % 1120 - 80;
+                ctx.fillStyle = 'rgba(255,79,216,0.35)';
+                ctx.fillRect(x, ly + 18, 40, 4);
+              }
+            }
+            const items = [...g.obs.map(o => ({ y: this.LANES[o.lane], o })), { y: g.y, me: true }].sort((a, b) => a.y - b.y);
+            for (const it of items) {
+              if (it.me) {
+                if (g.boosting > 0)
+                  for (let k = 1; k <= 3; k++) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.2;
+                    mgHero('skate', 200 - k * 26, g.y + 14, 1, 0.42, t);
+                    ctx.restore();
+                  }
+                mgHero('skate', 200, g.y + 14, 1, 0.42, t, p => {
+                  p.lean = g.boosting > 0 ? 0.45 : 0.25;
+                  p.front = { x: 40, y: -40 + Math.sin(t * 0.3) * 10 };
+                  if (g.stun > 0) {
+                    p.rot = Math.sin(t * 0.8) * 0.4;
+                    p.eyes = 'spiral';
+                  }
+                });
+                continue;
+              }
+              const o = it.o,
+                y = it.y + 14;
+              if (o.kind === 'cart') {
+                ctx.fillStyle = '#c8c8d8';
+                ctx.strokeStyle = INK;
+                ctx.lineWidth = 3;
+                ctx.fillRect(o.x - 34, y - 60, 68, 48);
+                ctx.strokeRect(o.x - 34, y - 60, 68, 48);
+                ctx.fillStyle = '#ff4f6d';
+                ctx.fillRect(o.x - 28, y - 70, 56, 12);
+                for (const wx of [-24, 24]) {
+                  ctx.fillStyle = INK;
+                  ctx.beginPath();
+                  ctx.arc(o.x + wx, y - 6, 7, 0, 7);
+                  ctx.fill();
+                }
+              } else if (o.kind === 'puddle') {
+                ctx.fillStyle = 'rgba(180,240,255,0.7)';
+                ctx.beginPath();
+                ctx.ellipse(o.x, y - 6, 46, 12, 0, 0, 7);
+                ctx.fill();
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(o.x - 10, y - 14, 6, 0, 7);
+                ctx.arc(o.x + 14, y - 16, 4, 0, 7);
+                ctx.fill();
+              } else
+                mgHero(o.id, o.x + (o.fly ? o.fly * 8 : 0), y - (o.fly ? o.fly * 6 : 0), 1, 0.4, t + o.x, p => {
+                  p.lean = 0.25;
+                  if (o.fly) {
+                    p.rot = o.fly * 0.2;
+                    p.eyes = 'spiral';
+                  }
+                });
+            }
+            mgPanel(30, H - 46, 220, 26);
+            ctx.fillStyle = g.boost >= 40 ? '#ff4fd8' : '#555';
+            ctx.fillRect(36, H - 40, 208 * (g.boost / 100), 14);
+            drawText(g.boosting > 0 ? 'BOOSTING!' : 'BOOST', 140, H - 58, 9, FONT_PIXEL, '#fff', INK, 3);
+            drawText(Math.floor(g.dist / 25) + ' m   BARGED ' + g.barged, W - 150, 80, 9, FONT_PIXEL, '#fff', INK, 3);
+          }
+        },
+        /* 18. DANCE-OFF: Mr. Tappington vs a rival on the talent show stage */
+        {
+          id: 'dance',
+          name: 'DANCE-OFF',
+          jp: 'ダンスバトル',
+          hero: 'tapper',
+          how: 'Arrows rise to the top. Press that arrow (← ↓ ↑ →, or tap its column) as it reaches the outline. Out-dance the rival to win the crowd!',
+          bg: ['#3a0a24', '#ff4f8f'],
+          time: 45,
+          stars: [5000, 9000, 14000],
+          COLS: [W / 2 - 165, W / 2 - 55, W / 2 + 55, W / 2 + 165],
+          start(g) {
+            g.notes = [];
+            g.combo = 0;
+            g.flash = [0, 0, 0, 0];
+            g.judge = null;
+            g.rival = 0;
+            g.crowd = 0.5;
+            g.beat = 0;
+          },
+          update(g, I) {
+            const every = Math.max(14, 26 - Math.floor(g.t / 480) * 3);
+            if (g.t % every === 0) {
+              g.beat++;
+              mgBeep(g.beat % 4 === 0 ? 110 : 82, 0.07, 'sine', 0.25);
+              if (g.beat % 4 === 0) mgBeep(660, 0.04, 'square', 0.05);
+              if (Math.random() < 0.8) g.notes.push({ c: mgInt(0, 3), y: H + 30 });
+              if (g.t > 1200 && Math.random() < 0.18) g.notes.push({ c: mgInt(0, 3), y: H + 30 });
+            }
+            const sp = 4.5 + Math.min(3, g.t / 900);
+            for (const n of g.notes) n.y -= sp;
+            const TARGET = 120;
+            for (const n of g.notes)
+              if (!n.done && n.y < TARGET - 50) {
+                n.done = true;
+                g.combo = 0;
+                g.crowd = Math.max(0, g.crowd - 0.04);
+                g.judge = { text: 'MISS', col: '#ff4f6d', t: 24 };
+              }
+            const keys = [I.l, I.d, I.u, I.r];
+            if (I.tap) keys[clamp(Math.floor((I.tap.x - (W / 2 - 220)) / 110), 0, 3)] = true;
+            keys.forEach((on, c) => {
+              if (!on) return;
+              g.flash[c] = 8;
+              const n = g.notes.filter(q => q.c === c && !q.done).sort((a, b) => Math.abs(a.y - TARGET) - Math.abs(b.y - TARGET))[0];
+              const d = n ? Math.abs(n.y - TARGET) : 999;
+              if (d < 40) {
+                n.done = true;
+                g.combo++;
+                const perfect = d < 14;
+                g.score += (perfect ? 100 : 50) * (1 + Math.floor(g.combo / 10));
+                g.crowd = Math.min(1, g.crowd + (perfect ? 0.025 : 0.012));
+                g.judge = { text: (perfect ? 'PERFECT' : 'GOOD') + (g.combo > 4 ? '  x' + g.combo : ''), col: perfect ? '#ffe234' : '#3fff8a', t: 24 };
+                mgBeep([523, 587, 659, 784][c], 0.07, 'triangle', 0.15);
+              } else {
+                g.combo = 0;
+                g.crowd = Math.max(0, g.crowd - 0.02);
+              }
+            });
+            g.notes = g.notes.filter(n => !n.done && n.y > -60);
+            for (let c = 0; c < 4; c++) if (g.flash[c] > 0) g.flash[c]--;
+            if (g.judge && --g.judge.t <= 0) g.judge = null;
+            // the rival's crowd pull grows over time
+            g.crowd = Math.max(0, g.crowd - 0.0006);
+            if (g.left <= 1 && !g.over) g.score += Math.round(g.crowd * 2000); // the crowd's love, as a bonus
+          },
+          arrow(x, y, c, col, outline) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate([Math.PI, Math.PI / 2, -Math.PI / 2, 0][c]);
+            ctx.beginPath();
+            ctx.moveTo(30, 0);
+            ctx.lineTo(4, -26);
+            ctx.lineTo(4, -12);
+            ctx.lineTo(-26, -12);
+            ctx.lineTo(-26, 12);
+            ctx.lineTo(4, 12);
+            ctx.lineTo(4, 26);
+            ctx.closePath();
+            if (outline) {
+              ctx.strokeStyle = col;
+              ctx.lineWidth = 4;
+              ctx.stroke();
+            } else {
+              ctx.fillStyle = col;
+              ctx.fill();
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+            ctx.restore();
+          },
+          draw(g) {
+            drawStage(0.35, 'theatre');
+            const t = game.time,
+              COL = ['#ff4fa3', '#3fd0ff', '#3fff8a', '#ffe234'];
+            // the two dancers either side
+            const groove = Math.sin(t * 0.25);
+            mgHero('tapper', 120, GROUND, 1, 0.72, t, p => {
+              p.yOff = -Math.abs(groove) * 16;
+              p.front = { x: 50, y: -90 + groove * 30 };
+              p.back = { x: -30, y: -90 - groove * 30 };
+              p.mouth = 'grin';
+              p.rot = groove * 0.1;
+            });
+            mgHero('puppet', W - 120, GROUND, -1, 0.72, t + 13, p => {
+              p.yOff = -Math.abs(Math.sin(t * 0.25 + 1)) * 14;
+              p.front = { x: 40, y: -80 - Math.sin(t * 0.25) * 30 };
+              p.mouth = 'grin';
+            });
+            ctx.fillStyle = 'rgba(20,10,36,0.55)';
+            ctx.fillRect(W / 2 - 220, 70, 440, H - 70);
+            this.COLS.forEach((x, c) => this.arrow(x, 120, c, g.flash[c] ? '#fff' : 'rgba(255,255,255,0.45)', true));
+            for (const n of g.notes) this.arrow(this.COLS[n.c], n.y, n.c, COL[n.c]);
+            if (g.judge) drawText(g.judge.text, W / 2, 300, 30, FONT_COMIC, g.judge.col, INK, 6);
+            // the crowd meter: you vs the rival
+            mgPanel(W / 2 - 200, H - 40, 400, 24);
+            ctx.fillStyle = '#ff4f8f';
+            ctx.fillRect(W / 2 - 194, H - 34, 388 * g.crowd, 12);
+            drawText('CROWD', W / 2 - 250, H - 28, 9, FONT_PIXEL, '#fff', INK, 3);
+          }
         }
       ];
       const miniDef = id => MINI_GAMES.find(m => m.id === id);
       const miniBest = id => (Progress.data.mini && Progress.data.mini[id]) || 0;
       const miniStars = (m, score) => m.stars.filter(s => score >= s).length;
-      const miniCard = i => ({ x: 26 + (i % 5) * 184, y: 96 + Math.floor(i / 5) * 138, w: 172, h: 128 });
+      const miniCard = i => ({ x: 24 + (i % 6) * 153, y: 96 + Math.floor(i / 6) * 138, w: 143, h: 128 });
 
       function openMiniGames() {
         game.screen = 'minis';
@@ -31814,8 +34022,8 @@
         };
         if (wasPressed('KeyA', 'ArrowLeft')) mv(-1);
         if (wasPressed('KeyD', 'ArrowRight')) mv(1);
-        if (wasPressed('KeyW', 'ArrowUp')) mv(-5);
-        if (wasPressed('KeyS', 'ArrowDown')) mv(5);
+        if (wasPressed('KeyW', 'ArrowUp')) mv(-6);
+        if (wasPressed('KeyS', 'ArrowDown')) mv(6);
         let go = wasPressed(...CONFIRM_KEYS);
         if (game.click)
           MINI_GAMES.forEach((m, i) => {
@@ -31858,8 +34066,8 @@
           ctx.strokeStyle = on ? '#fff' : INK;
           ctx.lineWidth = on ? 5 : 3;
           ctx.stroke();
-          drawText(m.name, r.x + r.w / 2, r.y + r.h - 27, m.name.length > 14 ? 13 : 16, FONT_COMIC, '#fff', INK, 4);
-          drawText(findCharacter(m.hero).name, r.x + r.w - 8, r.y + 14, 6, FONT_PIXEL, '#fff', INK, 2, 'right');
+          drawText(m.name, r.x + r.w / 2, r.y + r.h - 27, m.name.length > 15 ? 11 : m.name.length > 11 ? 13 : 16, FONT_COMIC, '#fff', INK, 4);
+          drawText(findCharacter(m.hero).name, r.x + r.w / 2, r.y + r.h - 47, 6, FONT_PIXEL, '#fff', INK, 3);
           const best = miniBest(m.id),
             st = miniStars(m, best);
           drawText(best ? 'BEST ' + best : 'NEW!', r.x + r.w / 2, r.y + r.h - 9, 7, FONT_PIXEL, best ? '#ffe234' : '#3fff8a', INK, 2);
@@ -31867,7 +34075,11 @@
           ctx.restore();
         });
         const m = MINI_GAMES[game.minis.sel];
-        drawText(m.how, W / 2, 522, 8, FONT_PIXEL, '#fff', INK, 3);
+        // the selected game's rules, wrapped onto two lines
+        const words = m.how.split(' '),
+          lines = [''];
+        for (const w of words) (lines[lines.length - 1] + ' ' + w).length > 100 ? lines.push(w) : (lines[lines.length - 1] = (lines[lines.length - 1] + ' ' + w).trim());
+        lines.slice(0, 2).forEach((l, i) => drawText(l, W / 2, 514 + i * 13, 7, FONT_PIXEL, '#fff', INK, 3));
       }
 
       /** Start (or restart) a mini game: the READY screen first. */
@@ -32254,6 +34466,10 @@
         drawStage(0);
         const galaxy = Math.max(f1.galaxyAmount(), f2.galaxyAmount());
         if (galaxy > 0) drawGymBagGalaxy(galaxy, (f1.galaxyAmount() ? f1 : f2).t);
+        if (game.mf && game.mini && game.mini.g) {
+          const m = miniDef(game.mini.id);
+          if (m.drawFloor) m.drawFloor(game.mini.g);
+        }
         const order = game.drawOnTop === f1 ? [f2, f1] : [f1, f2];
         for (const fighter of order) fighter.draw();
         for (const p of game.projectiles) drawProjectile(p);
