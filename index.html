@@ -23440,9 +23440,15 @@
       };
 
       function advData() {
-        const d = Progress.data;
-        d.adv = Object.assign({ prologue: false, hero: 0, look: 0, cleared: {}, seen: {} }, d.adv || {});
-        return d.adv;
+        // always the same object (missing fields filled in place), so a change made through an older reference is kept
+        const d = Progress.data,
+          A = d.adv && typeof d.adv === 'object' ? d.adv : (d.adv = {});
+        if (A.prologue === undefined) A.prologue = false;
+        if (A.hero === undefined) A.hero = 0;
+        if (A.look === undefined) A.look = 0;
+        if (!A.cleared) A.cleared = {};
+        if (!A.seen) A.seen = {};
+        return A;
       }
       const advHero = () => ROSTER[clamp(advData().hero | 0, 0, STORY_HEROES_N - 1)];
       /**

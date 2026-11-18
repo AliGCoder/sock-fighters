@@ -24,8 +24,13 @@ async function boot(browser, label) {
   log.tap = Date.now();
   await p.mouse.click(480, 270); // the first tap starts sound, which decodes every clip
   for (let i = 0; i < 120 && !(log.ann && log.fig); i++) await p.waitForTimeout(250);
-  checks[label + ': all announcer clips decode'] = !!log.ann && log.ann.ok === log.ann.of && log.ann.of > 200;
-  checks[label + ': all fighter voice clips decode'] = !!log.fig && log.fig.ok === log.fig.of && log.fig.of > 600;
+  // (the WebKit test browser on Windows has no Web Audio at all; real Safari on iPhone / Mac does)
+  const audio = await p.evaluate(() => !!(window.AudioContext || window.webkitAudioContext));
+  if (!audio) notes[label + ' sound'] = 'this test browser has no Web Audio: skipped';
+  else {
+    checks[label + ': all announcer clips decode'] = !!log.ann && log.ann.ok === log.ann.of && log.ann.of > 200;
+    checks[label + ': all fighter voice clips decode'] = !!log.fig && log.fig.ok === log.fig.of && log.fig.of > 600;
+  }
   notes[label + ' audio decode time'] = log.ann && log.fig ? 'announcer ' + log.ann.ms + 'ms, fighters ' + log.fig.ms + 'ms (' + log.ann.of + ' + ' + log.fig.of + ' clips)' : 'did not finish';
   notes[label + ' memory'] = await p.evaluate(() => (performance.memory ? Math.round(performance.memory.usedJSHeapSize / 1048576) + ' MB' : 'n/a'));
   return { ctx, p };
@@ -38,19 +43,26 @@ async function boot(browser, label) {
   const got = {};
   p.on('response', r => { const m = r.url().match(/voices\/([\w-]+)\.js/); if (m) got[m[1]] = r.status(); });
   await p.evaluate(() => { StoryVoices.load('story'); StoryVoices.load('hero-argyle'); });
-  for (let i = 0; i < 240 && !(StoryReady = await p.evaluate(() => StoryVoices.files.story === 'ready' && StoryVoices.files['hero-argyle'] === 'ready')); i++) await p.waitForTimeout(250);
+  for (let i = 0, StoryReady = false; i < 240 && !(StoryReady = await p.evaluate(() => StoryVoices.files.story === 'ready' && StoryVoices.files['hero-argyle'] === 'ready')); i++) await p.waitForTimeout(250);
   checks['story voice file downloads'] = (got.story === 200 || got.story === 304) && (await p.evaluate(() => StoryVoices.files.story === 'ready'));
   checks['hero voice file downloads'] = await p.evaluate(() => StoryVoices.files['hero-argyle'] === 'ready');
   // a voice file that fails once (a network hiccup) is tried again
+  // (in a window without the offline copy, so the test can make the download fail)
+  const ctx2 = await cr.newContext({ serviceWorkers: 'block' });
+  const p2 = await ctx2.newPage();
+  p2.on('pageerror', e => errs.push('retry: ' + e.message));
+  await p2.goto(URL, { waitUntil: 'load', timeout: 120000 });
+  await p2.waitForTimeout(1500);
   let block = true;
-  await p.route('**/voices/hero-baby.js*', r => (block ? r.abort() : r.continue()));
-  await p.evaluate(() => StoryVoices.load('hero-baby'));
+  await p2.route('**/voices/hero-baby.js*', r => (block ? r.abort() : r.continue()));
+  await p2.evaluate(() => StoryVoices.load('hero-baby'));
   await p.waitForTimeout(1500);
-  const firstTry = await p.evaluate(() => StoryVoices.files['hero-baby']);
+  const firstTry = await p2.evaluate(() => StoryVoices.files['hero-baby']);
   block = false;
-  await p.evaluate(() => { StoryVoices.fails['hero-baby'].at -= 16000; StoryVoices.load('hero-baby'); }); // 15 seconds later
-  for (let i = 0; i < 120 && (await p.evaluate(() => StoryVoices.files['hero-baby'])) !== 'ready'; i++) await p.waitForTimeout(250);
-  checks['failed voice file is retried'] = firstTry === 'failed' && (await p.evaluate(() => StoryVoices.files['hero-baby'] === 'ready'));
+  await p2.evaluate(() => { StoryVoices.fails['hero-baby'].at -= 16000; StoryVoices.load('hero-baby'); }); // 15 seconds later
+  for (let i = 0; i < 120 && (await p2.evaluate(() => StoryVoices.files['hero-baby'])) !== 'ready'; i++) await p2.waitForTimeout(250);
+  checks['failed voice file is retried'] = firstTry === 'failed' && (await p2.evaluate(() => StoryVoices.files['hero-baby'] === 'ready'));
+  await ctx2.close();
   // save status and a refused save (on a throwaway save, then the save is cleared)
   const save = await p.evaluate(() => {
     const S = window.__sock;
@@ -58,7 +70,8 @@ async function boot(browser, label) {
     S.startNewGame();
     S.saveGame();
     const r = { afterSave: unsavedChanges() };
-    advData().look = (advData().look | 0) + 1; // a new hero look only
+    const look = (advData().look | 0) + 1;
+    advData().look = look; // a new hero look only
     r.afterLookChange = unsavedChanges();
     S.saveGame();
     r.afterSaveAgain = unsavedChanges();
