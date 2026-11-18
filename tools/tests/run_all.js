@@ -22,7 +22,7 @@ const TESTS = [
   ['test_friends', 'Friends list: codes, add, online status, invite, accept into a match'],
   ['test_profile', 'My profile: avatar (main menu only), photo editor, trophies, friends tab, kept after reload'],
   ['test_minis', 'Mini games: every challenge plays, ends, keeps best scores'],
-  ['test_super', 'Super moves: Stinky Tabi GYM BAG GALAXY cinematic, same damage, back on the floor'],
+  ['test_super', 'Super moves: every hero cinematic (Stinky Tabi GYM BAG GALAXY and all the rest), same damage, back on the floor'],
   ['test_gameplay', 'Fighting: combos, hitboxes, BLOCK and DODGE, no endless combos, CPU levels, no story leaks'],
   ...(quick ? [] : [['test_full', 'Story mode: all 3 chapters (27 episodes), credits, palace scenes']])
 ];

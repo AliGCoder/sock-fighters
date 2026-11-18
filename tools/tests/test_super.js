@@ -55,6 +55,33 @@ const path = require('path');
   console.log('stinky', JSON.stringify(stinky));
   console.log('argyle', JSON.stringify(argyle));
   const GROUND = await p.evaluate(() => GROUND);
+  // EVERY hero's cinematic super (one scene each): same damage, nobody's bar refilled, both back on the floor, in the arena
+  const all = await p.evaluate(() => {
+    const S = window.__sock, out = {};
+    for (const hero of Object.keys(SUPER_SCENES).filter(k => k !== 'mysock')) {
+      S.game.story = null; S.game.mf = null; S.game.mode = '2p';
+      S.game.p1Def = S.look(S.findCharacter(hero), 0);
+      S.game.p2Def = S.look(S.findCharacter(hero === 'argyle' ? 'stinky' : 'argyle'), 0);
+      S.game.stageId = 'laundry';
+      S.startMatch();
+      for (let i = 0; i < 300 && S.game.phase !== 'fight'; i++) updateGame();
+      S.f1.x = 380; S.f2.x = 520; S.f1.meter = 100;
+      keysPressed.KeyR = true; keysDown.KeyR = true; updateGame(); delete keysDown.KeyR;
+      const hp0 = S.f2.hp;
+      let seen = false, lock = 0, out2 = false;
+      for (let i = 0; i < 500; i++) {
+        updateGame();
+        if (S.f1.state === 'superlock') { seen = true; lock = S.f1.t; if (S.f1.x < 40 || S.f1.x > 920 || S.f2.x < 40 || S.f2.x > 920) out2 = true; renderGame(); }
+        else if (seen && S.f1.state !== 'superdash') break;
+      }
+      for (let i = 0; i < 120; i++) updateGame();
+      out[hero] = seen && lock >= (SUPER_SCENES[hero].tpl ? 120 : 55) && Math.abs(hp0 - S.f2.hp - 404) <= 5 && S.f1.meter === 0 && S.f2.meter === 0 && S.f1.y === GROUND && S.f2.y === GROUND && !out2 && S.f2.state !== 'hit';
+    }
+    return out;
+  });
+  const failed = Object.keys(all).filter(k => !all[k]);
+  console.log('every hero: ' + Object.keys(all).length + ' supers, failed: ' + (failed.join(', ') || 'none'));
+  checks.everyHeroCinematic = Object.keys(all).length >= 28 && !failed.length;
   checks.superDoesNotRefillAnyBar = stinky.m1 === 0 && stinky.m2 === 0 && argyle.m1 === 0 && argyle.m2 === 0;
   checks.galaxyRuns = stinky.lockFrames >= 140;
   checks.sameDamage = Math.abs(stinky.dmg - argyle.dmg) <= 5 && stinky.dmg > 300;
