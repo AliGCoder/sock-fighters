@@ -30,34 +30,34 @@ const ONLINE_LOBBY = {
 const FIGHT_STINKY = fight('stinky', 'argyle', 'laundry', 'FAST ARCADE FIGHTING', 'combos, throws, specials', 4.2);
 module.exports = [
   // ACT 0: the cold open (black cards over a quiet title screen)
-  { card: 'IN A LAUNDROMAT AT MIDNIGHT...', cardSecs: 2.4, cap: '', secs: 0, setup: () => { const S = window.__sock; S.game.story = null; S.game.screen = 'title'; } },
-  { card: 'ONE SOCK WENT MISSING.', cardSecs: 2.0, cap: '', secs: 0, setup: () => {} },
+  { card: 'IN A LAUNDROMAT AT MIDNIGHT...', cardSecs: 3.0, say: 'In a laundromat... at midnight...', cap: '', secs: 0, setup: () => { const S = window.__sock; S.game.story = null; S.game.screen = 'title'; } },
+  { card: 'ONE SOCK WENT MISSING.', cardSecs: 2.6, say: 'one sock... went missing.', cap: '', secs: 0, setup: () => {} },
   { cap: '', sub: '', secs: 2.8, setup: () => { const S = window.__sock; S.game.screen = 'title'; } },
   // ACT 1: fighting
-  { card: 'FIGHT.', cardBig: true, cardSecs: 1.1, cap: '', secs: 0, setup: () => {} },
+  { card: 'FIGHT.', cardBig: true, cardSecs: 1.6, say: 'Now... the socks fight back.', cap: '', secs: 0, setup: () => {} },
   FIGHT_STINKY,
   SELECT,
   // ACT 2: supers
-  { card: 'UNLEASH YOUR SUPER.', cardBig: true, cardSecs: 1.4, cap: '', secs: 0, setup: () => {} },
+  { card: 'UNLEASH YOUR SUPER.', cardBig: true, cardSecs: 1.8, say: 'Every hero... has a super.', cap: '', secs: 0, setup: () => {} },
   superShot('stinky', 'kneehi', 'EVERY HERO HAS THEIR OWN SUPER', '30 one-of-a-kind cinematic supers'),
   superShot('shinobi', 'argyle', 'TOE-SHINOBI', 'Hidden Toe Tempest'),
   superShot('gran', 'stinky', 'STOCKING GRAN', 'yes, those are dentures'),
   superShot('robo', 'baby', 'MECHA-SOCK X', 'Overclock Overdrive'),
   // ACT 3: the story
-  { card: 'SAVE THE QUEEN.', cardBig: true, cardSecs: 1.3, cap: '', secs: 0, setup: () => {} },
+  { card: 'SAVE THE QUEEN.', cardBig: true, cardSecs: 1.6, say: 'Save the Queen.', cap: '', secs: 0, setup: () => {} },
   STORY,
   // ACT 4: everything else
-  { card: 'PLAY YOUR WAY.', cardBig: true, cardSecs: 1.3, cap: '', secs: 0, setup: () => {} },
+  { card: 'PLAY YOUR WAY.', cardBig: true, cardSecs: 1.6, say: 'Build your own legend.', cap: '', secs: 0, setup: () => {} },
   mini('siege', 'MINI GAMES', 'starring the real fighters'),
   mini('bossrush', 'MINI GAMES', 'boss rush, sumo, surfing, disco and more'),
   MAKER,
   VOICE,
   SKILLS,
   // ACT 5: online
-  { card: 'TOGETHER.', cardBig: true, cardSecs: 1.1, cap: '', secs: 0, setup: () => {} },
+  { card: 'TOGETHER.', cardBig: true, cardSecs: 1.5, say: 'Challenge your friends.', cap: '', secs: 0, setup: () => {} },
   ONLINE_LOBBY,
   fight('ghost', 'demon', null, 'PLAY ONLINE WITH FRIENDS', 'phone, tablet or PC', 2.6),
-  { end: true, cap: 'SOCK FIGHTERS', sub: 'TURBO RINSE', secs: 5, setup: () => { const S = window.__sock; S.game.screen = 'title'; } }
+  { end: true, cap: 'SOCK FIGHTERS', sub: 'TURBO RINSE', secs: 6, say: 'Sock Fighters... Turbo Rinse. Play free... now.', setup: () => { const S = window.__sock; S.game.screen = 'title'; } }
 ];
 
 function fight(a, b, stage, cap, sub, secs) {
@@ -76,7 +76,7 @@ function fight(a, b, stage, cap, sub, secs) {
 }
 function superShot(a, b, cap, sub) {
   return {
-    cap, sub, secs: 3.8,
+    cap, sub, secs: 3.8, punch: true, zoom: [1.04, 1.1],
     setup: new Function(`const S = window.__sock;
       S.game.story = null; S.game.mf = null; S.game.mode = '2p';
       S.game.p1Def = S.look(S.findCharacter('${a}'), 0);

@@ -35,10 +35,18 @@ const onlyShots = process.argv.includes('--shots');
       const v = document.createElement('canvas');
       v.width = 1280; v.height = 720;
       const g = v.getContext('2d');
-      const T = (window.__trailer = { cap: '', sub: '', capT: 0, end: false, chunks: [], fade: 0 });
+      const T = (window.__trailer = { cap: '', sub: '', capT: 0, end: false, chunks: [], fade: 0, marks: [], zoom0: 1, zoom1: 1, punch: 0 });
       const draw = () => {
         g.imageSmoothingEnabled = true;
-        g.drawImage(game, 0, 0, 1280, 720);
+        {
+          // camera: a slow push-in through every shot, and a quick punch-in when a super starts
+          const st = Math.max(0, (performance.now() - T.capT) / 1000 - (T.card ? T.cardSecs : 0));
+          const k = Math.min(1, st / Math.max(0.5, T.shotSecs || 4));
+          let z = T.zoom0 + (T.zoom1 - T.zoom0) * (k * k * (3 - 2 * k));
+          if (T.punch) z *= 1 + 0.12 * Math.max(0, Math.sin(Math.min(Math.PI, st * 2.2)));
+          const w = 1280 * z, h = 720 * z;
+          g.drawImage(game, (1280 - w) / 2, (720 - h) / 2 - (z - 1) * 120, w, h);
+        }
         const t0 = (performance.now() - T.capT) / 1000;
         const cs = T.card ? T.cardSecs : 0;
         const t = t0 - cs; // captions start after the card
@@ -123,12 +131,13 @@ const onlyShots = process.argv.includes('--shots');
       T.rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 8e6, audioBitsPerSecond: 160000 });
       T.rec.ondataavailable = e => e.data.size && T.chunks.push(e.data);
       T.rec.start(1000);
+      T.recAt = performance.now();
     });
   }
   for (let i = 0; i < SHOTS.length; i++) {
     const s = SHOTS[i];
     await p.evaluate(s.setup);
-    await p.evaluate(([cap, sub, end, top, card, cardSecs, cardBig]) => { if (window.__trailer) Object.assign(window.__trailer, { cap, sub, end: !!end, top: !!top, card, cardSecs, cardBig, capT: performance.now(), fade: 0.5 }); }, [s.cap, s.sub, s.end, s.top, s.card || '', s.cardSecs || (s.card ? 1.6 : 0), !!s.cardBig]);
+    await p.evaluate(([cap, sub, end, top, card, cardSecs, cardBig, shotSecs, zoom, punch, say]) => { const T = window.__trailer; if (T) { Object.assign(T, { cap, sub, end: !!end, top: !!top, card, cardSecs, cardBig, capT: performance.now(), fade: 0.5, shotSecs, zoom0: zoom[0], zoom1: zoom[1], punch: !!punch }); T.marks.push({ at: (performance.now() - T.recAt) / 1000, card, cardSecs, cardBig, end: !!end, punch: !!punch, say }); } }, [s.cap, s.sub, s.end, s.top, s.card || '', s.cardSecs || (s.card ? 1.6 : 0), !!s.cardBig, s.secs, s.zoom || [1.0, 1.06], !!s.punch, s.say || '']);
     const steps = Math.round((s.secs + (s.card ? s.cardSecs || 1.6 : 0)) * 10);
     for (let k = 0; k < steps; k++) {
       if (s.tick) await p.evaluate(s.tick, k);
@@ -145,10 +154,11 @@ const onlyShots = process.argv.includes('--shots');
       const buf = new Uint8Array(await blob.arrayBuffer());
       let s = '';
       for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
-      return { type: T.type, b64: btoa(s) };
+      return { type: T.type, b64: btoa(s), marks: T.marks };
     });
     const file = path.join(OUT, 'sock-fighters-trailer.' + (parts.type.includes('mp4') ? 'mp4' : 'webm'));
     fs.writeFileSync(file, Buffer.from(parts.b64, 'base64'));
+    fs.writeFileSync(path.join(OUT, 'timeline.json'), JSON.stringify(parts.marks, null, 1));
     console.log('saved', file, (fs.statSync(file).size / 1e6).toFixed(1), 'MB');
   }
   console.log('errors:', errs.length ? errs.slice(0, 5) : 'none');
