@@ -28,12 +28,31 @@ function png(w, h) {
   await p.waitForTimeout(1200);
   const checks = {};
   const shot = process.env.SHOTS;
+  // only on the main menu (SELECT MODE), not on the title screen
+  checks.hiddenOnTitle = !(await p.isVisible('#avatar'));
+  await p.evaluate(() => { window.__sock.game.screen = 'mode'; });
+  await p.waitForTimeout(300);
   checks.avatarShown = await p.isVisible('#avatar');
+  checks.avatarBigger = (await p.evaluate(() => document.getElementById('avatar').getBoundingClientRect().width)) >= 60;
   await p.click('#avatar');
   await p.waitForTimeout(400);
   checks.paneOpens = await p.evaluate(() => window.__sock.Pane.open && document.getElementById('profile-pane').classList.contains('open'));
   // upload a photo
   await p.setInputFiles('#pp-file', { name: 'me.png', mimeType: 'image/png', buffer: png(64, 48) });
+  // the photo editor opens: drag it, zoom it, turn it, then SAVE PHOTO
+  await p.waitForSelector('#pp-crop', { timeout: 5000 });
+  checks.editorOpens = true;
+  const box = await p.locator('#pp-crop').boundingBox();
+  await p.locator('#pp-zoom').fill('2.5');
+  await p.mouse.move(box.x + 120, box.y + 120);
+  await p.mouse.down();
+  await p.mouse.move(box.x + 160, box.y + 140, { steps: 5 });
+  await p.mouse.up();
+  checks.dragAndZoom = await p.evaluate(() => { const E = window.__sock.Pane.edit; return E.zoom === 2.5 && E.ox > 0 && E.oy > 0; });
+  await p.click('#profile-pane button[data-pp="rotate"]');
+  checks.turns = await p.evaluate(() => window.__sock.Pane.edit.rot === 1);
+  if (shot) await p.screenshot({ path: shot + '_editor.png' });
+  await p.click('#profile-pane button[data-pp="editsave"]');
   checks.photoSaved = await (async () => {
     for (let i = 0; i < 20; i++) {
       if (await p.evaluate(() => /^data:image\/jpeg/.test(window.__sock.Progress.data.avatarPhoto || '') && /^data:image\/jpeg/.test(document.getElementById('avatar-img').src))) return true;
@@ -64,6 +83,7 @@ function png(w, h) {
   await p.evaluate(() => { const S = window.__sock; S.game.mode = '2p'; S.game.p1Def = S.look(S.ROSTER[0], 0); S.game.p2Def = S.look(S.ROSTER[1], 0); S.startMatch(); });
   await p.waitForTimeout(600);
   checks.hiddenInFight = !(await p.isVisible('#avatar'));
+  checks.cornerButtonsBack = await p.evaluate(() => !document.body.classList.contains('av') && getComputedStyle(document.getElementById('mute')).right === '8px');
   // the photo and friend survive a reload
   await p.reload();
   await p.waitForTimeout(1200);
