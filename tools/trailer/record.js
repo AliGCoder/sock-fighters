@@ -19,6 +19,8 @@ const onlyShots = process.argv.includes('--shots');
   await p.goto(URL);
   await p.waitForTimeout(1500);
   await p.mouse.click(5, 5); // wakes the sound up
+  // wait until every fighter voice is ready (they decode a few at a time)
+  await p.waitForFunction(() => window.__sock.ROSTER.filter(x => !x.mysock).every(x => FighterClips.get(x.id, 'supername')), null, { timeout: 60000 }).catch(() => {});
   await p.waitForFunction(() => window.__sock && window.Sound !== undefined || true);
   await p.evaluate(() => {
     const S = window.__sock;
@@ -37,23 +39,59 @@ const onlyShots = process.argv.includes('--shots');
       const draw = () => {
         g.imageSmoothingEnabled = true;
         g.drawImage(game, 0, 0, 1280, 720);
-        const t = (performance.now() - T.capT) / 1000;
+        const t0 = (performance.now() - T.capT) / 1000;
+        const cs = T.card ? T.cardSecs : 0;
+        const t = t0 - cs; // captions start after the card
+        if (T.card && t0 < cs) {
+          // a black title card: the line fades in and slowly grows, then a white flash cuts to the game
+          g.fillStyle = '#000';
+          g.fillRect(0, 0, 1280, 720);
+          const a = Math.min(1, t0 * 2.2, (cs - t0) * 5);
+          const k = 1 + 0.06 * (t0 / cs);
+          g.save();
+          g.translate(640, 372);
+          g.scale(k, k);
+          g.globalAlpha = Math.max(0, a);
+          g.textAlign = 'center';
+          g.textBaseline = 'middle';
+          const big = T.cardBig;
+          g.font = big ? '900 112px Impact, "Arial Black", sans-serif' : '600 44px "Segoe UI", Arial, sans-serif';
+          if (big) { g.shadowColor = '#3fff8a'; g.shadowBlur = 40; }
+          g.fillStyle = big ? '#ffffff' : '#e8e8e8';
+          if (!big) g.letterSpacing = '8px';
+          g.fillText(T.card, 0, 0);
+          g.restore();
+          T.flashed = false;
+          requestAnimationFrame(draw);
+          return;
+        }
+        if (T.card && !T.flashed) { T.flashed = true; T.fade = 0.9; }
+        if (!T.end) {
+          g.fillStyle = '#000';
+          g.fillRect(0, 0, 1280, 58);
+          g.fillRect(0, 662, 1280, 58);
+        }
         if (T.end) {
           // the end card: dark, the game's name, where to play
-          g.fillStyle = `rgba(14,6,40,${Math.min(0.82, t * 1.6)})`;
+          g.fillStyle = `rgba(0,0,0,${Math.min(0.86, t * 1.6)})`;
           g.fillRect(0, 0, 1280, 720);
           const a = Math.min(1, t * 1.5);
           g.globalAlpha = a;
           g.textAlign = 'center';
           g.lineJoin = 'round';
+          const slam = 1 + Math.max(0, 0.5 - t) * 1.2;
+          g.save(); g.translate(640, 300); g.scale(slam, slam); g.translate(-640, -300);
           g.font = '900 104px Impact, "Arial Black", sans-serif';
+          g.shadowColor = '#3fff8a'; g.shadowBlur = 36;
           g.lineWidth = 16; g.strokeStyle = '#1a0f2e'; g.strokeText('SOCK FIGHTERS', 640, 300);
+          g.shadowBlur = 0;
           g.fillStyle = '#ffe234'; g.fillText('SOCK FIGHTERS', 640, 300);
+          g.restore();
           g.font = '900 60px Impact, "Arial Black", sans-serif';
           g.lineWidth = 12; g.strokeText('TURBO RINSE', 640, 375);
           g.fillStyle = '#3ff0ff'; g.fillText('TURBO RINSE', 640, 375);
           g.font = '800 34px "Segoe UI", Arial, sans-serif';
-          g.fillStyle = '#ffffff'; g.fillText('PLAY FREE IN YOUR BROWSER', 640, 470);
+          g.fillStyle = '#3fff8a'; g.fillText('PLAY FREE NOW', 640, 470);
           g.fillStyle = '#ff4fa3'; g.fillText('aligcoder.github.io/sock-fighters', 640, 518);
           g.globalAlpha = 1;
         } else if (T.cap) {
@@ -61,13 +99,14 @@ const onlyShots = process.argv.includes('--shots');
           const x = 48 - Math.max(0, 1 - t * 4) * 500;
           g.textAlign = 'left';
           g.lineJoin = 'round';
-          g.font = '900 56px Impact, "Arial Black", sans-serif';
-          g.lineWidth = 12; g.strokeStyle = '#1a0f2e'; g.strokeText(T.cap, x, 640);
-          g.fillStyle = '#ffe234'; g.fillText(T.cap, x, 640);
+          g.font = '900 46px Impact, "Arial Black", sans-serif';
+          const y0 = T.top ? 112 : 604;
+          g.lineWidth = 12; g.strokeStyle = '#1a0f2e'; g.strokeText(T.cap, x, y0);
+          g.fillStyle = '#ffe234'; g.fillText(T.cap, x, y0);
           if (T.sub) {
-            g.font = '800 28px "Segoe UI", Arial, sans-serif';
-            g.lineWidth = 8; g.strokeText(T.sub, x + 4, 684);
-            g.fillStyle = '#ffffff'; g.fillText(T.sub, x + 4, 684);
+            g.font = '800 24px "Segoe UI", Arial, sans-serif';
+            g.lineWidth = 8; g.strokeText(T.sub, x + 4, y0 + 38);
+            g.fillStyle = '#ffffff'; g.fillText(T.sub, x + 4, y0 + 38);
           }
         }
         if (T.fade > 0) { g.fillStyle = `rgba(255,255,255,${T.fade})`; g.fillRect(0, 0, 1280, 720); T.fade = Math.max(0, T.fade - 0.12); }
@@ -89,8 +128,8 @@ const onlyShots = process.argv.includes('--shots');
   for (let i = 0; i < SHOTS.length; i++) {
     const s = SHOTS[i];
     await p.evaluate(s.setup);
-    await p.evaluate(([cap, sub, end]) => { if (window.__trailer) Object.assign(window.__trailer, { cap, sub, end: !!end, capT: performance.now(), fade: 0.5 }); }, [s.cap, s.sub, s.end]);
-    const steps = Math.round(s.secs * 10);
+    await p.evaluate(([cap, sub, end, top, card, cardSecs, cardBig]) => { if (window.__trailer) Object.assign(window.__trailer, { cap, sub, end: !!end, top: !!top, card, cardSecs, cardBig, capT: performance.now(), fade: 0.5 }); }, [s.cap, s.sub, s.end, s.top, s.card || '', s.cardSecs || (s.card ? 1.6 : 0), !!s.cardBig]);
+    const steps = Math.round((s.secs + (s.card ? s.cardSecs || 1.6 : 0)) * 10);
     for (let k = 0; k < steps; k++) {
       if (s.tick) await p.evaluate(s.tick, k);
       await p.waitForTimeout(100);

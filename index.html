@@ -1496,7 +1496,7 @@
       const VOICE_PROFILES = {
         stinky: { pitch: 165, formant: 1.0, breath: 0.28 }, // gruff gym grunt
         argyle: { pitch: 135, formant: 0.95, breath: 0.1 }, // crisp samurai kiai
-        shinobi: { pitch: 205, formant: 1.05, breath: 0.42 }, // hushed ninja
+        shinobi: { pitch: 120, formant: 0.95, breath: 0.4 }, // cold, low young ninja
         gran: { pitch: 270, formant: 1.12, breath: 0.26, volume: 0.8, vibrato: 0.06, vibratoRate: 6.5 }, // wobbly 98-year-old granny
         baby: { pitch: 430, formant: 1.32, breath: 0.05, volume: 0.75 }, // squeaky baby
         kneehi: { pitch: 92, formant: 0.84, breath: 0.18 }, // big sumo boom
@@ -3302,6 +3302,42 @@
       }
 
       /** Two bandana tails fluttering out from a knot at (x, y). */
+      /** Toe-Shinobi's IRON HEADBAND: a dark cloth band with a steel plate stamped with a toe print. Drawn in the
+       *  head's frame (centre of the head top = 0,0). */
+      function drawNinjaHeadband(c, color, t) {
+        c.strokeStyle = INK;
+        c.lineWidth = 3;
+        c.fillStyle = color;
+        roundRectPath(c, -30, 6, 60, 12, 4);
+        c.fill();
+        c.stroke();
+        drawBandTailsAt(c, -26, 12, color, t);
+        c.strokeStyle = INK;
+        c.lineWidth = 3;
+        // the steel plate, with a shine and four rivets
+        c.fillStyle = '#c9d1de';
+        roundRectPath(c, -11, 3, 24, 18, 3);
+        c.fill();
+        c.stroke();
+        c.fillStyle = 'rgba(255,255,255,0.65)';
+        c.fillRect(-8, 6, 3, 12);
+        c.fillStyle = '#6a7388';
+        for (const [x, y] of [[-8, 6], [10, 6], [-8, 18], [10, 18]]) {
+          c.beginPath();
+          c.arc(x, y, 1.3, 0, 7);
+          c.fill();
+        }
+        // the toe print: a sole pad and five toes
+        c.fillStyle = '#4a5163';
+        c.beginPath();
+        c.ellipse(1, 15, 4.5, 3, 0, 0, 7);
+        c.fill();
+        for (const [x, y, r] of [[-4, 9, 1.8], [-1, 8, 1.5], [2, 8, 1.4], [5, 8.5, 1.3], [7.5, 9.5, 1.1]]) {
+          c.beginPath();
+          c.arc(x, y, r, 0, 7);
+          c.fill();
+        }
+      }
       function drawBandTailsAt(c, x, y, color, t) {
         for (const [dx, dy, phase] of [
           [-40, 6, 0],
@@ -3568,27 +3604,36 @@
             },
             { name: 'RAINBOW', pal: { mode: 'rb', sat: 82, lit: 62, mask: '#2a2240', cuff: '#2a2240' } },
             {
-              name: 'NEON',
+              // a night-raid suit with glowing green trim and dark shades
+              name: 'NEON SHADOW',
               pal: {
                 mode: 'two',
-                c1: '#ff2fd1',
-                c2: '#2ff3ff',
-                mask: '#111111',
-                cuff: '#111111',
-                toe: '#e9ff3f'
+                c1: '#0b0f1a',
+                c2: '#16213a',
+                mask: '#00ff9c',
+                cuff: '#00ff9c',
+                toe: '#00d0ff'
               },
-              glove: '#111111',
-              arm: '#111111',
-              color: '#2ff3ff',
+              glove: '#00ff9c',
+              arm: '#0b0f1a',
+              color: '#00ff9c',
               shades: true
             },
             {
-              name: 'PASTEL',
-              pal: { mode: 'rb', sat: 72, lit: 82, mask: '#8a7fb5', cuff: '#ffffff' },
-              glove: '#ffffff',
-              arm: '#8a7fb5',
-              color: '#c7b8ff',
-              hat: 'ribbon'
+              // storm-grey ninja gear with his iron headband
+              name: 'STORM CLOUD',
+              pal: {
+                mode: 'two',
+                c1: '#4a5163',
+                c2: '#2e3445',
+                mask: '#1b1e28',
+                cuff: '#1b1e28',
+                toe: '#9aa3b8'
+              },
+              glove: '#1b1e28',
+              arm: '#2e3445',
+              color: '#9aa3b8',
+              hat: 'ninjaband'
             }
           ],
           pattern(along) {
@@ -6363,7 +6408,7 @@
       const ACCESSORIES = {
         stinky: { name: 'PINE AIR FRESHENER', color: '#4fdc6a' },
         argyle: { name: 'KATANA', color: '#c8202f' },
-        shinobi: { name: 'SHURIKEN HAIRPIN', color: '#c9d1de' },
+        shinobi: { name: 'SPINNING SHURIKEN', color: '#c9d1de' },
         gran: { name: 'PEARL NECKLACE', color: '#ffffff' },
         baby: { name: 'DUCKY BIB', color: '#9fe8ff' },
         kneehi: { name: 'YOKOZUNA ROPE', color: '#ffffff' },
@@ -6416,6 +6461,10 @@
         // Cling Queen's royal wardrobe (unlocked with her second accessory). hat: replaces her lily crown
         cling3: { name: 'FANCY CAPE', color: '#7a1f9a', cape: true },
         cling4: { name: 'FANCY SCEPTRE', color: '#3fd0ff' },
+        // Toe-Shinobi's ninja gear (unlocked by winning fights with him: 12, 20 and 30 wins)
+        shinobi4: { name: 'NINJATO', color: '#1d1d2b' },
+        shinobi5: { name: 'SHADOW SCARF', color: '#2a2240', noScale: true },
+        shinobi6: { name: 'IRON HEADBAND', color: '#1b1e28', hat: true },
         cling5: { name: 'BIGGEST FANCY HAT', color: '#2b6e4a', hat: true },
         cling6: { name: 'GRAND CROWN', color: '#ffd23f', hat: true },
         cling7: { name: 'SORCERESS CAPE', color: '#4a1a66', cape: true },
@@ -6423,6 +6472,8 @@
       };
       /** Which hero an accessory belongs to ('stinky2' -> 'stinky'). Only that hero can wear it. */
       const accOwner = id => String(id).replace(/\d+$/, '');
+      // wins needed for a hero's extra gear (4th, 5th, 6th accessory), e.g. Toe-Shinobi's ninja kit
+      const GEAR_WINS = { 4: 12, 5: 20, 6: 30 };
       /** Every accessory a hero has, first one first. */
       const heroAccessories = id => Object.keys(ACCESSORIES).filter(k => accOwner(k) === id);
 
@@ -7047,7 +7098,64 @@
           return;
         }
         if (layer === 'behind') {
-          if (acc === 'argyle') {
+          if (acc === 'shinobi4') {
+            // NINJATO: a short straight sword in a black scabbard, slung across the back, handle over the shoulder
+            c.translate(sh.x - 2, sh.y - 34);
+            c.rotate(1.25);
+            c.fillStyle = '#16161f';
+            roundRectPath(c, 0, -5, 92, 10, 4);
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#c8102e';
+            c.lineWidth = 3;
+            c.beginPath();
+            c.moveTo(18, -5);
+            c.quadraticCurveTo(24, 10 + Math.sin(game.time * 0.1) * 2, 34, -5);
+            c.stroke();
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+            c.fillStyle = '#c9d1de';
+            c.fillRect(90, -3, 6, 6);
+            c.fillStyle = '#3a3d48';
+            c.fillRect(-7, -10, 7, 20);
+            c.strokeRect(-7, -10, 7, 20);
+            c.fillStyle = col;
+            roundRectPath(c, -36, -4.5, 29, 9, 2);
+            c.fill();
+            c.stroke();
+            c.strokeStyle = '#c8102e';
+            c.lineWidth = 1.6;
+            for (let x = -33; x < -10; x += 6) {
+              c.beginPath();
+              c.moveTo(x, -4);
+              c.lineTo(x + 3, 4);
+              c.moveTo(x + 3, -4);
+              c.lineTo(x, 4);
+              c.stroke();
+            }
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+          } else if (acc === 'shinobi5') {
+            // SHADOW SCARF: its two long tails stream out behind him
+            const p = sockPoint(spine, 0.04);
+            const x0 = p.x + p.nx * p.w * 0.82,
+              y0 = p.y + p.ny * p.w * 0.82;
+            for (const [len, drop, phase] of [[92, 10, 0], [74, 30, 1.7]]) {
+              const w1 = Math.sin(t * 0.22 + phase) * 9,
+                w2 = Math.sin(t * 0.22 + phase + 1.4) * 12;
+              c.beginPath();
+              c.moveTo(x0, y0);
+              c.bezierCurveTo(x0 - len * 0.35, y0 + drop * 0.3 + w1, x0 - len * 0.7, y0 + drop + w2, x0 - len, y0 + drop - w1);
+              c.strokeStyle = INK;
+              c.lineWidth = 17;
+              c.stroke();
+              c.strokeStyle = col;
+              c.lineWidth = 11;
+              c.stroke();
+            }
+            c.strokeStyle = INK;
+            c.lineWidth = 3;
+          } else if (acc === 'argyle') {
             // a katana slung across the back
             c.translate(sh.x - 44, sh.y + 52);
             c.rotate(-0.95);
@@ -7583,6 +7691,16 @@
           c.lineWidth = 3;
         };
         switch (acc) {
+          case 'shinobi5':
+            // SHADOW SCARF: a thick wrap round the neck (the tails stream out behind, see the 'behind' layer)
+            strokeAlongSock(c, spine, 0.02, 0.62, -0.82, 15, col);
+            strokeAlongSock(c, spine, 0.06, 0.58, -0.82, 2.5, shadeColor(col, 0.3), false);
+            break;
+          case 'shinobi6':
+            // IRON HEADBAND
+            headFrame(0.16);
+            drawNinjaHeadband(c, col, t);
+            break;
           case 'argyle3': {
             // HACHIMAKI: a white headband with a red rising sun, tails fluttering
             headFrame(0.16);
@@ -8298,7 +8416,7 @@
             }
             break;
           case 'shinobi':
-            // a throwing-star hairpin
+            // a spinning shuriken tucked at the side of his head
             headFrame(0.12);
             c.save();
             c.translate(-6, -12);
@@ -8405,6 +8523,7 @@
             st = this.data.stats;
           if (id === hero) return (st.winsBy[hero] || 0) >= 8;
           if (id === hero + '3' && hero !== 'cling') return (st.winsBy[hero] || 0) >= 25 || !!st.clearedBy[hero];
+          if (hero !== 'cling' && /[456]$/.test(id)) return (st.winsBy[hero] || 0) >= GEAR_WINS[id.slice(-1)];
           return (st.winsBy[hero] || 0) >= 15 || !!(st.storyBy || {})[hero];
         },
         /** How to unlock each of a hero's items, in words. */
@@ -8413,6 +8532,10 @@
           if (kind === 'skin1') return 'WIN 3 FIGHTS AS ' + def.name + ' (' + Math.min(3, wins) + '/3)';
           if (kind === 'skin2') return 'CLEAR A LADDER OR CHAPTER AS ' + def.name;
           if (kind === 'acc2') return 'WIN 15 FIGHTS (' + Math.min(15, wins) + '/15) OR BEAT THE STORY AS ' + def.name;
+          if (GEAR_WINS[String(kind).slice(3)] && kind.length === 4) {
+            const need = GEAR_WINS[kind.slice(3)];
+            return 'WIN ' + need + ' FIGHTS AS ' + def.name + ' (' + Math.min(need, wins) + '/' + need + ')';
+          }
           if (kind === 'acc3') return 'WIN 25 FIGHTS (' + Math.min(25, wins) + '/25) OR CLEAR A LADDER OR CHAPTER AS ' + def.name;
           return 'WIN 8 FIGHTS AS ' + def.name + ' (' + Math.min(8, wins) + '/8)';
         },
@@ -8424,7 +8547,8 @@
             [id + '2', () => this.hasSkin(id + '2'), 'NEW SKIN: ' + (SKIN_FX[id + '2'] || {}).name],
             [id + 'acc', () => this.hasAcc(id), 'NEW ACCESSORY: ' + (ACCESSORIES[id] || {}).name],
             [id + 'acc2', () => this.hasAcc(id + '2'), 'NEW ACCESSORY: ' + (ACCESSORIES[id + '2'] || {}).name],
-            ...(id !== 'cling' && ACCESSORIES[id + '3'] ? [[id + 'acc3', () => this.hasAcc(id + '3'), 'NEW ACCESSORY: ' + ACCESSORIES[id + '3'].name]] : [])
+            ...(id !== 'cling' && ACCESSORIES[id + '3'] ? [[id + 'acc3', () => this.hasAcc(id + '3'), 'NEW ACCESSORY: ' + ACCESSORIES[id + '3'].name]] : []),
+            ...(id !== 'cling' ? ['4', '5', '6'].filter(n => ACCESSORIES[id + n]).map(n => [id + 'acc' + n, () => this.hasAcc(id + n), 'NEW ACCESSORY: ' + ACCESSORIES[id + n].name]) : [])
           ];
           for (const [key, has, text] of items)
             if (!this.data.announced[key] && has()) {
@@ -9283,6 +9407,10 @@
         c.lineCap = 'round';
         switch (hat) {
           // ---- hats that belong to one character only ----
+          case 'ninjaband':
+            // Toe-Shinobi's iron headband
+            drawNinjaHeadband(c, '#1b1e28', game.time);
+            break;
           case 'lilycrown': {
             // Cling Queen: a lily-pad crown with a water-lily and a dragonfly in attendance
             c.fillStyle = '#4fae3a';
@@ -24361,7 +24489,7 @@
       const CATCHPHRASES = {
         stinky: ['においで勝負だ!', "Let's settle this by smell!"],
         argyle: ['靴下の道、いざ参る!', 'The way of the sock — here I come!'],
-        shinobi: ['影から足元をすくうわ。', "I'll sweep your feet from the shadows."],
+        shinobi: ['…影から足元をすくうぞ。', "...I'll sweep your feet from the shadows."],
         gran: ['ばあちゃんをなめるでないよ!…いたたた…', 'Never underestimate granny! …ow ow ow…'],
         baby: ['ちっちゃくても、つよいもん!', 'Tiny, but STRONG!'],
         kneehi: ['伸びる相撲、見せてやる!', 'Behold — stretchy sumo!'],
@@ -26418,7 +26546,7 @@
               const d = findCharacter(accOwner(id));
               const first = id === accOwner(id),
                 third = id === accOwner(id) + '3' && accOwner(id) !== 'cling';
-              return { kind: 'acc', id, name: ACCESSORIES[id].name, owner: d, have: Progress.hasAcc(id), hint: Progress.unlockHint(first ? 'acc' : third ? 'acc3' : 'acc2', d) };
+              return { kind: 'acc', id, name: ACCESSORIES[id].name, owner: d, have: Progress.hasAcc(id), hint: Progress.unlockHint(first ? 'acc' : third ? 'acc3' : accOwner(id) !== 'cling' && /[456]$/.test(id) ? 'acc' + id.slice(-1) : 'acc2', d) };
             });
         return MY_ITEM_IDS.map(id => {
           const a = ACHIEVEMENT_BY_ID[MY_ITEMS[id].ach];
@@ -27193,6 +27321,7 @@
         if (!Progress.hasAcc(D.def.id)) locked.push(Progress.unlockHint('acc', D.def));
         if (ACCESSORIES[D.def.id + '2'] && !Progress.hasAcc(D.def.id + '2')) locked.push(Progress.unlockHint('acc2', D.def));
         if (D.def.id !== 'cling' && ACCESSORIES[D.def.id + '3'] && !Progress.hasAcc(D.def.id + '3')) locked.push(Progress.unlockHint('acc3', D.def));
+        if (D.def.id !== 'cling') for (const g of ['4', '5', '6']) if (ACCESSORIES[D.def.id + g] && !Progress.hasAcc(D.def.id + g)) locked.push(Progress.unlockHint('acc' + g, D.def));
         if (D.phase === 'edit' && locked.length) {
           drawText('🔒 STILL LOCKED FOR THIS HERO:', 250, 108, 8, FONT_PIXEL, '#ffe234', INK, 3);
           locked.forEach((l, i) => drawText(l, 250, 124 + i * 14, 7, FONT_PIXEL, '#fff', INK, 3));
