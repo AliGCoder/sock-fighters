@@ -215,6 +215,9 @@ OLDEST = {
 OLDEST_PICK = {'gran': 'energy'}
 # the line a voice is designed with (and cloned from). Gran's is an angry telling-off, so every line she says
 # carries that anger.
+# Stinky and Argyle swapped voices (the player heard them the wrong way round): each reference recording keeps
+# the words it was designed with
+REF_TEXT_SWAP = {'stinky': 'はっ!はあっ!くらえ!成敗!', 'argyle': 'はっ!はあっ!くらえ!よっしゃあ!'}
 REF_TEXT = {'fishnet': '動くな。私は誰も信用しない。…だが、おまえの背中は私が守る。行くぞ。', 'gran':'こらっ!背筋を伸ばしなさいって何度言ったらわかるんだい!…あれ、何の話だっけ?まあいい、とにかく伸ばしな!'}
 
 
@@ -241,6 +244,8 @@ def age_cues(y):
 
 
 def ref_line(cid):
+    if cid in REF_TEXT_SWAP:
+        return REF_TEXT_SWAP[cid]
     if cid in REF_TEXT:
         return toothless(REF_TEXT[cid]) if cid in TOOTHLESS else REF_TEXT[cid]
     w = lines_for(cid)
