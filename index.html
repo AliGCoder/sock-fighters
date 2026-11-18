@@ -1597,6 +1597,92 @@
       // Recorded fighter voices: one original voice per character (designed with Qwen3-TTS, see
       // tools/announcer/qwen_fighters.py), embedded in <script id="fighter-clips"> as
       // { characterId: { word: [base64 mp3, ...] } }. Several takes per word, picked at random.
+      /** Recorded clips are 24 kHz, one channel. Phones decode them at 48 kHz (twice the memory), and an iPhone that
+       *  runs short of sound memory quietly fails the decodes: no announcer, and fighters fall back to synth voices.
+       *  So keep each clip at 24 kHz, one channel (half the memory), and decode a few at a time, trying again on a fail. */
+      function slimVoice(b) {
+        const RATE = 24000;
+        if (b.sampleRate <= RATE * 1.01 && b.numberOfChannels === 1) return b;
+        try {
+          const step = b.sampleRate / RATE,
+            src = b.getChannelData(0),
+            n = Math.max(1, Math.floor(src.length / step)),
+            out = Sound.context.createBuffer(1, n, RATE),
+            d = out.getChannelData(0);
+          for (let i = 0; i < n; i++) {
+            const x = i * step,
+              j = x | 0,
+              f = x - j;
+            d[i] = src[j] * (1 - f) + (src[j + 1] || 0) * f;
+          }
+          return out;
+        } catch (e) {
+          return b;
+        }
+      }
+      /** e.g. "VOICES 615/615   ANNOUNCER 210/210" (small, on the pause screen) */
+      function voiceStatusText() {
+        if (!Sound.context) return 'SOUND: TAP TO START';
+        const fail = FighterClips.failed + AnnouncerClips.failed;
+        return 'VOICES ' + FighterClips.decoded + '/' + (FighterClips.total || 0) + '   ANNOUNCER ' + AnnouncerClips.decoded + '/' + AnnouncerClips.total() + (fail ? '   (' + fail + ' FAILED)' : '');
+      }
+      const VoiceDecode = {
+        q: [],
+        busy: 0,
+        MAX: 3,
+        /** decode a base64 MP3; done({ buffer, offset }), or fail() after the last try. first = jump the queue */
+        add(base64, done, fail, first) {
+          const job = { base64, done, fail, tries: 0 };
+          if (first) this.q.unshift(job);
+          else this.q.push(job);
+          this.pump();
+        },
+        pump() {
+          while (this.busy < this.MAX && this.q.length && Sound.context) {
+            const job = this.q.shift();
+            this.busy++;
+            job.tries++;
+            let over = false,
+              timer = 0;
+            const finish = buffer => {
+              if (over) return;
+              over = true;
+              clearTimeout(timer);
+              this.busy--;
+              if (buffer) {
+                // skip the MP3 encoder's silent lead-in
+                const samples = buffer.getChannelData(0);
+                let i = 0;
+                while (i < samples.length && Math.abs(samples[i]) < 0.004) i++;
+                try {
+                  job.done({ buffer, offset: Math.max(0, i - 12) / buffer.sampleRate });
+                } catch (e) {}
+              } else if (job.tries < 3) {
+                setTimeout(() => {
+                  this.q.push(job);
+                  this.pump();
+                }, 400 * job.tries);
+              } else {
+                try {
+                  job.fail();
+                } catch (e) {}
+              }
+              this.pump();
+            };
+            timer = setTimeout(() => finish(null), 10000); // a decode that never answers frees its place
+            try {
+              const binary = atob(job.base64);
+              const bytes = new Uint8Array(binary.length);
+              for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+              // callback form: older Safari has no promise version of decodeAudioData
+              Sound.context.decodeAudioData(bytes.buffer, b => finish(slimVoice(b)), () => finish(null));
+            } catch (e) {
+              finish(null);
+            }
+          }
+        }
+      };
+
       const FighterClips = {
         buffers: {}, // id -> word -> [{ buffer, offset }]
         started: false,
@@ -1612,7 +1698,7 @@
           } catch (e) {}
           let left = 0;
           for (const id in data) for (const word in data[id]) left += data[id][word].length;
-          const total = left;
+          const total = (this.total = left);
           const finished = () => {
             if (--left === 0) console.log('[fighters] decoded ' + this.decoded + '/' + total + ' voice clips');
           };
@@ -1622,32 +1708,19 @@
               const list = (this.buffers[id][word] = []);
               list.byIndex = [];
               for (const [takeNo, base64] of data[id][word].entries()) {
-                try {
-                  const binary = atob(base64);
-                  const bytes = new Uint8Array(binary.length);
-                  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                  Sound.context.decodeAudioData(
-                    bytes.buffer,
-                    buffer => {
-                      // skip the MP3 encoder's silent lead-in
-                      const samples = buffer.getChannelData(0);
-                      let i = 0;
-                      while (i < samples.length && Math.abs(samples[i]) < 0.004) i++;
-                      const clip = { buffer, offset: Math.max(0, i - 24) / buffer.sampleRate };
-                      list.push(clip);
-                      list.byIndex[takeNo] = clip;
-                      this.decoded++;
-                      finished();
-                    },
-                    () => {
-                      this.failed++;
-                      finished();
-                    }
-                  );
-                } catch (e) {
-                  this.failed++;
-                  finished();
-                }
+                VoiceDecode.add(
+                  base64,
+                  clip => {
+                    list.push(clip);
+                    list.byIndex[takeNo] = clip;
+                    this.decoded++;
+                    finished();
+                  },
+                  () => {
+                    this.failed++;
+                    finished();
+                  }
+                );
               }
             }
           }
@@ -1930,34 +2003,22 @@
               '[announcer] decoded ' + this.decoded + '/' + keys.length + ' baked clips' + failures
             );
           };
-          for (const key of keys) {
-            try {
-              const binary = atob(this.data[key]);
-              const bytes = new Uint8Array(binary.length);
-              for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-              // callback form: older Safari has no promise version of decodeAudioData
-              Sound.context.decodeAudioData(
-                bytes.buffer,
-                buffer => {
-                  // skip the MP3 encoder's silent lead-in so beats line up tightly
-                  const samples = buffer.getChannelData(0);
-                  let i = 0;
-                  while (i < samples.length && Math.abs(samples[i]) < 0.004) i++;
-                  this.buffers[key] = { buffer, offset: Math.max(0, i - 24) / buffer.sampleRate };
-                  this.decoded++;
-                  finished();
-                  this.playPending();
-                },
-                () => {
-                  this.failed++;
-                  finished();
-                }
-              );
-            } catch (e) {
-              this.failed++;
-              finished();
-            }
-          }
+          // (added in reverse to the front of the queue, so they decode first, in order)
+          for (const key of keys.slice().reverse())
+            VoiceDecode.add(
+              this.data[key],
+              clip => {
+                this.buffers[key] = clip;
+                this.decoded++;
+                finished();
+                this.playPending();
+              },
+              () => {
+                this.failed++;
+                finished();
+              },
+              true
+            );
         },
 
         playPending() {
@@ -23831,10 +23892,11 @@
             ac.decodeAudioData(
               bytes.buffer,
               buffer => {
+                buffer = slimVoice(buffer);
                 const samples = buffer.getChannelData(0);
                 let i = 0;
                 while (i < samples.length && Math.abs(samples[i]) < 0.004) i++; // skip the MP3 lead-in
-                this.buffers[key] = { buffer, offset: Math.max(0, i - 24) / buffer.sampleRate };
+                this.buffers[key] = { buffer, offset: Math.max(0, i - 12) / buffer.sampleRate };
                 // keep only the last few decoded lines: on a phone, hundreds of decoded voice lines would
                 // fill the sound memory and the game would go quiet
                 const keys = Object.keys(this.buffers);
@@ -34493,6 +34555,7 @@
           drawText('一時停止', W / 2, 90, 16, FONT_JAPANESE, '#fff', INK, 6);
           drawMoveList(130, true);
           if (IS_TOUCH) drawBackButton('QUIT');
+          drawText(voiceStatusText(), W - 10, 530, 7, FONT_PIXEL, '#bdb4d6', INK, 3, 'right');
           drawText(
             Pads.count ? padLabel('ESC') + ': RESUME    ' + padLabel('Q') + ': QUIT' : IS_TOUCH ? 'TAP ANYWHERE: RESUME    ◀ QUIT: BACK TO TITLE' : 'ESC / TAP: RESUME    Q: QUIT',
             W / 2,
