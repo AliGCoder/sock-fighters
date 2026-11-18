@@ -1,6 +1,6 @@
 // Super moves: Stinky Tabi's GYM BAG GALAXY cinematic (launch into space, punches, GALAXY SLAM back into the arena)
 // hits, does the same damage as a normal super, and leaves both fighters standing on the floor ready to carry on.
-// Another hero's normal super is checked too. SHOTS=prefix saves pictures of each stage of the cinematic.
+// A super fills nobody's SUPER bar (it used to refill most of its own). Another hero's normal super is checked too. SHOTS=prefix saves pictures of each stage of the cinematic.
 const pw = require('../announcer/node_modules/playwright');
 const path = require('path');
 (async () => {
@@ -47,14 +47,15 @@ const path = require('path');
     for (let i = 0; i < 120; i++) await p.evaluate(() => updateGame());
     return p.evaluate(lockT => {
       const S = window.__sock;
-      return { lockFrames: lockT, dmg: window.__hp0 - S.f2.hp, y1: S.f1.y, y2: S.f2.y, ground: S.f1.ground && S.f2.ground, s1: S.f1.state, s2: S.f2.state, x1: Math.round(S.f1.x), x2: Math.round(S.f2.x) };
+      return { m1: Math.round(S.f1.meter), m2: Math.round(S.f2.meter), lockFrames: lockT, dmg: window.__hp0 - S.f2.hp, y1: S.f1.y, y2: S.f2.y, ground: S.f1.ground && S.f2.ground, s1: S.f1.state, s2: S.f2.state, x1: Math.round(S.f1.x), x2: Math.round(S.f2.x) };
     }, lockT);
   };
-  const stinky = await superOf('stinky', shot ? [20, 50, 75, 104, 116, 124] : null);
+  const stinky = await superOf('stinky', shot ? [5, 9, 12, 17, 22, 50, 104, 124] : null);
   const argyle = await superOf('argyle');
   console.log('stinky', JSON.stringify(stinky));
   console.log('argyle', JSON.stringify(argyle));
   const GROUND = await p.evaluate(() => GROUND);
+  checks.superDoesNotRefillAnyBar = stinky.m1 === 0 && stinky.m2 === 0 && argyle.m1 === 0 && argyle.m2 === 0;
   checks.galaxyRuns = stinky.lockFrames >= 140;
   checks.sameDamage = Math.abs(stinky.dmg - argyle.dmg) <= 5 && stinky.dmg > 300;
   checks.bothBackOnTheFloor = stinky.y1 === GROUND && stinky.y2 === GROUND && stinky.ground;

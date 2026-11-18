@@ -10608,7 +10608,7 @@
               life: 40
             });
           if (this.t >= 50) {
-            this.meter = Math.min(100, this.meter + 15);
+            this.meter = Math.min(100, this.meter + 5);
             this.setState('idle');
           }
         }
@@ -11242,18 +11242,40 @@
             CX = W / 2;
           // the opponent was knocked out up there: straight to the slam, so everybody comes home
           if (o2.state === 'ko' && t > 24 && t < 100) this.t = t = 100;
-          if (t === 1) {
-            addText(this.x, this.y - 210, 'TO THE GYM BAG GALAXY!', '#8bd346', 40);
-            SFX.rocket();
-            game.shake = 10;
-          }
           if (t <= 24) {
-            // LAUNCH: an uppercut, then both rocket up off the top of the screen
-            const k = t / 24;
-            this.y = GROUND - k * k * 620;
-            o2.y = GROUND - 30 - k * k * 640;
-            this.x = lerp(G.x0, CX - f * 70, k);
-            o2.x = lerp(G.ox0, CX + f * 70, k);
+            // UPPERCUT: Stinky ducks in and drives a rising fist into the opponent's chin...
+            if (t <= 8) {
+              this.x = lerp(G.x0, G.ox0 - f * 72, ease(t / 8));
+              this.y = GROUND;
+              o2.x = G.ox0;
+              o2.y = GROUND;
+            }
+            if (t === 8 && o2.state !== 'ko') {
+              this.hits++;
+              o2.takeHit(this, SPECIALS.flurry, o2.x - f * 20, o2.y - 120);
+              addText(o2.x, o2.y - 230, 'UPPERCUT!!', '#ffe234', 56);
+              addParticle({ type: 'ring', x: o2.x - f * 20, y: o2.y - 120, life: 14, size: 90, color: '#8bd346' });
+              addParticle({ type: 'ring', x: o2.x - f * 20, y: o2.y - 120, life: 18, size: 140, color: '#fff' });
+              game.shake = 14;
+              game.whiteFlash = 5;
+              SFX.crash();
+            }
+            if (t > 8) {
+              // ...the opponent is blasted straight up, off the top of the screen
+              const k = Math.min(1, (t - 8) / 12);
+              o2.y = GROUND - Math.pow(k, 1.4) * 720;
+              o2.x = lerp(G.ox0, CX + f * 70, k);
+              if (t % 2 === 0) addParticle({ type: 'spark', x: o2.x, y: o2.y + 20, vx: 0, vy: 14, life: 10, color: '#8bd346' });
+              // Stinky lands the punch with a little hop, looks up... and rockets after them
+              const r = t < 14 ? 0 : (t - 14) / 10;
+              this.y = t < 14 ? GROUND - Math.sin(((t - 8) / 6) * Math.PI) * 30 : GROUND - r * r * 640;
+              this.x = t < 14 ? this.x : lerp(G.ox0 - f * 72, CX - f * 70, r);
+            }
+            if (t === 14) {
+              addText(this.x, GROUND - 210, 'TO THE GYM BAG GALAXY!', '#8bd346', 40);
+              SFX.rocket();
+              game.shake = 10;
+            }
           } else if (t < 100) {
             // SPACE: they float in from below, then Stinky zips around the opponent, punching from every side
             const arrive = ease((t - 24) / 12);
@@ -11330,7 +11352,7 @@
         galaxyAmount() {
           if (this.state !== 'superlock' || this.def.id !== 'stinky') return 0;
           const t = this.t;
-          return t < 12 ? 0 : t < 24 ? (t - 12) / 12 : t < 108 ? 1 : t < 120 ? 1 - (t - 108) / 12 : 0;
+          return t < 14 ? 0 : t < 26 ? (t - 14) / 12 : t < 108 ? 1 : t < 120 ? 1 - (t - 108) / 12 : 0;
         }
         /** A normal attack in progress: wind-up, active (can hit), recovery; some moves lunge or hit several times. */
         doAtk(opponent, input) {
@@ -11495,6 +11517,8 @@
           const dir = this.x >= a.x ? 1 : -1;
           if (hx == null) hx = this.x - dir * 20;
           if (hy == null) hy = this.y - 90;
+          // super hits fill nobody's bar (a super used to refill most of its own bar as it hit)
+          const superHit = m === SPECIALS.flurry || m === SPECIALS.superFinal || a.state === 'superlock' || a.state === 'superdash';
           if (!m.unblock && this.ground && (this.state === 'block' || this.blocking)) {
             const cb = this.state === 'block' ? this.crouchBlock : this.state === 'crouch';
             const ok = m.hit === 'low' ? cb : m.hit === 'high' ? !cb : true;
@@ -11505,8 +11529,8 @@
               this.blocking = true;
               this.vx = dir * (m.knock || 4) * 0.9;
               if (!this.noChip) this.hp = Math.max(1, this.hp - Math.round(m.dmg * 0.12));
-              this.meter = Math.min(100, this.meter + 4 * (this.meterMul || 1));
-              a.meter = Math.min(100, a.meter + 3);
+              this.meter = Math.min(100, this.meter + 2 * (this.meterMul || 1));
+              a.meter = Math.min(100, a.meter + 1);
               game.hitstop = 4;
               SFX.block();
               blockFX(hx, hy);
@@ -11528,7 +11552,7 @@
             this.dz += dmg * 0.6;
             this.flash = 4;
             this.sqv -= 0.08;
-            a.meter = Math.min(100, a.meter + 8);
+            a.meter = Math.min(100, a.meter + 4);
             game.hitstop = 5;
             game.shake = Math.max(game.shake, 3);
             SFX.block();
@@ -11557,8 +11581,10 @@
           this.alpha = 1;
           this.lassoLen = 0;
           if (!m.noScale) this.dz += dmg;
-          this.meter = Math.min(100, this.meter + 7 * (this.meterMul || 1));
-          a.meter = Math.min(100, a.meter + 11 * (a.meterMul || 1));
+          if (!superHit) {
+            this.meter = Math.min(100, this.meter + 3 * (this.meterMul || 1));
+            a.meter = Math.min(100, a.meter + 5 * (a.meterMul || 1));
+          }
           this.hitKind = m.slap ? 'slap' : hy < this.y - 118 ? 'head' : hy > this.y - 50 ? 'low' : 'body';
           const heavy = m.dmg >= 85 || !!m.kd || !!m.flat;
           this.sqv -= heavy ? 0.32 : 0.2;
@@ -12172,6 +12198,22 @@
             p.lean = 0.1;
             p.front = { x: 40, y: -70 + Math.sin(t * 0.5) * 12 };
             p.back = { x: 10, y: -64 - Math.sin(t * 0.5) * 12 };
+            return;
+          }
+          if (this.def.id === 'stinky' && t <= 24) {
+            // GYM BAG GALAXY: crouched wind-up, then the rising uppercut (fist high), then rocketing upward
+            if (t < 7) {
+              p.lean = 0.3;
+              p.yOff = 8;
+              p.front = { x: 40, y: -40 };
+              p.back = { x: -20, y: -60 };
+            } else {
+              p.lean = -0.08;
+              p.front = { x: 46, y: -210 };
+              p.back = { x: -30, y: -70 };
+            }
+            p.mouth = 'yell';
+            p.eyes = 'angry';
             return;
           }
           const k = t % 4;
