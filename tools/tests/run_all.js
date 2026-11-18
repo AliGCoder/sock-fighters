@@ -11,6 +11,7 @@ const TESTS = [
   ['test_awards', 'Trophies, skins, accessories, the Dryer, phones'],
   ['test_uniq', 'Every hero has their own unique items'],
   ['test_voices', 'Story voices on PC, iPhone and Android'],
+  ['test_record', 'Record your own voice: a phone tap opens the microphone'],
   ['test_online', 'Online play stays in step (iPhone + Android)'],
   ['test_quick', 'Quick Match pairs random players over the internet'],
   ['test_features', 'MY SOCK, Sock Maker, Bag, Skill Tree, Bounties, Daily'],

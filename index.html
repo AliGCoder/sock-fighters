@@ -2562,6 +2562,18 @@
       canvas.addEventListener('pointerdown', e => {
         Sound.init();
         const p = screenToGame(e.clientX, e.clientY);
+        // the voice recorder's RECORD buttons start right here, inside the tap: phone browsers only open the
+        // microphone during a real tap, not a moment later in the game loop
+        if (game.screen === 'voicerec' && game.voicerec) {
+          for (let i = 0; i < OwnVoice.SLOTS.length; i++) {
+            const r = vrRec(i);
+            if (p.x > r.x && p.x < r.x + r.w && p.y > r.y && p.y < r.y + r.h) {
+              game.voicerec.row = i;
+              OwnVoice.start(OwnVoice.SLOTS[i][0]);
+              return;
+            }
+          }
+        }
         game.click = { x: p.x, y: p.y };
       });
       // where the mouse is (for hover name tags); a touch screen has no hover
@@ -3539,7 +3551,7 @@
             "Ninjas don't lose socks. Socks lose ninjas."
           ],
           skins: [
-            // her default: the black shinobi suit with the red mask
+            // his default: the black shinobi suit with the red mask
             {
               name: 'SHINOBI SUIT',
               pal: {
@@ -14012,7 +14024,7 @@
         ctx.restore();
       }
       /** Toe-Shinobi's five-toed throwing star. */
-      /** Toe-Shinobi's colours (from the skin she wears), for her kunai and shuriken. */
+      /** Toe-Shinobi's colours (from the skin he wears), for his kunai and shuriken. */
       function ninjaColours(d) {
         const pal = d.pal || {};
         const dark = m => !m || /^#(1|2)[0-9a-f]{5}$/i.test(m) || m === '#111111';
@@ -23096,7 +23108,7 @@
             }
           }
         } else if (MENU_SKIT === 5) {
-          // Toe-Shinobi sneaks up on Argyle-san; whenever he looks back, she's... a lamp
+          // Toe-Shinobi sneaks up on Argyle-san; whenever he looks back, he's... a lamp
           if (!back) {
             const look = time % 120 > 84;
             const ax = lead,
@@ -26068,8 +26080,13 @@
           if (this.rec) return this.stop();
           Sound.init && Sound.init();
           const ac = Sound.context;
+          if (ac && ac.state !== 'running' && ac.resume) ac.resume().catch(() => {});
+          if (!window.isSecureContext) {
+            this.error = 'RECORDING NEEDS THE https:// GAME PAGE';
+            return;
+          }
           if (!ac || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
-            this.error = "SORRY, THIS BROWSER CAN'T RECORD SOUND";
+            this.error = "SORRY, THIS BROWSER CAN'T RECORD SOUND — TRY CHROME OR SAFARI";
             return;
           }
           const R = { slot, at: game.time, level: 0, stream: null, mr: null, chunks: [], analyser: null };
@@ -26077,9 +26094,25 @@
           try {
             R.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true } });
           } catch (e) {
-            this.rec = null;
-            this.error = 'MICROPHONE BLOCKED — ALLOW IT IN YOUR BROWSER, THEN TRY AGAIN';
-            return;
+            // a plain request (no options) works on browsers that refuse the detailed one
+            try {
+              R.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            } catch (e2) {
+              this.rec = null;
+              const why = (e2 && e2.name) || '';
+              let inFrame = false;
+              try {
+                inFrame = window.self !== window.top;
+              } catch (e3) {
+                inFrame = true;
+              }
+              this.error =
+                why === 'NotFoundError' ? 'NO MICROPHONE FOUND ON THIS DEVICE'
+                : why === 'NotReadableError' ? 'ANOTHER APP IS USING THE MICROPHONE — CLOSE IT, THEN TRY AGAIN'
+                : inFrame ? "THIS PAGE CAN'T USE THE MIC — OPEN aligcoder.github.io/sock-fighters TO RECORD"
+                : 'MICROPHONE BLOCKED — ALLOW IT FOR THIS SITE IN YOUR BROWSER SETTINGS, THEN TRY AGAIN';
+              return;
+            }
           }
           if (this.rec !== R) return R.stream.getTracks().forEach(t => t.stop());
           try {
@@ -26088,10 +26121,18 @@
             R.analyser.fftSize = 512;
             src.connect(R.analyser);
           } catch (e) {}
-          R.mr = new MediaRecorder(R.stream);
+          // a format this browser can record (iPhones record mp4, most others webm)
+          const type = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/aac', 'audio/ogg;codecs=opus'].find(
+            t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)
+          );
+          try {
+            R.mr = type ? new MediaRecorder(R.stream, { mimeType: type }) : new MediaRecorder(R.stream);
+          } catch (e) {
+            R.mr = new MediaRecorder(R.stream);
+          }
           R.mr.ondataavailable = e => e.data && e.data.size && R.chunks.push(e.data);
           R.mr.onstop = () => this.finish(R);
-          R.mr.start();
+          R.mr.start(250); // little pieces as it goes (some phones hand over nothing otherwise)
           R.at = game.time;
           R.timer = setTimeout(() => this.stop(), this.MAX_SECONDS * 1000);
         },
@@ -26108,6 +26149,9 @@
         async finish(R) {
           this.rec = null;
           R.stream.getTracks().forEach(t => t.stop());
+          // iPhones pause the game's sound while the microphone is on: wake it up again
+          const ac = Sound.context;
+          if (ac && ac.state !== 'running' && ac.resume) await ac.resume().catch(() => {});
           try {
             const blob = new Blob(R.chunks, { type: (R.mr && R.mr.mimeType) || 'audio/webm' });
             const data = await blob.arrayBuffer();
