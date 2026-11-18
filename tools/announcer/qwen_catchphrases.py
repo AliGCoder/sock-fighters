@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CATCHPHRASES = {
     'stinky': 'においで勝負だ!',
     'argyle': '靴下の道、いざ参る!',
-    'shinobi': '影から足元をすくうわ。',
+    'shinobi': '…影から足元をすくうぞ。',
     'gran': 'ばあちゃんをなめるでないよ!…いたたた…',
     'baby': 'ちっちゃくても、つよいもん!',
     'kneehi': '伸びる相撲、見せてやる!',

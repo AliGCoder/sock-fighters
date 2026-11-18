@@ -32,8 +32,8 @@ CAST = {
                dict(superv=['これがオレの全力だあっ!'], laugh=['へへっ!'], win=['よっしゃあ!']), None),
     'argyle': (MALE, 'A Japanese man in his thirties, a noble samurai. Crisp, deep, disciplined, sharp battle cries (kiai).',
                dict(superv=['一刀両断!'], laugh=['ふっ…'], win=['成敗!'], light=['はっ!', 'せいっ!', 'とうっ!']), None),
-    'shinobi': (FEMALE, 'A young Japanese woman, a cool and quick ninja (kunoichi). Calm, sharp and confident, breathy whisper at times.',
-                dict(superv=['影分身の術!'], laugh=['ふふっ…'], win=['任務完了。']), None),
+    'shinobi': (MALE, 'A young Japanese man of about twenty, a lone ninja: low, quiet and cool, cold and brooding like an aloof rival, flat and deadpan like a bored assassin, curt, a dismissive hmph, very mysterious.',
+                dict(superv=['影分身の術!'], laugh=['ふん…'], win=['…弱すぎる。']), None),
     'gran': (FEMALE, 'A 98-year-old Japanese great-grandmother (an extremely old WOMAN), almost a hundred years old: a very, '
                      "very old woman's voice, thin, frail and papery, with a strong tremble and quaver in every word, breathy "
                      'and wheezy, toothless and mumbly, speaks slowly with little gasps, creaky, groaning about her aching back, '
@@ -218,7 +218,7 @@ OLDEST_PICK = {'gran': 'energy'}
 # Stinky and Argyle swapped voices (the player heard them the wrong way round): each reference recording keeps
 # the words it was designed with
 REF_TEXT_SWAP = {'stinky': 'はっ!はあっ!くらえ!成敗!', 'argyle': 'はっ!はあっ!くらえ!よっしゃあ!'}
-REF_TEXT = {'fishnet': '動くな。私は誰も信用しない。…だが、おまえの背中は私が守る。行くぞ。', 'gran':'こらっ!背筋を伸ばしなさいって何度言ったらわかるんだい!…あれ、何の話だっけ?まあいい、とにかく伸ばしな!'}
+REF_TEXT = {'shinobi': 'ふん…くだらない。俺の邪魔をするな。…はあっ!', 'fishnet': '動くな。私は誰も信用しない。…だが、おまえの背中は私が守る。行くぞ。', 'gran':'こらっ!背筋を伸ばしなさいって何度言ったらわかるんだい!…あれ、何の話だっけ?まあいい、とにかく伸ばしな!'}
 
 
 def age_cues(y):

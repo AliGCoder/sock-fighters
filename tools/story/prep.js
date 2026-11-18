@@ -61,7 +61,7 @@ const PERSONA = {
   fakedeep: 'deep, sinister, smoky demon voice',
   stinky: 'cocky young street brawler',
   argyle: 'calm, noble samurai',
-  shinobi: 'cool, quiet ninja woman',
+  shinobi: 'cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious',
   gran: 'SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky',
   baby: 'squeaky, bratty toddler',
   kneehi: 'booming, jolly sumo wrestler',

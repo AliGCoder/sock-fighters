@@ -36,3 +36,5 @@ tools/irodori/
 tools/.uvcache/
 tools/.uvpy/
 tools/story/work/
+tools/trailer/.venv-ff/
+tools/trailer/out/

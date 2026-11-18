@@ -38,7 +38,12 @@ function png(w, h) {
   await p.waitForTimeout(400);
   checks.paneOpens = await p.evaluate(() => window.__sock.Pane.open && document.getElementById('profile-pane').classList.contains('open'));
   // upload a photo
-  await p.setInputFiles('#pp-file', { name: 'me.png', mimeType: 'image/png', buffer: png(64, 48) });
+  // the real button: it opens the photo library; the menu redraws while it is open (the photo must still arrive)
+  const chooser = p.waitForEvent('filechooser');
+  await p.click('button[data-pp=photo]');
+  const fc = await chooser;
+  await p.evaluate(() => window.__sock.drawPane && window.__sock.drawPane());
+  await fc.setFiles({ name: 'me.png', mimeType: '', buffer: png(64, 48) });
   // the photo editor opens: drag it, zoom it, turn it, then SAVE PHOTO
   await p.waitForSelector('#pp-crop', { timeout: 5000 });
   checks.editorOpens = true;
