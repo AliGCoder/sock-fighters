@@ -13,19 +13,20 @@ DESC = ('A deep, gravelly, booming male movie-trailer narrator in his fifties: a
         'studio recording, completely dry, no reverb or echo.')
 REF = 'In a world... where nothing is what it seems... one hero... will rise.'
 LINES = json.loads(sys.argv[1])
-design = Qwen3TTSModel.from_pretrained('Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign', device_map='cuda:0', dtype=torch.bfloat16, attn_implementation='sdpa')
-best, best_tail = None, 9
-for take in range(4):
-    torch.manual_seed(5150 + take)
-    wavs, _ = design.generate_voice_design(text=REF, language='English', instruct=DESC)
-    y = np.asarray(wavs[0], dtype=np.float32)
-    tail = QF.echo_tail(y)
-    if tail < best_tail:
-        best, best_tail = y, tail
 ref = os.path.join(HERE, 'refs', 'trailer_narrator.wav')
-sf.write(ref, best, QF.SR)
-del design
-torch.cuda.empty_cache()
+if not os.path.exists(ref):  # design his voice once; after that every line keeps the same voice
+    design = Qwen3TTSModel.from_pretrained('Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign', device_map='cuda:0', dtype=torch.bfloat16, attn_implementation='sdpa')
+    best, best_tail = None, 9
+    for take in range(4):
+        torch.manual_seed(5150 + take)
+        wavs, _ = design.generate_voice_design(text=REF, language='English', instruct=DESC)
+        y = np.asarray(wavs[0], dtype=np.float32)
+        tail = QF.echo_tail(y)
+        if tail < best_tail:
+            best, best_tail = y, tail
+    sf.write(ref, best, QF.SR)
+    del design
+    torch.cuda.empty_cache()
 base = Qwen3TTSModel.from_pretrained('Qwen/Qwen3-TTS-12Hz-1.7B-Base', device_map='cuda:0', dtype=torch.bfloat16, attn_implementation='sdpa')
 prompt = base.create_voice_clone_prompt(ref_audio=ref, ref_text=REF)
 reel = []

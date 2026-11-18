@@ -6,7 +6,7 @@ const SELECT = {
     tick: (k) => { if (k % 4 === 0) { keysPressed.KeyD = true; keysDown.KeyD = true; setTimeout(() => delete keysDown.KeyD, 50); } }
   };
 const STORY = {
-    cap: 'A FULLY VOICED STORY', sub: '27 chapters to rescue the Queen', secs: 6, top: true,
+    cap: 'A FULLY VOICED STORY', sub: 'find your missing pair... and get back home', secs: 6, top: true,
     setup: () => { const S = window.__sock; S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; S.startAdventure(); if (S.game.screen === 'advSlots') S.continueGame(); S.storyJump(1, 0); },
     tick: (k) => { if (k % 22 === 0) { keysPressed.Space = true; keysDown.Space = true; setTimeout(() => delete keysDown.Space, 50); } }
   };
@@ -44,7 +44,7 @@ module.exports = [
   superShot('gran', 'stinky', 'STOCKING GRAN', 'yes, those are dentures'),
   superShot('robo', 'baby', 'MECHA-SOCK X', 'Overclock Overdrive'),
   // ACT 3: the story
-  { card: 'SAVE THE QUEEN.', cardBig: true, cardSecs: 1.6, say: 'Save the Queen.', cap: '', secs: 0, setup: () => {} },
+  { card: 'SAVE THE PALACE.', cardBig: true, cardSecs: 2.0, say: 'Stop the Dryer Demon... save the palace... find your missing pair... and find your way home.', cap: '', secs: 0, setup: () => {} },
   STORY,
   // ACT 4: everything else
   { card: 'PLAY YOUR WAY.', cardBig: true, cardSecs: 1.6, say: 'Build your own legend.', cap: '', secs: 0, setup: () => {} },

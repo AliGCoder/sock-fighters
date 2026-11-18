@@ -161,7 +161,7 @@ cards = [m for m in marks if m['card']]
 by_card = {m['card']: m['at'] for m in cards}
 A_FIGHT = by_card['FIGHT.']
 A_SUPER = by_card['UNLEASH YOUR SUPER.']
-A_STORY = by_card['SAVE THE QUEEN.']
+A_STORY = by_card['SAVE THE PALACE.']
 A_PLAY = by_card['PLAY YOUR WAY.']
 A_TOGETHER = by_card['TOGETHER.']
 title_at = marks[2]['at']
@@ -268,6 +268,21 @@ mus = mus * 0.8 + wet * 0.35
 wet2 = np.stack([fftconvolve(sfx[:, c], ir[:, c])[:N] for c in range(2)], 1)
 sfx = sfx + wet2 * 0.2
 
+# ---- the AI-composed score (ACE-Step, see ace_score.py) replaces the coded music when asked for ----
+if '--ace' in sys.argv:
+    from scipy.signal import resample_poly
+    a, asr = sf.read(os.path.join(OUT, 'ace_score.wav'))
+    if a.ndim == 1:
+        a = np.stack([a, a], 1)
+    if asr != SR:
+        a = resample_poly(a, SR, asr, axis=0)
+    a = np.pad(a, ((0, max(0, N - len(a))), (0, 0)))[:N]
+    a = a / (np.abs(a).max() + 1e-9)
+    # quieter under the cold-open cards, full from the first FIGHT
+    shape = np.ones(N) * 1.0
+    shape[: int(A_FIGHT * SR)] = 0.6
+    mus = a * lp(shape, 3)[:, None] * 0.9
+
 # ---- the narrator: placed on each card (the end line just after the logo slam) ----
 narr = np.zeros((N, 2))
 says = [m for m in marks if m['say']]
@@ -301,5 +316,5 @@ mix = mix / (np.abs(mix).max() + 1e-9) * 1.25
 mix = np.tanh(mix) * 0.95
 fade = np.minimum(1, (LEN - np.arange(N) / SR) / 2.5)
 mix *= np.clip(fade, 0, 1)[:, None]
-sf.write(os.path.join(OUT, 'trailer_mix.wav'), mix.astype(np.float32), SR)
+sf.write(os.path.join(OUT, 'trailer_mix_ace.wav' if '--ace' in sys.argv else 'trailer_mix.wav'), mix.astype(np.float32), SR)
 print(f'mix {LEN:.1f}s written')
