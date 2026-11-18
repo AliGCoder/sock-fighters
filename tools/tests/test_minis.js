@@ -18,6 +18,7 @@ const path = require('path');
   const checks = {};
   await p.evaluate(() => { window.__sock.game.screen = 'mode'; });
   await p.waitForTimeout(300);
+  checks.everyGameHasItsOwnTune = await p.evaluate(() => MINI_GAMES.every(m => MUSIC_TRACKS[MINI_MUSIC[m.id]]) && new Set(MINI_GAMES.map(m => MINI_MUSIC[m.id])).size === MINI_GAMES.length);
   checks.menuCard = await p.evaluate(() => modeMenuList().some(x => x[2] === 'minis') && !modeMenuList().some(x => x[2] === 'friends' || x[2] === 'awards'));
   if (shot) await p.screenshot({ path: shot + '_menu.png' });
   await p.evaluate(() => window.__sock.openMiniGames());

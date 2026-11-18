@@ -1232,6 +1232,29 @@
         }
       };
 
+      // MINI GAMES: each challenge has its own tune, to suit its theme (same synth, own instruments and drums)
+      Object.assign(MUSIC_TRACKS, {
+        m_siege: {"bpm":150,"bassPattern":[0,0,12,0,0,0,12,7],"kick":[0,3,8,10],"snare":[4,12],"hatOffbeat":0,"lead":"sawtooth","leadVol":0.07,"bars":[{"lead":"19 . 19 . 22 . 19 . 17 . 19 - - . 14 .","chord":[7,10,14],"root":-17},{"lead":"15 . 15 . 19 . 15 . 14 . 12 - - . 10 .","chord":[3,7,10],"root":-21},{"lead":"17 . 17 . 21 . 17 . 15 . 14 - - . 12 .","chord":[5,9,12],"root":-19},{"lead":"14 - 15 - 17 - 18 - 19 - - - . . . .","chord":[2,6,9],"root":-22},{"lead":"19 . 19 . 22 . 24 . 26 . 24 - 22 . 19 .","chord":[7,10,14],"root":-17},{"lead":"22 . 22 . 27 . 26 . 24 . 22 - - . 19 .","chord":[3,7,10],"root":-21},{"lead":"21 . 21 . 24 . 22 . 21 . 19 - 17 . 15 .","chord":[5,9,12],"root":-19},{"lead":". . . . . . . . . . . . . . . .","chord":[2,6,9],"root":-22,"fill":2}]},
+        m_boss: {"bpm":138,"bassPattern":[0,0,0,12,0,0,7,0],"kick":[0,6,8,14],"snare":[4,12],"hatOffbeat":1,"arpVol":0.05,"bars":[{"lead":"17 - - 15 17 - 20 - 21 - 20 - 17 - - .","chord":[5,8,12],"root":-19},{"lead":"13 - - 12 13 - 17 - 20 - 17 - 13 - - .","chord":[1,5,8],"root":-23},{"lead":"10 - 13 - 17 - 22 - 20 - 17 - 15 - 13 .","chord":[10,13,17],"root":-14},{"lead":"16 - - - 19 - - - 21 - 20 - 17 - 16 .","chord":[12,16,19],"root":-12},{"lead":"29 - - 27 29 - 32 - 33 - 32 - 29 - - .","chord":[5,8,12],"root":-19},{"lead":"25 - - 24 25 - 29 - 32 - 29 - 25 - - .","chord":[1,5,8],"root":-23},{"lead":". . . . . . . . . . . . . . . .","chord":[12,16,19],"root":-12,"fill":1},{"lead":". . . . . . . . . . . . . . . .","chord":[12,16,19],"root":-12,"fill":2}]},
+        m_sudden: {"bpm":170,"bassPattern":[0,0,0,0,0,0,12,0],"kick":[0,3,6,8,11,14],"snare":[4,12],"hatOffbeat":1,"bars":[{"lead":"12 . . 12 . . 15 . 12 . . 12 . 19 18 .","chord":[12,15,19],"root":-12},{"lead":"12 . . 12 . . 15 . 12 . . 12 . 20 19 .","chord":[8,12,15],"root":-16},{"lead":"12 . . 12 . . 15 . 12 . . 12 . 22 20 .","chord":[10,14,17],"root":-14},{"lead":"23 - 20 - 19 - 16 - 15 - 14 - 12 - 11 .","chord":[7,11,14],"root":-17}]},
+        m_training: {"bpm":92,"bassPattern":[0,null,null,0,7,null,10,null],"kick":[0,7,10],"snare":[4,12],"hatOffbeat":0,"lead":"triangle","leadVol":0.2,"swing":0.3,"bars":[{"lead":"17 . . 20 . . 24 . 22 . 20 . 17 - - .","chord":[17,20,24,27],"root":-19},{"lead":". . 22 . 20 . 17 . 14 - - - . . . .","chord":[10,14,17,20],"root":-14},{"lead":"17 . . 20 . . 24 . 27 . 24 . 22 - - .","chord":[17,20,24,27],"root":-19},{"lead":"24 - 22 - 20 - 17 - 14 - - - . . . .","chord":[10,14,17,20],"root":-14}]},
+        m_royal: {"bpm":120,"bassPattern":[0,null,7,null,0,null,7,null],"kick":[0,8],"snare":[4,12,14],"hatOffbeat":0,"lead":"sawtooth","leadVol":0.07,"bars":[{"lead":"15 . 15 15 22 - - . 19 . 22 . 27 - - .","chord":[3,7,10],"root":-21},{"lead":"24 . 22 . 20 . 22 . 19 - - . 15 . . .","chord":[8,12,15],"root":-16},{"lead":"17 . 19 . 20 . 22 . 24 . 26 . 27 - - .","chord":[10,14,17],"root":-14},{"lead":"22 - 19 - 15 - 19 - 15 - - - . . . .","chord":[3,7,10],"root":-21}]},
+        m_dojo: {"bpm":96,"bassPattern":[0,null,null,null,7,null,null,null],"kick":[0,7,10],"snare":[],"hatOffbeat":-1,"lead":"triangle","leadVol":0.24,"leadLen":0.45,"arpVol":0,"taiko":true,"bars":[{"lead":"19 . 20 . 19 . 15 . 14 . . . 12 . . .","chord":[7,12,14],"root":-17},{"lead":"15 . 14 . 12 . 8 . 7 - - - . . . .","chord":[7,12,14],"root":-17},{"lead":"19 . 20 . 24 . 26 . 27 - 26 . 24 . . .","chord":[3,7,12],"root":-21},{"lead":"20 . 19 . 15 . 14 . 12 . 8 . 7 - - .","chord":[7,12,14],"root":-17}]},
+        m_steel: {"bpm":140,"bassPattern":[0,0,0,1,0,0,0,1],"kick":[0,4,8,12],"snare":[4,12],"hatOffbeat":1,"clank":[2,10],"bars":[{"lead":"19 . 19 . 20 . 19 . 22 . 20 . 19 . . .","chord":[7,8,12],"root":-17},{"lead":"19 . 19 . 20 . 19 . 24 . 22 . 20 . 19 .","chord":[7,8,12],"root":-17},{"lead":"15 . 15 . 17 . 15 . 20 . 19 . 17 . 15 .","chord":[3,7,10],"root":-21},{"lead":"17 . 17 . 19 . 20 . 22 - 24 - 25 - 27 .","chord":[5,8,12],"root":-19}]},
+        m_granny: {"bpm":128,"bassPattern":[0,null,7,null,0,null,7,null],"kick":[0,8],"snare":[4,12],"hatOffbeat":-1,"lead":"triangle","leadVol":0.22,"swing":0.25,"arpVol":0.02,"bars":[{"lead":"20 . 24 . 27 - 24 . 20 . 22 . 24 - - .","chord":[8,12,15],"root":-16},{"lead":"22 . 25 . 29 - 25 . 22 . 24 . 25 - - .","chord":[13,17,20],"root":-23},{"lead":"24 . 27 . 31 - 29 . 27 . 25 . 24 . 22 .","chord":[15,19,22,25],"root":-21},{"lead":"20 - - . 15 . 17 . 20 - - - . . . .","chord":[8,12,15],"root":-16}]},
+        m_shogun: {"bpm":144,"bassPattern":[0,0,12,0,0,0,12,0],"kick":[0,3,6,8,11,14],"snare":[4,12],"hatOffbeat":1,"taiko":true,"bars":[{"lead":"24 . 24 . 20 . 19 . 17 . 19 . 20 - - .","chord":[12,17,19],"root":-12},{"lead":"24 . 24 . 25 . 24 . 20 . 19 . 17 - - .","chord":[12,17,19],"root":-12},{"lead":"13 . 17 . 19 . 20 . 24 . 25 . 24 . 20 .","chord":[13,17,20],"root":-11},{"lead":"19 - - - 17 - - - 13 - 12 - - - . .","chord":[12,17,19],"root":-12}]},
+        m_ninja: {"bpm":160,"bassPattern":[0,12,0,12,0,12,7,12],"kick":[0,6,8,14],"snare":[4,12],"hatOffbeat":1,"bars":[{"lead":"19 . 22 . 24 . 22 19 17 . 19 . 14 - - .","chord":[7,10,14],"root":-17},{"lead":"19 . 22 . 24 . 26 . 29 - 26 . 24 - - .","chord":[3,7,10],"root":-21},{"lead":"17 . 19 . 22 . 19 . 17 . 14 . 12 - 14 .","chord":[5,9,12],"root":-19},{"lead":"19 - - - 17 - 14 - 12 - 10 - 7 - - .","chord":[7,10,14],"root":-17}]},
+        m_cyber: {"bpm":118,"bassPattern":[0,0,0,0,0,0,0,0],"kick":[0,4,8,12],"snare":[4,12],"hatOffbeat":1,"lead":"sawtooth","leadVol":0.07,"arpWave":"sawtooth","arpVol":0.03,"bars":[{"lead":"24 - - . 22 - - . 19 - - . 17 - 19 .","chord":[12,15,19],"root":-12},{"lead":"20 - - . 19 - - . 17 - - . 15 - 12 .","chord":[8,12,15],"root":-16},{"lead":"19 - - . 22 - - . 24 - 27 - 26 - 24 .","chord":[15,19,22],"root":-21},{"lead":"22 - - - 21 - - - 19 - - - 17 - - .","chord":[10,14,17],"root":-14}]},
+        m_spooky: {"bpm":126,"bassPattern":[0,null,null,null,6,null,null,null],"kick":[0,10],"snare":[8],"hatOffbeat":-1,"lead":"triangle","leadVol":0.22,"arpVol":0.025,"bars":[{"lead":"17 . 18 . 17 . 13 . 12 - - . 8 . . .","chord":[5,8,12],"root":-19},{"lead":"17 . 18 . 17 . 13 . 12 - - . 11 . . .","chord":[10,13,17],"root":-14},{"lead":"20 . 19 . 18 . 17 . 16 . 15 . 14 . 13 .","chord":[12,16,19],"root":-12},{"lead":"17 - - - - - 12 - - - 5 - - - . .","chord":[5,8,12],"root":-19}]},
+        m_chase: {"bpm":172,"bassPattern":[0,0,12,0,0,0,12,0],"kick":[0,4,8,12,14],"snare":[4,12],"hatOffbeat":1,"bars":[{"lead":"15 . 14 . 15 . 18 . 15 . 14 . 15 . 22 .","chord":[15,18,22],"root":-21},{"lead":"13 . 12 . 13 . 17 . 13 . 12 . 13 . 20 .","chord":[11,15,18],"root":-13},{"lead":"15 . 14 . 15 . 18 . 22 . 20 . 18 . 17 .","chord":[15,18,22],"root":-21},{"lead":"14 - 15 - 17 - 18 - 19 - - - . . . .","chord":[10,14,17],"root":-14}]},
+        m_electro: {"bpm":128,"bassPattern":[0,12,0,12,0,12,0,12],"kick":[0,4,8,12],"snare":[4,12],"hatOffbeat":1,"clank":[6,14],"clankHz":6000,"bars":[{"lead":"19 . . 19 . . 22 . . 22 . . 24 . 22 .","chord":[19,22,26],"root":-17},{"lead":"19 . . 19 . . 17 . . 17 . . 15 . 14 .","chord":[15,19,22],"root":-21},{"lead":"19 . . 19 . . 22 . . 26 . . 29 . 26 .","chord":[10,14,17],"root":-14},{"lead":"27 - - - 26 - - - 24 - - - 22 - - .","chord":[14,18,21],"root":-22}]},
+        m_sumo: {"bpm":100,"bassPattern":[0,null,null,null,0,null,7,null],"kick":[0,3,6,8,12,14],"snare":[],"hatOffbeat":-1,"lead":"triangle","leadVol":0.22,"taiko":true,"arpVol":0,"bars":[{"lead":"17 . . . 19 . 22 . 19 . 17 . 14 - - .","chord":[5,12,17],"root":-19},{"lead":"17 . . . 19 . 22 . 24 - 22 . 19 - - .","chord":[5,12,17],"root":-19},{"lead":"22 . 24 . 22 . 19 . 17 . 14 . 12 . 14 .","chord":[10,14,17],"root":-14},{"lead":"17 - - - - - - - 12 - 14 - 17 - - .","chord":[5,12,17],"root":-19}]},
+        m_stadium: {"bpm":130,"bassPattern":[0,null,0,null,7,null,7,null],"kick":[0,2,8,10],"snare":[4,12],"hatOffbeat":0,"bars":[{"lead":"22 . 22 . 22 - 19 . 22 . 24 . 26 - - .","chord":[10,14,17],"root":-14},{"lead":"24 . 24 . 24 - 22 . 21 . 19 . 17 - - .","chord":[15,19,22],"root":-21},{"lead":"22 . 22 . 22 - 19 . 22 . 24 . 26 . 29 .","chord":[10,14,17],"root":-14},{"lead":"28 - 26 - 24 - 21 - 22 - - - . . . .","chord":[17,21,24],"root":-19}]},
+        m_disco: {"bpm":124,"bassPattern":[0,12,0,12,0,12,0,12],"kick":[0,4,8,12],"snare":[4,12],"hatOffbeat":1,"bars":[{"lead":"17 . 20 . 24 - 22 . 20 . 17 . 15 - 17 .","chord":[5,8,12,15],"root":-19},{"lead":"22 . 20 . 17 - 14 . 13 . 14 . 17 - - .","chord":[10,14,17,20],"root":-14},{"lead":"19 . 22 . 26 - 24 . 22 . 19 . 15 - 19 .","chord":[15,19,22,26],"root":-21},{"lead":"16 - 19 - 22 - 25 - 24 - 22 - 19 - - .","chord":[12,16,19,22],"root":-12}]},
+        m_tap: {"bpm":140,"bassPattern":[0,3,7,10,12,10,7,3],"kick":[0,8],"snare":[4,12],"hatOffbeat":0,"lead":"triangle","leadVol":0.2,"swing":0.33,"arpVol":0.02,"bars":[{"lead":"25 . 22 . 18 . 22 - 25 . 27 . 25 - - .","chord":[15,18,22,25],"root":-21},{"lead":"24 . 20 . 17 . 20 - 24 . 22 . 20 - - .","chord":[8,12,15,18],"root":-16},{"lead":"25 . 25 . 24 . 22 . 20 - 17 - 13 - - .","chord":[13,17,20,24],"root":-11},{"lead":"26 - 25 - 24 - 22 - 20 - 17 - 14 - - .","chord":[10,14,17,20],"root":-14}]}
+      });
+      const MINI_MUSIC = {"siege":"m_siege","bossrush":"m_boss","sudden":"m_sudden","combos":"m_training","throne":"m_royal","iaido":"m_dojo","ironwall":"m_steel","cane":"m_granny","blitz":"m_shogun","shadow":"m_ninja","mecha":"m_cyber","phantom":"m_spooky","escape":"m_chase","surge":"m_electro","sumo":"m_sumo","penalty":"m_stadium","derby":"m_disco","dance":"m_tap"};
+
       const Music = {
         track: null,
         step: 0,
@@ -1264,7 +1287,8 @@
         schedule() {
           const ac = Sound.context;
           if (!ac) return;
-          const wanted = MUSIC_TRACKS[game.screen === 'fight' ? 'fight' : 'menu'];
+          const mini = game.mini && (game.screen === 'mini' || (game.screen === 'fight' && game.mf)) && MINI_MUSIC[game.mini.id];
+          const wanted = MUSIC_TRACKS[mini || (game.screen === 'fight' ? 'fight' : 'menu')];
           while (this.nextTime < ac.currentTime + 0.12) {
             if (this.step % 16 === 0 && wanted !== this.track) {
               this.track = wanted; // switch tracks on a bar line
@@ -1284,15 +1308,18 @@
           const freq = semitones => 220 * Math.pow(2, semitones / 12);
 
           // lead melody (square) with a quiet octave-up shimmer (triangle)
+          if (track.swing && beat % 2 === 1) t += stepLength * track.swing; // swung 8ths
           const lead = bar.notes[beat];
           if (lead) {
-            const length = stepLength * (lead.steps * 0.9 + 0.7);
-            Sound.tone(freq(lead.note), length, 'square', 0.12, null, 0, out, t);
+            const length = stepLength * (lead.steps * 0.9 + 0.7) * (track.leadLen || 1);
+            Sound.tone(freq(lead.note), length, track.lead || 'square', track.leadVol || 0.12, null, 0, out, t);
             Sound.tone(freq(lead.note + 12), length * 0.6, 'triangle', 0.035, null, 0, out, t);
           }
           // fast arpeggio through the chord (rises faster during build-up bars)
           const arpNote = bar.chord[(bar.fill ? beat : step) % bar.chord.length] + (bar.fill === 2 ? 12 : 0);
-          Sound.tone(freq(arpNote), stepLength * 0.8, 'square', bar.fill ? 0.06 : 0.035, null, 0, out, t);
+          const arpVol = track.arpVol === undefined ? 0.035 : track.arpVol;
+          if (arpVol || bar.fill) Sound.tone(freq(arpNote), stepLength * 0.8, track.arpWave || 'square', bar.fill ? 0.06 : arpVol, null, 0, out, t);
+          if (track.clank && track.clank.includes(beat)) Sound.noise(0.07, 0.3, track.clankHz || 3200, 'bandpass', 0, null, out, t); // metal clank
           // bass on 8th notes
           if (beat % 2 === 0) {
             const offset = track.bassPattern[beat / 2];
@@ -1304,7 +1331,13 @@
             if (beat === 0 || beat === 8) Sound.tone(150, 0.14, 'sine', 0.7, 40, 0, out, t);
             return;
           }
-          if (track.kick.includes(beat)) Sound.tone(150, 0.14, 'sine', 0.7, 40, 0, out, t);
+          if (track.kick.includes(beat)) {
+            if (track.taiko) {
+              // a big taiko drum: low boom plus the skin's thud
+              Sound.tone(95, 0.32, 'sine', 0.85, 48, 0, out, t);
+              Sound.noise(0.06, 0.22, 400, 'lowpass', 0, null, out, t);
+            } else Sound.tone(150, 0.14, 'sine', 0.7, 40, 0, out, t);
+          }
           if (track.snare.includes(beat)) Sound.noise(0.12, 0.32, 1500, 'highpass', 0, null, out, t);
           if (bar.fill === 1 && beat >= 12) Sound.noise(0.08, 0.2, 1800, 'highpass', 0, null, out, t); // pickup
           if (beat % 2 === track.hatOffbeat) Sound.noise(0.03, 0.1, 7000, 'highpass', 0, null, out, t); // hi-hat
