@@ -11366,7 +11366,7 @@
             hy = GROUND,
             ox = cx,
             oy = GROUND;
-          const tpl = S.tpl;
+          const tpl = uniqOf(this) ? 'own' : S.tpl; // a hero with their own super skips the shared moves
           let hitNow = -1; // which hit lands this frame
           if (tpl === 'slash') {
             if (t < 19) hx = lerp(G.x0, cx - f * 150, ease(t / 19));
@@ -11451,6 +11451,15 @@
               } else ox = lerp(G.ox0, cx, intro);
             }
             if (t >= 24 && t <= 84 && (t - 24) % 10 === 0) hitNow = (t - 24) / 10;
+          }
+          const UQ = uniqOf(this);
+          if (UQ) {
+            const r = UQ.move(t, { f, cx, x0: G.x0, ox0: G.ox0, intro, me: this, o2 });
+            hx = r.hx;
+            hy = r.hy;
+            ox = r.ox;
+            oy = r.oy;
+            hitNow = t >= 24 && t <= 84 && (t - 24) % 10 === 0 ? (t - 24) / 10 : -1;
           }
           if (t < FIN) {
             o2.x = clamp(ox, 45, W - 45);
@@ -11925,6 +11934,11 @@
           const clock = game.time + this.side * 17; // animation clock, offset per side so the two socks don't move in sync
           const poseState = FIGHTER_STATE_POSES[this.state];
           if (poseState) poseState.call(this, p, this.t, clock);
+          const lead = cineLead(this);
+          if (lead && lead !== this && lead.t < CINE.FIN) {
+            const U = uniqOf(lead);
+            if (U && U.opp) U.opp(p, lead.t, lead);
+          }
           if (this.dazed > 0 && (this.state === 'atk' || this.state === 'idle')) p.eyes = 'spiral';
           if (this.def.hypnotised && ['idle', 'walk', 'intro', 'atk', 'block'].includes(this.state)) p.eyes = 'spiral';
           if (this.def.ghost && ['idle', 'walk', 'intro', 'win'].includes(this.state))
@@ -12374,6 +12388,13 @@
             return;
           }
           const SC = sceneOf(this);
+          const UQ = uniqOf(this);
+          if (UQ && SC && SC.tpl && this.cine) {
+            p.mouth = 'yell';
+            p.eyes = 'angry';
+            if (UQ.pose) UQ.pose(p, t, this);
+            return;
+          }
           if (SC && SC.tpl && this.cine && SC.tpl !== 'juggle') {
             p.mouth = 'yell';
             p.eyes = 'angry';
@@ -12719,8 +12740,23 @@
             p.lean = -0.1;
           }
         }
-        /** Draw the fighter (plus shadow and any extras like lasso, rolling ball, dizzy birds). */
+        /** Draw the fighter, unless a unique super is hiding (or clipping, or shifting) them right now. */
         draw() {
+          const v = cineView(this);
+          if (!v) return this.drawBody();
+          if (v.hide) return;
+          ctx.save();
+          if (v.clip != null) {
+            ctx.beginPath();
+            ctx.rect(-100, -300, W + 200, v.clip + 300);
+            ctx.clip();
+          }
+          if (v.dy) ctx.translate(0, v.dy);
+          this.drawBody();
+          ctx.restore();
+        }
+        /** Draw the fighter (plus shadow and any extras like lasso, rolling ball, dizzy birds). */
+        drawBody() {
           const p = this.pose();
           const hgt = GROUND - this.y;
           ctx.fillStyle = 'rgba(0,0,0,0.35)';
@@ -17487,6 +17523,3308 @@
       };
       const sceneOf = f => SUPER_SCENES[f.def.mysock ? 'mysock' : f.def.id] || null;
 
+      /* ---------------- UNIQUE SUPERS: every hero's very own super ----------------
+       * Each keeps the same beat as the other supers: 7 hits at t = 24, 34 ... 84, the finish at CINE.FIN (106), and
+       * both fighters back on the floor by CINE.END. move(t, c) places the hero (hx, hy) and the opponent (ox, oy) from
+       * the frame number alone, so it plays out the same on both phones online. The rest is optional:
+       *   pose(p, t, f)       the hero's pose          opp(p, t, f)      the opponent's pose (until the finish)
+       *   view(who, t, f)     hide, clip or shift the 'hero' or 'opp' while they're drawn: { hide } or { clip, dy }
+       *   back(f, t, c)       props behind the fighters        fx(f, t, c)  effects in front of them */
+      const HIT_T = i => 24 + i * 10;
+      const lastHit = t => {
+        if (t < 24) return { i: -1, age: 99 };
+        const i = Math.min(6, Math.floor((t - 24) / 10));
+        return { i, age: t - HIT_T(i) };
+      };
+      const nextHit = t => {
+        for (let i = 0; i < 7; i++) if (HIT_T(i) >= t) return { i, left: HIT_T(i) - t };
+        return { i: 7, left: 99 };
+      };
+      const bump = (age, d) => (age >= 0 && age < d ? Math.sin((age / d) * Math.PI) : 0);
+      const k01 = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
+      const UNIQUE_SUPERS = {};
+      const uniqOf = f => (f && f.def && !f.def.mysock ? UNIQUE_SUPERS[f.def.id] || null : null);
+      /** The fighter whose cinematic super has hold of fi (fi itself, or the one doing it to fi), or null. */
+      function cineLead(fi) {
+        for (const g of [f1, f2]) if (g && g.state === 'superlock' && g.cine && (g === fi || g.lockO === fi)) return g;
+        return null;
+      }
+      /** How a unique super wants this fighter drawn right now ({ hide } / { clip, dy }), or null. */
+      function cineView(fi) {
+        const g = cineLead(fi),
+          U = uniqOf(g);
+        if (!U || !U.view) return null;
+        const who = g === fi ? 'hero' : 'opp';
+        if (who === 'opp' && g.t >= CINE.FIN) return null;
+        return U.view(who, g.t, g) || null;
+      }
+      /** Props behind the fighters for a unique super. */
+      function drawSuperBack(f) {
+        const U = uniqOf(f);
+        if (!U || !U.back || !f.cine || !f.lockO || f.state !== 'superlock') return;
+        ctx.save();
+        U.back(f, f.t, { fc: f.cine.f, cx: f.cine.cx, o2: f.lockO, FIN: CINE.FIN });
+        ctx.restore();
+      }
+      /** A little toy for Baby Bootie's tantrum: an alphabet block, or a rubber duck. */
+      function drawToy(i, x, y, rot) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        if (i % 3 === 2) {
+          ctx.fillStyle = '#ffd23f';
+          ctx.beginPath();
+          ctx.ellipse(0, 6, 26, 18, 0, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(14, -14, 13, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = '#ff7a1a';
+          ctx.beginPath();
+          ctx.moveTo(25, -16);
+          ctx.lineTo(38, -12);
+          ctx.lineTo(25, -8);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = INK;
+          ctx.beginPath();
+          ctx.arc(17, -17, 2.5, 0, 7);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = ['#ff5a5f', '#3fb0ff', '#7dff8a', '#ffd23f'][i % 4];
+          ctx.fillRect(-22, -22, 44, 44);
+          ctx.strokeRect(-22, -22, 44, 44);
+          drawText('ABCDEFG'[i % 7], 0, 2, 30, FONT_COMIC, '#fff', INK, 4);
+        }
+        ctx.restore();
+      }
+      /* --- batch 1: Baby Bootie, Knee-Hi Kazuo, Mecha-Sock X, The Lost Sock, Lint Bunny, Socklet --- */
+      const PIN_L = 120,
+        PIN_R = W - 120;
+      /** Knee-Hi Kazuo's pinball: where the opponent is (feet), bouncing bumper to bumper. */
+      function pinPath(t, G) {
+        const first = G.f > 0 ? PIN_R : PIN_L,
+          other = G.f > 0 ? PIN_L : PIN_R,
+          wall = i => (i % 2 ? other : first),
+          top = GROUND - 150,
+          mid = W / 2;
+        if (t < 14) return { x: lerp(G.ox0, G.cx, ease(Math.min(1, t / 12))), y: GROUND };
+        if (t < 24) {
+          const k = (t - 14) / 10;
+          return { x: lerp(G.cx, first, k), y: lerp(GROUND, top, k) - Math.sin(k * Math.PI) * 50 };
+        }
+        if (t < 84) {
+          const i = Math.floor((t - 24) / 10),
+            k = (t - HIT_T(i)) / 10;
+          return { x: lerp(wall(i), wall(i + 1), k), y: top - Math.sin(k * Math.PI) * 80 };
+        }
+        if (t < 96) {
+          const k = (t - 84) / 12;
+          return { x: lerp(wall(6), mid + G.f * 40, k), y: lerp(top, GROUND - 260, k) - Math.sin(k * Math.PI) * 40 };
+        }
+        const k = k01(t, 96, CINE.FIN);
+        return { x: mid + G.f * 40, y: lerp(GROUND - 260, GROUND, k * k) };
+      }
+      /** Lint Bunny's lint ball: where it is (bottom), bouncing round the arena. */
+      function lintBall(t, G) {
+        const x = t < 12 ? G.x0 : t < 24 ? lerp(G.x0, G.cx, (t - 12) / 12) : G.cx + Math.sin((Math.min(t, 96) - 24) * 0.075) * 170;
+        const y = t >= 24 && t < 94 ? GROUND - Math.abs(Math.sin(((t - 24) / 10) * Math.PI)) * 120 : GROUND;
+        return { x, y };
+      }
+      const SOCKLET_SIDES = [1, -1, -1, 1, -1, 1, 1]; // where Socklet strikes from (1 = from behind them)
+      const mechaScale = t => (t < 6 ? 1 : t < 18 ? 1 + ease((t - 6) / 12) * 1.15 : t < CINE.FIN + 4 ? 2.15 : t < CINE.FIN + 16 ? 2.15 - ((t - CINE.FIN - 4) / 12) * 1.15 : 1);
+
+      Object.assign(UNIQUE_SUPERS, {
+        /* BABY BOOTIE: NAP TIME NOVA. No nap! A screaming, stomping tantrum shakes the floor and rains toys on them,
+         * then a giant rattle comes down BONK. */
+        baby: {
+          words: ['WAAAH!', 'STOMP!', 'NO NAP!', 'TANTRUM!', 'MINE!', 'WAAAAH!', 'BLOCKS!'],
+          move(t, c) {
+            const h = lastHit(t);
+            const stomp = t >= 14 && t < 92 ? bump((t - 14) % 10, 10) * 34 : 0;
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 210, c.intro),
+              hy: GROUND - stomp,
+              ox: lerp(c.ox0, c.cx, c.intro),
+              oy: GROUND - (t < 92 ? bump(h.age, 9) * 80 : 0)
+            };
+          },
+          pose(p, t) {
+            const k = Math.sin(t * 0.9);
+            p.eyes = 'wince';
+            p.mouth = 'yell';
+            p.rot = Math.sin(t * 1.7) * 0.07;
+            p.front = { x: 46, y: -150 + k * 60 };
+            p.back = { x: -30, y: -150 - k * 60 };
+          },
+          opp(p, t) {
+            if (lastHit(t).age < 9) {
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.rot = Math.sin(t) * 0.2;
+              p.front = { x: 50, y: -170 };
+              p.back = { x: -40, y: -170 };
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              hx = f.x + c.fc * 24,
+              hy = f.y - 150,
+              h = lastHit(t);
+            // the wailing
+            if (t > 6 && t < c.FIN) {
+              ctx.lineWidth = 6;
+              for (let k = 0; k < 3; k++) {
+                const r = 20 + ((t * 7 + k * 30) % 90),
+                  a0 = c.fc > 0 ? 0 : Math.PI;
+                ctx.globalAlpha = Math.max(0, 1 - r / 110);
+                ctx.strokeStyle = k % 2 ? '#ff8fb6' : '#fff';
+                ctx.beginPath();
+                ctx.arc(hx, hy, r, a0 - 0.7, a0 + 0.7);
+                ctx.stroke();
+              }
+              // tears squirting out sideways
+              ctx.globalAlpha = 1;
+              ctx.fillStyle = '#7fd0ff';
+              for (let k = 0; k < 6; k++) {
+                const a = (t * 3 + k * 5) % 16,
+                  s = k % 2 ? 1 : -1;
+                ctx.beginPath();
+                ctx.arc(f.x + s * (20 + a * 4), hy + 10 - a * 3 + a * a * 0.35, 5, 0, 7);
+                ctx.fill();
+              }
+            }
+            // the floor cracks with every stomp
+            if (h.i >= 0 && h.age < 10 && t < c.FIN) {
+              ctx.globalAlpha = 1 - h.age / 10;
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              ctx.moveTo(f.x, GROUND + 3);
+              for (let k = 1; k <= 8; k++) ctx.lineTo(lerp(f.x, o2.x, k / 8), GROUND + 3 + (k < 8 ? (k % 2 ? -7 : 7) : 0));
+              ctx.stroke();
+              ctx.globalAlpha = 1;
+            }
+            // toys rain down on them and bounce off
+            for (let i = 0; i < 7; i++) {
+              const a = t - HIT_T(i);
+              if (a < -8 || a > 14) continue;
+              let x = o2.x + ((i * 37) % 40) - 20,
+                y;
+              if (a < 0) y = lerp(-60, o2.y - 160, ((a + 8) / 8) ** 2);
+              else {
+                x += (i % 2 ? 1 : -1) * a * 9;
+                y = o2.y - 160 - a * 14 + a * a * 1.6;
+              }
+              drawToy(i, x, y, a * 0.3 + i);
+            }
+            // the giant rattle: BONK
+            if (t >= c.FIN - 16 && t < c.FIN + 12) {
+              const k = k01(t, c.FIN - 16, c.FIN);
+              ctx.globalAlpha = t > c.FIN ? 1 - (t - c.FIN) / 12 : 1;
+              ctx.save();
+              ctx.translate(o2.x - c.fc * 250, GROUND - 60);
+              ctx.rotate(lerp(-1.7, 0, k * k) * c.fc);
+              ctx.scale(c.fc, 1);
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 16;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.lineTo(196, -66);
+              ctx.stroke();
+              ctx.strokeStyle = '#ff8fb6';
+              ctx.lineWidth = 10;
+              ctx.stroke();
+              ctx.fillStyle = '#ffe6f0';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              ctx.arc(240, -82, 50, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.strokeStyle = '#ff8fb6';
+              ctx.lineWidth = 9;
+              for (const dx of [-24, 0, 24]) {
+                ctx.beginPath();
+                ctx.moveTo(240 + dx, -128);
+                ctx.lineTo(240 + dx, -36);
+                ctx.stroke();
+              }
+              ctx.fillStyle = '#ffd23f';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 4;
+              ctx.beginPath();
+              ctx.arc(240, -82, 14, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            }
+          }
+        },
+
+        /* KNEE-HI KAZUO: MAXIMUM STRETCH. He launches them like a pinball, bumper to bumper across the arena, then
+         * stretches up sky-high and snaps them back down to the floor. */
+        kneehi: {
+          words: ['BOING!', 'BUMPER!', 'DING DING!', 'TILT!', 'BONUS!', 'MULTIBALL!', 'JACKPOT!'],
+          move(t, c) {
+            const o = pinPath(t, c);
+            return { hx: lerp(c.x0, W / 2 - c.f * 40, c.intro), hy: GROUND, ox: o.x, oy: o.y };
+          },
+          pose(p, t) {
+            p.mouth = 'yell';
+            p.eyes = 'angry';
+            if (t < 12) {
+              p.sy = 0.78;
+              p.lean = 0.25;
+              p.front = { x: 40, y: -30 };
+              p.back = { x: -20, y: -40 };
+            } else if (t < 22) {
+              p.sy = 1.35;
+              p.front = { x: 50, y: -240 };
+              p.back = { x: -30, y: -80 };
+            } else if (t < 92) {
+              const ph = (((t - 29) % 10) + 10) % 10,
+                sw = ph < 3 || ph > 8;
+              p.sy = sw ? 1.25 : 1.05;
+              p.front = sw ? { x: 70, y: -250 } : { x: 46, y: -120 };
+              p.back = { x: -40, y: -100 };
+              p.lean = sw ? -0.1 : 0.05;
+              p.mouth = sw ? 'yell' : 'grin';
+            } else if (t < CINE.FIN + 2) {
+              const k = k01(t, 92, 100);
+              p.sy = 1 + k * 0.9;
+              p.front = { x: 40, y: -200 - k * 120 };
+              p.back = { x: -30, y: -190 - k * 110 };
+            }
+          },
+          opp(p, t) {
+            if (t >= 14) {
+              p.rot = t * 0.45;
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 60, y: -140 };
+              p.back = { x: -50, y: -140 };
+            }
+          },
+          back(f, t, c) {
+            const G = f.cine,
+              h = lastHit(t),
+              first = G.f > 0 ? PIN_R : PIN_L;
+            for (const bx of [58, W - 58]) {
+              const near = bx < W / 2 ? PIN_L : PIN_R;
+              const lit = h.i >= 0 && h.age < 8 && (h.i % 2 ? first !== near : first === near);
+              const by = GROUND - 220,
+                r = 50 + (lit ? 6 : 0);
+              ctx.fillStyle = '#3a2a1a';
+              ctx.fillRect(bx - 10, by, 20, GROUND - by);
+              if (lit) {
+                const g = ctx.createRadialGradient(bx, by, r * 0.5, bx, by, r * 2.4);
+                g.addColorStop(0, 'rgba(255,240,120,0.9)');
+                g.addColorStop(1, 'rgba(255,240,120,0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(bx, by, r * 2.4, 0, 7);
+                ctx.fill();
+              }
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 5;
+              ctx.fillStyle = lit ? '#fff36a' : '#ff5a5a';
+              ctx.beginPath();
+              ctx.arc(bx, by, r, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = lit ? '#ff5a5a' : '#ffd23f';
+              ctx.beginPath();
+              ctx.arc(bx, by, r * 0.62, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              starPath(ctx, bx, by, r * 0.4, t * 0.1);
+              ctx.fillStyle = '#fff';
+              ctx.fill();
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+            // blinking lane arrows on the floor
+            for (let k = 0; k < 6; k++) {
+              const on = (Math.floor(t / 4) + k) % 3 === 0,
+                x = W / 2 + (k < 3 ? -1 : 1) * (60 + (k % 3) * 70),
+                d = k < 3 ? -1 : 1;
+              ctx.fillStyle = on ? '#ffe234' : 'rgba(255,226,52,0.25)';
+              ctx.beginPath();
+              ctx.moveTo(x + d * 22, GROUND + 22);
+              ctx.lineTo(x - d * 10, GROUND + 8);
+              ctx.lineTo(x - d * 10, GROUND + 36);
+              ctx.closePath();
+              ctx.fill();
+            }
+          },
+          fx(f, t, c) {
+            const G = f.cine;
+            if (t >= 16 && t < 100)
+              for (let k = 4; k >= 1; k--) {
+                const o = pinPath(t - k * 2, G);
+                ctx.globalAlpha = 0.32 - k * 0.06;
+                ctx.fillStyle = '#ff5a5a';
+                ctx.beginPath();
+                ctx.arc(o.x, o.y - 70, 40 - k * 4, 0, 7);
+                ctx.fill();
+              }
+            ctx.globalAlpha = 1;
+            const h = lastHit(t);
+            if (h.i >= 0 && h.age < 14 && t < c.FIN) {
+              const first = G.f > 0 ? PIN_R : PIN_L,
+                other = G.f > 0 ? PIN_L : PIN_R,
+                wx = h.i % 2 ? other : first;
+              drawText('+' + (h.i + 1) * 1000, wx < W / 2 ? 90 : W - 90, GROUND - 300 - h.age * 3, 30, FONT_COMIC, '#ffe234', INK, 5);
+            }
+          }
+        },
+
+        /* MECHA-SOCK X: OVERCLOCK OVERDRIVE. Transforms into a GIANT mecha, fires seven rocket fists, then blasts them
+         * with the chest cannon. */
+        robo: {
+          words: ['ROCKET FIST!', 'BZZT!', 'TARGET LOCKED!', 'PEW!', 'CLANK!', 'BOOST!', '01101!'],
+          move(t, c) {
+            const h = lastHit(t);
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 270, c.intro),
+              hy: GROUND,
+              ox: lerp(c.ox0, c.cx, c.intro) + c.f * bump(h.age, 8) * 26,
+              oy: GROUND - bump(h.age, 8) * 20
+            };
+          },
+          view(who, t) {
+            return who === 'hero' && t >= 4 && t < CINE.FIN + 16 ? { hide: true } : null;
+          },
+          pose(p, t) {
+            const h = lastHit(t),
+              n = nextHit(t),
+              firing = (n.left < 4 || h.age < 3) && t < 92;
+            p.front = firing ? { x: 104, y: -100 } : { x: 40, y: -70 };
+            p.back = { x: -10, y: -80 };
+            p.lean = firing ? 0.12 : 0;
+            if (t >= 92 && t < CINE.FIN + 4) {
+              p.front = { x: 60, y: -40 };
+              p.back = { x: -40, y: -40 };
+              p.lean = -0.08;
+            }
+            p.eyes = 'angry';
+            p.mouth = 'grit';
+          },
+          back(f, t, c) {
+            if (t < 4 || t >= c.FIN + 16) return;
+            const s = mechaScale(t),
+              d = f.face,
+              x = f.x;
+            // transform flashes
+            if (t < 20) {
+              ctx.globalAlpha = 0.5 * bump(t - 4, 16);
+              ctx.fillStyle = '#3ff0ff';
+              ctx.beginPath();
+              ctx.arc(x, GROUND - 120 * s, 110 * s, 0, 7);
+              ctx.fill();
+              ctx.globalAlpha = 1;
+            }
+            // jet flames under its feet
+            for (const dx of [-30, 26]) {
+              const fl = 30 + Math.sin(t * 1.3 + dx) * 10;
+              ctx.fillStyle = '#ffb02e';
+              ctx.beginPath();
+              ctx.moveTo(x + dx * s - 12, GROUND - 4);
+              ctx.lineTo(x + dx * s + 12, GROUND - 4);
+              ctx.lineTo(x + dx * s, GROUND + fl);
+              ctx.closePath();
+              ctx.fill();
+            }
+            const p = f.pose();
+            drawSock(ctx, f.def, p, x, GROUND, d, s, { x: 0, y: 0 });
+            // armour: shoulder pad, antenna, chest core
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.fillStyle = '#9aa8bf';
+            roundRectPath(ctx, x - d * 16 * s - 34, GROUND - 128 * s - 14, 68, 32, 10);
+            ctx.fill();
+            ctx.stroke();
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(x - d * 4 * s, GROUND - 158 * s);
+            ctx.lineTo(x - d * 4 * s, GROUND - 158 * s - 46);
+            ctx.stroke();
+            ctx.fillStyle = Math.floor(t / 4) % 2 ? '#ff3b4e' : '#ffe234';
+            ctx.beginPath();
+            ctx.arc(x - d * 4 * s, GROUND - 158 * s - 50, 9, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            const core = t >= c.FIN - 16 && t < c.FIN + 4 ? 1 + k01(t, c.FIN - 16, c.FIN) * 1.6 : 1;
+            const cxr = x + d * 12 * s,
+              cyr = GROUND - 80 * s;
+            const g = ctx.createRadialGradient(cxr, cyr, 2, cxr, cyr, 26 * core);
+            g.addColorStop(0, '#fff');
+            g.addColorStop(0.5, '#3ff0ff');
+            g.addColorStop(1, 'rgba(63,240,255,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(cxr, cyr, 26 * core, 0, 7);
+            ctx.fill();
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              s = mechaScale(t),
+              d = f.face;
+            // rocket fists
+            for (let i = 0; i < 7; i++) {
+              const a = t - HIT_T(i);
+              if (a < -6 || a > 0) continue;
+              const k = (a + 6) / 6,
+                x = lerp(f.x + d * 90 * s * 0.5 + d * 60, o2.x - d * 20, k),
+                y = lerp(GROUND - 100 * s, o2.y - 90, k);
+              ctx.fillStyle = '#ffb02e';
+              ctx.beginPath();
+              ctx.moveTo(x - d * 18, y - 14);
+              ctx.lineTo(x - d * (60 + Math.sin(t * 2) * 10), y);
+              ctx.lineTo(x - d * 18, y + 14);
+              ctx.closePath();
+              ctx.fill();
+              ctx.fillStyle = f.def.glove || '#9aa8bf';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 4;
+              ctx.beginPath();
+              ctx.arc(x, y, 24, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.beginPath();
+              for (const dy of [-10, 0, 10]) {
+                ctx.moveTo(x + d * 8, y + dy);
+                ctx.lineTo(x + d * 22, y + dy);
+              }
+              ctx.stroke();
+            }
+            // the chest cannon
+            if (t >= c.FIN - 6 && t < c.FIN + 10) {
+              const hx = f.x + d * 12 * s,
+                hy = GROUND - 80 * s,
+                end = d > 0 ? W + 40 : -40,
+                wd = 46 + Math.sin(t) * 6;
+              ctx.globalAlpha = t > c.FIN ? 1 - (t - c.FIN) / 10 : 1;
+              ctx.fillStyle = 'rgba(63,240,255,0.55)';
+              ctx.fillRect(Math.min(hx, end), hy - wd, Math.abs(end - hx), wd * 2);
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(Math.min(hx, end), hy - wd * 0.45, Math.abs(end - hx), wd * 0.9);
+            }
+          }
+        },
+
+        /* THE LOST SOCK: LOST & FOUND. A huge lost-property box drops in and swallows them; lost socks come flying
+         * out with every BOO, then the box bursts and spits them back out. */
+        ghost: {
+          words: ['BOO!', 'LOST!', 'FOUND!', 'ODD ONE!', "WHOSE IS THIS?!", 'OooOO!', 'EEK!'],
+          move(t, c) {
+            const bx = c.cx;
+            let ox = bx,
+              oy = GROUND;
+            if (t < 12) ox = lerp(c.ox0, bx, ease(t / 12));
+            else if (t < 22) oy = GROUND - Math.sin(((t - 12) / 10) * Math.PI) * 170;
+            else if (t >= 96) {
+              const k = k01(t, 96, CINE.FIN);
+              ox = bx + c.f * k * 80;
+              oy = GROUND - Math.sin(k * Math.PI) * 220;
+            }
+            return { hx: lerp(c.x0, bx - c.f * 40, ease(Math.min(1, t / 16))), hy: GROUND - 200 - Math.sin(t * 0.15) * 10, ox, oy };
+          },
+          view(who, t) {
+            return who === 'opp' && t >= 20 && t < 96 ? { hide: true } : null;
+          },
+          pose(p, t) {
+            p.front = { x: 60, y: -150 + Math.sin(t * 0.3) * 18 };
+            p.back = { x: -30, y: -160 - Math.sin(t * 0.3) * 18 };
+            p.rot = Math.sin(t * 0.1) * 0.1;
+          },
+          opp(p, t) {
+            if (t >= 12) {
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 50, y: -180 };
+              p.back = { x: -40, y: -180 };
+            }
+          },
+          fx(f, t, c) {
+            const bx = f.cine.cx,
+              h = lastHit(t),
+              drop = lerp(-420, 0, ease(k01(t, 2, 12))),
+              shake = Math.sin(t * 2.3) * bump(h.age, 8) * 9,
+              burst = k01(t, 96, 112);
+            if (burst >= 1) return;
+            ctx.globalAlpha = 1 - burst;
+            ctx.save();
+            ctx.translate(bx + shake, GROUND + drop);
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            // the dark opening, with eyes peeping out
+            ctx.fillStyle = '#1a0f2e';
+            ctx.beginPath();
+            ctx.ellipse(0, -132, 104, 16, 0, 0, 7);
+            ctx.fill();
+            if (t > 24 && t < 96 && Math.floor(t / 9) % 3) {
+              ctx.fillStyle = '#ffe234';
+              for (const ex of [-40, -22, 30, 48]) {
+                ctx.beginPath();
+                ctx.ellipse(ex, -134, 5, 3, 0, 0, 7);
+                ctx.fill();
+              }
+            }
+            // the box
+            ctx.fillStyle = '#c8955a';
+            ctx.fillRect(-110, -130, 220, 130);
+            ctx.strokeRect(-110, -130, 220, 130);
+            ctx.strokeStyle = 'rgba(90,50,20,0.5)';
+            ctx.beginPath();
+            ctx.moveTo(-110, -100);
+            ctx.lineTo(110, -100);
+            ctx.stroke();
+            ctx.fillStyle = '#fff6e0';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 3;
+            ctx.fillRect(-80, -78, 160, 40);
+            ctx.strokeRect(-80, -78, 160, 40);
+            drawText('LOST & FOUND', 0, -57, 24, FONT_COMIC, '#c8102e', INK, 0);
+            // flaps, flapping when something comes out
+            ctx.lineWidth = 5;
+            ctx.fillStyle = '#b5824a';
+            const op = (t < 22 ? 1.9 : 1.5) + bump(h.age, 8) * 0.5 + burst * 2;
+            for (const s of [-1, 1]) {
+              const hx = s * 110,
+                ex = hx - s * Math.cos(op) * 100,
+                ey = -130 - Math.sin(op) * 100;
+              ctx.beginPath();
+              ctx.moveTo(hx, -130);
+              ctx.lineTo(ex, ey);
+              ctx.lineTo(ex - s * 10, ey - 18);
+              ctx.lineTo(hx - s * 10, -148);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            ctx.restore();
+            ctx.globalAlpha = 1;
+            // lost socks fly out
+            for (let i = 0; i < 7; i++) {
+              const a = t - HIT_T(i);
+              if (a < 0 || a > 20) continue;
+              drawCineObj('oddsock', bx + (i % 2 ? 1 : -1) * a * 8, GROUND - 150 - a * 14 + a * a * 0.8, 1.5, t + i * 7, f);
+            }
+            if (t >= 96 && t < 110) {
+              ctx.strokeStyle = '#fff';
+              ctx.lineWidth = 6;
+              ctx.globalAlpha = 1 - burst;
+              for (let k = 0; k < 10; k++) {
+                const a = (k / 10) * Math.PI * 2,
+                  r = 60 + (t - 96) * 14;
+                ctx.beginPath();
+                ctx.moveTo(bx + Math.cos(a) * r * 0.6, GROUND - 80 + Math.sin(a) * r * 0.6);
+                ctx.lineTo(bx + Math.cos(a) * r, GROUND - 80 + Math.sin(a) * r);
+                ctx.stroke();
+              }
+            }
+          }
+        },
+
+        /* LINT BUNNY: LINT TRAP LOCKDOWN. Curls up into a giant fluffy lint ball, rolls them up inside it, bounces
+         * round the arena, then spits them back out. */
+        lint: {
+          words: ['FUZZ!', 'ROLL UP!', 'STUCK!', 'BOUNCE!', 'FLUFF!', 'BOING!', 'POOF!'],
+          move(t, c) {
+            const b = lintBall(t, c),
+              b96 = lintBall(96, c),
+              dir = Math.sign(c.cx - b96.x) || c.f;
+            let ox = lerp(c.ox0, c.cx, c.intro),
+              oy = GROUND,
+              hx = b.x,
+              hy = b.y;
+            if (t >= 24 && t < 96) {
+              ox = b.x;
+              oy = b.y;
+            } else if (t >= 96) {
+              const k = k01(t, 96, CINE.FIN);
+              hx = b96.x;
+              hy = GROUND;
+              ox = lerp(b96.x, b96.x + dir * 200, k);
+              oy = GROUND - Math.sin(k * Math.PI) * 180;
+            }
+            return { hx, hy, ox, oy };
+          },
+          view(who, t) {
+            if (who === 'hero' && t >= 8 && t < 96) return { hide: true };
+            if (who === 'opp' && t >= 24 && t < 96) return { hide: true };
+            return null;
+          },
+          pose(p, t) {
+            if (t < 8) {
+              p.sy = 1 - t * 0.05;
+              p.front = { x: 20, y: -40 };
+              p.back = { x: -10, y: -40 };
+            } else {
+              p.front = { x: 70, y: -150 };
+              p.back = { x: -60, y: -150 };
+              p.eyes = 'happy';
+              p.mouth = 'grin';
+            }
+          },
+          fx(f, t, c) {
+            if (t < 6 || t > 99) {
+              if (t > 96 && t < 112) {
+                ctx.fillStyle = 'rgba(226,220,240,0.7)';
+                for (let k = 0; k < 8; k++) {
+                  const a = k * 0.8,
+                    r = 30 + (t - 96) * 8;
+                  ctx.beginPath();
+                  ctx.arc(f.x + Math.cos(a) * r, GROUND - 70 + Math.sin(a) * r * 0.6, 22 - (t - 96), 0, 7);
+                  ctx.fill();
+                }
+              }
+              return;
+            }
+            const G = f.cine,
+              b = lintBall(t, G),
+              r = t < 12 ? lerp(34, 72, k01(t, 6, 12)) : t >= 96 ? lerp(72, 24, k01(t, 96, 99)) : 72,
+              land = t >= 24 && t < 94 ? (t - 24) % 10 : 9,
+              sy = land < 3 ? 0.82 : 1,
+              sx = land < 3 ? 1.12 : 1,
+              rot = (b.x - G.x0) / 72;
+            ctx.save();
+            ctx.translate(b.x, b.y - r * sy);
+            ctx.scale(sx, sy);
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 4;
+            // their glove sticking out
+            if (t >= 24) {
+              const a = rot + 2.3;
+              ctx.fillStyle = c.o2.def.glove || '#fff';
+              ctx.beginPath();
+              ctx.arc(Math.cos(a) * (r + 6), Math.sin(a) * (r + 6), 17, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+            }
+            ctx.fillStyle = '#e2dcf0';
+            ctx.beginPath();
+            for (let k = 0; k < 24; k++) {
+              const a = rot + (k * Math.PI * 2) / 24,
+                rr = r + (k % 2 ? 9 : -2);
+              ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(110,100,140,0.6)';
+            ctx.lineWidth = 3;
+            for (let k = 0; k < 10; k++) {
+              const a = rot + k * 1.7,
+                rr = r * (0.2 + (k % 4) * 0.18);
+              ctx.beginPath();
+              ctx.arc(Math.cos(a) * rr, Math.sin(a) * rr, 8, a, a + 2.4);
+              ctx.stroke();
+            }
+            // stuff caught in the fluff
+            ctx.fillStyle = '#ff5a5f';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(Math.cos(rot + 4) * r * 0.6, Math.sin(rot + 4) * r * 0.6, 8, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            // Lint Bunny's eyes, always facing out
+            const fc = G.f;
+            for (const ex of [6, 34]) {
+              ctx.fillStyle = '#fff';
+              ctx.beginPath();
+              ctx.arc(fc * ex, -16, 12, 0, 7);
+              ctx.fill();
+              ctx.lineWidth = 3;
+              ctx.stroke();
+              ctx.fillStyle = INK;
+              ctx.beginPath();
+              ctx.arc(fc * (ex + 4), -15, 5, 0, 7);
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+        },
+
+        /* SOCKLET: NO-SHOW SHOWDOWN. Goes completely invisible. Hits come from nowhere, from one side then the
+         * other, while they look round in a panic, then PEEK-A-BOO! from right behind them. */
+        socklet: {
+          words: ['WHERE?!', 'ZIP!', 'OVER HERE!', 'BEHIND YOU!', 'TOO SLOW!', 'NO-SHOW!', 'GOTCHA!'],
+          move(t, c) {
+            const h = lastHit(t),
+              n = nextHit(t);
+            const base = lerp(c.ox0, c.cx, c.intro);
+            const push = h.i >= 0 && t < 92 ? -c.f * SOCKLET_SIDES[h.i] * bump(h.age, 10) * 34 : 0;
+            const ox = base + push,
+              oy = GROUND - (t < 92 ? bump(h.age, 6) * 26 : 0);
+            let hx;
+            if (t < 14) hx = lerp(c.x0, c.cx - c.f * 120, ease(t / 14));
+            else if (t < 92) hx = c.cx + c.f * SOCKLET_SIDES[h.age < 4 ? h.i : Math.min(6, n.i)] * 85;
+            else hx = ox + c.f * 90;
+            if (t > 28 && t < 92 && h.age >= 5) c.o2.face = Math.floor(t / 6) % 2 ? 1 : -1; // looking round for her
+            return { hx, hy: GROUND, ox, oy };
+          },
+          view(who, t) {
+            return who === 'hero' && t >= 14 && t < 92 && lastHit(t).age >= 4 ? { hide: true } : null;
+          },
+          pose(p, t) {
+            const h = lastHit(t);
+            if (t < 92 && h.age < 4) {
+              p.lean = 0.35;
+              p.footAng = 0.6;
+              p.front = { x: 100, y: -80 };
+              p.back = { x: -50, y: -60 };
+              p.alpha = 0.8;
+            } else if (t >= 92) {
+              const kick = t >= CINE.FIN - 4;
+              p.mouth = 'grin';
+              p.eyes = 'happy';
+              p.front = kick ? { x: 100, y: -60 } : { x: 40, y: -150 + Math.sin(t) * 10 };
+              p.back = { x: -20, y: -150 };
+              p.lean = kick ? 0.4 : 0;
+              p.footAng = kick ? 0.7 : p.footAng;
+            }
+          },
+          opp(p, t) {
+            const h = lastHit(t);
+            p.eyes = h.age < 6 ? 'spiral' : 'normal';
+            p.mouth = 'yell';
+            p.rot = Math.sin(t * 0.3) * 0.08;
+            p.front = { x: 40, y: -110 };
+            p.back = { x: -30, y: -120 };
+          },
+          fx(f, t, c) {
+            const G = f.cine,
+              h = lastHit(t),
+              o2 = c.o2;
+            // footprints where she struck from
+            for (let j = 0; j <= Math.min(6, h.i); j++) {
+              ctx.globalAlpha = 0.35;
+              ctx.fillStyle = INK;
+              const x = G.cx + G.f * SOCKLET_SIDES[j] * 85;
+              ctx.beginPath();
+              ctx.ellipse(x + 8, GROUND + 6, 14, 5, 0, 0, 7);
+              ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            // the zip between strikes
+            if (h.i >= 1 && h.age < 4 && t < 92) {
+              const x0 = G.cx + G.f * SOCKLET_SIDES[h.i - 1] * 85,
+                x1 = G.cx + G.f * SOCKLET_SIDES[h.i] * 85;
+              ctx.strokeStyle = 'rgba(159,240,255,' + (1 - h.age / 4) + ')';
+              ctx.lineWidth = 6;
+              for (const dy of [-110, -80, -50]) {
+                ctx.beginPath();
+                ctx.moveTo(x0, GROUND + dy);
+                ctx.quadraticCurveTo((x0 + x1) / 2, GROUND + dy - 90, x1, GROUND + dy);
+                ctx.stroke();
+              }
+            }
+            if (t > 28 && t < 92 && h.age >= 5)
+              drawText('?', o2.x + (Math.floor(t / 6) % 2 ? 34 : -34), o2.y - 200 - Math.sin(t * 0.4) * 6, 46, FONT_COMIC, '#fff', INK, 6);
+            if (t >= 92 && t < c.FIN) drawText('PEEK-A-BOO!', f.x, f.y - 210, 32, FONT_COMIC, '#9ff0ff', INK, 6);
+          }
+        }
+      });
+      /* --- batch 2: Holey Moley, Steel Toe, King Knee-Sock, The Dryer Demon, Bleach Baron, Cling Queen --- */
+      const HOLEY_SEQ = [1, 0, 2, 1, 2, 0, 1]; // which hole they pop up from for each whack
+      const holeX = (j, cx) => clamp(cx + (j - 1) * 170, 90, W - 90);
+      /** Holey Moley's whack-a-mole: where the opponent is and how far out of the hole (u: 0 hidden .. 1 all out). */
+      function holeyOpp(t, G) {
+        const h = lastHit(t),
+          n = nextHit(t);
+        if (t < 14) return { x: lerp(G.ox0, G.cx, ease(Math.min(1, t / 12))), u: 1, y: GROUND };
+        if (t < 20) return { x: holeX(1, G.cx), u: 1 - ease((t - 14) / 6), y: GROUND };
+        if (t < 92) {
+          const post = h.i >= 0 && h.age < 5 ? 1 - h.age / 5 : 0,
+            pre = n.i < 7 && n.left <= 6 ? 1 - n.left / 6 : 0;
+          if (pre >= post && n.i < 7) return { x: holeX(HOLEY_SEQ[n.i], G.cx), u: pre, y: GROUND };
+          return { x: holeX(HOLEY_SEQ[Math.max(0, h.i)], G.cx), u: post, y: GROUND };
+        }
+        const x = holeX(1, G.cx);
+        if (t < 98) return { x, u: k01(t, 92, 98), y: GROUND };
+        if (t < 102) return { x, u: 1, y: GROUND - ease(k01(t, 98, 102)) * 150 };
+        return { x, u: 1, y: GROUND - 150 * (1 - k01(t, 102, CINE.FIN) ** 2) };
+      }
+      function holeyHero(t, G) {
+        const st = i => {
+          const j = HOLEY_SEQ[i];
+          return holeX(j, G.cx) + (j === 0 ? -100 : j === 2 ? 100 : -G.f * 100);
+        };
+        if (t < 24) return { x: lerp(G.x0, st(0), ease(k01(t, 4, 20))), y: GROUND };
+        if (t < 84) {
+          const h = lastHit(t),
+            k = k01(h.age, 2, 7);
+          return { x: lerp(st(h.i), st(h.i + 1), ease(k)), y: GROUND - Math.sin(k * Math.PI) * 80 };
+        }
+        return { x: st(6), y: GROUND };
+      }
+      /** 0 = mallet raised, 1 = WHACK. */
+      function holeySwing(t) {
+        const n = nextHit(t),
+          h = lastHit(t);
+        if (t < 92) return n.i < 7 && n.left <= 3 ? 1 - n.left / 3 : h.age < 4 ? 1 : 0;
+        return k01(t, CINE.FIN - 3, CINE.FIN);
+      }
+      /** Steel Toe's bulldozer: where it is (it backs up and RAMS on every hit). */
+      function dozerBase(t, G) {
+        return lerp(G.x0, G.cx - G.f * 250, ease(Math.min(1, t / 12))) + G.f * k01(t, 24, 84) * 70;
+      }
+      function dozerX(t, G) {
+        const base = dozerBase(t, G);
+        if (t < 19 || t >= 92) return base;
+        const ph = (((t - 24) % 10) + 10) % 10;
+        return base + G.f * (ph < 6 ? -(ph / 6) * 50 : -50 + ((ph - 6) / 4) * 50);
+      }
+      function drawDozer(x, d, t, alpha) {
+        if (alpha <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(x, GROUND);
+        ctx.scale(d, 1);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5;
+        // exhaust puffs
+        for (let k = 0; k < 3; k++) {
+          const a = (t * 2 + k * 12) % 36;
+          ctx.fillStyle = 'rgba(60,60,70,' + (0.6 - a / 60) + ')';
+          ctx.beginPath();
+          ctx.arc(-6 - a * 0.8, -120 - a * 2.2, 8 + a * 0.5, 0, 7);
+          ctx.fill();
+        }
+        ctx.fillStyle = '#5a5a66';
+        ctx.fillRect(-14, -118, 12, 46);
+        ctx.strokeRect(-14, -118, 12, 46);
+        // the arm and the blade
+        ctx.fillRect(60, -50, 44, 12);
+        ctx.strokeRect(60, -50, 44, 12);
+        ctx.fillStyle = '#b9c3d6';
+        ctx.beginPath();
+        ctx.moveTo(96, -96);
+        ctx.quadraticCurveTo(124, -50, 102, 0);
+        ctx.lineTo(120, 0);
+        ctx.quadraticCurveTo(140, -50, 114, -100);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        // body and cab
+        ctx.fillStyle = '#ffc21a';
+        roundRectPath(ctx, -92, -76, 166, 46, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillRect(-92, -156, 58, 82);
+        ctx.strokeRect(-92, -156, 58, 82);
+        ctx.fillStyle = '#9fe0ff';
+        ctx.fillRect(-84, -146, 42, 34);
+        ctx.strokeRect(-84, -146, 42, 34);
+        ctx.fillStyle = INK;
+        for (let k = 0; k < 5; k++) {
+          ctx.beginPath();
+          ctx.moveTo(-26 + k * 20, -76);
+          ctx.lineTo(-14 + k * 20, -76);
+          ctx.lineTo(-24 + k * 20, -30);
+          ctx.lineTo(-36 + k * 20, -30);
+          ctx.closePath();
+          ctx.fill();
+        }
+        // tracks
+        ctx.fillStyle = '#2a2a30';
+        roundRectPath(ctx, -104, -36, 208, 36, 18);
+        ctx.fill();
+        ctx.stroke();
+        for (let k = 0; k < 5; k++) {
+          const wx = -76 + k * 38;
+          ctx.fillStyle = '#9aa3b0';
+          ctx.beginPath();
+          ctx.arc(wx, -18, 12, 0, 7);
+          ctx.fill();
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(wx + Math.cos(t * 0.5) * 10, -18 + Math.sin(t * 0.5) * 10);
+          ctx.lineTo(wx - Math.cos(t * 0.5) * 10, -18 - Math.sin(t * 0.5) * 10);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      function drawCrown(x, y, s) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(s, s);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5 / s;
+        ctx.fillStyle = '#ffd23f';
+        ctx.beginPath();
+        ctx.moveTo(-60, 30);
+        ctx.lineTo(-64, -30);
+        ctx.lineTo(-34, 0);
+        ctx.lineTo(0, -44);
+        ctx.lineTo(34, 0);
+        ctx.lineTo(64, -30);
+        ctx.lineTo(60, 30);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        for (const [jx, jy, c] of [[-64, -30, '#3fb0ff'], [0, -44, '#ff3b4e'], [64, -30, '#7dff8a'], [0, 14, '#ff3b4e'], [-30, 16, '#3fb0ff'], [30, 16, '#7dff8a']]) {
+          ctx.fillStyle = c;
+          ctx.beginPath();
+          ctx.arc(jx, jy, 8, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      const DRUM_R = 140,
+        DRUM_Y = GROUND - 190;
+      /** The Dryer Demon's drum: where the opponent tumbles. */
+      function demonOpp(t, G) {
+        const cx = G.cx;
+        if (t < 8) return { x: lerp(G.ox0, cx, ease(t / 8)), y: GROUND, rot: 0 };
+        if (t < 20) {
+          const k = ease((t - 8) / 12);
+          return { x: cx, y: lerp(GROUND, DRUM_Y + 65, k), rot: k * 2 };
+        }
+        const tt = Math.min(t, 96),
+          an = (tt - 20) * 0.21,
+          p = { x: cx + Math.cos(an) * 55, y: DRUM_Y + 65 + Math.sin(an) * 42, rot: 2 + (tt - 20) * 0.35 };
+        if (t < 96) return p;
+        const k = k01(t, 96, CINE.FIN);
+        return { x: lerp(p.x, cx + G.f * 150, k), y: lerp(p.y, GROUND, k * k) - Math.sin(k * Math.PI) * 90, rot: p.rot + k * 3 };
+      }
+      /** Bleach Baron's gavel: 0 = BANG on the bench, rising to 1 = raised high. */
+      function gavelUp(t) {
+        if (t < 12) return 1;
+        const sw = (((t - 18) % 10) + 10) % 10;
+        return sw < 2 ? 0 : ease((sw - 2) / 8);
+      }
+      /** Cling Queen: stuck together, spinning round and round. */
+      function clingPos(t, G) {
+        const cx = G.cx,
+          f = G.f;
+        if (t < 14) {
+          const k = ease(t / 14);
+          return { hx: lerp(G.x0, cx - f * 65, k), hy: GROUND, ox: lerp(G.ox0, cx + f * 65, k), oy: GROUND, a: 0 };
+        }
+        const tt = Math.min(t, 96),
+          a = (tt - 14) * 0.157,
+          lift = ease(k01(tt, 14, 28)) * 90;
+        const p = { hx: cx - f * Math.cos(a) * 65, hy: GROUND - lift + Math.sin(tt * 0.2) * 8, ox: cx + f * Math.cos(a) * 65, oy: GROUND - lift - Math.sin(tt * 0.2) * 8, a };
+        if (t < 96) return p;
+        const k = k01(t, 96, CINE.FIN);
+        return { hx: lerp(p.hx, cx - f * 200, ease(k)), hy: lerp(p.hy, GROUND, k * k) - Math.sin(k * Math.PI) * 40, ox: p.ox, oy: lerp(p.oy, GROUND, k01(t, 100, CINE.FIN) ** 2), a };
+      }
+      function zigzag(x0, y0, x1, y1, n, amp, seed) {
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        for (let k = 1; k < n; k++) {
+          const j = (((seed * 31 + k * 57) % 23) / 23 - 0.5) * 2 * amp;
+          ctx.lineTo(lerp(x0, x1, k / n) + j, lerp(y0, y1, k / n) + j * 0.5);
+        }
+        ctx.lineTo(x1, y1);
+      }
+
+      Object.assign(UNIQUE_SUPERS, {
+        /* HOLEY MOLEY: TOTAL MOTH-HEM. Moths chew holes in the floor and they drop in: WHACK-A-MOLE with a giant
+         * mallet, then the moths fly them up and drop them for the last whack. */
+        holey: {
+          words: ['WHACK!', 'BONK!', 'GOT YA!', 'MISSED ME?', 'THWOCK!', 'BOP!', 'WHAP!'],
+          move(t, c) {
+            const o = holeyOpp(t, c),
+              hh = holeyHero(t, c);
+            return { hx: hh.x, hy: hh.y, ox: o.x, oy: o.y };
+          },
+          view(who, t, f) {
+            if (who !== 'opp' || t < 14 || t >= 98) return null;
+            const o = holeyOpp(t, f.cine);
+            return o.u <= 0.02 ? { hide: true } : { clip: GROUND + 6, dy: (1 - o.u) * 200 };
+          },
+          pose(p, t) {
+            const sw = holeySwing(t);
+            p.front = { x: lerp(-10, 70, sw), y: lerp(-190, -110, sw) };
+            p.back = { x: lerp(-20, 50, sw), y: lerp(-180, -100, sw) };
+            p.lean = lerp(-0.12, 0.3, sw);
+            p.mouth = sw > 0.5 ? 'yell' : 'grin';
+          },
+          opp(p, t) {
+            if (t >= 14) {
+              p.eyes = lastHit(t).age < 5 ? 'spiral' : 'normal';
+              p.mouth = 'yell';
+              p.front = { x: 40, y: -170 };
+              p.back = { x: -40, y: -170 };
+            }
+          },
+          back(f, t, c) {
+            const G = f.cine;
+            for (let j = 0; j < 3; j++) {
+              const k = ease(k01(t, 6 + j * 3, 16 + j * 3)),
+                x = holeX(j, G.cx);
+              if (k <= 0) continue;
+              ctx.fillStyle = '#6a4a2a';
+              for (const dx of [-62, -30, 30, 62]) {
+                ctx.beginPath();
+                ctx.arc(x + dx * k, GROUND + 2, 12 * k, Math.PI, 0);
+                ctx.fill();
+              }
+              ctx.fillStyle = '#0a0612';
+              ctx.beginPath();
+              ctx.ellipse(x, GROUND + 4, 64 * k, 15 * k, 0, 0, 7);
+              ctx.fill();
+            }
+          },
+          fx(f, t, c) {
+            const G = f.cine,
+              o = holeyOpp(t, G);
+            // the moths: chewing holes, hovering, then lifting them out
+            for (let m = 0; m < 7; m++) {
+              let x, y;
+              if (t < 22) {
+                const j = m % 3;
+                x = holeX(j, G.cx) + Math.cos(t * 0.5 + m) * 50;
+                y = GROUND - 20 + Math.sin(t * 0.7 + m) * 14;
+              } else if (t < 92) {
+                x = G.cx + Math.cos(t * 0.06 + m * 0.9) * 300;
+                y = 140 + Math.sin(t * 0.11 + m) * 40;
+              } else {
+                x = o.x + Math.cos(t * 0.6 + m) * 60;
+                y = o.y - 10 + Math.sin(t * 0.8 + m) * 16;
+              }
+              drawCineObj('moth', x, y, 1.1, t + m * 5, f);
+            }
+            // the mallet
+            const sw = holeySwing(t),
+              target = t < 92 ? o.x : holeX(1, G.cx),
+              md = Math.sign(target - f.x) || G.f,
+              hx = f.x + md * 34,
+              hy = f.y - 110;
+            ctx.save();
+            ctx.translate(hx, hy);
+            ctx.scale(md, 1);
+            ctx.rotate(lerp(-2.0, 0.62, sw));
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 12;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(108, 0);
+            ctx.stroke();
+            ctx.strokeStyle = '#c8955a';
+            ctx.lineWidth = 7;
+            ctx.stroke();
+            ctx.fillStyle = '#ff5a5f';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            roundRectPath(ctx, 96, -38, 52, 76, 14);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(104, -38, 8, 76);
+            ctx.restore();
+          }
+        },
+
+        /* STEEL TOE: HEAVY MACHINERY. Rides in on a bulldozer and RAMS them again and again, then a wrecking ball
+         * swings in from the crane. */
+        steel: {
+          words: ['RAM!', 'CLANG!', 'BEEP BEEP!', 'BULLDOZE!', 'HARD HAT!', 'CRUNCH!', 'DIG!'],
+          move(t, c) {
+            const h = lastHit(t);
+            return {
+              hx: dozerX(t, c),
+              hy: GROUND - 74 * ease(k01(t, 2, 10)),
+              ox: lerp(c.ox0, dozerBase(t, c) + c.f * 168, c.intro) + c.f * bump(h.age, 8) * 30,
+              oy: GROUND - bump(h.age, 6) * 30
+            };
+          },
+          pose(p, t) {
+            const h = lastHit(t);
+            p.front = h.age < 5 ? { x: 30, y: -210 } : { x: 50, y: -70 };
+            p.back = { x: -30, y: -70 };
+            p.lean = h.age < 5 ? 0.2 : 0.05;
+            p.mouth = h.age < 5 ? 'yell' : 'grin';
+          },
+          opp(p, t) {
+            if (t >= 20) {
+              p.eyes = lastHit(t).age < 6 ? 'spiral' : 'wince';
+              p.mouth = 'yell';
+              p.lean = -0.2;
+              p.front = { x: 40, y: -120 };
+              p.back = { x: 30, y: -110 };
+            }
+          },
+          back(f, t, c) {
+            drawDozer(f.cine && t < c.FIN ? dozerX(t, f.cine) : f.x, c.fc, t, Math.min(k01(t, 0, 6), 1 - k01(t, c.FIN + 4, c.FIN + 14)));
+          },
+          fx(f, t, c) {
+            if (t < c.FIN - 20 || t >= c.FIN + 16) return;
+            const o2 = c.o2,
+              px = o2.x,
+              py = -70,
+              L = GROUND - 130 - py,
+              k = k01(t, c.FIN - 20, c.FIN),
+              th = t < c.FIN ? -c.fc * 1.25 * Math.cos((k * Math.PI) / 2) : c.fc * 0.3 * Math.sin(k01(t, c.FIN, c.FIN + 16) * Math.PI),
+              bx = px + Math.sin(th) * L,
+              by = py + Math.cos(th) * L;
+            ctx.strokeStyle = '#5a5a66';
+            ctx.lineWidth = 6;
+            ctx.setLineDash([12, 6]);
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(bx, by);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            const g = ctx.createRadialGradient(bx - 18, by - 18, 6, bx, by, 60);
+            g.addColorStop(0, '#8a8a96');
+            g.addColorStop(1, '#2a2a30');
+            ctx.fillStyle = g;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(bx, by, 58, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+          }
+        },
+
+        /* KING KNEE-SOCK: DIVINE RIGHT OF SOCKS. Sits on his throne and points; his royal guards march in and do
+         * the work, then a GIANT crown drops on them. */
+        king: {
+          words: ['HEAR YE!', 'GUARDS!', 'KNEEL!', 'BY ROYAL DECREE!', 'OFF WITH THEIR SOCKS!', 'BOW!', 'ROYAL POKE!'],
+          move(t, c) {
+            const h = lastHit(t);
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 280, c.intro),
+              hy: GROUND - 50 * ease(k01(t, 6, 14)),
+              ox: lerp(c.ox0, c.cx, c.intro) + (h.i % 2 ? -c.f : c.f) * bump(h.age, 8) * 22,
+              oy: GROUND - bump(h.age, 6) * 22
+            };
+          },
+          pose(p, t) {
+            const h = lastHit(t),
+              n = nextHit(t),
+              point = (n.left < 4 || h.age < 4) && t < 92;
+            p.bodyH = 104;
+            p.front = point ? { x: 100, y: -110 } : t >= 92 ? { x: 40, y: -190 } : { x: 40, y: -76 };
+            p.back = t >= 92 ? { x: -30, y: -190 } : { x: -20, y: -60 };
+            p.mouth = 'grin';
+          },
+          opp(p, t) {
+            if (t >= 22) {
+              p.eyes = lastHit(t).age < 6 ? 'spiral' : 'wince';
+              p.mouth = 'yell';
+            }
+          },
+          back(f, t, c) {
+            const G = f.cine,
+              d = c.fc,
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 6, c.FIN + 16));
+            // the throne (behind him)
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.translate(f.x, GROUND);
+            ctx.scale(d, 1);
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.fillStyle = '#b0182e';
+            roundRectPath(ctx, -80, -270, 110, 236, 22);
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = '#ffd23f';
+            ctx.lineWidth = 7;
+            roundRectPath(ctx, -68, -256, 86, 210, 16);
+            ctx.stroke();
+            ctx.fillStyle = '#ffd23f';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.fillRect(-92, -54, 160, 18);
+            ctx.strokeRect(-92, -54, 160, 18);
+            ctx.fillRect(-86, -36, 14, 36);
+            ctx.strokeRect(-86, -36, 14, 36);
+            ctx.fillRect(48, -36, 14, 36);
+            ctx.strokeRect(48, -36, 14, 36);
+            ctx.restore();
+            drawCrown(f.x - d * 25, GROUND - 278, 0.55 * a);
+            // the royal guards
+            for (const s of [-1, 1]) {
+              const spot = G.cx + s * c.fc * 110,
+                gx = lerp(G.cx + s * c.fc * 620, spot, ease(k01(t, 4, 20))),
+                face = -s * c.fc,
+                mine = (i => (s < 0 ? i % 2 === 0 : i % 2 === 1)),
+                h = lastHit(t),
+                n = nextHit(t),
+                thrust = t < 92 && ((n.i < 7 && mine(n.i) && n.left < 3) || (h.i >= 0 && mine(h.i) && h.age < 4));
+              const pose = basePose();
+              pose.eyes = 'angry';
+              pose.mouth = 'flat';
+              pose.yOff = t < 20 ? -Math.abs(Math.sin(t * 0.6)) * 8 : 0;
+              pose.front = thrust ? { x: 100, y: -84 } : { x: 46, y: -80 };
+              pose.back = { x: 20, y: -70 };
+              pose.lean = thrust ? 0.25 : 0;
+              ctx.globalAlpha = a;
+              drawSock(ctx, f.def, pose, gx, GROUND, face, 0.72, { x: 0, y: 0 });
+              // helmet and spear
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 4;
+              ctx.fillStyle = '#b9c3d6';
+              ctx.beginPath();
+              ctx.arc(gx - face * 6, GROUND - 110, 30, Math.PI, 0);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+              const sx = gx + face * pose.front.x * 0.72,
+                sy = GROUND + pose.front.y * 0.72;
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 8;
+              ctx.beginPath();
+              ctx.moveTo(sx - face * 60, sy);
+              ctx.lineTo(sx + face * 70, sy);
+              ctx.stroke();
+              ctx.strokeStyle = '#8a5a2a';
+              ctx.lineWidth = 4;
+              ctx.stroke();
+              ctx.fillStyle = '#e8eef8';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(sx + face * 92, sy);
+              ctx.lineTo(sx + face * 68, sy - 10);
+              ctx.lineTo(sx + face * 68, sy + 10);
+              ctx.closePath();
+              ctx.fill();
+              ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+          },
+          fx(f, t, c) {
+            if (t > 4 && t < 26) drawText('HEAR YE! HEAR YE!', f.x, GROUND - 320, 30, FONT_COMIC, '#ffd23f', INK, 6);
+            if (t >= c.FIN - 14 && t < c.FIN + 18) {
+              const k = k01(t, c.FIN - 14, c.FIN);
+              ctx.globalAlpha = 1 - k01(t, c.FIN + 8, c.FIN + 18);
+              drawCrown(c.o2.x, lerp(-120, GROUND - 120, k * k), 1.9);
+              ctx.globalAlpha = 1;
+            }
+          }
+        },
+
+        /* THE DRYER DEMON: ETERNAL TUMBLE DRY. A huge dryer door opens, sucks them in and tumbles them round in the
+         * flames, then the door bursts open and flings them out. */
+        demon: {
+          words: ['TUMBLE!', 'SPIN CYCLE!', 'HOT HOT HOT!', 'ROUND & ROUND!', 'SCORCH!', 'NO ESCAPE!', 'SIZZLE!'],
+          move(t, c) {
+            const o = demonOpp(t, c);
+            return { hx: lerp(c.x0, c.cx - c.f * 260, c.intro), hy: GROUND, ox: o.x, oy: o.y };
+          },
+          pose(p, t) {
+            p.front = { x: 64 + Math.cos(t * 0.4) * 14, y: -110 + Math.sin(t * 0.4) * 14 };
+            p.back = { x: -30, y: -150 };
+            p.mouth = 'grin';
+          },
+          opp(p, t, f) {
+            if (t >= 8) {
+              p.rot = demonOpp(t, f.cine).rot;
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 60, y: -150 };
+              p.back = { x: -50, y: -140 };
+            }
+          },
+          back(f, t, c) {
+            const cx = f.cine.cx,
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 4, c.FIN + 16));
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 6;
+            ctx.fillStyle = '#2a1414';
+            roundRectPath(ctx, cx - 190, GROUND - 400, 380, 400, 18);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#4a1a10';
+            ctx.fillRect(cx - 190, GROUND - 400, 380, 44);
+            ctx.strokeRect(cx - 190, GROUND - 400, 380, 44);
+            for (const dx of [-140, -100]) {
+              ctx.fillStyle = '#c8c8d0';
+              ctx.beginPath();
+              ctx.arc(cx + dx, GROUND - 378, 13, 0, 7);
+              ctx.fill();
+              ctx.lineWidth = 3;
+              ctx.stroke();
+            }
+            ctx.fillStyle = '#100000';
+            ctx.fillRect(cx + 40, GROUND - 392, 120, 28);
+            drawText('∞ MIN', cx + 100, GROUND - 377, 22, FONT_COMIC, '#ff3a1f', INK, 0);
+            // the drum, full of flames
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, DRUM_Y, DRUM_R, 0, 7);
+            ctx.clip();
+            ctx.fillStyle = '#140400';
+            ctx.fillRect(cx - DRUM_R, DRUM_Y - DRUM_R, DRUM_R * 2, DRUM_R * 2);
+            const h = lastHit(t);
+            for (let k = 0; k < 11; k++) {
+              const x = cx - DRUM_R + k * 28,
+                fh = 50 + Math.sin(t * 0.5 + k * 1.7) * 18 + bump(h.age, 8) * 50;
+              ctx.fillStyle = k % 2 ? '#ff7a1f' : '#ffd23f';
+              ctx.beginPath();
+              ctx.moveTo(x - 20, DRUM_Y + DRUM_R);
+              ctx.quadraticCurveTo(x - 6, DRUM_Y + DRUM_R - fh * 0.6, x + 2, DRUM_Y + DRUM_R - fh);
+              ctx.quadraticCurveTo(x + 10, DRUM_Y + DRUM_R - fh * 0.5, x + 22, DRUM_Y + DRUM_R);
+              ctx.fill();
+            }
+            ctx.restore();
+            ctx.restore();
+          },
+          fx(f, t, c) {
+            const cx = f.cine.cx,
+              h = lastHit(t),
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 4, c.FIN + 16)),
+              open = ease(k01(t, 94, 100)),
+              th = open * 2.6,
+              hinge = cx - c.fc * (DRUM_R + 10),
+              dx = hinge + c.fc * (DRUM_R + 10) * Math.cos(th),
+              w = (DRUM_R + 10) * Math.abs(Math.cos(th)) + 6;
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.fillStyle = 'rgba(255,150,60,' + (0.16 + bump(h.age, 6) * 0.25) + ')';
+            ctx.beginPath();
+            ctx.ellipse(dx, DRUM_Y, w, DRUM_R + 10, 0, 0, 7);
+            ctx.fill();
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 30;
+            ctx.stroke();
+            ctx.strokeStyle = h.age < 5 ? '#ffd0a0' : '#8a8a96';
+            ctx.lineWidth = 22;
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.ellipse(dx, DRUM_Y, w * 0.7, DRUM_R * 0.7, 0, 3.6, 4.6);
+            ctx.stroke();
+            ctx.restore();
+            // the knob he's turning
+            ctx.fillStyle = '#c8c8d0';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 4;
+            const kx = f.x + f.face * 70,
+              ky = f.y - 108;
+            ctx.beginPath();
+            ctx.arc(kx, ky, 18, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(kx, ky);
+            ctx.lineTo(kx + Math.cos(t * 0.4) * 16, ky + Math.sin(t * 0.4) * 16);
+            ctx.stroke();
+          }
+        },
+
+        /* BLEACH BARON: WHITEOUT JUDGMENT. Judge Bleach bangs his gavel and sends a bleach wave down the court with
+         * every BANG, then tips a giant bottle of bleach over them. WHITEOUT. */
+        bleach: {
+          words: ['ORDER!', 'GUILTY!', 'SPLOOSH!', 'OBJECTION!', 'BLEACHED!', 'SUSTAINED!', 'SPOTLESS!'],
+          move(t, c) {
+            const h = lastHit(t);
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 260, c.intro),
+              hy: t < CINE.FIN ? GROUND - 56 * ease(k01(t, 0, 10)) : GROUND,
+              ox: lerp(c.ox0, c.cx + c.f * 30, c.intro) + c.f * bump(h.age, 8) * 24,
+              oy: GROUND - bump(h.age, 6) * 30
+            };
+          },
+          pose(p, t) {
+            const u = gavelUp(t);
+            p.front = { x: 70, y: lerp(-84, -210, u) };
+            p.back = { x: -20, y: -90 };
+            p.lean = lerp(0.18, -0.08, u);
+            p.mouth = u < 0.2 ? 'yell' : 'flat';
+          },
+          opp(p, t) {
+            if (t >= 24) {
+              p.eyes = 'wince';
+              p.mouth = 'wobble';
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              fc = c.fc,
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN, c.FIN + 12));
+            // bleach waves down the court
+            for (let i = 0; i < 7; i++) {
+              const q = t - (HIT_T(i) - 6);
+              if (q < 0 || q > 6) continue;
+              const k = q / 6,
+                x = lerp(f.x + fc * 100, o2.x - fc * 20, k),
+                hh = 26 + k * 34;
+              ctx.fillStyle = '#ffffff';
+              ctx.strokeStyle = '#7fd0ff';
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              ctx.ellipse(x, GROUND, 44, hh, 0, Math.PI, 0);
+              ctx.fill();
+              ctx.stroke();
+            }
+            // foam piles up on them
+            const h = lastHit(t);
+            const nb = t >= c.FIN ? 0 : Math.min(28, (h.i + 1) * 4);
+            for (let b = 0; b < nb; b++) {
+              ctx.fillStyle = 'rgba(255,255,255,0.92)';
+              ctx.strokeStyle = '#7fd0ff';
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.arc(o2.x + ((b * 37) % 76) - 38, o2.y - 14 - ((b * 53) % 150), 8 + (b % 3) * 5, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+            }
+            // the judge's bench, in front of him
+            if (a > 0) {
+              ctx.save();
+              ctx.globalAlpha = a;
+              ctx.fillStyle = '#6a3a1a';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 5;
+              ctx.fillRect(f.x - 90, GROUND - 126, 180, 126);
+              ctx.strokeRect(f.x - 90, GROUND - 126, 180, 126);
+              ctx.fillStyle = '#8a5228';
+              ctx.fillRect(f.x - 100, GROUND - 138, 200, 16);
+              ctx.strokeRect(f.x - 100, GROUND - 138, 200, 16);
+              ctx.fillStyle = '#ffd23f';
+              ctx.fillRect(f.x - 60, GROUND - 100, 120, 32);
+              ctx.strokeRect(f.x - 60, GROUND - 100, 120, 32);
+              drawText('JUDGE', f.x, GROUND - 84, 24, FONT_COMIC, INK, INK, 0);
+              // the gavel
+              const u = gavelUp(t),
+                hx = f.x + fc * 62,
+                hy = f.y + lerp(-84, -210, u) + 10;
+              ctx.translate(hx, hy);
+              ctx.scale(fc, 1);
+              ctx.rotate(lerp(0.35, -2.0, u));
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 10;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.lineTo(62, 0);
+              ctx.stroke();
+              ctx.strokeStyle = '#c8955a';
+              ctx.lineWidth = 5;
+              ctx.stroke();
+              ctx.fillStyle = '#8a5228';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 4;
+              roundRectPath(ctx, 54, -26, 30, 52, 8);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+              if (u === 0 && t > 12 && t < 92) drawText('BANG!', f.x + fc * 40, GROUND - 190, 28, FONT_COMIC, '#fff', INK, 5);
+            }
+            // the giant bottle tips over them
+            if (t >= c.FIN - 26 && t < c.FIN + 6) {
+              const tip = ease(k01(t, c.FIN - 26, c.FIN - 14)) * 2.1,
+                bx = o2.x - fc * 80,
+                by = 130;
+              if (t >= c.FIN - 14 && t < c.FIN) {
+                ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+                ctx.lineWidth = 34;
+                ctx.beginPath();
+                ctx.moveTo(bx + fc * 70, by + 20);
+                ctx.quadraticCurveTo(o2.x + Math.sin(t) * 8, (by + o2.y) / 2, o2.x, o2.y - 100);
+                ctx.stroke();
+              }
+              ctx.save();
+              ctx.translate(bx, by);
+              ctx.scale(fc, 1);
+              ctx.rotate(tip);
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 5;
+              ctx.fillStyle = '#f4f8ff';
+              roundRectPath(ctx, -50, -70, 100, 140, 22);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = '#3f7fff';
+              ctx.fillRect(-18, -96, 36, 28);
+              ctx.strokeRect(-18, -96, 36, 28);
+              ctx.fillStyle = '#7fd0ff';
+              ctx.fillRect(-40, -24, 80, 46);
+              ctx.strokeRect(-40, -24, 80, 46);
+              drawText('BLEACH', 0, -1, 22, FONT_COMIC, '#fff', INK, 4);
+              ctx.restore();
+            }
+            if (t >= c.FIN && t < c.FIN + 18) {
+              ctx.fillStyle = 'rgba(255,255,255,' + (1 - k01(t, c.FIN, c.FIN + 18)) * 0.85 + ')';
+              ctx.fillRect(-40, -40, W + 80, H + 80);
+              drawText('WHITEOUT!', W / 2, H / 2 - 40, 70, FONT_COMIC, '#7fd0ff', INK, 8);
+            }
+          }
+        },
+
+        /* CLING QUEEN: STATIC SHOCKWAVE. Grabs them and they're STUCK together, spinning up into the air,
+         * zapping with every turn, then she calls down the lightning. */
+        cling: {
+          words: ['STUCK!', 'ZAP!', 'CRACKLE!', 'STATIC!', 'FRIZZ!', 'BZZT!', "CAN'T LET GO!"],
+          move(t, c) {
+            const p = clingPos(t, c);
+            if (t >= 14 && t < 96) game.drawOnTop = Math.sin(p.a) > 0 ? c.me : c.o2;
+            return { hx: p.hx, hy: p.hy, ox: p.ox, oy: p.oy };
+          },
+          pose(p, t) {
+            if (t < 96) {
+              p.front = { x: 72, y: -100 };
+              p.back = { x: 60, y: -84 };
+              p.mouth = 'grin';
+              p.eyes = 'happy';
+            } else {
+              p.front = { x: 40, y: -220 };
+              p.back = { x: -20, y: -200 };
+            }
+          },
+          opp(p, t) {
+            p.eyes = 'spiral';
+            p.mouth = 'yell';
+            p.front = { x: 60, y: -170 };
+            p.back = { x: -50, y: -160 };
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              h = lastHit(t);
+            if (t > 10 && t < c.FIN) {
+              for (const g of [f, o2])
+                for (let k = 0; k < 6; k++) {
+                  if ((t + k) % 3 === 0) continue;
+                  const a = k * 1.05 + t * 0.4,
+                    x = g.x + Math.cos(a) * 70,
+                    y = g.y - 80 + Math.sin(a) * 80;
+                  ctx.strokeStyle = k % 2 ? '#4fd6a0' : '#fff';
+                  ctx.lineWidth = 3;
+                  zigzag(x, y, x + Math.cos(a) * 26, y + Math.sin(a) * 26, 3, 6, t + k);
+                  ctx.stroke();
+                }
+            }
+            if (h.i >= 0 && h.age < 5 && t < 96) {
+              for (const [col, lw] of [['#4fd6a0', 14], ['#fff', 5]]) {
+                ctx.strokeStyle = col;
+                ctx.lineWidth = lw;
+                zigzag(f.x, f.y - 90, o2.x, o2.y - 90, 7, 18, t);
+                ctx.stroke();
+              }
+            }
+            if (t >= c.FIN - 6 && t < c.FIN + 8) {
+              ctx.globalAlpha = t < c.FIN ? 1 : 1 - (t - c.FIN) / 8;
+              for (const [col, lw] of [['rgba(255,240,120,0.5)', 40], ['#ffe234', 16], ['#fff', 6]]) {
+                ctx.strokeStyle = col;
+                ctx.lineWidth = lw;
+                zigzag(o2.x + 60, -30, o2.x, o2.y - 70, 9, 30, 7);
+                ctx.stroke();
+              }
+              ctx.globalAlpha = 1;
+            }
+          }
+        }
+      });
+      /* --- batch 3: Iron Shogun, Mismatch, Prince Puppetini, The Grand Mitten, Lefty --- */
+      const BOARD_Y = GROUND - 72; // the top of Iron Shogun's ironing board
+      /** Iron Shogun's giant iron: x, and the bottom of its hot plate. */
+      function ironAt(t, G) {
+        if (t < 14) return { x: G.cx, y: lerp(-160, BOARD_Y - 58, ease(t / 14)) };
+        if (t < 92) {
+          const h = lastHit(t);
+          return { x: G.cx + Math.sin(((t - 24) / 10) * Math.PI) * 110, y: BOARD_Y - 58 + bump(h.age, 6) * 16 };
+        }
+        if (t < 100) return { x: G.cx, y: lerp(BOARD_Y - 58, BOARD_Y - 220, ease(k01(t, 92, 100))) };
+        return { x: G.cx, y: lerp(BOARD_Y - 220, BOARD_Y - 44, k01(t, 100, CINE.FIN) ** 2) };
+      }
+      const IRON_S = 1.2;
+      const LEFTY_MOVES = ['poke', 'slap', 'flick', 'poke', 'slap', 'flick', 'poke'];
+      /** A giant cartoon hand (fingers point up at rot 0); fing = how far each finger is out, thumb first. */
+      function drawGiantHand(x, y, rot, s, fing, col) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.scale(s, s);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5;
+        ctx.fillStyle = col;
+        const xs = [-33, -11, 11, 33];
+        for (let j = 0; j < 4; j++) {
+          const len = 26 + fing[j + 1] * 58 - (j === 3 ? 10 : 0);
+          roundRectPath(ctx, xs[j] - 11, -40 - len, 22, len + 14, 11);
+          ctx.fill();
+          ctx.stroke();
+        }
+        ctx.save();
+        ctx.translate(-44, 4);
+        ctx.rotate(-0.9);
+        const tl = 22 + fing[0] * 40;
+        roundRectPath(ctx, -12, -tl, 24, tl + 12, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+        roundRectPath(ctx, -48, -46, 96, 92, 28);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(-44, 40, 88, 26);
+        ctx.strokeRect(-44, 40, 88, 26);
+        ctx.restore();
+      }
+      const PUPPET_DANCE = [
+        [{ x: 50, y: -200 }, { x: -40, y: -200 }],
+        [{ x: 72, y: -120 }, { x: -60, y: -120 }],
+        [{ x: 50, y: -200 }, { x: -50, y: -60 }],
+        [{ x: 50, y: -60 }, { x: -40, y: -200 }]
+      ];
+
+      Object.assign(UNIQUE_SUPERS, {
+        /* IRON SHOGUN: STEAM PRESS APOCALYPSE. Lays them out on an ironing board and SURFS a giant steam iron back
+         * and forth over them, then rides it sky-high and slams it down. */
+        iron: {
+          words: ['PRESS!', 'HISS!', 'CREASE!', 'STEAM!', 'FLAT!', 'SSSSS!', 'WRINKLE-FREE!'],
+          move(t, c) {
+            const I = ironAt(t, c),
+              top = I.y - 34 * IRON_S - 24 * IRON_S;
+            let hx = I.x,
+              hy = top;
+            if (t < 14) {
+              const k = ease(t / 14);
+              hx = lerp(c.x0, I.x, k);
+              hy = lerp(GROUND, top, k) - Math.sin(k * Math.PI) * 120;
+            }
+            let ox = c.cx,
+              oy = BOARD_Y + 35;
+            if (t < 10) {
+              ox = lerp(c.ox0, c.cx, ease(t / 10));
+              oy = GROUND;
+            } else if (t < 20) {
+              const k = ease((t - 10) / 10);
+              oy = lerp(GROUND, BOARD_Y + 35, k) - Math.sin(k * Math.PI) * 60;
+            } else if (t >= 100) {
+              const k = k01(t, 100, CINE.FIN);
+              ox = c.cx + c.f * k * 70;
+              oy = lerp(BOARD_Y + 35, GROUND, k * k);
+            }
+            return { hx, hy, ox, oy };
+          },
+          view(who, t) {
+            return who === 'hero' && t >= 14 && t < CINE.FIN ? { hide: true } : null;
+          },
+          pose(p, t) {
+            p.lean = 0.1;
+            p.front = { x: 70, y: -130 + Math.sin(t * 0.3) * 10 };
+            p.back = { x: -60, y: -120 - Math.sin(t * 0.3) * 10 };
+            p.mouth = 'grin';
+            if (t >= 92) {
+              p.front = { x: 40, y: -210 };
+              p.back = { x: -30, y: -210 };
+              p.mouth = 'yell';
+            }
+          },
+          opp(p, t, f) {
+            if (t < 10) return;
+            const h = lastHit(t),
+              lie = t < 100 ? ease(k01(t, 10, 20)) : 1 - k01(t, 100, CINE.FIN);
+            p.rot = -f.cine.f * f.lockO.face * 1.5 * lie;
+            p.sy = 1 - Math.min(0.3, (h.i + 1) * 0.045) - bump(h.age, 5) * 0.15;
+            p.eyes = 'spiral';
+            p.mouth = 'yell';
+            p.front = { x: 40, y: -60 };
+            p.back = { x: -20, y: -60 };
+          },
+          back(f, t, c) {
+            const cx = f.cine.cx,
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 6, c.FIN + 16));
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(cx - 110, BOARD_Y + 10);
+            ctx.lineTo(cx + 90, GROUND);
+            ctx.moveTo(cx + 90, BOARD_Y + 10);
+            ctx.lineTo(cx - 110, GROUND);
+            ctx.stroke();
+            ctx.strokeStyle = '#9aa3b0';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.fillStyle = '#cfe6ff';
+            ctx.beginPath();
+            ctx.moveTo(cx - 180, BOARD_Y);
+            ctx.lineTo(cx + 130, BOARD_Y);
+            ctx.quadraticCurveTo(cx + 200, BOARD_Y + 7, cx + 130, BOARD_Y + 14);
+            ctx.lineTo(cx - 180, BOARD_Y + 14);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = '#ff7a5c';
+            for (let x = cx - 160; x < cx + 120; x += 40) {
+              ctx.beginPath();
+              ctx.arc(x, BOARD_Y + 7, 4, 0, 7);
+              ctx.fill();
+            }
+            ctx.restore();
+          },
+          fx(f, t, c) {
+            const G = f.cine,
+              I = ironAt(t, G),
+              h = lastHit(t),
+              a = 1 - k01(t, c.FIN + 6, c.FIN + 16);
+            if (a <= 0) return;
+            ctx.save();
+            ctx.globalAlpha = a;
+            // steam
+            for (let k = 0; k < 8; k++) {
+              const age = t >= c.FIN ? t - c.FIN : h.age;
+              if (age > 14) break;
+              const sx = I.x + (k - 3.5) * 26,
+                sy = I.y - age * (3 + (k % 3)) - 6;
+              ctx.fillStyle = 'rgba(255,255,255,' + (0.8 - age / 18) + ')';
+              ctx.beginPath();
+              ctx.arc(sx, sy, 12 + age * 1.5, 0, 7);
+              ctx.fill();
+            }
+            const face = t < 92 && Math.cos(((t - 24) / 10) * Math.PI) < 0 ? -1 : 1;
+            drawCineObj('iron', I.x, I.y - 34 * IRON_S, IRON_S, t, f, face * G.f);
+            ctx.restore();
+            // Iron Shogun riding it (drawn on top of the iron)
+            if (t >= 14 && t < c.FIN) {
+              const p = f.pose();
+              drawSock(ctx, f.def, p, f.x, f.y, f.face, 1, { x: 0, y: 0 });
+            }
+          }
+        },
+
+        /* MISMATCH: THE GREAT UNRAVELING. Grabs a loose thread and YANKS: they spin like a top, unravelling into
+         * a ball of yarn at its feet, until the thread SNAPS and they go flying. */
+        mismatch: {
+          words: ['YANK!', 'UNRAVEL!', 'LOOSE THREAD!', 'SPIN!', 'TWIST!', 'FRAY!', 'TUG!'],
+          move(t, c) {
+            const h = lastHit(t),
+              base = lerp(c.ox0, c.cx + c.f * 40, c.intro);
+            let ox = base - c.f * Math.min(70, (h.i + 1) * 10) - c.f * bump(h.age, 8) * 18,
+              oy = GROUND - bump(h.age, 6) * 14;
+            if (t >= 96) {
+              const k = k01(t, 96, CINE.FIN);
+              ox = base - c.f * 70 + c.f * k * 100;
+              oy = GROUND - Math.sin(k * Math.PI) * 200;
+            }
+            return { hx: lerp(c.x0, c.cx - c.f * 250, c.intro), hy: GROUND, ox, oy };
+          },
+          pose(p, t) {
+            const h = lastHit(t);
+            p.front = { x: 64 + Math.sin(t * 0.6) * 16, y: -96 };
+            p.back = { x: 40 - Math.sin(t * 0.6) * 16, y: -100 };
+            p.lean = t >= 96 ? -0.35 : h.age < 4 ? -0.28 : -0.1;
+            p.mouth = t >= 96 ? 'grin' : 'grit';
+          },
+          opp(p, t) {
+            if (t >= 16) {
+              p.spinX = Math.cos(t * 0.7);
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 60, y: -150 };
+              p.back = { x: -50, y: -150 };
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              fc = c.fc,
+              h = lastHit(t),
+              col = o2.def.color || '#ff9d2e',
+              hx = f.x + fc * 62,
+              hy = f.y - 96,
+              ex = o2.x,
+              ey = o2.y - 70;
+            if (t < 6 || t >= c.FIN + 10) return;
+            // the yarn ball at Mismatch's feet
+            const r = 14 + Math.max(0, h.i + 1) * 5,
+              bx = f.x - fc * 60;
+            ctx.fillStyle = col;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(bx, GROUND - r, r, 0, 7);
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+            ctx.lineWidth = 3;
+            for (let k = 0; k < 3; k++) {
+              ctx.beginPath();
+              ctx.ellipse(bx, GROUND - r, r * 0.9, r * 0.35, k * 1.05 + t * 0.05, 0, 7);
+              ctx.stroke();
+            }
+            ctx.strokeStyle = col;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(bx, GROUND - r * 2);
+            ctx.quadraticCurveTo(f.x, f.y - 40, hx, hy);
+            ctx.stroke();
+            if (t < 96) {
+              // the thread, taut on a yank
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 7;
+              ctx.beginPath();
+              ctx.moveTo(hx, hy);
+              const sag = h.age < 4 ? 0 : 50;
+              ctx.quadraticCurveTo((hx + ex) / 2, (hy + ey) / 2 + sag, ex, ey);
+              ctx.stroke();
+              ctx.strokeStyle = col;
+              ctx.lineWidth = 4;
+              ctx.stroke();
+              // the wraps still round them
+              const left = Math.max(0, 7 - Math.max(0, h.i + 1));
+              for (let k = 0; k < left; k++) {
+                ctx.beginPath();
+                ctx.ellipse(o2.x, o2.y - 24 - k * 16, 40, 8, 0.12, 0, Math.PI);
+                ctx.stroke();
+              }
+            } else if (t < c.FIN) {
+              const k = k01(t, 96, 104);
+              ctx.strokeStyle = col;
+              ctx.lineWidth = 4;
+              ctx.beginPath();
+              ctx.moveTo(hx, hy);
+              ctx.lineTo(lerp(hx + fc * 140, hx, k), lerp(hy, hy + 40, k));
+              ctx.stroke();
+              drawText('SNAP!', (hx + ex) / 2, (hy + ey) / 2 - 40, 44, FONT_COMIC, '#ffe234', INK, 6);
+            }
+          }
+        },
+
+        /* PRINCE PUPPETINI: THE FINAL CURTAIN. Floats up with his puppet strings and makes them DANCE (and punch
+         * themselves), then the final curtain drops. */
+        puppet: {
+          words: ['DANCE!', 'BRAVO!', 'STOP HITTING YOURSELF!', 'ENCORE!', 'ACT TWO!', 'TA-DA!', 'APPLAUSE!'],
+          move(t, c) {
+            const in2 = k01(t, 14, 24);
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 150, c.intro),
+              hy: t < CINE.FIN ? GROUND - 210 * ease(k01(t, 4, 18)) : GROUND,
+              ox: lerp(c.ox0, c.cx + c.f * 40, c.intro) + Math.sin(t * 0.3) * 16 * in2,
+              oy: t >= 14 && t < 96 ? GROUND - Math.abs(Math.sin(((t - 14) / 10) * Math.PI)) * 40 : GROUND
+            };
+          },
+          pose(p, t) {
+            p.front = { x: 58, y: -124 + Math.sin(t * 0.5) * 10 };
+            p.back = { x: 46, y: -112 - Math.sin(t * 0.5) * 10 };
+            p.mouth = 'grin';
+            p.lean = 0.1;
+          },
+          opp(p, t) {
+            if (t < 14) return;
+            const h = lastHit(t),
+              D = PUPPET_DANCE[Math.floor((t - 14) / 5) % 4];
+            p.front = D[0];
+            p.back = D[1];
+            p.rot = Math.sin(t * 0.6) * 0.1;
+            p.eyes = 'wince';
+            p.mouth = 'wobble';
+            if (h.age < 4 && t < 92) {
+              p.front = { x: 4, y: -150 };
+              p.eyes = 'spiral';
+              p.rot = -0.15;
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              fc = c.fc,
+              FIN = c.FIN;
+            if (t < CINE.END) {
+              // a spotlight on the puppet
+              ctx.globalAlpha = 0.16;
+              ctx.fillStyle = '#ffe9a0';
+              ctx.beginPath();
+              ctx.moveTo(o2.x - 30, -20);
+              ctx.lineTo(o2.x + 30, -20);
+              ctx.lineTo(o2.x + 120, GROUND + 10);
+              ctx.lineTo(o2.x - 120, GROUND + 10);
+              ctx.fill();
+              ctx.globalAlpha = 1;
+            }
+            if (t >= 8 && t < FIN) {
+              // the control bar in his hands, and the strings
+              const bx = f.x + fc * 56,
+                by = f.y - 124,
+                h = lastHit(t),
+                an = Math.sin(t * 0.3) * 0.3 + bump(h.age, 4) * 0.4 * fc;
+              const ends = [
+                [-52, 0],
+                [52, 0],
+                [0, 34]
+              ].map(([dx, dy]) => [bx + Math.cos(an) * dx - Math.sin(an) * dy, by + Math.sin(an) * dx + Math.cos(an) * dy]);
+              const tgt = [
+                [o2.x - 46, o2.y - 130],
+                [o2.x + 46, o2.y - 130],
+                [o2.x, o2.y - 160]
+              ];
+              ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+              ctx.lineWidth = 2;
+              for (let k = 0; k < 3; k++) {
+                ctx.beginPath();
+                ctx.moveTo(ends[k][0], ends[k][1]);
+                ctx.lineTo(tgt[k][0], tgt[k][1]);
+                ctx.stroke();
+              }
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 12;
+              ctx.beginPath();
+              ctx.moveTo(ends[0][0], ends[0][1]);
+              ctx.lineTo(ends[1][0], ends[1][1]);
+              ctx.moveTo(bx, by - 20);
+              ctx.lineTo(ends[2][0], ends[2][1]);
+              ctx.stroke();
+              ctx.strokeStyle = '#c8955a';
+              ctx.lineWidth = 7;
+              ctx.stroke();
+            }
+            if (t >= FIN - 14 && t < CINE.END) {
+              // THE FINAL CURTAIN drops on them
+              const k = k01(t, FIN - 14, FIN);
+              const y = lerp(-H, 0, k * k),
+                cx = o2.x;
+              ctx.globalAlpha = t > FIN + 8 ? Math.max(0, 1 - (t - FIN - 8) / 14) : 1;
+              ctx.fillStyle = '#a00a1e';
+              ctx.fillRect(cx - 200, y - 20, 400, GROUND + 20);
+              ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+              ctx.lineWidth = 6;
+              for (let i = 0; i < 9; i++) {
+                ctx.beginPath();
+                ctx.moveTo(cx - 180 + i * 45, y);
+                ctx.lineTo(cx - 180 + i * 45, y + GROUND);
+                ctx.stroke();
+              }
+              ctx.fillStyle = '#ffd23f';
+              ctx.fillRect(cx - 200, y + GROUND - 24, 400, 14);
+              ctx.globalAlpha = 1;
+            }
+          }
+        },
+
+        /* THE GRAND MITTEN: BLIZZARD HUG. Blows a blizzard that freezes them solid in a block of ice, bit by bit,
+         * then runs in for a crushing hug that shatters it. */
+        mitten: {
+          words: ['BRRR!', 'FREEZE!', 'CHILL!', 'ICE ICE!', 'FROSTBITE!', 'SNOWED IN!', 'COLD SHOULDER!'],
+          move(t, c) {
+            const h = lastHit(t),
+              far = c.cx - c.f * 250,
+              ox = lerp(c.ox0, c.cx, c.intro) + Math.sin(t * 3) * bump(h.age, 6) * 4;
+            let hx = lerp(c.x0, far, c.intro);
+            if (t >= 92) hx = lerp(far, ox - c.f * 64, ease(k01(t, 92, 100)));
+            return { hx, hy: GROUND, ox, oy: GROUND };
+          },
+          pose(p, t) {
+            if (t < 92) {
+              p.lean = 0.2;
+              p.front = { x: 50, y: -120 };
+              p.back = { x: 30, y: -124 };
+              p.mouth = 'yell';
+            } else {
+              p.front = { x: 82, y: -96 };
+              p.back = { x: 86, y: -80 };
+              p.eyes = 'happy';
+              p.mouth = 'grin';
+              p.lean = 0.15;
+            }
+          },
+          opp(p, t) {
+            if (t < 24) {
+              p.rot = Math.sin(t * 2.5) * 0.04;
+              p.eyes = 'wince';
+              return;
+            }
+            p.front = { x: 46, y: -70 };
+            p.back = { x: -36, y: -70 };
+            p.eyes = 'wince';
+            p.mouth = 'wobble';
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              fc = c.fc,
+              h = lastHit(t);
+            // the blizzard
+            if (t < c.FIN + 10) {
+              ctx.strokeStyle = 'rgba(255,255,255,0.75)';
+              ctx.lineWidth = 3;
+              const span = W + 100;
+              for (let i = 0; i < 46; i++) {
+                const x = ((((i * 97 + t * 15 * fc) % span) + span) % span) - 50,
+                  y = (i * 53 + t * 3) % GROUND;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x - fc * 22, y - 5);
+                ctx.stroke();
+              }
+            }
+            // the icy breath
+            if (t > 10 && t < 92) {
+              const mx = f.x + fc * 40,
+                my = f.y - 128;
+              const g = ctx.createLinearGradient(mx, 0, o2.x, 0);
+              g.addColorStop(0, 'rgba(200,240,255,0.6)');
+              g.addColorStop(1, 'rgba(200,240,255,0.15)');
+              ctx.fillStyle = g;
+              ctx.beginPath();
+              ctx.moveTo(mx, my - 8);
+              ctx.lineTo(o2.x, o2.y - 190);
+              ctx.lineTo(o2.x, o2.y - 10);
+              ctx.lineTo(mx, my + 8);
+              ctx.closePath();
+              ctx.fill();
+            }
+            // the ice block grows a bit with every hit
+            if (h.i >= 0 && t < c.FIN) {
+              const ih = Math.min(214, 40 + h.i * 29 + 29 * k01(h.age, 0, 5));
+              ctx.fillStyle = 'rgba(170,230,255,0.5)';
+              ctx.fillRect(o2.x - 74, GROUND - ih, 148, ih);
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 6;
+              ctx.strokeRect(o2.x - 74, GROUND - ih, 148, ih);
+              ctx.strokeStyle = '#e8f8ff';
+              ctx.lineWidth = 3;
+              ctx.strokeRect(o2.x - 70, GROUND - ih + 4, 140, ih - 8);
+              ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+              ctx.lineWidth = 6;
+              ctx.beginPath();
+              ctx.moveTo(o2.x - 50, GROUND - ih + 20);
+              ctx.lineTo(o2.x - 64, GROUND - ih + 50);
+              ctx.moveTo(o2.x - 30, GROUND - ih + 18);
+              ctx.lineTo(o2.x - 56, GROUND - ih + 70);
+              ctx.stroke();
+              ctx.fillStyle = '#e8f8ff';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              for (let k = 0; k < 6; k++) {
+                const x = o2.x - 62 + k * 25;
+                ctx.beginPath();
+                ctx.moveTo(x - 8, GROUND - ih);
+                ctx.lineTo(x + 8, GROUND - ih);
+                ctx.lineTo(x, GROUND - ih + 16 + (k % 2) * 8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+              }
+            }
+            // ...and the hug SHATTERS it
+            if (t >= c.FIN && t < c.FIN + 24) {
+              const age = t - c.FIN;
+              ctx.fillStyle = 'rgba(190,236,255,0.9)';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 2;
+              for (let i = 0; i < 16; i++) {
+                const a = i * 0.39 + 0.2,
+                  v = 6 + (i % 4) * 2,
+                  x = o2.x + Math.cos(a) * v * age,
+                  y = GROUND - 100 + Math.sin(a) * v * age * 0.7 - 6 * age + 0.45 * age * age;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(age * 0.3 + i);
+                ctx.beginPath();
+                ctx.moveTo(-12, -8);
+                ctx.lineTo(14, -4);
+                ctx.lineTo(-2, 12);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+              }
+            }
+          }
+        },
+
+        /* LEFTY: FIVE-FINGER FRENZY. A GIANT hand reaches into the fight: pokes, slaps and flicks, then comes
+         * down flat. */
+        lefty: {
+          words: ['POKE!', 'SLAP!', 'FLICK!', 'BOOP!', 'SMACK!', 'FLICK!', 'TICKLE!'],
+          move(t, c) {
+            const h = lastHit(t),
+              g = h.i >= 0 ? LEFTY_MOVES[h.i] : '',
+              s = h.i % 2 ? -c.f : c.f;
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 250, c.intro),
+              hy: GROUND,
+              ox: lerp(c.ox0, c.cx, c.intro) - (g === 'slap' ? s * bump(h.age, 8) * 44 : 0),
+              oy: GROUND - (g === 'flick' ? bump(h.age, 8) * 70 : 0)
+            };
+          },
+          pose(p, t) {
+            const h = lastHit(t),
+              n = nextHit(t),
+              go = (n.left < 6 || h.age < 4) && t < 92;
+            p.front = go ? { x: 96, y: -120 } : t >= 92 ? { x: 30, y: -220 } : { x: 30, y: -150 };
+            p.back = { x: -30, y: -110 };
+            p.lean = go ? 0.2 : 0;
+            p.mouth = 'grin';
+          },
+          opp(p, t) {
+            const h = lastHit(t);
+            if (h.i >= 0 && h.age < 8) {
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              if (LEFTY_MOVES[h.i] === 'poke') p.sy = 1 - bump(h.age, 6) * 0.3;
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              fc = c.fc,
+              col = (f.def.pal && f.def.pal.c1) || f.def.color;
+            for (let i = 0; i < 7; i++) {
+              const a = t - HIT_T(i);
+              if (a < -8 || a > 6) continue;
+              const k = a < 0 ? ease((a + 8) / 8) : 1 - a / 6,
+                g = LEFTY_MOVES[i],
+                s = i % 2 ? -fc : fc;
+              if (g === 'poke') drawGiantHand(o2.x, o2.y - 250 - (1 - k) * 300, Math.PI, 1, [0.4, 1, 0.3, 0.3, 0.3], col);
+              else if (g === 'slap') drawGiantHand(o2.x + s * (80 + (1 - k) * 300), o2.y - 110, -s * 0.25, 1, [1, 1, 1, 1, 1], col);
+              else drawGiantHand(o2.x + s * (140 + (1 - k) * 240), o2.y - 90, -s * Math.PI * 0.5, 1, [0.6, k > 0.85 ? 1 : 0.25, 0.3, 0.3, 0.3], col);
+            }
+            if (t >= c.FIN - 16 && t < c.FIN + 12) {
+              const k = k01(t, c.FIN - 16, c.FIN);
+              ctx.globalAlpha = 1 - k01(t, c.FIN + 4, c.FIN + 12);
+              drawGiantHand(o2.x, lerp(-260, o2.y - 200, k * k), Math.PI, 1.6, [1, 1, 1, 1, 1], col);
+              ctx.globalAlpha = 1;
+            }
+          }
+        }
+      });
+      /* --- batch 4: Captain Flip-Flop, Lady Stiletto, Galosh Grande, Rolla Disco, Mr. Tappington --- */
+      /** Captain Flip-Flop surfing back and forth across them (feet = on the board). */
+      function surfHero(t, G) {
+        const f = G.f,
+          cx = G.cx;
+        if (t < 16) {
+          const k = ease(t / 16);
+          return { x: lerp(G.x0, cx - f * 118, k), y: lerp(GROUND, GROUND - 141, k) - Math.sin(k * Math.PI) * 60 };
+        }
+        if (t < 92) {
+          const s = Math.sin(((t - 24) / 10) * Math.PI);
+          return { x: cx + f * s * 200, y: GROUND - 70 - Math.abs(s) * 120 };
+        }
+        const k = k01(t, 92, CINE.FIN);
+        return { x: lerp(cx + f * 117.6, cx, k), y: lerp(GROUND - 141, GROUND - 150, k) - Math.sin(k * Math.PI) * 220 };
+      }
+      const VOGUE = [
+        { front: { x: 20, y: -160 }, back: { x: -30, y: -70 }, lean: -0.1, rot: 0 },
+        { front: { x: 50, y: -120 }, back: { x: -60, y: -90 }, lean: -0.25, rot: 0, foot: 0.6 },
+        { front: { x: 30, y: -150 }, back: { x: 12, y: -160 }, lean: 0, rot: 0.1 },
+        { front: { x: 112, y: -110 }, back: { x: -30, y: -80 }, lean: 0.15, rot: 0 },
+        { front: { x: -20, y: -170 }, back: { x: -40, y: -90 }, lean: -0.1, rot: 0.25 },
+        { front: { x: 60, y: -210 }, back: { x: -50, y: -210 }, lean: 0, rot: 0 },
+        { front: { x: 92, y: -130 }, back: { x: -40, y: -80 }, lean: 0.1, rot: -0.1 }
+      ];
+      /** Galosh Grande puddle-jumping: lands in a puddle (and splashes them) on every hit. */
+      function galoshHero(t, G) {
+        const f = G.f,
+          pA = G.cx - f * 190,
+          pB = G.cx - f * 80,
+          tg = i => (i < 0 ? pA : i % 2 === 0 ? pB : pA);
+        if (t < 14) return { x: lerp(G.x0, pA, ease(t / 14)), y: GROUND };
+        if (t < 84) {
+          const i = Math.floor((t - 14) / 10),
+            k = ((t - 14) % 10) / 10;
+          return { x: lerp(tg(i - 1), tg(i), k), y: GROUND - Math.sin(k * Math.PI) * 110 };
+        }
+        if (t < 94) return { x: pB, y: GROUND };
+        const k = k01(t, 94, CINE.FIN);
+        return { x: lerp(pB, G.cx - f * 40, k), y: GROUND - Math.sin(k * Math.PI) * 260 };
+      }
+      function drawCymbal(x, y, s, wob) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(wob);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.fillStyle = '#ffd23f';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 20 * s, 60 * s, 0, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        ctx.strokeStyle = '#c89a10';
+        ctx.lineWidth = 2;
+        for (const r of [0.75, 0.5]) {
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 20 * s * r, 60 * s * r, 0, 0, 7);
+          ctx.stroke();
+        }
+        ctx.fillStyle = '#c89a10';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 7 * s, 14 * s, 0, 0, 7);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      Object.assign(UNIQUE_SUPERS, {
+        /* CAPTAIN FLIP-FLOP: TOTALLY TUBULAR TSUNAMI. Calls in the surf: they tumble in the waves while he SURFS
+         * back and forth right over them, then a huge aerial and a surfboard slam. */
+        flipflop: {
+          words: ['COWABUNGA!', 'SURF!', 'GNARLY!', 'WIPEOUT!', 'TUBULAR!', 'DUDE!', 'SPLASH!'],
+          move(t, c) {
+            const s = surfHero(t, c),
+              sea = t >= 14 && t < 96;
+            return {
+              hx: s.x,
+              hy: s.y,
+              ox: lerp(c.ox0, c.cx, c.intro) + Math.sin(t * 0.12) * 20 * k01(t, 14, 24),
+              oy: sea ? GROUND - 20 - Math.abs(Math.sin(t * 0.25)) * 30 : t >= 96 ? lerp(GROUND - 20, GROUND, k01(t, 96, CINE.FIN)) : GROUND
+            };
+          },
+          pose(p, t) {
+            p.lean = 0.15;
+            p.front = { x: 72, y: -110 };
+            p.back = { x: -60, y: -126 };
+            p.mouth = 'grin';
+            p.eyes = 'happy';
+            if (t >= 92) {
+              p.front = { x: 40, y: -220 };
+              p.back = { x: -30, y: -210 };
+              p.mouth = 'yell';
+              p.eyes = 'angry';
+            }
+          },
+          opp(p, t) {
+            if (t >= 14) {
+              p.rot = (t - 14) * 0.3;
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 60, y: -160 };
+              p.back = { x: -50, y: -150 };
+            }
+          },
+          back(f, t, c) {
+            const rise = ease(k01(t, 4, 16)) * (1 - k01(t, c.FIN + 2, c.FIN + 16)),
+              hgt = 300 * rise;
+            if (hgt <= 1) return;
+            const g = ctx.createLinearGradient(0, GROUND - hgt, 0, GROUND);
+            g.addColorStop(0, '#9ff0ff');
+            g.addColorStop(0.35, '#3fb0ff');
+            g.addColorStop(1, '#0a5ab8');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.moveTo(-40, GROUND);
+            for (let x = -40; x <= W + 40; x += 20) ctx.lineTo(x, GROUND - hgt * (0.62 + 0.28 * Math.sin(x * 0.011 - c.fc * t * 0.12)));
+            ctx.lineTo(W + 40, GROUND);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            for (let x = -40; x <= W + 40; x += 34) {
+              const y = GROUND - hgt * (0.62 + 0.28 * Math.sin(x * 0.011 - c.fc * t * 0.12));
+              ctx.beginPath();
+              ctx.arc(x, y, 9, 0, 7);
+              ctx.fill();
+            }
+          },
+          fx(f, t, c) {
+            const rise = ease(k01(t, 4, 16)) * (1 - k01(t, c.FIN + 2, c.FIN + 16)),
+              o2 = c.o2,
+              h = lastHit(t);
+            // the surfboard under his feet
+            if (t >= 6 && t < c.FIN + 2) {
+              const tilt = t < 92 ? Math.cos(((t - 24) / 10) * Math.PI) * 0.25 * c.fc : 0.2 * c.fc;
+              ctx.save();
+              ctx.translate(f.x, f.y + 4);
+              ctx.rotate(tilt);
+              ctx.fillStyle = '#ffb03a';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              ctx.ellipse(0, 0, 84, 13, 0, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(-70, -3, 140, 6);
+              ctx.restore();
+            }
+            // spray when he carves through them
+            if (h.i >= 0 && h.age < 10 && t < c.FIN) {
+              ctx.fillStyle = '#bff2ff';
+              for (let k = 0; k < 12; k++) {
+                const a = -Math.PI * (0.15 + (k / 12) * 0.7),
+                  v = 7 + (k % 3) * 3;
+                ctx.beginPath();
+                ctx.arc(o2.x + Math.cos(a) * v * h.age, o2.y - 40 + Math.sin(a) * v * h.age + 0.6 * h.age * h.age, 6, 0, 7);
+                ctx.fill();
+              }
+            }
+            // the surf in front of them
+            if (rise > 0) {
+              ctx.globalAlpha = 0.82;
+              ctx.fillStyle = '#3fb0ff';
+              ctx.beginPath();
+              ctx.moveTo(-40, H + 40);
+              for (let x = -40; x <= W + 40; x += 16) ctx.lineTo(x, GROUND - 46 * rise + Math.sin(x * 0.03 + t * 0.3) * 8);
+              ctx.lineTo(W + 40, H + 40);
+              ctx.closePath();
+              ctx.fill();
+              ctx.globalAlpha = 1;
+              ctx.strokeStyle = '#fff';
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              for (let x = -40; x <= W + 40; x += 16) ctx.lineTo(x, GROUND - 46 * rise + Math.sin(x * 0.03 + t * 0.3) * 8);
+              ctx.stroke();
+            }
+          }
+        },
+
+        /* LADY STILETTO: RUNWAY RAMPAGE. Strikes a fierce pose for every camera flash (each one a hit), the judges
+         * hold up their 10s, then she leaps for a heel-stomp finale. */
+        stiletto: {
+          words: ['VOGUE!', 'FIERCE!', 'SLAY!', 'SERVE!', 'WERK!', 'ICONIC!', 'MWAH!'],
+          move(t, c) {
+            const h = lastHit(t),
+              ox = lerp(c.ox0, c.cx, c.intro) + c.f * bump(h.age, 8) * 28;
+            let hx = c.cx - c.f * 95 + c.f * bump(h.age, 6) * 25,
+              hy = GROUND;
+            if (t < 14) hx = lerp(c.x0, c.cx - c.f * 95, ease(t / 14));
+            else if (t >= 92) {
+              const k = k01(t, 92, CINE.FIN);
+              hx = lerp(c.cx - c.f * 95, ox - c.f * 10, k);
+              hy = lerp(GROUND, GROUND - 150, k) - Math.sin(k * Math.PI) * 220;
+            }
+            return { hx, hy, ox, oy: GROUND - bump(h.age, 6) * 22 };
+          },
+          pose(p, t) {
+            const h = lastHit(t);
+            p.eyes = 'angry';
+            p.mouth = 'grin';
+            if (t < 24) {
+              p.rot = Math.sin(t * 0.5) * 0.08;
+              p.front = { x: 30, y: -90 };
+              p.back = { x: -20, y: -80 };
+            } else if (t < 92) {
+              const V = VOGUE[h.i];
+              p.front = V.front;
+              p.back = V.back;
+              p.lean = V.lean;
+              p.rot = V.rot;
+              if (V.foot) p.footAng = V.foot;
+            } else {
+              p.front = { x: 40, y: -220 };
+              p.back = { x: -40, y: -210 };
+              p.footAng = 0.5;
+            }
+          },
+          opp(p, t) {
+            if (lastHit(t).age < 8) {
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 30, y: -150 };
+              p.back = { x: 20, y: -150 };
+            }
+          },
+          fx(f, t, c) {
+            const h = lastHit(t);
+            // camera flash
+            if (h.i >= 0 && h.age < 3 && t < 92) {
+              ctx.fillStyle = 'rgba(255,255,255,' + 0.35 * (1 - h.age / 3) + ')';
+              ctx.fillRect(-40, -40, W + 80, H + 80);
+            }
+            // the photographers along the front, and the judges' scorecards
+            for (let k = 0; k < 7; k++) {
+              const x = 70 + k * 136,
+                flash = h.i === k && h.age < 4 && t < 92;
+              if (h.i >= k && t < c.FIN + 10) {
+                const age = t - HIT_T(k),
+                  y = H - 20 - ease(Math.min(1, age / 6)) * 80;
+                ctx.fillStyle = '#fff';
+                ctx.strokeStyle = INK;
+                ctx.lineWidth = 3;
+                ctx.fillRect(x + 22, y - 34, 50, 60);
+                ctx.strokeRect(x + 22, y - 34, 50, 60);
+                drawText('10', x + 47, y - 4, 34, FONT_COMIC, '#e0283f', INK, 0);
+              }
+              ctx.fillStyle = '#14060e';
+              ctx.beginPath();
+              ctx.arc(x, H + 6, 36, 0, 7);
+              ctx.fill();
+              ctx.fillRect(x - 24, H - 46, 48, 30);
+              ctx.fillStyle = flash ? '#fff' : '#3a3a40';
+              ctx.beginPath();
+              ctx.arc(x, H - 31, 10, 0, 7);
+              ctx.fill();
+              if (flash) {
+                starPath(ctx, x, H - 31, 40 - h.age * 6, t * 0.2);
+                ctx.fill();
+              }
+            }
+            if (t >= c.FIN && t < c.FIN + 14) {
+              ctx.strokeStyle = '#ff2f7a';
+              ctx.lineWidth = 8;
+              ctx.globalAlpha = 1 - (t - c.FIN) / 14;
+              starPath(ctx, c.o2.x, GROUND - 120, 60 + (t - c.FIN) * 14, 0.3);
+              ctx.stroke();
+              ctx.globalAlpha = 1;
+            }
+          }
+        },
+
+        /* GALOSH GRANDE: MONSOON MAYHEM. A storm cloud parks over them and fills the puddles, and he puddle-jumps,
+         * SPLASH, SPLASH, SPLASH, then lightning and one giant stomp. */
+        galosh: {
+          words: ['SPLASH!', 'SPLOSH!', 'PUDDLE!', 'DRENCHED!', 'DRIP DROP!', 'SPLOOSH!', 'SOAKED!'],
+          move(t, c) {
+            const g = galoshHero(t, c),
+              h = lastHit(t);
+            return {
+              hx: g.x,
+              hy: g.y,
+              ox: lerp(c.ox0, c.cx, c.intro) + c.f * bump(h.age, 8) * 20,
+              oy: GROUND - bump(h.age, 6) * 30
+            };
+          },
+          pose(p, t) {
+            const land = t >= 14 && t < 84 && (t - 14) % 10 >= 8;
+            p.front = land ? { x: 80, y: -90 } : { x: 40, y: -160 };
+            p.back = land ? { x: -60, y: -90 } : { x: -30, y: -150 };
+            p.mouth = 'grin';
+            if (t >= 94) {
+              p.front = { x: 40, y: -220 };
+              p.back = { x: -40, y: -220 };
+              p.mouth = 'yell';
+            }
+          },
+          opp(p, t) {
+            if (t >= 14) {
+              p.eyes = lastHit(t).age < 6 ? 'spiral' : 'wince';
+              p.mouth = 'wobble';
+            }
+          },
+          back(f, t, c) {
+            const G = f.cine,
+              k = ease(k01(t, 8, 20)),
+              a = 1 - k01(t, c.FIN + 6, c.FIN + 18);
+            ctx.globalAlpha = a;
+            for (const x of [G.cx - G.f * 190, G.cx - G.f * 80, G.cx]) {
+              ctx.fillStyle = '#3a6aa0';
+              ctx.beginPath();
+              ctx.ellipse(x, GROUND + 6, 66 * k, 13 * k, 0, 0, 7);
+              ctx.fill();
+              ctx.fillStyle = 'rgba(255,255,255,0.35)';
+              ctx.beginPath();
+              ctx.ellipse(x - 14, GROUND + 3, 22 * k, 4 * k, 0, 0, 7);
+              ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              G = f.cine,
+              cy = 92,
+              cx = G.cx,
+              a = Math.min(k01(t, 0, 10), 1 - k01(t, c.FIN + 6, c.FIN + 18));
+            // rain from the cloud
+            ctx.globalAlpha = a;
+            ctx.strokeStyle = 'rgba(190,220,255,0.8)';
+            ctx.lineWidth = 3;
+            for (let i = 0; i < 26; i++) {
+              const x = cx - 150 + ((i * 37) % 300),
+                y = cy + 30 + ((i * 53 + t * 22) % (GROUND - cy - 30));
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(x - 3, y + 16);
+              ctx.stroke();
+            }
+            // the cloud
+            ctx.fillStyle = '#4a5462';
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            for (const [dx, dy, r] of [[-110, 10, 40], [-60, -14, 52], [0, -24, 60], [64, -10, 50], [112, 12, 38], [0, 20, 50]]) {
+              ctx.moveTo(cx + dx + r, cy + dy);
+              ctx.arc(cx + dx, cy + dy, r, 0, 7);
+            }
+            ctx.stroke();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            // splashes where he lands, thrown at them
+            for (let i = 0; i < 7; i++) {
+              const age = t - HIT_T(i);
+              if (age < 0 || age > 12) continue;
+              const lx = i % 2 === 0 ? G.cx - G.f * 80 : G.cx - G.f * 190;
+              ctx.fillStyle = '#8fd0ff';
+              for (let k = 0; k < 9; k++) {
+                const v = 9 + (k % 3) * 3,
+                  an = -0.4 - (k / 9) * 1.1;
+                ctx.beginPath();
+                ctx.arc(lx + G.f * Math.cos(an) * -v * age * -1, GROUND - 10 + Math.sin(an) * v * age + 0.7 * age * age, 7, 0, 7);
+                ctx.fill();
+              }
+            }
+            // lightning and the giant splash
+            if (t >= c.FIN - 4 && t < c.FIN + 6) {
+              for (const [col, lw] of [['#ffe234', 14], ['#fff', 5]]) {
+                ctx.strokeStyle = col;
+                ctx.lineWidth = lw;
+                zigzag(cx + 20, cy + 40, o2.x, o2.y - 120, 7, 24, 3);
+                ctx.stroke();
+              }
+            }
+            if (t >= c.FIN && t < c.FIN + 16) {
+              const age = t - c.FIN;
+              ctx.fillStyle = 'rgba(143,208,255,0.85)';
+              for (let k = 0; k < 18; k++) {
+                const an = -Math.PI * (0.05 + (k / 18) * 0.9),
+                  v = 10 + (k % 4) * 3;
+                ctx.beginPath();
+                ctx.arc(f.x + Math.cos(an) * v * age, GROUND - 10 + Math.sin(an) * v * age + 0.8 * age * age, 10, 0, 7);
+                ctx.fill();
+              }
+            }
+          }
+        },
+
+        /* ROLLA DISCO: GROOVE MACHINE. A disco ball comes down, the floor lights up and they're forced to dance
+         * while she skates rings round them, then the disco ball drops. */
+        skate: {
+          words: ['GROOVE!', 'BOOGIE!', 'FUNKY!', 'ROLL!', 'DISCO!', 'GET DOWN!', 'SPIN!'],
+          move(t, c) {
+            const ox = lerp(c.ox0, c.cx, c.intro);
+            let hx;
+            if (t < 19) hx = lerp(c.x0, c.cx - c.f * 140, ease(t / 19));
+            else if (t < 92) {
+              const th = ((t - 24) / 10) * Math.PI;
+              hx = ox + c.f * 140 * Math.sin(th);
+              game.drawOnTop = Math.cos(th) > 0 ? c.me : c.o2;
+            } else hx = lerp(ox + c.f * 82, ox - c.f * 70, ease(k01(t, 92, 100)));
+            return { hx, hy: GROUND, ox, oy: t >= 14 && t < 96 ? GROUND - Math.abs(Math.sin((t * Math.PI) / 5)) * 12 : GROUND };
+          },
+          pose(p, t) {
+            const h = lastHit(t);
+            p.lean = 0.3;
+            p.front = { x: 70 + Math.sin(t * 0.6) * 20, y: -110 };
+            p.back = { x: -60, y: -90 };
+            p.mouth = 'grin';
+            p.eyes = 'happy';
+            if (h.age < 3 && t < 92) p.front = { x: 50, y: -220 };
+            if (t >= 92) {
+              p.spinX = t < CINE.FIN - 4 ? Math.cos(t * 0.8) : 1;
+              p.footAng = t >= CINE.FIN - 4 ? 0.7 : p.footAng;
+            }
+          },
+          opp(p, t) {
+            if (t < 14) return;
+            const up = Math.floor(t / 5) % 2;
+            p.front = up ? { x: 60, y: -210 } : { x: 50, y: -20 };
+            p.back = up ? { x: -40, y: -40 } : { x: -50, y: -200 };
+            p.rot = up ? 0.15 : -0.15;
+            p.eyes = 'spiral';
+            p.mouth = 'grin';
+          },
+          back(f, t, c) {
+            const a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 6, c.FIN + 18)),
+              cols = ['#ff5ad0', '#3ff0ff', '#ffe234', '#a05aff'];
+            ctx.globalAlpha = a * 0.85;
+            for (let x = 0, k = 0; x < W; x += 80, k++)
+              for (let r = 0; r < 2; r++) {
+                ctx.fillStyle = cols[(k + r + Math.floor(t / 5)) % 4];
+                ctx.fillRect(x + 2, GROUND + r * 36 + 2, 76, 32);
+              }
+            ctx.globalAlpha = 1;
+          },
+          fx(f, t, c) {
+            const G = f.cine,
+              o2 = c.o2,
+              bx = G.cx,
+              drop = k01(t, c.FIN - 12, c.FIN),
+              by = t < c.FIN - 12 ? lerp(-80, 100, ease(k01(t, 2, 16))) : t < c.FIN ? lerp(100, o2.y - 170, drop * drop) : o2.y - 170 + (t - c.FIN) * 4,
+              a = 1 - k01(t, c.FIN + 4, c.FIN + 14);
+            if (a <= 0) return;
+            ctx.globalAlpha = a;
+            // light beams
+            if (t < c.FIN) {
+              const cols = ['#ff5ad0', '#3ff0ff', '#ffe234', '#a05aff'];
+              ctx.globalAlpha = 0.14 * a;
+              for (let k = 0; k < 6; k++) {
+                const an = t * 0.05 + k * 1.05,
+                  ex = bx + Math.cos(an) * 520;
+                ctx.fillStyle = cols[k % 4];
+                ctx.beginPath();
+                ctx.moveTo(bx, by);
+                ctx.lineTo(ex - 50, GROUND);
+                ctx.lineTo(ex + 50, GROUND);
+                ctx.fill();
+              }
+              ctx.globalAlpha = a;
+              ctx.strokeStyle = '#9aa3b0';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(bx, -20);
+              ctx.lineTo(bx, by - 42);
+              ctx.stroke();
+            }
+            // the disco ball
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(bx, by, 42, 0, 7);
+            ctx.clip();
+            for (let y = -42; y < 42; y += 12)
+              for (let x = -42; x < 42; x += 12) {
+                const lit = ((x + y) / 12 + Math.floor(t / 3)) % 3 === 0;
+                ctx.fillStyle = lit ? '#ffffff' : (x / 12 + y / 12) % 2 ? '#9aa3b0' : '#c8d0dc';
+                ctx.fillRect(bx + x, by + y, 11, 11);
+              }
+            ctx.restore();
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(bx, by, 42, 0, 7);
+            ctx.stroke();
+            ctx.fillStyle = '#fff';
+            for (let k = 0; k < 4; k++) {
+              const an = t * 0.15 + k * 1.6;
+              starPath(ctx, bx + Math.cos(an) * 62, by + Math.sin(an) * 50, 7, t * 0.2);
+              ctx.fill();
+            }
+            // rainbow skate trail
+            if (t >= 19 && t < 92) {
+              const d = Math.sign(Math.cos(((t - 24) / 10) * Math.PI)) * G.f,
+                cols = ['#ff3b4e', '#ffb03a', '#ffe234', '#7dff8a', '#3fb0ff', '#a05aff'];
+              for (let k = 0; k < 6; k++) {
+                ctx.strokeStyle = cols[k];
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(f.x - d * 20, GROUND - 6 - k * 5);
+                ctx.lineTo(f.x - d * 110, GROUND - 6 - k * 5);
+                ctx.stroke();
+              }
+            }
+            ctx.globalAlpha = 1;
+          }
+        },
+
+        /* MR. TAPPINGTON: TAP-OCALYPSE. A rhythm game: every note he hits sends a shockwave through the floor
+         * that pops them up, then a drum roll and a CYMBAL CRASH right on them. */
+        tapper: {
+          words: ['TAP!', 'TAPPITY!', 'SHUFFLE!', 'BALL CHANGE!', 'STEP!', 'FLAP!', 'TAP-TAP!'],
+          move(t, c) {
+            const h = lastHit(t);
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 220, c.intro),
+              hy: GROUND - (t >= 14 && t < 96 ? bump(t % 5, 5) * 10 : 0),
+              ox: lerp(c.ox0, c.cx, c.intro),
+              oy: GROUND - bump(h.age, 8) * 70
+            };
+          },
+          pose(p, t) {
+            p.footAng = Math.floor(t / 5) % 2 ? -0.3 : 0.45;
+            p.front = { x: 60, y: -140 + Math.sin(t * 1.2) * 12 };
+            p.back = { x: -50, y: -140 - Math.sin(t * 1.2) * 12 };
+            p.mouth = 'grin';
+            p.eyes = 'happy';
+            if (t >= CINE.FIN - 12) {
+              p.front = { x: 50, y: -220 };
+              p.back = { x: -40, y: -220 };
+            }
+          },
+          opp(p, t) {
+            if (lastHit(t).age < 9) {
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 50, y: -190 };
+              p.back = { x: -40, y: -190 };
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              h = lastHit(t),
+              LX = W / 2 - 260,
+              RX = W / 2 + 260,
+              tx = LX + 40,
+              ly = 128,
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 6, c.FIN + 16));
+            // the rhythm lane
+            if (a > 0) {
+              ctx.globalAlpha = a;
+              ctx.fillStyle = 'rgba(10,6,20,0.65)';
+              roundRectPath(ctx, LX, ly - 26, RX - LX, 52, 26);
+              ctx.fill();
+              ctx.strokeStyle = '#ffe234';
+              ctx.lineWidth = 3;
+              ctx.stroke();
+              ctx.strokeStyle = '#fff';
+              ctx.lineWidth = 4;
+              ctx.beginPath();
+              ctx.arc(tx, ly, 20 + (h.age < 6 ? (6 - h.age) * 2 : 0), 0, 7);
+              ctx.stroke();
+              const note = (q, r, col) => {
+                const x = tx + (q - t) * 14;
+                if (q < t || x > RX - 14) return;
+                ctx.fillStyle = col;
+                ctx.strokeStyle = INK;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(x, ly, r, 0, 7);
+                ctx.fill();
+                ctx.stroke();
+              };
+              for (let i = 0; i < 7; i++) note(HIT_T(i), 15, '#ffe234');
+              for (let q = 88; q < c.FIN; q += 2) note(q, 8, '#ff5ad0');
+              note(c.FIN, 20, '#3ff0ff');
+              if (h.i >= 0 && h.age < 10 && t < 92) drawText('PERFECT!', tx + 60, ly - 44, 26, FONT_COMIC, '#7dff8a', INK, 5);
+              ctx.globalAlpha = 1;
+            }
+            // shockwaves through the floor
+            for (let i = 0; i < 7; i++) {
+              const q = t - (HIT_T(i) - 5);
+              if (q < 0 || q > 5) continue;
+              const x = lerp(f.x, o2.x, q / 5);
+              ctx.strokeStyle = '#ffe234';
+              ctx.lineWidth = 5;
+              ctx.beginPath();
+              ctx.ellipse(x, GROUND, 34, 12, 0, Math.PI, 0);
+              ctx.stroke();
+            }
+            if (h.i >= 0 && h.age < 8 && t < 92) {
+              ctx.save();
+              ctx.translate(o2.x, GROUND - bump(h.age, 8) * 30 - 6);
+              ctx.rotate(Math.sin(h.age) * 0.1);
+              ctx.fillStyle = '#a8551e';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 4;
+              ctx.fillRect(-64, -8, 128, 16);
+              ctx.strokeRect(-64, -8, 128, 16);
+              ctx.restore();
+            }
+            // the cymbal crash
+            if (t >= c.FIN - 10 && t < c.FIN + 10) {
+              const k = k01(t, c.FIN - 10, c.FIN),
+                wob = t >= c.FIN ? Math.sin(t * 2) * 0.15 : 0;
+              ctx.globalAlpha = 1 - k01(t, c.FIN + 4, c.FIN + 10);
+              for (const s of [-1, 1]) drawCymbal(o2.x + s * lerp(330, 36, k * k), o2.y - 110, 1.4, wob * s);
+              ctx.globalAlpha = 1;
+            }
+          }
+        }
+      });
+      /* --- batch 5: Dino-Slipper Dot, The Shoelace Snake, Studs McGoal, The Big Boot --- */
+      function drawRex(x, d, sy, open) {
+        ctx.save();
+        ctx.translate(x, GROUND);
+        ctx.scale(d, sy);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5;
+        ctx.fillStyle = '#5fc94a';
+        // tail, legs, body
+        ctx.beginPath();
+        ctx.moveTo(-40, -130);
+        ctx.quadraticCurveTo(-120, -110, -170, -40);
+        ctx.quadraticCurveTo(-110, -80, -30, -80);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        for (const lx of [-30, 20]) {
+          ctx.fillRect(lx, -70, 26, 70);
+          ctx.strokeRect(lx, -70, 26, 70);
+        }
+        ctx.beginPath();
+        ctx.ellipse(0, -120, 70, 58, -0.3, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        // spikes down its back
+        ctx.fillStyle = '#ffd23f';
+        for (let k = 0; k < 5; k++) {
+          const sx = -60 + k * 26,
+            sy2 = -168 - k * 8 + (k > 2 ? (k - 2) * 14 : 0);
+          ctx.beginPath();
+          ctx.moveTo(sx - 10, sy2 + 10);
+          ctx.lineTo(sx, sy2 - 14);
+          ctx.lineTo(sx + 10, sy2 + 10);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        }
+        // neck and little arm
+        ctx.fillStyle = '#5fc94a';
+        ctx.beginPath();
+        ctx.moveTo(30, -170);
+        ctx.lineTo(80, -230);
+        ctx.lineTo(110, -200);
+        ctx.lineTo(60, -110);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.lineWidth = 8;
+        ctx.beginPath();
+        ctx.moveTo(50, -120);
+        ctx.lineTo(74, -104);
+        ctx.stroke();
+        ctx.lineWidth = 5;
+        // the head: upper jaw, then the lower jaw hinged at the back
+        ctx.save();
+        ctx.translate(90, -230);
+        ctx.fillStyle = '#5fc94a';
+        ctx.save();
+        ctx.rotate(open * 0.6);
+        roundRectPath(ctx, -20, 0, 130, 30, 12);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        for (let k = 0; k < 6; k++) {
+          ctx.beginPath();
+          ctx.moveTo(4 + k * 18, 2);
+          ctx.lineTo(12 + k * 18, -12);
+          ctx.lineTo(20 + k * 18, 2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        ctx.restore();
+        ctx.lineWidth = 5;
+        ctx.save();
+        ctx.rotate(-open * 0.4);
+        ctx.fillStyle = '#5fc94a';
+        roundRectPath(ctx, -24, -54, 150, 56, 22);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#fff';
+        for (let k = 0; k < 6; k++) {
+          ctx.beginPath();
+          ctx.moveTo(4 + k * 20, 0);
+          ctx.lineTo(12 + k * 20, 14);
+          ctx.lineTo(20 + k * 20, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        ctx.lineWidth = 4;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(14, -30, 13, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = INK;
+        ctx.beginPath();
+        ctx.arc(18, -29, 6, 0, 7);
+        ctx.fill();
+        ctx.restore();
+        ctx.restore();
+        ctx.restore();
+      }
+      /** The Shoelace Snake coiling round them. */
+      function lacePos(t, G) {
+        const f = G.f,
+          ox = lerp(G.ox0, G.cx, ease(Math.min(1, t / 12)));
+        if (t < 12) return { hx: lerp(G.x0, G.cx - f * 66, ease(t / 12)), hy: GROUND, a: 0, ox };
+        if (t < 92) {
+          const a = (t - 12) * 0.314;
+          return { hx: ox - f * Math.cos(a) * 66, hy: GROUND - clamp((t - 12) / 70, 0, 1) * 70, a, ox };
+        }
+        const a = 80 * 0.314,
+          k = k01(t, 92, 102);
+        return { hx: lerp(ox - f * Math.cos(a) * 66, G.cx - f * 170, ease(k)), hy: GROUND - 70 * (1 - k) - Math.sin(k * Math.PI) * 60, a, ox };
+      }
+      const STUDS_SEQ = [1, 2, 0, 1, 2, 1, 0]; // who kicks them on each hit: 0 = Studs, 1 and 2 = teammates
+      const studsSpot = (j, G) => (j === 0 ? clamp(G.cx - G.f * 250, 60, W - 60) : j === 1 ? G.cx + G.f * 150 : G.cx - G.f * 50);
+      const studsGoal = G => (G.f > 0 ? W - 70 : 70);
+      function studsBall(t, G) {
+        const kp = j => {
+          const s = studsSpot(j, G);
+          return s + (Math.sign(G.cx - s) || G.f) * 45;
+        };
+        const arc = (x0, x1, k, ht) => ({ x: lerp(x0, x1, k), y: GROUND - Math.sin(k * Math.PI) * ht });
+        if (t < 14) return { x: lerp(G.ox0, kp(0), ease(t / 14)), y: GROUND };
+        if (t < 24) return arc(kp(0), kp(STUDS_SEQ[0]), (t - 14) / 10, 120);
+        if (t < 84) {
+          const i = Math.floor((t - 24) / 10);
+          return arc(kp(STUDS_SEQ[i]), kp(STUDS_SEQ[i + 1]), (t - HIT_T(i)) / 10, 100 + (i % 2) * 60);
+        }
+        return arc(kp(0), studsGoal(G) - G.f * 40, k01(t, 84, CINE.FIN), 150);
+      }
+      const bootScale = t => (t < 6 ? 1 : t < 18 ? 1 + ease((t - 6) / 12) * 1.05 : t < CINE.FIN + 2 ? 2.05 : t < CINE.FIN + 14 ? 2.05 - ((t - CINE.FIN - 2) / 12) * 1.05 : 1);
+      function bootGiant(t, G) {
+        const home = G.cx - G.f * 250,
+          x = lerp(G.x0, home, ease(Math.min(1, t / 12)));
+        if (t < 14) return { x, y: GROUND };
+        if (t < 84) return { x, y: GROUND - Math.abs(Math.sin(((t - 24) / 10) * Math.PI)) * 70 };
+        if (t < 88) return { x, y: GROUND };
+        const k = k01(t, 88, CINE.FIN);
+        return { x: lerp(home, G.cx - G.f * 20, k), y: GROUND - 4 * k * (1 - k) * 420 };
+      }
+
+      Object.assign(UNIQUE_SUPERS, {
+        /* DINO-SLIPPER DOT: BEDTIME STORY. Reads them a story: a giant pop-up book opens and a T-REX pops out of
+         * the pages, CHOMP, CHOMP, then the book slams shut. THE END. */
+        slipper: {
+          words: ['RAWR!', 'CHOMP!', 'POP-UP!', 'TURN THE PAGE!', 'ROAR!', 'GULP!', 'CHAPTER TWO!'],
+          move(t, c) {
+            const h = lastHit(t);
+            return {
+              hx: lerp(c.x0, c.cx - c.f * 270, c.intro),
+              hy: GROUND,
+              ox: lerp(c.ox0, c.cx, c.intro),
+              oy: GROUND - bump(h.age, 6) * 30
+            };
+          },
+          pose(p) {
+            p.front = { x: 50, y: -92 };
+            p.back = { x: 40, y: -100 };
+            p.eyes = 'happy';
+            p.mouth = 'smile';
+          },
+          opp(p, t) {
+            if (t < 18) return;
+            p.eyes = lastHit(t).age < 6 ? 'spiral' : 'wince';
+            p.mouth = 'yell';
+            p.front = { x: 30, y: -160 };
+            p.back = { x: 10, y: -160 };
+          },
+          back(f, t, c) {
+            const BX = f.cine.cx,
+              w = 220 * ease(k01(t, 4, 18)),
+              a = 1 - k01(t, c.FIN + 6, c.FIN + 16);
+            if (w < 2 || a <= 0) return;
+            ctx.save();
+            ctx.globalAlpha = a;
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 5;
+            ctx.fillStyle = '#2f6a3a';
+            ctx.fillRect(BX - w - 12, GROUND - 192, w * 2 + 24, 192);
+            ctx.strokeRect(BX - w - 12, GROUND - 192, w * 2 + 24, 192);
+            ctx.fillStyle = '#fff6e0';
+            ctx.fillRect(BX - w, GROUND - 180, w, 180);
+            ctx.strokeRect(BX - w, GROUND - 180, w, 180);
+            ctx.fillRect(BX, GROUND - 180, w, 180);
+            ctx.strokeRect(BX, GROUND - 180, w, 180);
+            ctx.strokeStyle = 'rgba(90,70,40,0.35)';
+            ctx.lineWidth = 3;
+            for (let y = GROUND - 160; y < GROUND - 20; y += 18)
+              for (const s of [-1, 1]) {
+                ctx.beginPath();
+                ctx.moveTo(BX + s * 20, y);
+                ctx.lineTo(BX + s * (w - 20), y);
+                ctx.stroke();
+              }
+            ctx.restore();
+          },
+          fx(f, t, c) {
+            const G = f.cine,
+              BX = G.cx,
+              o2 = c.o2,
+              h = lastHit(t),
+              n = nextHit(t);
+            // the little book in Dot's hands
+            if (t < c.FIN) {
+              ctx.fillStyle = '#2f6a3a';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 3;
+              ctx.fillRect(f.x + f.face * 30, f.y - 116, f.face * 44, 32);
+              ctx.strokeRect(f.x + f.face * 30, f.y - 116, f.face * 44, 32);
+            }
+            if (t > 4 && t < 30) drawText('ONCE UPON A TIME...', f.x + G.f * 60, f.y - 210, 28, FONT_COMIC, '#8af07a', INK, 6);
+            // the T-REX pops up out of the pages
+            const pop = ease(k01(t, 16, 26)) * (1 - k01(t, c.FIN - 14, c.FIN - 8));
+            if (pop > 0.02) {
+              const shut = (n.i < 7 && n.left <= 2) || h.age < 3;
+              drawRex(BX + G.f * 150, -G.f, pop, shut ? 0.05 : 0.7);
+            }
+            // ...and the book SLAMS shut
+            if (t >= c.FIN - 10 && t < c.FIN + 16) {
+              const k = ease(k01(t, c.FIN - 10, c.FIN));
+              ctx.globalAlpha = 1 - k01(t, c.FIN + 6, c.FIN + 16);
+              ctx.fillStyle = '#2f6a3a';
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 6;
+              const l = lerp(BX - 232, BX, k);
+              ctx.fillRect(BX - 232, GROUND - 200, l - (BX - 232), 200);
+              ctx.strokeRect(BX - 232, GROUND - 200, l - (BX - 232), 200);
+              const r = lerp(BX + 232, BX, k);
+              ctx.fillRect(r, GROUND - 200, BX + 232 - r, 200);
+              ctx.strokeRect(r, GROUND - 200, BX + 232 - r, 200);
+              if (t >= c.FIN) drawText('THE END', BX, GROUND - 100, 56, FONT_COMIC, '#ffd23f', INK, 7);
+              ctx.globalAlpha = 1;
+            }
+          }
+        },
+
+        /* THE SHOELACE SNAKE: TANGLE TRAP. Coils round and round them, wrapping them up tighter with every turn,
+         * ties a big bow on top... then YANKS it, and they spin out. */
+        lace: {
+          words: ['WRAP!', 'SQUEEZE!', 'KNOT!', 'TIGHTER!', 'DOUBLE KNOT!', 'TWIST!', 'TIED UP!'],
+          move(t, c) {
+            const p = lacePos(t, c),
+              h = lastHit(t);
+            if (t >= 12 && t < 92) game.drawOnTop = Math.sin(p.a) > 0 ? c.me : c.o2;
+            let oy = GROUND - bump(h.age, 6) * 14;
+            if (t >= 96) oy = GROUND - Math.sin(k01(t, 96, CINE.FIN) * Math.PI) * 120;
+            return { hx: p.hx, hy: p.hy, ox: p.ox, oy };
+          },
+          pose(p, t, f) {
+            if (t < 92) {
+              const a = lacePos(t, f.cine).a;
+              p.rot = Math.sin(a) * 0.5;
+              p.sy = 1.12;
+              p.front = { x: 60, y: -90 };
+              p.back = { x: 40, y: -80 };
+              p.mouth = 'grin';
+            } else {
+              p.lean = -0.3;
+              p.front = { x: 70, y: -90 };
+              p.back = { x: 50, y: -96 };
+              p.mouth = 'yell';
+            }
+          },
+          opp(p, t) {
+            if (t < 12) return;
+            if (t < 96) {
+              p.front = { x: 16, y: -50 };
+              p.back = { x: -10, y: -50 };
+              p.eyes = 'wince';
+              p.mouth = 'wobble';
+            } else {
+              p.spinX = Math.cos(t * 0.9);
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+            }
+          },
+          fx(f, t, c) {
+            const o2 = c.o2,
+              col = '#ff4a4a';
+            if (t < 12 || t >= c.FIN + 4) return;
+            const nWraps = t < 96 ? Math.min(7, Math.floor((t - 12) / 10) + 1) : Math.max(0, 7 - Math.floor((t - 96) / 1.5));
+            for (let k = 0; k < nWraps; k++) {
+              const y = o2.y - 22 - k * 17;
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 9;
+              ctx.beginPath();
+              ctx.ellipse(o2.x, y, 46, 10, (k % 2 ? 1 : -1) * 0.12, 0, Math.PI);
+              ctx.stroke();
+              ctx.strokeStyle = col;
+              ctx.lineWidth = 6;
+              ctx.stroke();
+              ctx.strokeStyle = '#fff';
+              ctx.lineWidth = 2;
+              ctx.setLineDash([6, 8]);
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+            // the bow on top
+            const bow = t < 96 ? ease(k01(t, 84, 92)) : 1 - k01(t, 96, 100);
+            if (bow > 0) {
+              const bx = o2.x,
+                by = o2.y - 168;
+              ctx.save();
+              ctx.translate(bx, by);
+              ctx.scale(bow, bow);
+              ctx.fillStyle = col;
+              ctx.strokeStyle = INK;
+              ctx.lineWidth = 4;
+              for (const s of [-1, 1]) {
+                ctx.beginPath();
+                ctx.ellipse(s * 30, -6, 30, 18, s * 0.4, 0, 7);
+                ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(s * 4, 6);
+                ctx.lineTo(s * 26, 44);
+                ctx.lineTo(s * 12, 46);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+              }
+              ctx.beginPath();
+              ctx.arc(0, 0, 12, 0, 7);
+              ctx.fill();
+              ctx.stroke();
+              ctx.restore();
+            }
+            // the yank
+            if (t >= 92 && t < 100) {
+              ctx.strokeStyle = col;
+              ctx.lineWidth = 6;
+              ctx.beginPath();
+              ctx.moveTo(f.x + f.face * 70, f.y - 90);
+              ctx.lineTo(o2.x, o2.y - 168);
+              ctx.stroke();
+              drawText('YANK!', (f.x + o2.x) / 2, Math.min(f.y, o2.y) - 200, 40, FONT_COMIC, '#ffe234', INK, 6);
+            }
+          }
+        },
+
+        /* STUDS McGOAL: GOLDEN GOAL. They're the ball! Passed round Studs's team, one-two, one-two, then a volley
+         * into the back of the net. */
+        studs: {
+          words: ['PASS!', 'ONE-TWO!', 'HEADER!', 'NUTMEG!', 'CROSS!', 'VOLLEY!', 'TIKI-TAKA!'],
+          move(t, c) {
+            const b = studsBall(t, c);
+            return { hx: lerp(c.x0, studsSpot(0, c), c.intro), hy: GROUND, ox: b.x, oy: b.y };
+          },
+          pose(p, t) {
+            const kick = Math.abs(t - 14) < 3 || Math.abs(t - HIT_T(2)) < 3 || Math.abs(t - HIT_T(6)) < 3;
+            p.footAng = kick ? 0.7 : p.footAng;
+            p.lean = kick ? -0.2 : 0.05;
+            p.front = kick ? { x: 40, y: -140 } : { x: 40, y: -80 };
+            p.back = { x: -40, y: -120 };
+            p.mouth = 'grin';
+            if (t >= CINE.FIN) {
+              p.front = { x: 40, y: -220 };
+              p.back = { x: -40, y: -220 };
+              p.eyes = 'happy';
+            }
+          },
+          opp(p, t) {
+            if (t >= 12) {
+              p.bodyH = 84;
+              p.rot = t * 0.5;
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 20, y: -50 };
+              p.back = { x: -10, y: -50 };
+            }
+          },
+          back(f, t, c) {
+            const G = f.cine,
+              a = Math.min(k01(t, 0, 8), 1 - k01(t, c.FIN + 8, c.FIN + 20)),
+              gx = studsGoal(G),
+              d = G.f;
+            if (a <= 0) return;
+            ctx.save();
+            ctx.globalAlpha = a;
+            // the goal (net bulges on the GOAL)
+            const bulge = t >= c.FIN ? Math.sin(k01(t, c.FIN, c.FIN + 14) * Math.PI) * 40 : 0;
+            ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+            ctx.lineWidth = 2;
+            for (let k = 0; k <= 8; k++) {
+              ctx.beginPath();
+              ctx.moveTo(gx - d * 30, GROUND - 180 + k * 22.5);
+              ctx.quadraticCurveTo(gx + d * (30 + bulge), GROUND - 100, gx + d * 40, GROUND - 200 + k * 25);
+              ctx.stroke();
+            }
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = 12;
+            ctx.beginPath();
+            ctx.moveTo(gx - d * 30, GROUND);
+            ctx.lineTo(gx - d * 30, GROUND - 180);
+            ctx.lineTo(gx + d * 40, GROUND - 200);
+            ctx.stroke();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 7;
+            ctx.stroke();
+            // the teammates (in Studs's kit)
+            for (const j of [1, 2]) {
+              const spot = studsSpot(j, G),
+                x = lerp(spot + (j === 1 ? d : -d) * 500, spot, ease(k01(t, 0, 14))),
+                face = Math.sign(G.cx - spot) || d;
+              let kick = false;
+              for (let i = 0; i < 7; i++) if (STUDS_SEQ[i] === j && Math.abs(t - HIT_T(i)) < 3) kick = true;
+              const pose = basePose();
+              pose.footAng = kick ? 0.75 : -0.05;
+              pose.lean = kick ? -0.22 : 0.05;
+              pose.front = kick ? { x: 40, y: -140 } : { x: 36, y: -60 };
+              pose.back = { x: -40, y: -110 };
+              pose.mouth = 'grin';
+              pose.eyes = 'angry';
+              pose.yOff = t < 14 ? -Math.abs(Math.sin(t * 0.6)) * 10 : 0;
+              drawSock(ctx, f.def, pose, x, GROUND, face, 0.85, { x: 0, y: 0 });
+            }
+            ctx.restore();
+          },
+          fx(f, t, c) {
+            const o2 = c.o2;
+            if (t >= 14 && t < c.FIN) {
+              // a football's patches spinning on the curled-up opponent
+              ctx.globalAlpha = 0.85;
+              ctx.fillStyle = INK;
+              for (let k = 0; k < 5; k++) {
+                const a = t * 0.5 + (k * Math.PI * 2) / 5;
+                ctx.beginPath();
+                ctx.arc(o2.x + Math.cos(a) * 26, o2.y - 50 + Math.sin(a) * 26, 7, 0, 7);
+                ctx.fill();
+              }
+              ctx.globalAlpha = 1;
+            }
+            if (t >= c.FIN && t < c.FIN + 22) {
+              const cols = ['#ffe234', '#7dff8a', '#ff5ad0', '#3ff0ff'];
+              for (let k = 0; k < 24; k++) {
+                const age = t - c.FIN,
+                  x = o2.x + Math.cos(k * 1.7) * age * (4 + (k % 5)),
+                  y = GROUND - 140 - age * (5 + (k % 3)) + 0.35 * age * age;
+                ctx.fillStyle = cols[k % 4];
+                ctx.fillRect(x, y, 8, 12);
+              }
+            }
+          }
+        },
+
+        /* THE BIG BOOT: STOMPAGEDDON. Grows GIANT and stomps the whole arena (they bounce with every quake), then
+         * leaps sky-high and comes down right on top of them. */
+        bigboot: {
+          words: ['STOMP!', 'QUAKE!', 'THOOM!', 'BOOM!', 'RUMBLE!', 'CRUNCH!', 'FEE-FI-FO!'],
+          move(t, c) {
+            const g = bootGiant(t, c),
+              h = lastHit(t);
+            return {
+              hx: t >= 100 ? c.cx - c.f * 80 : g.x,
+              hy: GROUND,
+              ox: lerp(c.ox0, c.cx, c.intro),
+              oy: t < 88 ? GROUND - bump(h.age, 10) * 90 : GROUND
+            };
+          },
+          view(who, t) {
+            return who === 'hero' && t >= 6 && t < CINE.FIN + 14 ? { hide: true } : null;
+          },
+          pose(p, t) {
+            p.front = { x: 50, y: -150 + Math.sin(t * 0.4) * 30 };
+            p.back = { x: -40, y: -150 - Math.sin(t * 0.4) * 30 };
+            p.mouth = 'yell';
+            if (t >= 88 && t < CINE.FIN) {
+              p.front = { x: 40, y: -220 };
+              p.back = { x: -40, y: -220 };
+            }
+          },
+          opp(p, t) {
+            if (t < 14) return;
+            if (t < 88) {
+              p.eyes = 'spiral';
+              p.mouth = 'yell';
+              p.front = { x: 50, y: -180 };
+              p.back = { x: -40, y: -180 };
+            } else {
+              p.eyes = 'wince';
+              p.mouth = 'wobble';
+              p.front = { x: 20, y: -160 };
+              p.back = { x: -10, y: -160 };
+              p.sy = 0.9;
+            }
+          },
+          fx(f, t, c) {
+            if (t < 6 || t >= c.FIN + 14) return;
+            const G = f.cine,
+              h = lastHit(t),
+              s = bootScale(t),
+              g = bootGiant(Math.min(t, c.FIN), G),
+              gx = t < c.FIN ? g.x : lerp(g.x, f.x, k01(t, c.FIN + 2, c.FIN + 14));
+            // quake rings along the floor
+            if (h.i >= 0 && h.age < 12 && t < 88) {
+              ctx.strokeStyle = 'rgba(224,160,96,' + (1 - h.age / 12) + ')';
+              ctx.lineWidth = 6;
+              for (const r of [h.age * 26, h.age * 18]) {
+                ctx.beginPath();
+                ctx.ellipse(gx, GROUND, 60 + r, 12 + r * 0.1, 0, Math.PI, 0);
+                ctx.stroke();
+              }
+            }
+            const p = f.pose();
+            drawSock(ctx, f.def, p, gx, g.y, f.face, s, { x: 0, y: 0 });
+            if (t >= c.FIN && t < c.FIN + 12) {
+              ctx.fillStyle = 'rgba(255,255,255,0.75)';
+              for (let k = 0; k < 9; k++) {
+                const a = k * 0.7,
+                  r = 50 + (t - c.FIN) * 10;
+                ctx.beginPath();
+                ctx.arc(gx + Math.cos(a) * r, GROUND - 90 + Math.sin(a) * r * 0.5, 30 - (t - c.FIN) * 2, 0, 7);
+                ctx.fill();
+              }
+            }
+          }
+        }
+      });
+      /* UNIQUE_SUPERS_BATCHES */
+      for (const id in UNIQUE_SUPERS) if (SUPER_SCENES[id] && UNIQUE_SUPERS[id].words) SUPER_SCENES[id].words = UNIQUE_SUPERS[id].words;
+
       /** A projectile picture (or one of the big props), drawn at any size. */
       function drawCineObj(kind, x, y, s, t, owner, face = 1) {
         ctx.save();
@@ -18115,6 +21453,12 @@
           cx = G.cx,
           FIN = CINE.FIN;
         ctx.save();
+        const UQ = uniqOf(f);
+        if (UQ) {
+          if (UQ.fx) UQ.fx(f, t, { fc, cx, o2, FIN });
+          ctx.restore();
+          return;
+        }
         if (S.tpl === 'slash') {
           // slash marks through the opponent after each pass, then the big X
           for (let i = 0; i < 7; i++) {
@@ -35931,6 +39275,7 @@
         if (galaxy > 0) drawGymBagGalaxy(galaxy, (f1.galaxyAmount() ? f1 : f2).t);
         const cineF = f1.cineAmount() > 0 ? f1 : f2.cineAmount() > 0 ? f2 : null;
         if (cineF) drawSuperScene(sceneOf(cineF), cineF.cineAmount(), cineF.t);
+        if (cineF) drawSuperBack(cineF);
         if (game.mf && game.mini && game.mini.g) {
           const m = miniDef(game.mini.id);
           if (m.drawFloor) m.drawFloor(game.mini.g);
