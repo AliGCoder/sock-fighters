@@ -161,23 +161,33 @@ cards = [m for m in marks if m['card']]
 by_card = {m['card']: m['at'] for m in cards}
 A_FIGHT = by_card['FIGHT.']
 A_SUPER = by_card['UNLEASH YOUR SUPER.']
-A_STORY = by_card['SAVE THE PALACE.']
+A_STORY = by_card['FIND HIS OTHER HALF.']
+A_DEMON = by_card['A SHINOBI APPEARS.']
 A_PLAY = by_card['PLAY YOUR WAY.']
 A_TOGETHER = by_card['TOGETHER.']
-title_at = marks[2]['at']
 
-# cold open: drone, two braaams, a lonely piano-ish motif (D minor)
-add(mus, 0, drone(A_FIGHT + 0.5), 0.55)
+# the story opens it: a mysterious drone, braaams and a lonely piano-ish motif (D minor)
+add(mus, 0, drone(A_STORY + 0.5), 0.55)
 add(mus, 0.05, braam(3.0), 0.7)
-add(mus, by_card['ONE SOCK WENT MISSING.'], braam(2.8, 36), 0.75)
-for i, m in enumerate([62, 65, 69, 67, 65, 62, 60, 62]):
+add(mus, by_card["STINKY'S OTHER HALF... GONE."], braam(2.8, 36), 0.75)
+for i, m in enumerate([62, 65, 69, 67, 65, 62, 60, 62, 62, 65, 69, 72, 70, 69]):
     add(mus, 0.8 + i * 0.62, pluck(m, 0.9, 1800), 0.18, pan=-0.3 + 0.1 * (i % 3))
-add(sfx, title_at - 1.6, riser(1.6), 0.55)
-add(sfx, title_at, impact(1.0), 0.9)
-add(mus, title_at, braam(3.0, 38), 0.6)
+add(sfx, A_DEMON - 1.6, riser(1.6), 0.55)
+add(sfx, A_DEMON, impact(1.0), 0.9)
+add(mus, A_DEMON, braam(3.0, 38), 0.8)
+add(mus, A_DEMON, braam(3.0, 26), 0.5)
 
 BPM = 128
 beat = 60 / BPM
+
+
+def heartbeat(a, b):
+    # the Dryer Demon: a slow, heavy double heartbeat on the big drum
+    t = a
+    while t < b - 0.1:
+        add(mus, t, taiko(1.1), 0.5)
+        add(mus, t + beat * 0.5, taiko(0.8), 0.35)
+        t += beat * 2
 
 
 def drums(a, b, heavy=1.0, double=False):
@@ -215,6 +225,18 @@ DM = [50, 53, 57, 62]
 BB = [46, 50, 53, 58]
 FM = [53, 57, 60, 65]
 CM = [48, 52, 55, 60]
+# the Dryer Demon and the portal: dark chords over a heartbeat, building
+heartbeat(A_DEMON + 1.8, A_STORY - 0.3)
+chords(A_DEMON + 0.4, A_STORY, [DM, BB, DM, [49, 52, 56, 61]], 0.24)
+add(sfx, A_STORY - 1.6, riser(1.6), 0.55)
+# SAVE THE PALACE: the heroic theme, warm chords and a slow melody, then a riser into the fights
+add(mus, A_STORY, braam(3.2, 38), 0.7)
+add(sfx, A_STORY, impact(1.0), 0.8)
+chords(A_STORY + 0.2, A_FIGHT, [FM, CM, DM, BB], 0.3)
+for i, m in enumerate([69, 72, 70, 69, 67, 65, 64, 65]):
+    add(mus, A_STORY + 1.6 + i * 0.85, pluck(m, 1.4, 2000), 0.2)
+add(sfx, A_FIGHT - 1.4, riser(1.4), 0.5)
+add(mus, A_FIGHT, braam(3.0, 38), 0.75)
 # ACT 1 fight: drums + ostinato
 fight_go = A_FIGHT + 1.7
 drums(fight_go, A_SUPER - 1.5, 1.0)
@@ -225,17 +247,12 @@ add(mus, A_SUPER, braam(3.4, 38), 0.8)
 add(sfx, A_SUPER, impact(1.1), 0.8)
 # ACT 2 supers: heavier, double-time drums, an impact on every super
 supers_go = A_SUPER + 1.9
-drums(supers_go, A_STORY - 0.4, 1.25, double=True)
-ostinato(supers_go, A_STORY - 0.4, [62, 69, 74, 69, 65, 69, 72, 69], 0.2, 3400)
-chords(supers_go, A_STORY, [DM, BB, CM, DM], 0.2)
+drums(supers_go, A_PLAY - 0.4, 1.25, double=True)
+ostinato(supers_go, A_PLAY - 0.4, [62, 69, 74, 69, 65, 69, 72, 69], 0.2, 3400)
+chords(supers_go, A_PLAY, [DM, BB, CM, DM], 0.2)
 for m in marks:
     if m['punch']:
         add(sfx, m['at'] + 0.15, impact(0.8), 0.55)
-# ACT 3 the story: breakdown, warm chords and a slow melody
-add(mus, A_STORY, impact(0.7), 0.35)
-chords(A_STORY + 0.2, A_PLAY, [FM, CM, DM, BB], 0.3)
-for i, m in enumerate([69, 72, 70, 69, 67, 65, 64, 65]):
-    add(mus, A_STORY + 1.6 + i * 0.85, pluck(m, 1.4, 2000), 0.2)
 add(sfx, A_PLAY - 1.4, riser(1.4), 0.45)
 # ACT 4 play your way: brighter (F major), lighter drums
 play_go = A_PLAY + 1.7

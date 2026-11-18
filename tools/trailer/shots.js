@@ -6,7 +6,7 @@ const SELECT = {
     tick: (k) => { if (k % 4 === 0) { keysPressed.KeyD = true; keysDown.KeyD = true; setTimeout(() => delete keysDown.KeyD, 50); } }
   };
 const STORY = {
-    cap: 'A FULLY VOICED STORY', sub: 'find your missing pair... and get back home', secs: 6, top: true,
+    cap: 'AN EPIC ADVENTURE', sub: 'save the palace... and bring everyone home', secs: 5, top: true,
     setup: () => { const S = window.__sock; S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; S.startAdventure(); if (S.game.screen === 'advSlots') S.continueGame(); S.storyJump(1, 0); },
     tick: (k) => { if (k % 22 === 0) { keysPressed.Space = true; keysDown.Space = true; setTimeout(() => delete keysDown.Space, 50); } }
   };
@@ -27,14 +27,23 @@ const ONLINE_LOBBY = {
     cap: 'PLAY ONLINE WITH FRIENDS', sub: 'phone, tablet or PC', secs: 2.2, top: true,
     setup: () => { window.__sock.openOnlineLobbyForTest(); }
   };
+const PROLOGUE = i => new Function(`const S = window.__sock; S.game.story = null; S.game.mf = null;
+      S.Progress.data.adv = { prologue: false, hero: 0, look: 0, cleared: {}, seen: {} }; S.prologueAt(${i});`);
+const PORTAL = {
+    cap: 'THROUGH THE DRYER', sub: 'Stinky, Argyle and Gran go after his other half', secs: 3.2,
+    setup: () => { const S = window.__sock; S.Progress.data.adv = { prologue: true, hero: 0, look: 0, cleared: {}, seen: {} }; S.portalForTest(); }
+  };
 const FIGHT_STINKY = fight('stinky', 'argyle', 'laundry', 'FAST ARCADE FIGHTING', 'combos, throws, specials', 4.2);
 module.exports = [
-  // ACT 0: the cold open (black cards over a quiet title screen)
-  { card: 'IN A LAUNDROMAT AT MIDNIGHT...', cardSecs: 3.0, say: 'In a laundromat... at midnight...', cap: '', secs: 0, setup: () => { const S = window.__sock; S.game.story = null; S.game.screen = 'title'; } },
-  { card: 'ONE SOCK WENT MISSING.', cardSecs: 2.6, say: 'one sock... went missing.', cap: '', secs: 0, setup: () => {} },
-  { cap: '', sub: '', secs: 2.8, setup: () => { const S = window.__sock; S.game.screen = 'title'; } },
+  // ACT 0: the story first. The laundromat at midnight, a sock vanishes into Dryer No. 7, the Dryer Demon, the portal
+  { card: 'IN A LAUNDROMAT AT MIDNIGHT...', cardSecs: 3.0, say: 'In a laundromat... at midnight...', cap: '', secs: 2.6, setup: PROLOGUE(8) },
+  { card: "STINKY'S OTHER HALF... GONE.", cardSecs: 2.6, say: "Stinky Tabi's other half... sucked into the dryer.", cap: '', secs: 3.4, setup: PROLOGUE(13) },
+  { card: 'A SHINOBI APPEARS.', cardBig: true, cardSecs: 2.0, say: 'Then... out of the dryer... came a secret shinobi. The Dryer Demon is stealing socks... from every world.', cap: 'A FULLY VOICED STORY', sub: 'Agent Fishnet, shinobi of the Royal Court', secs: 4.4, top: true, setup: PROLOGUE(18) },
+  PORTAL,
+  { card: 'FIND HIS OTHER HALF.', cardBig: true, cardSecs: 2.0, say: 'Find his other half... save the palace from the Dryer Demon... and bring everyone home.', cap: '', secs: 0, setup: () => {} },
+  STORY,
   // ACT 1: fighting
-  { card: 'FIGHT.', cardBig: true, cardSecs: 1.6, say: 'Now... the socks fight back.', cap: '', secs: 0, setup: () => {} },
+  { card: 'FIGHT.', cardBig: true, cardSecs: 1.6, say: 'To get home... the socks must fight.', cap: '', secs: 0, setup: () => {} },
   FIGHT_STINKY,
   SELECT,
   // ACT 2: supers
@@ -43,9 +52,6 @@ module.exports = [
   superShot('shinobi', 'argyle', 'TOE-SHINOBI', 'Hidden Toe Tempest'),
   superShot('gran', 'stinky', 'STOCKING GRAN', 'yes, those are dentures'),
   superShot('robo', 'baby', 'MECHA-SOCK X', 'Overclock Overdrive'),
-  // ACT 3: the story
-  { card: 'SAVE THE PALACE.', cardBig: true, cardSecs: 2.0, say: 'Stop the Dryer Demon... save the palace... find your missing pair... and find your way home.', cap: '', secs: 0, setup: () => {} },
-  STORY,
   // ACT 4: everything else
   { card: 'PLAY YOUR WAY.', cardBig: true, cardSecs: 1.6, say: 'Build your own legend.', cap: '', secs: 0, setup: () => {} },
   mini('siege', 'MINI GAMES', 'starring the real fighters'),

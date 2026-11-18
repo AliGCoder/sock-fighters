@@ -29,7 +29,7 @@ print('lm', ok, msg, flush=True)
 
 CAPTION = ('epic cinematic hybrid orchestral trailer music, instrumental, huge brass braams, thundering taiko drums, '
            'driving staccato string ostinato, heroic choir, rising tension and risers, a quiet mysterious intro with '
-           'low piano, explosive drop, relentless action build, an emotional heartfelt middle, then a massive heroic '
+           'low piano, dark tension, a heroic theme, explosive drop, relentless action build, then a massive heroic '
            'finale, blockbuster video game trailer, D minor')
 takes = []
 for seed in (11, 23, 37):
@@ -50,10 +50,11 @@ for seed in (11, 23, 37):
 cards = {m['card']: m['at'] for m in marks if m['card']}
 want = np.zeros(LEN)
 for s in range(LEN):
-    if s < cards['FIGHT.']: want[s] = 0.25
-    elif s < cards['UNLEASH YOUR SUPER.']: want[s] = 0.7
-    elif s < cards['SAVE THE PALACE.']: want[s] = 0.9
-    elif s < cards['PLAY YOUR WAY.']: want[s] = 0.4
+    if s < cards['A SHINOBI APPEARS.']: want[s] = 0.25
+    elif s < cards['FIND HIS OTHER HALF.']: want[s] = 0.45
+    elif s < cards['FIGHT.']: want[s] = 0.55
+    elif s < cards['UNLEASH YOUR SUPER.']: want[s] = 0.75
+    elif s < cards['PLAY YOUR WAY.']: want[s] = 0.9
     elif s < cards['TOGETHER.']: want[s] = 0.7
     else: want[s] = 1.0
 best = None
