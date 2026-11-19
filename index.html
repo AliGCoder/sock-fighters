@@ -14440,6 +14440,23 @@
       }
 
       /** Paint the laundromat's static parts (walls, poster, machines, floor). */
+      // The coin machine picture (painted with Stable Diffusion XL and cut out, see tools/art/cut_machine.py): the
+      // laundromat's row of washers and Dryer No. 7. Where its round door sits, as fractions of the picture: centre
+      // (win), the whole door's radius and the glass's radius (of the height). Until it loads (or if it can't), the
+      // machines are drawn the old way.
+      const MACHINE_ART = { img: new Image(), ready: false, win: [0.496, 0.552], door: 0.218, glass: 0.118, aspect: 276 / 420 };
+      MACHINE_ART.img.onload = () => {
+        MACHINE_ART.ready = true;
+        stageSlots.forEach(sl => (sl.key = '')); // repaint the laundromat with it
+      };
+      MACHINE_ART.img.src = 'data:image/webp;base64,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';
+      /** A machine's size and its door in the laundromat's row (machine i). */
+      function laundryMachine(i) {
+        const h = 160,
+          w = h * MACHINE_ART.aspect,
+          cx = 86 + i * 130;
+        return { x: cx - MACHINE_ART.win[0] * w, y: 400 - h, w, h, cx, cy: 400 - h + MACHINE_ART.win[1] * h, glass: MACHINE_ART.glass * h * 1.15 };
+      }
       function buildLaundry(b) {
         let g = b.createLinearGradient(0, 0, 0, 400);
         g.addColorStop(0, '#160827');
@@ -14493,7 +14510,26 @@
         b.lineTo(611, 114);
         b.stroke();
         // machines
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 7 && MACHINE_ART.ready; i++) {
+          const M = laundryMachine(i);
+          b.fillStyle = 'rgba(0,0,0,0.35)';
+          b.beginPath();
+          b.ellipse(M.cx, 402, M.w / 2 + 6, 8, 0, 0, 7);
+          b.fill();
+          b.drawImage(MACHINE_ART.img, M.x, M.y, M.w, M.h);
+          b.strokeStyle = INK;
+          b.lineWidth = 2.5;
+          roundRectPath(b, M.x + 0.5, M.y + M.h * 0.13, M.w - 1, M.h * 0.87 - 0.5, 4);
+          b.stroke();
+          b.fillStyle = '#1d1430';
+          b.fillRect(M.x + M.w * 0.1, M.y + 3, M.w * 0.28, 11);
+          b.fillStyle = '#ffe234';
+          b.font = '7px ' + FONT_PIXEL;
+          b.textAlign = 'center';
+          b.textBaseline = 'middle';
+          b.fillText('00' + (i + 1), M.x + M.w * 0.24, M.y + 9);
+        }
+        for (let i = 0; i < 7 && !MACHINE_ART.ready; i++) {
           const mx = 30 + i * 130,
             my = 250;
           b.fillStyle = 'rgba(0,0,0,0.35)';
@@ -14614,15 +14650,19 @@
         // machine doors
         const sp = game.superCutin ? 0.5 : 0.06;
         for (let i = 0; i < 7; i++) {
-          const cx = 86 + i * 130,
-            cy = 342;
+          const M = MACHINE_ART.ready ? laundryMachine(i) : null,
+            cx = 86 + i * 130,
+            cy = M ? M.cy : 342,
+            R = M ? M.glass : 34, // the window's radius
+            k = R / 34;
           ctx.save();
           ctx.beginPath();
-          ctx.arc(cx, cy, 34, 0, 7);
+          ctx.arc(cx, cy, R, 0, 7);
           ctx.clip();
           ctx.fillStyle = '#22336b';
           ctx.fillRect(cx - 36, cy - 36, 72, 72);
           ctx.translate(cx, cy);
+          ctx.scale(k, k);
           ctx.rotate(t * sp * (i % 2 ? 1 : -1.3) + i);
           ctx.lineCap = 'round';
           for (let k = 0; k < 3; k++) {
@@ -14645,15 +14685,15 @@
           ctx.strokeStyle = 'rgba(255,255,255,0.45)';
           ctx.lineWidth = 4;
           ctx.beginPath();
-          ctx.arc(cx, cy, 26, 3.6, 4.6);
+          ctx.arc(cx, cy, R * 0.76, 3.6, 4.6);
           ctx.stroke();
           ctx.strokeStyle = INK;
           ctx.lineWidth = 3;
           ctx.beginPath();
-          ctx.arc(cx, cy, 34, 0, 7);
+          ctx.arc(cx, cy, R, 0, 7);
           ctx.stroke();
         }
-        drawLintCrowd(t, [56, 316, 486, 656, 876], 236, '#b4acc8');
+        drawLintCrowd(t, [56, 316, 486, 656, 876], MACHINE_ART.ready ? 226 : 236, '#b4acc8');
       }
 
       /** Little lint-bunny spectators at the given x positions; they jump and cheer on big moments. */
@@ -29048,7 +29088,23 @@
       // the laundry basket: the socks poke out of the top (drawn first), the woven front goes over them
       function drawLaundryBasket(x, y, t, speaking, o = {}) {
         const W2 = 120,
-          Hb = 92;
+          Hb = 92,
+          RY = 16; // how deep the round opening looks
+        // the back of the opening: the dark inside and the far rim
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(x, y, W2, RY, 0, 0, 7);
+        ctx.fillStyle = '#4a2a10';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.ellipse(x, y, W2, RY, 0, Math.PI, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = '#b77d3a';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+        ctx.restore();
         PRO_CAST.forEach((id, i) => {
           if (o.empty) return;
           const d = withSkin(findCharacter(id), 0);
@@ -29085,12 +29141,15 @@
         ctx.fillStyle = '#d29a52';
         ctx.strokeStyle = INK;
         ctx.lineWidth = 4;
-        ctx.beginPath();
-        ctx.moveTo(x - W2, y);
-        ctx.lineTo(x + W2, y);
-        ctx.lineTo(x + W2 - 14, y + Hb);
-        ctx.lineTo(x - W2 + 14, y + Hb);
-        ctx.closePath();
+        const front = () => {
+          ctx.beginPath();
+          ctx.moveTo(x - W2, y);
+          ctx.ellipse(x, y, W2, RY, 0, Math.PI, 0, true); // the near rim curves round the front
+          ctx.lineTo(x + W2 - 14, y + Hb);
+          ctx.quadraticCurveTo(x, y + Hb + 12, x - W2 + 14, y + Hb);
+          ctx.closePath();
+        };
+        front();
         ctx.fill();
         ctx.save();
         ctx.clip();
@@ -29109,10 +29168,17 @@
           ctx.stroke();
         }
         ctx.restore();
+        front();
         ctx.stroke();
-        roundRectPath(ctx, x - W2 - 6, y - 8, W2 * 2 + 12, 14, 7);
-        ctx.fillStyle = '#b77d3a';
-        ctx.fill();
+        // the thick near rim
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 16;
+        ctx.beginPath();
+        ctx.ellipse(x, y, W2, RY, 0, Math.PI, 0, true);
+        ctx.stroke();
+        ctx.strokeStyle = '#b77d3a';
+        ctx.lineWidth = 9;
         ctx.stroke();
         // handle holes
         for (const s of [-1, 1]) {
@@ -29122,38 +29188,348 @@
         }
         ctx.restore();
       }
-      // the human: giant striped pyjama legs and fluffy slippers (we are socks: we only ever see the feet)
-      function drawHumanLegs(x, y, t, o = {}) {
-        const step = o.walk ? Math.sin(t * 0.18) : 0;
-        for (const s of [-1, 1]) {
-          const lx = x + s * 46 + (o.walk ? s * step * 40 : 0),
-            lift = o.walk ? Math.max(0, s * step) * 18 : 0;
-          ctx.save();
-          roundRectPath(ctx, lx - 40, -20, 80, y - 30 - lift + 20, 26);
-          ctx.fillStyle = '#5b7bd6';
-          ctx.fill();
-          ctx.save();
-          ctx.clip();
-          ctx.fillStyle = 'rgba(255,255,255,0.35)';
-          for (let k = -2; k < 4; k++) ctx.fillRect(lx - 40 + k * 26, -20, 9, y + 20);
-          ctx.restore();
-          ctx.strokeStyle = INK;
-          ctx.lineWidth = 4;
-          ctx.stroke();
-          // fluffy slipper
-          ctx.fillStyle = '#ffb3d1';
-          ctx.beginPath();
-          ctx.ellipse(lx + 18, y - 14 - lift, 62, 24, 0, 0, 7);
-          ctx.fill();
-          ctx.stroke();
-          ctx.fillStyle = '#fff';
-          for (let k = 0; k < 5; k++) {
-            ctx.beginPath();
-            ctx.arc(lx - 6 + k * 13, y - 34 - lift + Math.sin(k * 2) * 2, 8, 0, 7);
-            ctx.fill();
-          }
-          ctx.restore();
+      // the human: a dressing gown from the hips up (the rest is off the top of the screen), baggy striped pyjama
+      // legs and fluffy loafer slippers. x = where they stand, floorY = the floor, o.walk = stomping along,
+      // o.face = 1 to face right (default left). Returns where the shoulder is (for an arm).
+      function drawHumanLegs(x, floorY, t, o = {}) {
+        const face = o.face || -1,
+          THIGH = 118,
+          SHIN = 118,
+          footY = floorY - 28; // the ankle, just above the slipper
+        const legs = [[10, Math.PI, '#4f6bc0'], [-10, 0, '#5b7bd6']].map(([hx, ph, col]) => {
+          // a walk's four poses: CONTACT (front leg straight, toe up), DOWN, PASSING (the swinging knee bent
+          // high) and UP (pushing off the back toe). p goes round once per two steps; the other leg is half a turn on.
+          const p = t * 0.18 + ph,
+            a = o.walk ? Math.sin(p) * 0.28 : 0, // the thigh swings forward (+) and back
+            swing = Math.cos(p) > 0, // moving forward through the air
+            bend = !o.walk ? 0.05 : swing ? Math.pow(Math.cos(p), 2) * 0.5 : 0.04,
+            tilt = o.walk ? (swing ? Math.sin(p) * 0.12 : Math.min(0, Math.sin(p)) * 0.16) : 0;
+          const knee = [hx - Math.sin(a) * THIGH, Math.cos(a) * THIGH],
+            ankle = [knee[0] - Math.sin(a - bend) * SHIN, knee[1] + Math.cos(a - bend) * SHIN];
+          return { hx, knee, ankle, col, tilt };
+        });
+        // the planted foot is on the floor; the other one lifts
+        const hipY = footY - Math.max(...legs.map(L => L.ankle[1]));
+        ctx.save();
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.translate(x, hipY);
+        ctx.scale(-face, 1);
+        for (const L of legs) drawPyjamaLeg([L.hx, -6], L.knee, L.ankle, 46, L.col, '#c99a62', L.ankle[1] + 28, L.tilt);
+        // the dressing gown: from off the top of the screen down to just below the hips, a soft wavy hem, a darker
+        // front edge and the belt tied in a floppy bow
+        const top = -hipY - 40,
+          hem = 40,
+          sway = o.walk ? Math.sin(t * 0.18) * 4 : 0;
+        ctx.beginPath();
+        ctx.moveTo(-58, top);
+        ctx.lineTo(54, top);
+        ctx.quadraticCurveTo(66, hem - 30, 70 + sway, hem);
+        for (let k = 1; k <= 6; k++) ctx.quadraticCurveTo(70 - k * 23 + 11 + sway, hem + (k % 2 ? 9 : -2), 70 - k * 23 + sway, hem + 2);
+        ctx.quadraticCurveTo(-76, hem - 30, -58, top);
+        ctx.closePath();
+        ctx.fillStyle = '#b0476a';
+        ctx.fill();
+        ctx.save();
+        ctx.clip();
+        ctx.fillStyle = '#7a2a48';
+        ctx.fillRect(-74, top, 20, hem - top + 20); // the front edge
+        ctx.fillStyle = 'rgba(0,0,0,0.14)';
+        ctx.fillRect(40, top, 40, hem - top + 20);
+        ctx.restore();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        // the belt and its bow
+        ctx.fillStyle = '#7a2a48';
+        roundRectPath(ctx, -64, -46, 130, 13, 6);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(-50, -40, 12, 7, -0.5, 0, 7);
+        ctx.ellipse(-36, -40, 12, 7, 0.5, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        ctx.lineWidth = 9;
+        ctx.strokeStyle = INK;
+        ctx.beginPath();
+        ctx.moveTo(-44, -36);
+        ctx.quadraticCurveTo(-50 + sway, -10, -46 + sway, 8);
+        ctx.stroke();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#7a2a48';
+        ctx.stroke();
+        ctx.restore();
+        return [x - face * 40, hipY - 120]; // the shoulder (inside the gown, off screen above)
+      }
+      /**
+       * A soft, baggy fabric tube along P = [start, bend, end] (a pyjama leg or a dressing-gown sleeve): a rounded
+       * bend, wobbly cloth edges, half-width halfW(u) for u = 0 (start) .. 1 (end), and optionally stripes that
+       * follow the folds, crinkles round the bend and a bunched hem at the end.
+       */
+      function drawSoftTube(P, halfW, col, o = {}) {
+        const [A, K, C] = P,
+          lerp2 = (p, q, k) => [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k];
+        // the centre line: straight to half way along the first part, a curve round the bend, straight to the end
+        const r = o.tight ? 0.16 : o.round || 0.45, // how much of each part curves round the bend (small: a sharp elbow)
+          M1 = lerp2(A, K, 1 - r),
+          M2 = lerp2(K, C, r),
+          pts = [];
+        const N = 10;
+        for (let i = 0; i < N; i++) pts.push(lerp2(A, M1, i / N));
+        for (let i = 0; i < N; i++) {
+          const k = i / N,
+            q0 = lerp2(M1, K, k),
+            q1 = lerp2(K, M2, k);
+          pts.push(lerp2(q0, q1, k));
         }
+        for (let i = 0; i <= N; i++) pts.push(lerp2(M2, C, i / N));
+        // how far along each point is (0..1), and the sideways direction there
+        const len = [0];
+        for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+        const total = len[len.length - 1] || 1;
+        const side = pts.map((p, i) => {
+          const q = pts[Math.min(pts.length - 1, i + 1)],
+            r = pts[Math.max(0, i - 1)],
+            l = Math.hypot(q[0] - r[0], q[1] - r[1]) || 1;
+          return [-(q[1] - r[1]) / l, (q[0] - r[0]) / l];
+        });
+        const edge = (sg, off = 1) =>
+          pts.map((p, i) => {
+            const u = len[i] / total,
+              wob = o.smooth ? 0 : Math.sin(u * 17 + sg * 1.3) * 1.6 * (u > 0.08 ? 1 : 0); // soft cloth: the edges ripple a little
+            const hw = (halfW(u) + wob) * off;
+            return [p[0] + side[i][0] * hw * sg, p[1] + side[i][1] * hw * sg];
+          });
+        const L = edge(1),
+          R = edge(-1);
+        const outline = () => {
+          ctx.beginPath();
+          L.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+          // the hem: a soft rounded end
+          const e = pts[pts.length - 1],
+            d = side[side.length - 1];
+          ctx.quadraticCurveTo(e[0] + d[1] * 8, e[1] - d[0] * 8, R[R.length - 1][0], R[R.length - 1][1]);
+          for (let i = R.length - 2; i >= 0; i--) ctx.lineTo(R[i][0], R[i][1]);
+          ctx.closePath();
+        };
+        ctx.save();
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        outline();
+        ctx.fillStyle = col;
+        ctx.fill();
+        ctx.save();
+        ctx.clip();
+        // a soft shadow down the back edge, a highlight down the front
+        ctx.strokeStyle = 'rgba(0,0,0,0.16)';
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        edge(-1, 0.82).forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+        ctx.stroke();
+        if (o.stripes) {
+          // stripes that swell and bend with the cloth
+          ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+          ctx.lineWidth = 5;
+          for (const k of [-0.62, -0.2, 0.22, 0.64]) {
+            ctx.beginPath();
+            edge(Math.sign(k), Math.abs(k)).forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+            ctx.stroke();
+          }
+        }
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        edge(1, 0.7).forEach(([x, y], i) => (i < 4 ? 0 : i === 4 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)));
+        ctx.stroke();
+        ctx.restore();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        outline();
+        ctx.stroke();
+        // crinkles round the bend: little curved folds across the cloth
+        const at = u => {
+          let i = len.findIndex(l => l / total >= u);
+          if (i < 0) i = pts.length - 1;
+          return i;
+        };
+        ctx.strokeStyle = 'rgba(20,10,30,0.55)';
+        ctx.lineWidth = 2.5;
+        if (o.creases)
+          for (const [u, k0, k1] of [[0.44, -0.75, 0.15], [0.5, -0.2, 0.7], [0.56, -0.65, 0.05]]) {
+            const i = at(u),
+              p = pts[i],
+              d = side[i],
+              hw = halfW(u),
+              t0 = [p[0] + d[0] * hw * k0, p[1] + d[1] * hw * k0],
+              t1 = [p[0] + d[0] * hw * k1, p[1] + d[1] * hw * k1],
+              dir = i > 0 ? [pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]] : [0, 1],
+              dl = Math.hypot(dir[0], dir[1]) || 1;
+            ctx.beginPath();
+            ctx.moveTo(t0[0], t0[1]);
+            ctx.quadraticCurveTo((t0[0] + t1[0]) / 2 + (dir[0] / dl) * 7, (t0[1] + t1[1]) / 2 + (dir[1] / dl) * 7, t1[0], t1[1]);
+            ctx.stroke();
+          }
+        if (o.hem)
+          // the hem bunching up: two wavy rings near the bottom
+          for (const u of [0.86, 0.93]) {
+            const i = at(u),
+              p = pts[i],
+              d = side[i],
+              hw = halfW(u) * 0.92;
+            ctx.beginPath();
+            for (let k = 0; k <= 6; k++) {
+              const f = -1 + (k / 6) * 2,
+                wv = Math.sin(k * 2.2 + u * 40) * 3;
+              const x = p[0] + d[0] * hw * f + d[1] * wv,
+                y = p[1] + d[1] * hw * f - d[0] * wv;
+              k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+            }
+            ctx.stroke();
+          }
+        ctx.restore();
+      }
+      /**
+       * One of the human's legs: a thick striped pyjama tube hip -> knee -> ankle and a fluffy loafer slipper on a
+       * floor at FLOOR (toe pointing left; mirror the canvas for a human facing right).
+       */
+      function drawPyjamaLeg(hip, knee, ankle, w, col, slipCol, FLOOR, tilt = 0) {
+        // baggy pyjama trousers: wider towards the bottom, crinkled at the knee, the hem bunched over the slipper
+        drawSoftTube([hip, knee, [ankle[0], ankle[1] + 4]], u => w * (0.5 + 0.16 * u * u), col, {
+          round: 0.28, // a firm knee, not a rubbery one
+          stripes: true,
+          creases: true,
+          hem: true
+        });
+        ctx.save(); // the slipper tips round the ankle as the foot lands and pushes off
+        ctx.translate(ankle[0], ankle[1]);
+        ctx.rotate(tilt);
+        ctx.translate(-ankle[0], -ankle[1]);
+        // a fluffy loafer slipper, flat on the floor, toe pointing left: low tan suede with a big round toe, a
+        // moccasin stitch over the top of the foot and fluffy fur bursting out round the ankle opening
+        const hx = ankle[0] + 28, // back of the heel
+          tx = ankle[0] - 68, // tip of the toe
+          lip = FLOOR - 30; // the top edge of the slipper
+        ctx.beginPath();
+        ctx.moveTo(hx, FLOOR - 3);
+        ctx.quadraticCurveTo(hx + 6, lip + 4, hx - 2, lip); // round the heel
+        ctx.lineTo(ankle[0] - 22, lip);
+        ctx.quadraticCurveTo(tx + 10, lip - 2, tx - 2, FLOOR - 16); // over the foot to the round toe
+        ctx.quadraticCurveTo(tx - 4, FLOOR - 3, tx + 12, FLOOR - 3);
+        ctx.closePath();
+        ctx.fillStyle = slipCol;
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ctx.save(); // soft suede shading underneath, a shine on the toe
+        ctx.clip();
+        ctx.fillStyle = shadeColor(slipCol, -0.16);
+        ctx.fillRect(tx - 10, FLOOR - 10, hx - tx + 20, 10);
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
+        ctx.beginPath();
+        ctx.ellipse(tx + 16, FLOOR - 20, 12, 5, -0.25, 0, 7);
+        ctx.fill();
+        ctx.restore();
+        // the moccasin stitch: a U of little stitches over the top of the foot
+        ctx.strokeStyle = shadeColor(slipCol, -0.4);
+        ctx.lineWidth = 2;
+        ctx.setLineDash([3, 4]);
+        ctx.beginPath();
+        ctx.moveTo(ankle[0] - 22, lip + 4);
+        ctx.quadraticCurveTo(tx + 10, lip + 2, tx + 8, FLOOR - 12);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        // the thin sole
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(tx + 8, FLOOR - 2);
+        ctx.lineTo(hx - 2, FLOOR - 2);
+        ctx.stroke();
+        // fluffy fur bursting out of the opening, round the ankle (and a tuft at the heel)
+        const fl = ankle[0] - 26,
+          fr = hx + 2;
+        const puffs = [];
+        for (let k = 0; k <= 7; k++) puffs.push([fl + ((fr - fl) * k) / 7, lip - 2 - Math.sin(k * 1.7) * 2.5, 7 + (k % 3)]);
+        ctx.fillStyle = '#fbf3e4';
+        for (const [px, py, r] of puffs) {
+          ctx.beginPath();
+          ctx.arc(px, py, r + 2, 0, 7);
+          ctx.fillStyle = INK;
+          ctx.fill();
+        }
+        for (const [px, py, r] of puffs) {
+          ctx.beginPath();
+          ctx.arc(px, py, r - 0.5, 0, 7);
+          ctx.fillStyle = '#fbf3e4';
+          ctx.fill();
+        }
+        ctx.strokeStyle = 'rgba(160,130,90,0.55)'; // little fur curls
+        ctx.lineWidth = 1.5;
+        for (const [px, py] of puffs) {
+          ctx.beginPath();
+          ctx.arc(px - 1, py + 1, 3, Math.PI * 1.1, Math.PI * 1.9);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      /**
+       * The giant human, asleep in a plastic chair at the laundromat. We are socks, so we only see from the knees
+       * down: the thighs come in from the top right (the rest of them is off screen), bend at the knee, and the
+       * shins go straight down to fluffy slippers flat on the floor. The knees rise and fall with the snoring.
+       */
+      function drawSleepingHuman(t) {
+        const FLOOR = 398,
+          breath = Math.sin(t * 0.05) * 1.6;
+        ctx.save();
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        // the plastic chair: the front of the seat and its legs (the rest is behind the human)
+        ctx.fillStyle = '#ff8a3d';
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        for (const lx of [896, 944]) {
+          ctx.fillRect(lx, 326, 9, FLOOR - 326);
+          ctx.strokeRect(lx, 326, 9, FLOOR - 326);
+        }
+        roundRectPath(ctx, 878, 316, 110, 14, 6);
+        ctx.fill();
+        ctx.stroke();
+        // a leg: hip (off screen) -> knee -> ankle, as one thick striped pyjama tube
+        const leg = (hip, knee, ankle, w, col, slipCol) => drawPyjamaLeg(hip, knee, ankle, w, col, slipCol, FLOOR);
+        // the far leg (a little darker), then the near leg
+        leg([1000, 282], [878, 284 + breath], [872, 368], 44, '#4f6bc0', '#c99a62');
+        leg([990, 294], [846, 296 + breath], [838, 370], 46, '#5b7bd6', '#c99a62');
+        // the dressing gown: the body slumped in the chair at the edge of the screen, the gown over the lap,
+        // the belt's end dangling
+        ctx.beginPath();
+        ctx.moveTo(1000, -10);
+        ctx.lineTo(948, -10);
+        ctx.quadraticCurveTo(924 - breath, 150, 928, 250);
+        ctx.quadraticCurveTo(900, 262, 896, 276);
+        for (let k = 0; k < 4; k++) ctx.quadraticCurveTo(892 + (k % 2 ? 8 : -4), 286 + k * 12, 896, 292 + k * 12);
+        ctx.quadraticCurveTo(940, 340, 1000, 330);
+        ctx.closePath();
+        ctx.fillStyle = '#b0476a';
+        ctx.fill();
+        ctx.save();
+        ctx.clip();
+        ctx.fillStyle = '#7a2a48';
+        ctx.fillRect(926, -10, 14, 270); // the gown's front edge
+        ctx.restore();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        ctx.lineWidth = 9;
+        ctx.beginPath();
+        ctx.moveTo(930, 266);
+        ctx.quadraticCurveTo(920 + breath, 300, 924, 346);
+        ctx.stroke();
+        ctx.strokeStyle = '#7a2a48';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+        ctx.restore();
       }
       function drawProHome(S, t, speaking) {
         // a little laundry room at home, almost midnight
@@ -29317,16 +29693,241 @@
         ctx.arc(lx, 96, 14, 0, 7);
         ctx.fill();
         // the stomping human, the basket swinging from one hand
-        drawHumanLegs(600, 392, t, { walk: true });
-        const sw = Math.sin(t * 0.18),
-          bump = Math.abs(Math.sin(t * 0.18)) * 26;
+        // the human stomps along to the right, pulling the basket behind them in a rattly wire laundry cart
+        const cx = 330,
+          wheelY = 368,
+          WR = 24, // wheel radius
+          rattle = Math.abs(Math.sin(scroll * 0.07)) * 3, // bumping over the paving cracks
+          tilt = Math.sin(scroll * 0.07) * 0.015,
+          hand = [714 - 266 * 0.62, -40 + 340 * 0.62 - rattle]; // on the line from the shoulder to the cart: the pull pulls it straight
         ctx.save();
-        ctx.translate(380, 250 - bump);
-        ctx.rotate(sw * 0.12);
-        drawLaundryBasket(0, 0, t, speaking, { squash: true, towel: true });
+        ctx.translate(0, -rattle);
+        ctx.translate(cx, wheelY);
+        ctx.rotate(tilt);
+        ctx.translate(-cx, -wheelY);
+        const wire = (pts, wd = 3) => {
+          for (const [w2, st] of [[wd + 3.5, INK], [wd, '#c9d1de']]) {
+            ctx.strokeStyle = st;
+            ctx.lineWidth = w2;
+            ctx.beginPath();
+            pts.forEach(([px, py], i) => (i ? ctx.lineTo(px, py) : ctx.moveTo(px, py)));
+            ctx.stroke();
+          }
+        };
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        // the pull handle: from the back of the cart up to the human's hand, with a red rubber grip
+        wire([[cx + 118, 300], [hand[0] + 4, hand[1] + rattle]], 4);
+        // the back of the frame (behind the basket)
+        wire([[cx - 122, 268], [cx + 122, 268]]);
+        // the basket sits in the cart
+        drawLaundryBasket(cx, 250, t, speaking, { squash: true, towel: true });
+        // the front of the frame: a wire cage round the bottom of the basket, the base and the axle struts
+        wire([[cx - 124, 290], [cx + 124, 290]]);
+        for (let wx = cx - 118; wx <= cx + 118; wx += 26) wire([[wx, 290], [wx + 2, 344]], 2.5);
+        wire([[cx - 126, 344], [cx + 126, 344]], 5);
+        wire([[cx - 96, 344], [cx - 96, wheelY]], 4);
+        wire([[cx + 96, 344], [cx + 96, wheelY]], 4);
+        // the wheels, turning as they roll
+        for (const wx of [cx - 96, cx + 96]) {
+          ctx.fillStyle = '#25212f';
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.arc(wx, wheelY, WR, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = '#9aa3b5';
+          ctx.beginPath();
+          ctx.arc(wx, wheelY, WR * 0.55, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+          ctx.strokeStyle = '#5c6478';
+          ctx.lineWidth = 3;
+          for (let sp = 0; sp < 3; sp++) {
+            const an = scroll / WR + (sp * Math.PI) / 3;
+            ctx.beginPath();
+            ctx.moveTo(wx - Math.cos(an) * WR * 0.5, wheelY - Math.sin(an) * WR * 0.5);
+            ctx.lineTo(wx + Math.cos(an) * WR * 0.5, wheelY + Math.sin(an) * WR * 0.5);
+            ctx.stroke();
+          }
+          ctx.fillStyle = INK;
+          ctx.beginPath();
+          ctx.arc(wx, wheelY, 4, 0, 7);
+          ctx.fill();
+        }
         ctx.restore();
+        // the human, stomping along
+        drawHumanLegs(700, 392, t, { walk: true, face: 1 });
+        // their arm reaching back to the cart. How an arm pulls: upper arm and forearm about the same length, the
+        // arm nearly straight with a soft bend at the elbow, the forearm narrowing to the wrist. The dressing-gown
+        // sleeve hangs loose and opens into a bell at the cuff; the hand comes out of it, closed round the grip.
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        const sh = [714, -40], // the shoulder, above the top of the screen
+          dx = hand[0] - sh[0],
+          dy = hand[1] - sh[1],
+          dl = Math.hypot(dx, dy),
+          ux = dx / dl,
+          uy = dy / dl,
+          wrist = [hand[0] - ux * 14, hand[1] - uy * 14], // the wrist, just inside the cuff
+          elbow = [sh[0] + dx * 0.5 - uy * 7, sh[1] + dy * 0.5 + ux * 7]; // pulled almost straight: only a slight bend
+        const ang = Math.atan2(uy, ux); // which way the forearm points
+        // the hand: a chunky cartoon fist closed round the crossbar at the end of the cart's handle, drawn in the
+        // classic cartoon-hand style: a thick outline, a soft darker shade down one side of every part, light
+        // highlight spots and soft creases on the finger joints. The back of the hand narrows to the wrist; four
+        // plump curled fingers stack round the bar (the middle one the longest); a finger-wide thumb grows from
+        // near the wrist and rests across the index finger. Drawn before the sleeve, so the cuff covers the wrist.
+        ctx.save();
+        ctx.translate(hand[0] + ux * 6, hand[1] + uy * 6);
+        ctx.rotate(ang); // +x: along the forearm, towards the fingers
+        ctx.scale(1.25, 1.25); // cartoon hands are drawn big
+        const SKIN = '#f9d0ad',
+          SHADE = '#eaa982',
+          LIGHT = '#fde7d4';
+        // one part of the hand: shade colour underneath, skin on top shifted away from the shade side, then the
+        // outline (fill = a fill style for the shade layer, so it can fade out)
+        const part = (path, lw = 3, fill = SHADE) => {
+          ctx.save();
+          path();
+          ctx.fillStyle = fill;
+          ctx.fill();
+          ctx.clip();
+          ctx.translate(-2.2, -2.6);
+          path();
+          ctx.fillStyle = SKIN;
+          ctx.fill();
+          ctx.restore();
+          if (lw) {
+            path();
+            ctx.strokeStyle = INK;
+            ctx.lineWidth = lw;
+            ctx.stroke();
+          }
+        };
+        const shine = (x, y, rx, ry, rot = 0) => {
+          ctx.fillStyle = LIGHT;
+          ctx.beginPath();
+          ctx.ellipse(x, y, rx, ry, rot, 0, 7);
+          ctx.fill();
+        };
+        // the crossbar: a red bar across the fist (the handle's pole joins it behind the hand)
+        ctx.save();
+        roundRectPath(ctx, 13, -31, 12, 60, 6);
+        ctx.fillStyle = '#e8333a';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillRect(15.5, -28, 3, 54);
+        ctx.restore();
+        // the back of the hand: narrow at the wrist, widening to the knuckles, no corners anywhere
+        part(() => {
+          ctx.beginPath();
+          ctx.moveTo(-15, -1);
+          ctx.bezierCurveTo(-15, -11, 0, -19.5, 12, -17);
+          ctx.bezierCurveTo(21, -12, 21, 12, 12, 17);
+          ctx.bezierCurveTo(0, 19.5, -15, 9, -15, -1);
+          ctx.closePath();
+        }, 3.5);
+        shine(-3, 6, 6.5, 3, 0.15);
+        // four plump fingers curled round the bar (little, ring, middle, index), each tucked a little behind the
+        // one before it, the middle one the longest, each with a soft crease at its middle joint
+        for (let f = 3; f >= 0; f--) {
+          const rx = [9.5, 10.5, 9.5, 8][f],
+            ry = [6.4, 6.4, 6, 5.2][f],
+            fx = 20 + [0, 0.8, 0, -1.2][f],
+            fy = [-15.5, -5, 4.8, 13.4][f];
+          part(() => {
+            ctx.beginPath();
+            ctx.ellipse(fx, fy, rx, ry, 0.08, 0, 7);
+          });
+          ctx.strokeStyle = SHADE;
+          ctx.lineWidth = 1.8;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(fx - 1.5, fy - ry * 0.45);
+          ctx.quadraticCurveTo(fx - 0.2, fy, fx - 1.5, fy + ry * 0.45);
+          ctx.stroke();
+          // the fingernail: in a fist the fingertips curl back towards the palm, so the nail sits at the inner end
+          ctx.fillStyle = LIGHT;
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.ellipse(fx - rx * 0.5, fy + 0.4, rx * 0.33, ry * 0.48, 0.08, 0, 7);
+          ctx.fill();
+          ctx.stroke();
+        }
+        // the thumb: as wide as a finger, growing from near the wrist and resting across the index finger, its
+        // round tip (with a nail) stopping halfway along it. No lines on the inside of the hand: it's outlined only
+        // where it sticks out past the hand's edge and round its tip, so it melts into the hand.
+        const thumb = () => {
+          ctx.beginPath();
+          ctx.moveTo(-14.6, -5);
+          ctx.bezierCurveTo(-12, -14, -5, -21.6, 2, -22.2); // leaves the hand's edge smoothly, no corner
+          ctx.bezierCurveTo(9, -23, 15, -21, 18, -16.5); // the outer edge curling round
+          ctx.bezierCurveTo(20.5, -12.5, 19, -7, 15, -7.5); // the round tip, curled over towards the middle finger
+          ctx.bezierCurveTo(12, -8, 10.5, -11, 6, -11.6); // the inside of the curl
+          ctx.bezierCurveTo(0, -12, -6, -10, -14.6, -5);
+          ctx.closePath();
+        };
+        const thumbShade = ctx.createLinearGradient(6, 0, 19, 0); // a light shade that fades out well before the base
+        thumbShade.addColorStop(0, SKIN);
+        thumbShade.addColorStop(1, '#f0b893');
+        part(thumb, 0, thumbShade);
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.save();
+        ctx.beginPath(); // clip to everywhere outside the back of the hand
+        ctx.rect(-60, -60, 120, 120);
+        ctx.moveTo(-15, -1);
+        ctx.bezierCurveTo(-15, -11, 0, -19.5, 12, -17);
+        ctx.bezierCurveTo(21, -12, 21, 12, 12, 17);
+        ctx.bezierCurveTo(0, 19.5, -15, 9, -15, -1);
+        ctx.closePath();
+        ctx.clip('evenodd');
+        thumb();
+        ctx.stroke();
+        ctx.restore();
+        shine(4, -19.3, 4.5, 1.3, -0.05);
+        // the thumbnail near the tip
+        ctx.fillStyle = LIGHT;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.ellipse(16.2, -12.5, 3.1, 2.3, 1.05, 0, 7);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+        // the sleeve: loose and even down the upper arm, a little narrower past the elbow, then a bell at the cuff
+        drawSoftTube([sh, elbow, wrist], u => (u < 0.5 ? 22 - u * 4 : 20 - (u - 0.5) * 6) + (u > 0.84 ? (u - 0.84) * 70 : 0), '#b0476a', {
+          smooth: true
+        });
+        // the soft fold on the inside of the elbow
+        ctx.strokeStyle = 'rgba(20,10,30,0.45)';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(elbow[0] + uy * 10 - ux * 8, elbow[1] - ux * 10 - uy * 8);
+        ctx.quadraticCurveTo(elbow[0] + uy * 4, elbow[1] - ux * 4, elbow[0] + uy * 10 + ux * 8, elbow[1] - ux * 10 + uy * 8);
+        ctx.stroke();
+        // the bell cuff's darker turned-back edge
+        ctx.save();
+        ctx.translate(wrist[0], wrist[1]);
+        ctx.rotate(ang);
+        roundRectPath(ctx, -7, -29, 12, 58, 6);
+        ctx.fillStyle = '#7a2a48';
+        ctx.fill();
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+        ctx.restore();
+        ctx.restore();
+        // the cart rattles: squeak!
+        if (e % 70 < 18) drawText('squeak!', cx + 150, 330 - (e % 70) * 0.8, 11, FONT_COMIC, '#c9d1de', INK, 3);
         const k = Math.floor(e / 34);
-        if (e % 34 < 22) drawText(k % 3 === 2 ? 'BUMP!' : 'bump.', 380 + (k % 2 ? 90 : -110), 200 - (e % 34), k % 3 === 2 ? 20 : 13, FONT_COMIC, '#fff', INK, 4);
+        if (e % 34 < 22) drawText(k % 3 === 2 ? 'BUMP!' : 'bump.', 330 + (k % 2 ? 60 : -90), 190 - (e % 34), k % 3 === 2 ? 20 : 13, FONT_COMIC, '#fff', INK, 4);
       }
 
       function drawAdvStory() {
@@ -29342,12 +29943,38 @@
         drawStage(0.25, 'laundry');
         // Dryer No. 7, with the Queen in its window
         const shake = S.spin ? Math.sin(t * 1.3) * (S.queen || S.agent ? 1 : 3) : 0;
+        // it stands in the row with the other machines, its feet on the same floor line (everything in its
+        // window, the swirl, the Queen and Agent Fishnet, moves down with it)
+        const DRY_DROP = 61;
         ctx.save();
-        ctx.translate(720, 214);
-        ctx.scale(0.62, 0.62);
-        ctx.translate(-720, -214);
-        drawDryerMachine(720, 214, 0, shake);
-        ctx.restore();
+        ctx.translate(0, DRY_DROP);
+        if (MACHINE_ART.ready) {
+          // the painted coin machine, its round door where the Queen and Agent Fishnet appear (radius 60 at 720, 214)
+          const h = 275,
+            w = h * MACHINE_ART.aspect,
+            x = 720 + shake * 0.62 - MACHINE_ART.win[0] * w,
+            y = 214 - MACHINE_ART.win[1] * h;
+          ctx.fillStyle = 'rgba(0,0,0,0.35)';
+          ctx.beginPath();
+          ctx.ellipse(720, y + h + 2, w / 2 + 8, 9, 0, 0, 7);
+          ctx.fill();
+          ctx.drawImage(MACHINE_ART.img, x, y, w, h);
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 3.5;
+          roundRectPath(ctx, x + 1, y + h * 0.13, w - 2, h * 0.87 - 1, 6);
+          ctx.stroke();
+          ctx.fillStyle = '#1d1430';
+          roundRectPath(ctx, x + w * 0.09, y + 5, w * 0.31, 19, 4);
+          ctx.fill();
+          drawText('DRYER 7', x + w * 0.245, y + 15, 7, FONT_PIXEL, '#ffe234', INK, 0);
+        } else {
+          ctx.save();
+          ctx.translate(720, 214);
+          ctx.scale(0.62, 0.62);
+          ctx.translate(-720, -214);
+          drawDryerMachine(720, 214, 0, shake);
+          ctx.restore();
+        }
         if (S.spin && !S.queen && !S.agent) {
           // a purple swirl in the window
           ctx.save();
@@ -29465,6 +30092,7 @@
           ctx.restore();
           if (t % 50 < 30) drawText('TOP SECRET', 720, 150, 9, FONT_PIXEL, '#ff4f6a', INK, 3);
         }
+        ctx.restore(); // (the dryer's DRY_DROP)
         // Stinky's other half flying into the dryer
         if (S.suck && S.suck < 60) {
           const k = S.suck / 60;
@@ -29472,32 +30100,13 @@
           p.eyes = 'spiral';
           p.mouth = 'yell';
           ctx.save();
-          ctx.translate(lerp(150, 720, k), lerp(340, 214, k) - Math.sin(k * Math.PI) * 80);
+          ctx.translate(lerp(150, 720, k), lerp(340, 214 + DRY_DROP, k) - Math.sin(k * Math.PI) * 80);
           ctx.rotate(S.suck * 0.4);
           drawSock(ctx, withSkin(findCharacter('stinky'), 0), p, 0, 30, 1, 0.4 * (1 - k * 0.6), { x: 3, y: 0 });
           ctx.restore();
         }
         if (S.snore != null) {
-          // the human, asleep in a plastic chair by the wall (we only see the legs and slippers)
-          ctx.save();
-          ctx.fillStyle = '#ff8a3d';
-          ctx.strokeStyle = INK;
-          ctx.lineWidth = 4;
-          roundRectPath(ctx, 860, 250, 110, 20, 8);
-          ctx.fill();
-          ctx.stroke();
-          roundRectPath(ctx, 940, 150, 18, 110, 8);
-          ctx.fill();
-          ctx.stroke();
-          for (const lx of [872, 948]) {
-            ctx.fillRect(lx, 270, 9, 130);
-            ctx.strokeRect(lx, 270, 9, 130);
-          }
-          ctx.translate(900, 262);
-          ctx.rotate(1.05 + Math.sin(t * 0.05) * 0.02);
-          ctx.scale(0.5, 0.5);
-          drawHumanLegs(0, 330, t);
-          ctx.restore();
+          drawSleepingHuman(t);
           for (let k = 0; k < 3; k++) {
             const z = (t * 0.6 + k * 30) % 90;
             drawText('Z', 930 - z * 0.4 + k * 6, 140 - z, 14 + k * 4, FONT_COMIC, 'rgba(255,255,255,' + (1 - z / 90) + ')', INK, 3);
@@ -29506,12 +30115,16 @@
         // the basket: upright with the three inside, then it tips and they roll out onto the floor
         const tumbling = S.place === 'laundry' && S.tumble == null ? -1 : S.tumble != null ? t - S.tumble : 999;
         if (S.place === 'laundry') {
-          const tip = tumbling < 0 ? 0 : Math.min(1, tumbling / 16);
+          // it stands on the floor, then tips over its bottom-left corner (560, 398) and lands on its side, the
+          // open top facing left where the three roll out (a small bounce as it lands)
+          const k = tumbling < 0 ? 0 : Math.min(1, tumbling / 16),
+            tip = k < 1 ? k * k : 1,
+            bounce = tumbling >= 16 && tumbling < 26 ? Math.sin(((tumbling - 16) / 10) * Math.PI) * 0.06 : 0;
           ctx.save();
-          ctx.translate(560, 420);
-          ctx.rotate(-tip * 1.45);
-          ctx.translate(-560, -420);
-          drawLaundryBasket(560, 330, t, speaking, { empty: tumbling >= 10, towel: true });
+          ctx.translate(560, 398);
+          ctx.rotate(-tip * (Math.PI / 2) + bounce);
+          ctx.scale(0.8, 0.8);
+          drawLaundryBasket(106, -92, t, speaking, { empty: tumbling >= 10, towel: true });
           ctx.restore();
         }
         // the gang
@@ -29530,7 +30143,7 @@
             p.eyes = 'spiral';
             p.mouth = 'yell';
             ctx.save();
-            ctx.translate(lerp(520, x, k), 396 - Math.sin(k * Math.PI) * 70 - 40 * (1 - k));
+            ctx.translate(lerp(470, x, k), 396 - Math.sin(k * Math.PI) * 70 - 60 * (1 - k));
             ctx.rotate(-k * Math.PI * 2);
             drawSock(ctx, d, p, 0, 40, 1, fitScale(d, 0.95), { x: 3, y: 0 });
             ctx.restore();
