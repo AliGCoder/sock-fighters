@@ -8,6 +8,7 @@ const quick = process.argv.includes('quick');
 const TESTS = [
   ['test_sound', 'Sound: announcer and fighter voices actually play'],
   ['test_story', 'Story mode: chapter 1 start to finish'],
+  ['test_demon_story', 'The Dryer Demon stays the villain: every rewritten scene plays, the final fight is Stinky vs the Demon'],
   ['test_awards', 'Trophies, skins, accessories, the Dryer, phones'],
   ['test_uniq', 'Every hero has their own unique items'],
   ['test_voices', 'Story voices on PC, iPhone and Android'],

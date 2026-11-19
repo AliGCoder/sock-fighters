@@ -210,6 +210,13 @@
   "file": "story"
  },
  {
+  "key": "7e9f9a52",
+  "voice": "queen",
+  "say": "あの者は、スティンキー殿の片割れを持っておりますの。それから、わたくしどものストッキングも。両方とも、返していただきますわ。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
   "key": "2903ada1",
   "voice": "queen",
   "say": "そこへ辿り着くには、四人の将軍を退けねばなりません。わたくしどもの選りすぐりのホージェリーを、お供につけましょう。",
@@ -1022,16 +1029,16 @@
   "file": "story"
  },
  {
-  "key": "3c349f0f",
+  "key": "2ab4154d",
   "voice": "narr",
-  "say": "王家のランドリー舞踏会。靴下とホージェリーが一緒に踊る。魔王はクロークの係をしている。",
+  "say": "王家の洗濯舞踏会。自由になった靴下たちとホージェリーが、一緒に踊っている。部屋の隅では、王家の小さな乾燥機がひとりでにうなっている。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "5cff3d5a",
+  "key": "48808665",
   "voice": "queen",
-  "say": "二つの世界をお救いくださったことを讃え、あなたを…王家の引き出しの騎士に任じます。",
+  "say": "回転の玉座から王国を救った功により、あなたを…王家の引き出しの騎士に任命いたしますわ!",
   "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, composed but firm, with elegant emphasis",
   "file": "story"
  },
@@ -1162,24 +1169,52 @@
   "file": "story"
  },
  {
-  "key": "1f96aacb",
+  "key": "759af4e0",
+  "voice": "narr",
+  "say": "王家の乾燥機が、カチッとひとりでに動き出す。丸い窓が赤く光り、見覚えのある顔がニヤリと笑った。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "dc1201b2",
   "voice": "demon",
-  "say": "クロークへようこそ。お忘れの靴下は、千年以内にお返しします。…改善中です。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "素敵なパーティーだな。音楽はひどいが。…スティンキー・タビ!貴様の片割れがよろしくと言っているぞ。まあ、「むぐぐ」としか言えんがな。口に洗濯ばさみをつけておいた。",
+  "note": "deep, growling demon lord, lively",
   "file": "story"
  },
  {
-  "key": "ce7ceb1f",
-  "voice": "cling",
-  "say": "素敵な舞踏会ね、ナイロニア。艶が残念だけど。",
-  "note": "sultry, smug villainess queen, conversational",
+  "key": "745e747c",
+  "voice": "stinky",
+  "say": "返せよ、このデカすぎるヘアドライヤー!",
+  "note": "cocky young street brawler, shouting furiously",
   "file": "story"
  },
  {
-  "key": "3226ae9d",
+  "key": "2be53a82",
+  "voice": "demon",
+  "say": "我は衣類乾燥機だ!ヘアドライヤーとは全然違う!…舞踏会を楽しめ。我が手下どもが向かっているぞ。ムワハハハハ!",
+  "note": "deep, growling demon lord, laughing",
+  "file": "story"
+ },
+ {
+  "key": "15a6cd09",
   "voice": "queen",
-  "say": "…衛兵。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, sassy, with a sly, knowing smirk and a raised eyebrow",
+  "say": "斥候。その乾燥機の電源を抜きなさい。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
+  "file": "story"
+ },
+ {
+  "key": "eea8e6c5",
+  "voice": "fishnet",
+  "say": "陛下。最初から、つながっていません。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
+  "key": "b9f9209e",
+  "voice": "queen",
+  "say": "…では、わたくしどもはその前に立って、がっかりした顔をしておりますわ。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
   "file": "story"
  },
  {
@@ -1190,13 +1225,6 @@
   "file": "story"
  },
  {
-  "key": "18a8b881",
-  "voice": "demon",
-  "say": "もう変装はしない。約束する。…くっ、つい癖で。",
-  "note": "deep, growling demon lord, conversational",
-  "file": "story"
- },
- {
   "key": "7a2e950f",
   "voice": "gran",
   "say": "しゃて、…誰かこのシャンデリアから降ろしておくれ。……どうやって登ったのか、…わしにもわからんのじゃ。",
@@ -1204,9 +1232,9 @@
   "file": "story"
  },
  {
-  "key": "d6742cd0",
+  "key": "c73ccd71",
   "voice": "fishnet",
-  "say": "任務完了。…まあ、楽しかった。誰にも言うな。",
+  "say": "任務はまだ終わっていない。…だが、いいパーティーだった。誰にも言うな。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -1246,17 +1274,17 @@
   "file": "story"
  },
  {
-  "key": "c312be25",
+  "key": "35a13174",
   "voice": "queen",
-  "say": "ミトンは再会し、人形たちは自由に。そしてクロークが、ついに何かを返しましたわ。",
+  "say": "ミトンは再会し、人形たちは自由になりました。そして、おばあさまがデーモンをハンドバッグで殴りましたわ。",
   "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
   "file": "story"
  },
  {
-  "key": "9c63a757",
-  "voice": "demon",
-  "say": "まだ一つだけだ。だが、第一歩だ。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "ff9f0c11",
+  "voice": "gran",
+  "say": "わしの若い頃は、…デーモンなんておらんかった。……デレクという男がおってな。……あっちの方がじゅっとひどかったわい。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
   "file": "story"
  },
  {
@@ -8162,31 +8190,31 @@
   "file": "story"
  },
  {
-  "key": "e0bb481c",
+  "key": "20a2ed14",
   "voice": "mitten",
-  "say": "…失くしたミトンなんて、誰も探しに来ないんだ。",
+  "say": "…デーモンが約束したんだ。おまえたちを全部凍らせたら、ぼくのペアを見つけてくれるって。",
   "note": "big, grumpy, woolly voice, jealous and dramatic, conversational",
   "file": "story"
  },
  {
-  "key": "4bd4597d",
+  "key": "a69bf912",
   "voice": "narr",
-  "say": "暖かいオレンジ色の光が、山を登ってくる。誰かが、ぜえぜえ言いながら山道を登ってくる。",
+  "say": "熱いオレンジの光が山を登ってくる。雪がジュウッと音を立てる。乾燥機デーモンが、湯気の雲に乗って山道を上がってきた。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "80086b62",
+  "key": "4995ebd3",
   "voice": "demon",
-  "say": "はあ、はあ…失礼。ここに、グランド・ミトンはいるか?今は宮殿のクロークで働いている者だ。",
+  "say": "約束は約束だ、ミトン。貴様は負けた。だから、何もやらん。…まあ、ほとんど何もな。",
   "note": "deep, growling demon lord, conversational",
   "file": "story"
  },
  {
-  "key": "a63e8908",
+  "key": "0fcb988b",
   "voice": "demon",
-  "say": "これが届けられていてな。落とし物係に…えー、札によると…千年ほど預かっていた。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "手に入るはずだったものを見せてやろう。貴様のペアだ。我が落とし物箱に千年入っていた。きれいだろう?",
+  "note": "deep, growling demon lord, confused, questioning",
   "file": "story"
  },
  {
@@ -8197,17 +8225,24 @@
   "file": "story"
  },
  {
-  "key": "36cee938",
+  "key": "7a21375c",
   "voice": "mitten",
-  "say": "…オレの片方?片方を、見つけてくれたのか?!",
-  "note": "big, grumpy, woolly voice, jealous and dramatic, deadpan, awkward pause",
+  "say": "…ぼくのペア?ずっと、あいつが持ってたの?!",
+  "note": "big, grumpy, woolly voice, jealous and dramatic, shouting furiously",
   "file": "story"
  },
  {
-  "key": "c89bc779",
-  "voice": "demon",
-  "say": "お忘れ物は千年以内にお返しします。改善中だと言っただろう。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "639e64ca",
+  "voice": "gran",
+  "say": "よし。……もう、…たくしゃんじゃ。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
+  "file": "story"
+ },
+ {
+  "key": "91e8e1f7",
+  "voice": "narr",
+  "say": "バシッ!おばあちゃんがハンドバッグでデーモンの鼻をひっぱたいた。ミトンが落ちて、雪の上を跳ねていく…",
+  "note": "warm, playful storybook narrator, excited storytelling",
   "file": "story"
  },
  {
@@ -8215,6 +8250,13 @@
   "voice": "narr",
   "say": "二つのミトンが抱き合う。雪がやむ。どこかで、スキーリフトがまた動き出した。",
   "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "1d4d4f6a",
+  "voice": "demon",
+  "say": "いたっ!我が鼻が!…覚えていろ、ばあさん!我が大きな仲間に会うまで待っているがいい!ムワハハ…へっくしょん!",
+  "note": "deep, growling demon lord, laughing",
   "file": "story"
  },
  {
@@ -8939,6 +8981,20 @@
   "file": "hero-iron"
  },
  {
+  "key": "a07a3ddb",
+  "voice": "stinky",
+  "say": "それと、オレの片割れを返せ、このデカい熱々の箱め!",
+  "note": "cocky young street brawler, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "adbda3be",
+  "voice": "demon",
+  "say": "あのシマシマか?ハハハハ!とても安全な場所にいるぞ。とても暖かい場所にな。貴様らには決して届かぬ場所だ!",
+  "note": "deep, growling demon lord, laughing",
+  "file": "story"
+ },
+ {
   "key": "bf0afff5",
   "voice": "demon",
   "say": "…俺は、ある者を探している。",
@@ -8967,184 +9023,44 @@
   "file": "story"
  },
  {
-  "key": "91f5e598",
-  "voice": "demon",
-  "say": "千年前…俺は、ただの靴下だった。何の変哲もない、黒い靴下。相方がいた。だが、ある洗濯の日…彼女は消えた。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "13bf7b92",
+  "voice": "narr",
+  "say": "…そして、ゴオッと燃え上がった!ブワアアッ!",
+  "note": "warm, playful storybook narrator, excited storytelling",
   "file": "story"
  },
  {
-  "key": "cbb81f9f",
+  "key": "91aced14",
+  "voice": "demon",
+  "say": "小さな靴下ごときが、我が炎を消せると思ったか?乾燥機には、いつだってもう一回転あるのだ!",
+  "note": "deep, growling demon lord, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "c19081a7",
   "voice": "stinky",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "cocky young street brawler, confused, questioning",
-  "file": "hero-stinky"
- },
- {
-  "key": "d6413c9b",
-  "voice": "argyle",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "calm, noble samurai, confused, questioning",
-  "file": "hero-argyle"
- },
- {
-  "key": "8658f4d1",
-  "voice": "shinobi",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, confused, questioning",
-  "file": "hero-shinobi"
- },
- {
-  "key": "44854839",
-  "voice": "gran",
-  "say": "じゃあお前は、…全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
-  "file": "hero-gran"
- },
- {
-  "key": "270ec4b7",
-  "voice": "baby",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "squeaky, bratty toddler, confused, questioning",
-  "file": "hero-baby"
- },
- {
-  "key": "c4e9afb3",
-  "voice": "kneehi",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "booming, jolly sumo wrestler, confused, questioning",
-  "file": "hero-kneehi"
- },
- {
-  "key": "b8ea621f",
-  "voice": "robo",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "flat, monotone robot, confused, questioning",
-  "file": "hero-robo"
- },
- {
-  "key": "f19fa638",
-  "voice": "ghost",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "soft, whispery, eerie ghost girl, confused, questioning",
-  "file": "hero-ghost"
- },
- {
-  "key": "aa050a54",
-  "voice": "lint",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "tiny, squeaky, fluffy creature, confused, questioning",
-  "file": "hero-lint"
- },
- {
-  "key": "5606f6e2",
-  "voice": "socklet",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "cheeky, fast-talking little boy, confused, questioning",
-  "file": "hero-socklet"
- },
- {
-  "key": "f878a1d6",
-  "voice": "holey",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "nervous, whiny coward, confused, questioning",
-  "file": "hero-holey"
- },
- {
-  "key": "1ba865f4",
-  "voice": "steel",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "gruff, deep construction worker, confused, questioning",
-  "file": "hero-steel"
- },
- {
-  "key": "872eee76",
-  "voice": "king",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "pompous, theatrical king, confused, questioning",
-  "file": "hero-king"
- },
- {
-  "key": "71407e70",
-  "voice": "demon",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "deep, growling demon lord, confused, questioning",
-  "file": "hero-demon"
- },
- {
-  "key": "52744ab2",
-  "voice": "bleach",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "snobbish, sneering aristocrat, confused, questioning",
-  "file": "hero-bleach"
- },
- {
-  "key": "1167a8c6",
-  "voice": "cling",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "sultry, smug villainess queen, confused, questioning",
-  "file": "hero-cling"
- },
- {
-  "key": "5051ec29",
-  "voice": "iron",
-  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
-  "note": "stern, booming warlord, confused, questioning",
-  "file": "hero-iron"
- },
- {
-  "key": "e7de5fa4",
-  "voice": "demon",
-  "say": "一枚。残らず。全部だ。そして、そのどれも、彼女ではなかった。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "オレの片割れはどこだ?!どこにいるんだよ?!",
+  "note": "cocky young street brawler, excited, emphatic",
   "file": "story"
  },
  {
-  "key": "bd5b65bb",
+  "key": "09fca193",
+  "voice": "demon",
+  "say": "貴様らには決して見つからぬ場所だ!そして探している間に…我が手下どもを全員解き放ってやる!デカいやつ!くさいやつ!ヒモのついたやつもな!",
+  "note": "deep, growling demon lord, lively",
+  "file": "story"
+ },
+ {
+  "key": "554cd2af",
+  "voice": "demon",
+  "say": "その小さな玉座、せいぜい楽しむがいい!タンブル…ドライ…さらばだああ!",
+  "note": "deep, growling demon lord, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "e4c4ee85",
   "voice": "narr",
-  "say": "ゆらめく幽かな光。ロスト・ソックが、ふわりと現れた。",
-  "note": "warm, playful storybook narrator, storytelling",
-  "file": "story"
- },
- {
-  "key": "9f8eeab9",
-  "voice": "ghost",
-  "say": "…やあ。",
-  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
-  "file": "story"
- },
- {
-  "key": "d2b9363e",
-  "voice": "demon",
-  "say": "…ダーリン…?",
-  "note": "deep, growling demon lord, deadpan, awkward pause",
-  "file": "story"
- },
- {
-  "key": "6e6be941",
-  "voice": "ghost",
-  "say": "引き出しの裏に落ちちゃってたの。",
-  "note": "soft, whispery, eerie ghost girl, conversational",
-  "file": "story"
- },
- {
-  "key": "394fbfa8",
-  "voice": "demon",
-  "say": "千年もか?!",
-  "note": "deep, growling demon lord, shouting furiously",
-  "file": "story"
- },
- {
-  "key": "53edb8a1",
-  "voice": "ghost",
-  "say": "…居心地よかったの。",
-  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
-  "file": "story"
- },
- {
-  "key": "f66353a3",
-  "voice": "narr",
-  "say": "静寂。そして、みんなが歓声を上げる!片方だけの靴下の玉座が、再会したペアの雨になって弾けた!",
+  "say": "ヒュウン。熱い綿ぼこりと共に、煙突の上へ消えていった。残された片っぽ靴下の玉座がぐらりと揺れ…自由になった靴下たちが雨のように降り注ぎ、みんな相方を探して跳ねていく!",
   "note": "warm, playful storybook narrator, excited storytelling",
   "file": "story"
  },
@@ -9279,6 +9195,20 @@
   "voice": "queen",
   "say": "泣きすぎて…わたくしどものストッキングが、伝線してしまいましたわ。",
   "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, gently tearful, still graceful",
+  "file": "story"
+ },
+ {
+  "key": "6653c344",
+  "voice": "stinky",
+  "say": "…みんな相方を見つけた。オレ以外は、みんな。",
+  "note": "cocky young street brawler, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "a18e8664",
+  "voice": "fishnet",
+  "say": "まだだ。だが、必ず見つかる。私は約束はしない。…今のは約束だ。誰にも言うな。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
@@ -10857,9 +10787,16 @@
   "file": "story"
  },
  {
-  "key": "9b124a86",
+  "key": "77ceb29f",
+  "voice": "narr",
+  "say": "王家の乾燥機がカチッと動き出す。窓から赤い顔がニヤリ。麦わら帽子をかぶっている。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "8fd4885c",
   "voice": "demon",
-  "say": "あの靴箱は何かおかしいと思っていた。いつも足のニオイがする。いつも以上に。",
+  "say": "我が新しい将軍はどうだ?ビッグブーツは今、我の手下だ。入るだけの靴下をやると約束した。あいつは、たくさん入るぞ。",
   "note": "deep, growling demon lord, conversational",
   "file": "story"
  },
@@ -10871,10 +10808,10 @@
   "file": "story"
  },
  {
-  "key": "d52c76ff",
+  "key": "03d37f6f",
   "voice": "demon",
-  "say": "落とし物で見つけた。とても私らしい。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "休暇中だ。悪役は、とても疲れるのでな。…ではな!",
+  "note": "deep, growling demon lord, excited, emphatic",
   "file": "story"
  },
  {
@@ -11830,10 +11767,10 @@
   "file": "story"
  },
  {
-  "key": "848afbd9",
-  "voice": "demon",
-  "say": "戻ったら乾かしてやろう。無料で。だいたいは。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "08f973c6",
+  "voice": "gran",
+  "say": "帰ってきたら、…湯たんぽを用意しとくよ。……水たまりは骨にしみるからね。………靴下に骨ってあったかね?…まあいいわい。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
   "file": "story"
  },
  {
@@ -12117,16 +12054,16 @@
   "file": "story"
  },
  {
-  "key": "8a517eaa",
+  "key": "8ddffd7a",
   "voice": "fishnet",
-  "say": "乾かすなら宮殿でやれ。デーモンは乾燥機を持ってる。というか、あいつ自身が乾燥機だ。",
-  "note": "eager, quick young scout, lively",
+  "say": "宮殿で乾かしてやる。暖炉でな。乾燥機は使わない。二度と、乾燥機は使わない。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "c3e5ef2d",
+  "key": "54c503ff",
   "voice": "ghost",
-  "say": "…ブーツが言ったの…あなたたちに水をかけたら…わたしのペアを見つけてくれるって…ごめんね…ブー…ぴちゃっ",
+  "say": "…ブーツのご主人さまが約束したの…あなたたちに水をかけたら…ペアを見つけてくれるって…ごめんね…ぶうう…ばしゃっ",
   "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
   "file": "story"
  },
@@ -12880,16 +12817,16 @@
   "file": "story"
  },
  {
-  "key": "a36bb79b",
-  "voice": "demon",
-  "say": "ウィーン…次!ウィーン…次!",
-  "note": "deep, growling demon lord, shouting furiously",
+  "key": "1a353644",
+  "voice": "narr",
+  "say": "王家の暖炉の前で、ずぶぬれの靴下四十二足が湯気を立てている。",
+  "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "2d9d2d06",
+  "key": "129f77c6",
   "voice": "queen",
-  "say": "ドライヤーデーモンは靴下四十二枚と、アヒル三羽と、とても驚いた衛兵一人を乾かしましたわ。",
+  "say": "靴下四十二足、アヒル三羽、とても驚いた衛兵一人を乾かしましたわ。乾燥機は一台も使わずに。ざまあごらんなさい、デーモン。",
   "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
   "file": "story"
  },
@@ -13972,10 +13909,17 @@
   "file": "hero-iron"
  },
  {
-  "key": "f49f9029",
+  "key": "61a7ecc8",
   "voice": "demon",
-  "say": "…小声で…元祖・片っぽ靴下の悪夢は私なのだがな。これはただのマネだ。",
-  "note": "deep, growling demon lord, quiet and sad",
+  "say": "ブーツがペアを入れ替えるだと?ふん。元祖・片っぽ靴下の悪夢は、この我だ。あいつは我のマネをしているだけだ!",
+  "note": "deep, growling demon lord, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "7a6ac1a2",
+  "voice": "queen",
+  "say": "…乾燥機の扉を、足でバタンと閉めた。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
   "file": "story"
  },
  {
@@ -17136,10 +17080,17 @@
   "file": "story"
  },
  {
-  "key": "455fe7b8",
+  "key": "6bac1714",
   "voice": "demon",
-  "say": "…だから昔、私はあれを盗もうとしたのだ。誇れる話ではない。いや、少しは誇らしい。",
-  "note": "deep, growling demon lord, deadpan, awkward pause",
+  "say": "…始まりのペア。そうだ。ブーツよ、それを我に持ってこい…そうすれば、すべての世界のすべての靴下が我のものだ。ムワハハ…",
+  "note": "deep, growling demon lord, laughing",
+  "file": "story"
+ },
+ {
+  "key": "13872a35",
+  "voice": "queen",
+  "say": "…乾燥機の扉をバタンと閉めて。…新しい乾燥機を買いますわ。",
+  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
   "file": "story"
  },
  {
@@ -18088,10 +18039,10 @@
   "file": "story"
  },
  {
-  "key": "ea96b66b",
-  "voice": "demon",
-  "say": "誰のせいでもない。ブーツ以外はな。それと、たぶんケビン。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "720e4e51",
+  "voice": "argyle",
+  "say": "悪いのはブーツだけだ。そして、あやつを送り込んだデーモンだ。それと、たぶんケビンも。",
+  "note": "calm, noble samurai, conversational",
   "file": "story"
  },
  {
@@ -19131,10 +19082,10 @@
   "file": "story"
  },
  {
-  "key": "edca1e59",
-  "voice": "demon",
-  "say": "衛兵たちが作った札だ。とても可愛らしい。字はひどいがな。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "db4eb6a4",
+  "voice": "gran",
+  "say": "衛兵たちがしょの札を作ったんじゃ。……かわいいもんじゃろ。……字はひどいがね。……教えたのは、…わしじゃよ。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
   "file": "story"
  },
  {
@@ -19264,10 +19215,10 @@
   "file": "hero-iron"
  },
  {
-  "key": "8066efbd",
-  "voice": "demon",
-  "say": "…今、誰か「乾燥機」と言ったか?指を鳴らす…誰かがそう言うのを、ずっと待っていたのだ。",
-  "note": "deep, growling demon lord, deadpan, awkward pause",
+  "key": "09c73a66",
+  "voice": "argyle",
+  "say": "師匠いわく、第三の試練が一番熱いという。受けた者は皆…二度と同じにおいには戻らなかったそうだ。",
+  "note": "calm, noble samurai, conversational",
   "file": "story"
  },
  {
@@ -19733,129 +19684,136 @@
   "file": "story"
  },
  {
-  "key": "c886f930",
+  "key": "b242b451",
   "voice": "stinky",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "cocky young street brawler, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "cocky young street brawler, excited, emphatic",
   "file": "hero-stinky"
  },
  {
-  "key": "190bce0c",
+  "key": "17a5da9d",
   "voice": "argyle",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "calm, noble samurai, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "calm, noble samurai, excited, emphatic",
   "file": "hero-argyle"
  },
  {
-  "key": "04a30a5a",
+  "key": "9f2714c7",
   "voice": "shinobi",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, excited, emphatic",
   "file": "hero-shinobi"
  },
  {
-  "key": "86153742",
+  "key": "c6b24def",
   "voice": "gran",
-  "say": "ドライヤーデーモン!…きみが三つ目の試練なの?…!",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, lively",
+  "say": "乾燥機デーモン!…なんでおまえがここにいるんだ?…!",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, excited, emphatic",
   "file": "hero-gran"
  },
  {
-  "key": "92b0eee8",
+  "key": "dd077c89",
   "voice": "baby",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "squeaky, bratty toddler, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "squeaky, bratty toddler, excited, emphatic",
   "file": "hero-baby"
  },
  {
-  "key": "8cf9cb04",
+  "key": "4fea8875",
   "voice": "kneehi",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "booming, jolly sumo wrestler, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "booming, jolly sumo wrestler, excited, emphatic",
   "file": "hero-kneehi"
  },
  {
-  "key": "6aee73b0",
+  "key": "54aa2ed1",
   "voice": "robo",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "flat, monotone robot, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "flat, monotone robot, excited, emphatic",
   "file": "hero-robo"
  },
  {
-  "key": "5e1953b3",
+  "key": "47abc116",
   "voice": "ghost",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "soft, whispery, eerie ghost girl, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "soft, whispery, eerie ghost girl, excited, emphatic",
   "file": "hero-ghost"
  },
  {
-  "key": "dfcd9b1f",
+  "key": "dc9c4382",
   "voice": "lint",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "tiny, squeaky, fluffy creature, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "tiny, squeaky, fluffy creature, excited, emphatic",
   "file": "hero-lint"
  },
  {
-  "key": "c50a384d",
+  "key": "bd4927cc",
   "voice": "socklet",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "cheeky, fast-talking little boy, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "cheeky, fast-talking little boy, excited, emphatic",
   "file": "hero-socklet"
  },
  {
-  "key": "01dc9af1",
+  "key": "cdc1ed70",
   "voice": "holey",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "nervous, whiny coward, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "nervous, whiny coward, excited, emphatic",
   "file": "hero-holey"
  },
  {
-  "key": "017a08ff",
+  "key": "fc658c22",
   "voice": "steel",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "gruff, deep construction worker, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "gruff, deep construction worker, excited, emphatic",
   "file": "hero-steel"
  },
  {
-  "key": "7225f6d1",
+  "key": "7b456610",
   "voice": "king",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "pompous, theatrical king, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "pompous, theatrical king, excited, emphatic",
   "file": "hero-king"
  },
  {
-  "key": "6613232b",
+  "key": "ad9f9d6e",
   "voice": "demon",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "deep, growling demon lord, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "deep, growling demon lord, excited, emphatic",
   "file": "hero-demon"
  },
  {
-  "key": "10c6f59d",
+  "key": "f5d1d21c",
   "voice": "bleach",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "snobbish, sneering aristocrat, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "snobbish, sneering aristocrat, excited, emphatic",
   "file": "hero-bleach"
  },
  {
-  "key": "109e1661",
+  "key": "a3d325e0",
   "voice": "cling",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "sultry, smug villainess queen, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "sultry, smug villainess queen, excited, emphatic",
   "file": "hero-cling"
  },
  {
-  "key": "e5edcc72",
+  "key": "a9b2a1df",
   "voice": "iron",
-  "say": "ドライヤーデーモン!きみが三つ目の試練なの?!",
-  "note": "stern, booming warlord, lively",
+  "say": "乾燥機デーモン!なんでおまえがここにいるんだ?!",
+  "note": "stern, booming warlord, excited, emphatic",
   "file": "hero-iron"
  },
  {
-  "key": "492becf2",
+  "key": "018657f4",
   "voice": "demon",
-  "say": "ほかに誰がいる?乾燥機の試練は乾燥機が与えるものだ!名前にそう書いてある!",
-  "note": "deep, growling demon lord, excited, emphatic",
+  "say": "黄金の靴下はブーツの塔を開く鍵。それを我がいただく!…それに、一度道場に来てみたかったのだ。見ろ、このハチマキを。",
+  "note": "deep, growling demon lord, lively",
+  "file": "story"
+ },
+ {
+  "key": "be7724e1",
+  "voice": "argyle",
+  "say": "黄金の靴下は、ふさわしき者のものだ、デーモン。燃える汗くさい洗濯棚のものではない。",
+  "note": "calm, noble samurai, conversational",
   "file": "story"
  },
  {
@@ -19873,38 +19831,38 @@
   "file": "story"
  },
  {
-  "key": "7315943e",
+  "key": "320b8e2e",
   "voice": "demon",
-  "say": "誰も知らん!私の秘伝の技だからな!…安心しろ、小さき英雄よ。中温で勘弁してやる。",
+  "say": "誰も知らぬ!我が秘技だからな!…強火だ!いざ、勝負!",
   "note": "deep, growling demon lord, shouting furiously",
   "file": "story"
  },
  {
-  "key": "f63b5199",
+  "key": "a259f2cb",
   "voice": "demon",
-  "say": "…いや。高温だ。始めるぞ!",
-  "note": "deep, growling demon lord, shouting furiously",
+  "say": "はあ、はあ…ありえん!靴下に負けるとは…自分のハチマキをしたままで!",
+  "note": "deep, growling demon lord, lively",
   "file": "story"
  },
  {
-  "key": "e9d9f3fd",
-  "voice": "demon",
-  "say": "はぁ、はぁ…合格だ。お前は洗いたてのタオルのように、温かくふわふわだ。",
-  "note": "deep, growling demon lord, conversational",
-  "file": "story"
- },
- {
-  "key": "c64ac0e1",
+  "key": "ee15480f",
   "voice": "narr",
-  "say": "デーモンのドラムの中から金色の光。彼が手を入れて…輝く黄金の靴下を取り出した。",
+  "say": "ドスン。デーモンのフィルターから金色の何かが落ちて、床を転がっていく。光り輝く、黄金の靴下だ。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "9de60a4b",
+  "key": "f1658887",
+  "voice": "argyle",
+  "say": "黄金の靴下!盗んでいたのか!千年も、あやつのフィルターの中に?!",
+  "note": "calm, noble samurai, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "0a8a1df3",
   "voice": "demon",
-  "say": "千年、私の糸くずフィルターに入っていた。返そう返そうと思っていたのだ。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "拾ったもん勝ちだ!…負けたら泣き寝入り。…負けたのは我か。ええい、くれてやる!我にはまだ、スティンキーの片割れがある!ムワハハ!",
+  "note": "deep, growling demon lord, laughing",
   "file": "story"
  },
  {
@@ -20055,10 +20013,10 @@
   "file": "story"
  },
  {
-  "key": "c69772eb",
-  "voice": "demon",
-  "say": "黄金の靴下を手放した。なんだか…軽い。これが優しさというものか?ひどい気分だ。最高だ。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "6efb3fde",
+  "voice": "argyle",
+  "say": "デーモンは慌てて逃げ、ハチマキを忘れていった。…拙者がもらっておく。とても上質なのでな。",
+  "note": "calm, noble samurai, conversational",
   "file": "story"
  },
  {
@@ -20510,9 +20468,9 @@
   "file": "story"
  },
  {
-  "key": "f93747fe",
+  "key": "e8249b06",
   "voice": "ghost",
-  "say": "…そう…置いていかれたことで、靴下みんなを恨んでる…ブーツがわたしのペアを持ってる…だから戦わなきゃ…ブー…",
+  "say": "…そう…置いていかれたことを、靴下みんなのせいにしてるの…ブーツのご主人さまが、わたしのペアを見つけてくれるって…だから戦わなきゃ…ぶう…",
   "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
   "file": "story"
  },
@@ -21084,10 +21042,10 @@
   "file": "story"
  },
  {
-  "key": "5857adcb",
-  "voice": "demon",
-  "say": "ケビンのために小さな巣を作った。私の糸くずフィルターの中に。とても温かい。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "565731f4",
+  "voice": "gran",
+  "say": "ケビンに小しゃな巣を作ってやったよ。……わしの編み物袋の中にね。……毛糸をしょっちゅう盗むんじゃ。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
   "file": "story"
  },
  {
@@ -23058,23 +23016,37 @@
   "file": "story"
  },
  {
-  "key": "8a024ba8",
+  "key": "7fdcb7a5",
   "voice": "narr",
-  "say": "それはスティンキー・タビのなくした靴下だった。最初の夜、すべての始まりに、七号乾燥機に吸いこまれた、あの靴下だ。",
-  "note": "warm, playful storybook narrator, storytelling",
+  "say": "スティンキー・タビの片割れだ!スティンキーはスローモーションで駆け寄る…両手を広げて…そして…",
+  "note": "warm, playful storybook narrator, excited storytelling",
   "file": "story"
  },
  {
-  "key": "5598e968",
+  "key": "9e649bdb",
+  "voice": "narr",
+  "say": "ブワアアッ!銀色の乾燥機のホースが窓を突き破り、片割れをそのまま吸い上げた!",
+  "note": "warm, playful storybook narrator, excited storytelling",
+  "file": "story"
+ },
+ {
+  "key": "2e1edb41",
   "voice": "demon",
-  "say": "…あー。そうだ。あれは私の裏口から出ていったのだ。ブーツの中に落ちたのだろう。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "あたためておいてくれて感謝するぞ、ブーツ!ここからは我が預かる!ムワハハハハ!",
+  "note": "deep, growling demon lord, laughing",
   "file": "story"
  },
  {
-  "key": "63092d09",
+  "key": "1c2f347c",
+  "voice": "stinky",
+  "say": "うわああ!あとちょっとだったのに!においまでしたのに!",
+  "note": "cocky young street brawler, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "7c0b06ee",
   "voice": "bigboot",
-  "say": "それが…わしの中に…ずっと…?",
+  "say": "あいつは約束したのだ。シマシマの靴下を守っておけば、二度とからっぽにはならないと。",
   "note": "gigantic, slow, booming ancient boot, shouting furiously",
   "file": "story"
  },
@@ -23083,13 +23055,6 @@
   "voice": "bigboot",
   "say": "…だから、あんなに温かかったのか。あんなに心地よかったのか。あんなに…ひとりじゃなかったのか。",
   "note": "gigantic, slow, booming ancient boot, shouting furiously",
-  "file": "story"
- },
- {
-  "key": "892d6390",
-  "voice": "narr",
-  "say": "スティンキーと片割れが、スローモーションで駆け寄る。抱きしめ合う。みんなも抱きしめ合う。ビッグブーツまで。いや、ビッグブーツがいちばん。",
-  "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
@@ -23128,135 +23093,23 @@
   "file": "story"
  },
  {
-  "key": "5808e29e",
+  "key": "27f77822",
   "voice": "fishnet",
-  "say": "騎士様…やったな。本当に、やったんだ。",
+  "say": "スティンキー…必ず取り戻す。デーモンだって、永遠には隠れていられない。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "0ef65f5e",
+  "key": "be459ac1",
   "voice": "stinky",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
+  "say": "じゃあ、あのデカい熱々の箱を見つけて…スイッチを切ってやろうぜ。",
   "note": "cocky young street brawler, conversational",
-  "file": "hero-stinky"
+  "file": "story"
  },
  {
-  "key": "a27c3cfa",
-  "voice": "argyle",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "calm, noble samurai, conversational",
-  "file": "hero-argyle"
- },
- {
-  "key": "0d61f21c",
-  "voice": "shinobi",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, conversational",
-  "file": "hero-shinobi"
- },
- {
-  "key": "1c4feee4",
-  "voice": "gran",
-  "say": "やったね、…シュカウト。……みんなでいっしょに。……しゅべてのペアをね。",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, conversational",
-  "file": "hero-gran"
- },
- {
-  "key": "52dfb456",
-  "voice": "baby",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "squeaky, bratty toddler, conversational",
-  "file": "hero-baby"
- },
- {
-  "key": "2eef9852",
-  "voice": "kneehi",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "booming, jolly sumo wrestler, conversational",
-  "file": "hero-kneehi"
- },
- {
-  "key": "894e05de",
-  "voice": "robo",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "flat, monotone robot, conversational",
-  "file": "hero-robo"
- },
- {
-  "key": "713e47c9",
-  "voice": "ghost",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "soft, whispery, eerie ghost girl, conversational",
-  "file": "hero-ghost"
- },
- {
-  "key": "8d795ed5",
-  "voice": "lint",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "tiny, squeaky, fluffy creature, conversational",
-  "file": "hero-lint"
- },
- {
-  "key": "a93e8d77",
-  "voice": "socklet",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "cheeky, fast-talking little boy, conversational",
-  "file": "hero-socklet"
- },
- {
-  "key": "443fc60b",
-  "voice": "holey",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "nervous, whiny coward, conversational",
-  "file": "hero-holey"
- },
- {
-  "key": "08a9d175",
-  "voice": "steel",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "gruff, deep construction worker, conversational",
-  "file": "hero-steel"
- },
- {
-  "key": "715159ab",
-  "voice": "king",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "pompous, theatrical king, conversational",
-  "file": "hero-king"
- },
- {
-  "key": "77947261",
-  "voice": "demon",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "deep, growling demon lord, conversational",
-  "file": "hero-demon"
- },
- {
-  "key": "1ae6dda7",
-  "voice": "bleach",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "snobbish, sneering aristocrat, conversational",
-  "file": "hero-bleach"
- },
- {
-  "key": "907a785b",
-  "voice": "cling",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "sultry, smug villainess queen, conversational",
-  "file": "hero-cling"
- },
- {
-  "key": "737d10f4",
-  "voice": "iron",
-  "say": "やったね、スカウト。みんなでいっしょに。すべてのペアをね。",
-  "note": "stern, booming warlord, conversational",
-  "file": "hero-iron"
- },
- {
-  "key": "81476e79",
+  "key": "01bb3144",
   "voice": "narr",
-  "say": "こうして靴戦争は終わった。靴下と靴は友だちになった。世界じゅうの足は、温かく、乾いていて、ほんのちょっとだけチーズくさくなった。",
+  "say": "こうして、シューズ戦争は終わった。靴下と靴は友だちになった。だが、どこか暗闇の奥で、乾燥機が笑っている。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
@@ -23436,137 +23289,165 @@
   "file": "story"
  },
  {
-  "key": "45949073",
+  "key": "3552ec48",
   "voice": "narr",
-  "say": "回転の玉座。シューズ戦争から一週間。魔王は今、クロークを経営している。商売は大繁盛だ。",
+  "say": "回転の玉座。シューズ戦争から一週間。玉座の間はからっぽ…ドラムに留められた一枚のメモを除いて。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "f5defffa",
-  "voice": "stinky",
-  "say": "なあ、コインランドリーが恋しくならないか?",
-  "note": "cocky young street brawler, confused, questioning",
+  "key": "10457ef3",
+  "voice": "fishnet",
+  "say": "「家に帰る。追ってくるな。D.D.より。追伸、スティンキーの片割れがよろしくと。追追伸、こいつはひどいにおいだ。」",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "6f4d7fbe",
+  "key": "e8773322",
   "voice": "stinky",
-  "say": "コインランドリー?",
-  "note": "cocky young street brawler, confused, questioning",
+  "say": "さすが、オレの片割れだぜ。",
+  "note": "cocky young street brawler, conversational",
+  "file": "story"
+ },
+ {
+  "key": "375259a5",
+  "voice": "narr",
+  "say": "玉座の裏に、小さな丸い扉。その窓のずっと向こうに…燃える二つの目。そして、鳥かごの中のシマシマの靴下。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "0db90b2f",
+  "voice": "demon",
+  "say": "ようこそ、我が裏口へ!七番乾燥機の裏口だ。ナイロニアからの唯一の出口…そして、外からしか開かぬのだ!ムワハハ!",
+  "note": "deep, growling demon lord, laughing",
+  "file": "story"
+ },
+ {
+  "key": "91b5d094",
+  "voice": "stinky",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "cocky young street brawler, conversational",
   "file": "hero-stinky"
  },
  {
-  "key": "66faabaa",
+  "key": "d89005e0",
   "voice": "argyle",
-  "say": "コインランドリー?",
-  "note": "calm, noble samurai, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "calm, noble samurai, conversational",
   "file": "hero-argyle"
  },
  {
-  "key": "970ab088",
+  "key": "8aaf2a96",
   "voice": "shinobi",
-  "say": "コインランドリー?",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, conversational",
   "file": "hero-shinobi"
  },
  {
-  "key": "9a9086c0",
+  "key": "f92beede",
   "voice": "gran",
-  "say": "コインランドリー?",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, conversational",
   "file": "hero-gran"
  },
  {
-  "key": "e291ee46",
+  "key": "c3cb8dcc",
   "voice": "baby",
-  "say": "コインランドリー?",
-  "note": "squeaky, bratty toddler, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "squeaky, bratty toddler, conversational",
   "file": "hero-baby"
  },
  {
-  "key": "937f5ad2",
+  "key": "8e623878",
   "voice": "kneehi",
-  "say": "コインランドリー?",
-  "note": "booming, jolly sumo wrestler, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "booming, jolly sumo wrestler, conversational",
   "file": "hero-kneehi"
  },
  {
-  "key": "af0d073e",
+  "key": "7ee81314",
   "voice": "robo",
-  "say": "コインランドリー?",
-  "note": "flat, monotone robot, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "flat, monotone robot, conversational",
   "file": "hero-robo"
  },
  {
-  "key": "a10b421b",
+  "key": "9f0dfadf",
   "voice": "ghost",
-  "say": "コインランドリー?",
-  "note": "soft, whispery, eerie ghost girl, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
   "file": "hero-ghost"
  },
  {
-  "key": "75767c67",
+  "key": "a6c9d5ab",
   "voice": "lint",
-  "say": "コインランドリー?",
-  "note": "tiny, squeaky, fluffy creature, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "tiny, squeaky, fluffy creature, conversational",
   "file": "hero-lint"
  },
  {
-  "key": "cc113e55",
+  "key": "b2e8da39",
   "voice": "socklet",
-  "say": "コインランドリー?",
-  "note": "cheeky, fast-talking little boy, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "cheeky, fast-talking little boy, conversational",
   "file": "hero-socklet"
  },
  {
-  "key": "f9b1a1c9",
+  "key": "478cdfbd",
   "voice": "holey",
-  "say": "コインランドリー?",
-  "note": "nervous, whiny coward, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "nervous, whiny coward, conversational",
   "file": "hero-holey"
  },
  {
-  "key": "65365347",
+  "key": "e846404b",
   "voice": "steel",
-  "say": "コインランドリー?",
-  "note": "gruff, deep construction worker, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "gruff, deep construction worker, conversational",
   "file": "hero-steel"
  },
  {
-  "key": "2ccd19a9",
+  "key": "ab8b20dd",
   "voice": "king",
-  "say": "コインランドリー?",
-  "note": "pompous, theatrical king, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "pompous, theatrical king, conversational",
   "file": "hero-king"
  },
  {
-  "key": "bac5faa3",
+  "key": "deadc257",
   "voice": "demon",
-  "say": "コインランドリー?",
-  "note": "deep, growling demon lord, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "deep, growling demon lord, conversational",
   "file": "hero-demon"
  },
  {
-  "key": "630fa225",
+  "key": "69ece449",
   "voice": "bleach",
-  "say": "コインランドリー?",
-  "note": "snobbish, sneering aristocrat, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "snobbish, sneering aristocrat, conversational",
   "file": "hero-bleach"
  },
  {
-  "key": "ecc1c5f9",
+  "key": "68986eed",
   "voice": "cling",
-  "say": "コインランドリー?",
-  "note": "sultry, smug villainess queen, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "sultry, smug villainess queen, conversational",
   "file": "hero-cling"
  },
  {
-  "key": "ef10cab0",
+  "key": "d517ef8e",
   "voice": "iron",
-  "say": "コインランドリー?",
-  "note": "stern, booming warlord, confused, questioning",
+  "say": "帰り道と…デーモンが…同じ扉の向こうにいる。",
+  "note": "stern, booming warlord, conversational",
   "file": "hero-iron"
+ },
+ {
+  "key": "0a6fd886",
+  "voice": "stinky",
+  "say": "…なあ、コインランドリーが恋しくならないか?",
+  "note": "cocky young street brawler, confused, questioning",
+  "file": "story"
  },
  {
   "key": "63b80c5d",
@@ -23706,272 +23587,6 @@
   "voice": "gran",
   "say": "わしはここに長くいしゅぎて、…外がどんなだったか忘れてしもうた。………空があるほうかね?",
   "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
-  "file": "story"
- },
- {
-  "key": "cc4b5586",
-  "voice": "stinky",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "cocky young street brawler, conversational",
-  "file": "hero-stinky"
- },
- {
-  "key": "4289a822",
-  "voice": "argyle",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "calm, noble samurai, conversational",
-  "file": "hero-argyle"
- },
- {
-  "key": "84c0ae9c",
-  "voice": "shinobi",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, conversational",
-  "file": "hero-shinobi"
- },
- {
-  "key": "557fb754",
-  "voice": "gran",
-  "say": "魔王。……ドアがあるだろ。……開けてくれ。……ぼくたち、…家に帰るんだ。",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, conversational",
-  "file": "hero-gran"
- },
- {
-  "key": "7c140b6e",
-  "voice": "baby",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "squeaky, bratty toddler, conversational",
-  "file": "hero-baby"
- },
- {
-  "key": "85204e0a",
-  "voice": "kneehi",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "booming, jolly sumo wrestler, conversational",
-  "file": "hero-kneehi"
- },
- {
-  "key": "aee14c06",
-  "voice": "robo",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "flat, monotone robot, conversational",
-  "file": "hero-robo"
- },
- {
-  "key": "8bae2bb1",
-  "voice": "ghost",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "soft, whispery, eerie ghost girl, conversational",
-  "file": "hero-ghost"
- },
- {
-  "key": "8dec82bd",
-  "voice": "lint",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "tiny, squeaky, fluffy creature, conversational",
-  "file": "hero-lint"
- },
- {
-  "key": "c7a5a53f",
-  "voice": "socklet",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "cheeky, fast-talking little boy, conversational",
-  "file": "hero-socklet"
- },
- {
-  "key": "3ac2d473",
-  "voice": "holey",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "nervous, whiny coward, conversational",
-  "file": "hero-holey"
- },
- {
-  "key": "d4a7245d",
-  "voice": "steel",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "gruff, deep construction worker, conversational",
-  "file": "hero-steel"
- },
- {
-  "key": "04804013",
-  "voice": "king",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "pompous, theatrical king, conversational",
-  "file": "hero-king"
- },
- {
-  "key": "1ef35939",
-  "voice": "demon",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "deep, growling demon lord, conversational",
-  "file": "hero-demon"
- },
- {
-  "key": "621b6e2f",
-  "voice": "bleach",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "snobbish, sneering aristocrat, conversational",
-  "file": "hero-bleach"
- },
- {
-  "key": "06c2d3c3",
-  "voice": "cling",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "sultry, smug villainess queen, conversational",
-  "file": "hero-cling"
- },
- {
-  "key": "29b7b464",
-  "voice": "iron",
-  "say": "魔王。ドアがあるだろ。開けてくれ。ぼくたち、家に帰るんだ。",
-  "note": "stern, booming warlord, conversational",
-  "file": "hero-iron"
- },
- {
-  "key": "4c33ae5f",
-  "voice": "demon",
-  "say": "ああ。うむ。そのことなのだが。私のドアは、外からしか開かないのだ。",
-  "note": "deep, growling demon lord, conversational",
-  "file": "story"
- },
- {
-  "key": "063277f5",
-  "voice": "stinky",
-  "say": "…なんだって。",
-  "note": "cocky young street brawler, deadpan, awkward pause",
-  "file": "hero-stinky"
- },
- {
-  "key": "2e777119",
-  "voice": "argyle",
-  "say": "…なんだって。",
-  "note": "calm, noble samurai, deadpan, awkward pause",
-  "file": "hero-argyle"
- },
- {
-  "key": "e806c44f",
-  "voice": "shinobi",
-  "say": "…なんだって。",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, deadpan, awkward pause",
-  "file": "hero-shinobi"
- },
- {
-  "key": "d7377067",
-  "voice": "gran",
-  "say": "…なんだって。",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, deadpan, awkward pause",
-  "file": "hero-gran"
- },
- {
-  "key": "b60c1ebd",
-  "voice": "baby",
-  "say": "…なんだって。",
-  "note": "squeaky, bratty toddler, deadpan, awkward pause",
-  "file": "hero-baby"
- },
- {
-  "key": "184f73c1",
-  "voice": "kneehi",
-  "say": "…なんだって。",
-  "note": "booming, jolly sumo wrestler, deadpan, awkward pause",
-  "file": "hero-kneehi"
- },
- {
-  "key": "15a37675",
-  "voice": "robo",
-  "say": "…なんだって。",
-  "note": "flat, monotone robot, deadpan, awkward pause",
-  "file": "hero-robo"
- },
- {
-  "key": "88570b9a",
-  "voice": "ghost",
-  "say": "…なんだって。",
-  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
-  "file": "hero-ghost"
- },
- {
-  "key": "460c6d9e",
-  "voice": "lint",
-  "say": "…なんだって。",
-  "note": "tiny, squeaky, fluffy creature, deadpan, awkward pause",
-  "file": "hero-lint"
- },
- {
-  "key": "20163304",
-  "voice": "socklet",
-  "say": "…なんだって。",
-  "note": "cheeky, fast-talking little boy, deadpan, awkward pause",
-  "file": "hero-socklet"
- },
- {
-  "key": "a249eaa0",
-  "voice": "holey",
-  "say": "…なんだって。",
-  "note": "nervous, whiny coward, deadpan, awkward pause",
-  "file": "hero-holey"
- },
- {
-  "key": "be939ffe",
-  "voice": "steel",
-  "say": "…なんだって。",
-  "note": "gruff, deep construction worker, deadpan, awkward pause",
-  "file": "hero-steel"
- },
- {
-  "key": "8fa40880",
-  "voice": "king",
-  "say": "…なんだって。",
-  "note": "pompous, theatrical king, deadpan, awkward pause",
-  "file": "hero-king"
- },
- {
-  "key": "21ed6362",
-  "voice": "demon",
-  "say": "…なんだって。",
-  "note": "deep, growling demon lord, deadpan, awkward pause",
-  "file": "hero-demon"
- },
- {
-  "key": "dbf644d4",
-  "voice": "bleach",
-  "say": "…なんだって。",
-  "note": "snobbish, sneering aristocrat, deadpan, awkward pause",
-  "file": "hero-bleach"
- },
- {
-  "key": "8e402550",
-  "voice": "cling",
-  "say": "…なんだって。",
-  "note": "sultry, smug villainess queen, deadpan, awkward pause",
-  "file": "hero-cling"
- },
- {
-  "key": "ef9d5a97",
-  "voice": "iron",
-  "say": "…なんだって。",
-  "note": "stern, booming warlord, deadpan, awkward pause",
-  "file": "hero-iron"
- },
- {
-  "key": "60691034",
-  "voice": "demon",
-  "say": "外の誰かがコインを入れて、スタートを押す。ドラムが回り、ドアがカチッと開き、ポンッと外へ出られる。中からでは?不可能だ。",
-  "note": "deep, growling demon lord, conversational",
-  "file": "story"
- },
- {
-  "key": "00d1364e",
-  "voice": "stinky",
-  "say": "じゃあオレたち閉じ込められたのか?永遠に?カーテン女王と一緒に?",
-  "note": "cocky young street brawler, shouting furiously",
-  "file": "story"
- },
- {
-  "key": "8a829ffa",
-  "voice": "queen",
-  "say": "聞こえておるぞ。",
-  "note": "glamorous, mature, velvety-voiced queen, elegant and poised, with a pinch of sass, calm, gracious and a little sassy",
   "file": "story"
  },
  {
@@ -24115,10 +23730,10 @@
   "file": "hero-iron"
  },
  {
-  "key": "e372088a",
+  "key": "3831fc93",
   "voice": "demon",
-  "say": "リントフィルターの鍵は何年も前に行方不明になった。最後に見かけたのはリント平原。誰かがベッドとして使っているらしい。",
-  "note": "deep, growling demon lord, conversational",
+  "say": "見つかるものか!我が手下どもに預けたのだ!フィルターの鍵はリント平原に…待て。なぜ教えたのだ、我は。",
+  "note": "deep, growling demon lord, lively",
   "file": "story"
  },
  {
@@ -24570,16 +24185,16 @@
   "file": "story"
  },
  {
-  "key": "292dfd1c",
-  "voice": "demon",
-  "say": "次はタイマーダイヤル…「ちょっとした音楽の緊急事態」のために貸したのだ。しまった。貸した相手は、ミスター・タッピントンだ。",
-  "note": "deep, growling demon lord, conversational",
+  "key": "a1fecaea",
+  "voice": "fishnet",
+  "say": "次はタイマーダイヤルだ。ケビンによると、デーモンがそれをミスター・タッピントンに渡したらしい。「ちょっとした音楽の緊急事態」のために。",
+  "note": "eager, quick young scout, conversational",
   "file": "story"
  },
  {
-  "key": "08a897b4",
+  "key": "8de871e2",
   "voice": "narr",
-  "say": "その頃、洗濯かごの底で、片方だけの手袋がリストに印をつけていた。「ひとつ目」と、ささやく。",
+  "say": "その頃、洗濯かごの底で、片方だけの手袋が小さな電話に出る。「はい、デーモン様。一つ目です」と、ささやいた。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
@@ -26411,6 +26026,20 @@
   "file": "story"
  },
  {
+  "key": "d4b92cf2",
+  "voice": "lefty",
+  "say": "それに、デーモンが約束してくれたのです。あなたたちの帰り道を閉じ込めておけば…私のライティを見つけてくれると。",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
+  "file": "story"
+ },
+ {
+  "key": "8db5f912",
+  "voice": "fishnet",
+  "say": "デーモンは、みんなにそう約束した。ミトンにも。ブーツにも。おばけにも。あいつは誰も見つけたりしない。",
+  "note": "eager, quick young scout, conversational",
+  "file": "story"
+ },
+ {
   "key": "3b9f3a0a",
   "voice": "lefty",
   "say": "さて。落とし物の届出用紙にご記入いただけますか?とても…とても…長いですよ。",
@@ -27321,6 +26950,13 @@
   "file": "story"
  },
  {
+  "key": "bad91bb2",
+  "voice": "lefty",
+  "say": "それから、気をつけて。デーモンはあの扉の向こうで待っています。あの者は、私のライティを探す気などなかった。…見つけてくれたのは、あなたたちです。",
+  "note": "sly, quick-talking young man: a creepy villain with a raspy sinister whisper, hilariously over-the-top dramatic and fussy, with a lonely sad crack in his voice, conversational",
+  "file": "story"
+ },
+ {
   "key": "e23c5dca",
   "voice": "stinky",
   "say": "一緒に来なよ。二人とも。",
@@ -27461,9 +27097,9 @@
   "file": "story"
  },
  {
-  "key": "38f01811",
+  "key": "973a5f02",
   "voice": "fishnet",
-  "say": "騎士様…私は一緒には行かない。私の居場所はここだ。陛下を守る。穴を守る。",
+  "say": "騎士殿…扉まではついていく。その先は、私の居場所はここだ。女王を守る。穴を守る。",
   "note": "eager, quick young scout, conversational",
   "file": "story"
  },
@@ -27585,13 +27221,6 @@
   "say": "スカウト…ありがとう。なにもかも。",
   "note": "stern, booming warlord, conversational",
   "file": "hero-iron"
- },
- {
-  "key": "d8ddc462",
-  "voice": "fishnet",
-  "say": "行け!私の穴がびしょ濡れになる前に!",
-  "note": "eager, quick young scout, crying and sobbing",
-  "file": "story"
  },
  {
   "key": "768db978",
@@ -27727,150 +27356,416 @@
   "file": "story"
  },
  {
-  "key": "066eb001",
+  "key": "55c896d9",
   "voice": "narr",
-  "say": "チャリン。コインが落ちる。ドアがカチッと開く。外から温かい光が差し込み…そして魔王が震え始めた。",
+  "say": "チャリン。コインが落ちる。扉がカチッと開く。熱く赤い光があふれ出し…乾燥機デーモンが、ドラムの中から姿を現した。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },
  {
-  "key": "4cea218b",
+  "key": "cd83279f",
   "voice": "demon",
-  "say": "ああ、まずい。まずいまずいまずい。ドアが開いていく…ドアが開くと、私は…私はどうしても…",
+  "say": "我が扉を開けてくれるとは。なんと親切な。これでコインランドリーへ転がり出て…すべての世界の、すべての靴下をいただける!",
+  "note": "deep, growling demon lord, excited, emphatic",
+  "file": "story"
+ },
+ {
+  "key": "1f043dba",
+  "voice": "demon",
+  "say": "そして、こいつは我のものだ。ほら、あいさつしろ、シマシマ。",
   "note": "deep, growling demon lord, conversational",
   "file": "story"
  },
  {
-  "key": "f7c6fd1f",
+  "key": "d8cd49fc",
+  "voice": "narr",
+  "say": "かごの中で、スティンキーの片割れが手を振る。悲しそうに。くさそうに。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "299c7c21",
+  "voice": "stinky",
+  "say": "…みんな、下がってろ。",
+  "note": "cocky young street brawler, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "f63feec8",
+  "voice": "stinky",
+  "say": "スティンキー?",
+  "note": "cocky young street brawler, confused, questioning",
+  "file": "hero-stinky"
+ },
+ {
+  "key": "c1e9305c",
+  "voice": "argyle",
+  "say": "スティンキー?",
+  "note": "calm, noble samurai, confused, questioning",
+  "file": "hero-argyle"
+ },
+ {
+  "key": "22e1f1b2",
+  "voice": "shinobi",
+  "say": "スティンキー?",
+  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, confused, questioning",
+  "file": "hero-shinobi"
+ },
+ {
+  "key": "cc72f19a",
+  "voice": "gran",
+  "say": "シュティンキー?",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
+  "file": "hero-gran"
+ },
+ {
+  "key": "735037c0",
+  "voice": "baby",
+  "say": "スティンキー?",
+  "note": "squeaky, bratty toddler, confused, questioning",
+  "file": "hero-baby"
+ },
+ {
+  "key": "0b5bf914",
+  "voice": "kneehi",
+  "say": "スティンキー?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
+  "file": "hero-kneehi"
+ },
+ {
+  "key": "e9440648",
+  "voice": "robo",
+  "say": "スティンキー?",
+  "note": "flat, monotone robot, confused, questioning",
+  "file": "hero-robo"
+ },
+ {
+  "key": "4a86cdc5",
+  "voice": "ghost",
+  "say": "スティンキー?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
+  "file": "hero-ghost"
+ },
+ {
+  "key": "0e30ad39",
+  "voice": "lint",
+  "say": "スティンキー?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
+  "file": "hero-lint"
+ },
+ {
+  "key": "21423457",
+  "voice": "socklet",
+  "say": "スティンキー?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
+  "file": "hero-socklet"
+ },
+ {
+  "key": "7e405203",
+  "voice": "holey",
+  "say": "スティンキー?",
+  "note": "nervous, whiny coward, confused, questioning",
+  "file": "hero-holey"
+ },
+ {
+  "key": "8f79cf99",
+  "voice": "steel",
+  "say": "スティンキー?",
+  "note": "gruff, deep construction worker, confused, questioning",
+  "file": "hero-steel"
+ },
+ {
+  "key": "60cb6663",
+  "voice": "king",
+  "say": "スティンキー?",
+  "note": "pompous, theatrical king, confused, questioning",
+  "file": "hero-king"
+ },
+ {
+  "key": "60836c1d",
   "voice": "demon",
-  "say": "回らずにはいられないのだ!!反射なのだ!!本当にすまない!!タンブル…乾燥…中温!!",
+  "say": "スティンキー?",
+  "note": "deep, growling demon lord, confused, questioning",
+  "file": "hero-demon"
+ },
+ {
+  "key": "a0f84247",
+  "voice": "bleach",
+  "say": "スティンキー?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
+  "file": "hero-bleach"
+ },
+ {
+  "key": "5d0c6d93",
+  "voice": "cling",
+  "say": "スティンキー?",
+  "note": "sultry, smug villainess queen, confused, questioning",
+  "file": "hero-cling"
+ },
+ {
+  "key": "f6c8cb2a",
+  "voice": "iron",
+  "say": "スティンキー?",
+  "note": "stern, booming warlord, confused, questioning",
+  "file": "hero-iron"
+ },
+ {
+  "key": "b4e787e7",
+  "voice": "stinky",
+  "say": "あいつは洗濯の夜、オレの片割れを奪った。ナイロニア中、ずっとオレたちを笑ってきた。こいつは、オレがやる。",
+  "note": "cocky young street brawler, laughing",
+  "file": "story"
+ },
+ {
+  "key": "65e526de",
+  "voice": "demon",
+  "say": "貴様が?小さなくさい靴下が?この乾燥機デーモンに?タンブル…ドライ…最大火力だあ!!",
   "note": "deep, growling demon lord, shouting furiously",
   "file": "story"
  },
  {
-  "key": "604f6d0b",
+  "key": "ab54b053",
   "voice": "stinky",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "cocky young street brawler, excited, emphatic",
+  "say": "かかってこいよ、熱々の箱。おまえよりひどいにおい、嗅いだことあるぜ。",
+  "note": "cocky young street brawler, conversational",
+  "file": "story"
+ },
+ {
+  "key": "c031eaf9",
+  "voice": "narr",
+  "say": "乾燥機デーモンが床に崩れ落ちる。炎がゆらめき…小さくなって…しょんぼりした種火になった。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "1db2c0bd",
+  "voice": "stinky",
+  "say": "これはオレの片割れの分だ。それと、ばあちゃんのシャンデリアの分。",
+  "note": "cocky young street brawler, conversational",
+  "file": "story"
+ },
+ {
+  "key": "cdd6199a",
+  "voice": "gran",
+  "say": "あしょこには自分で登ったんじゃよ。……でも、…ありがとうね。",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, sassy and quick-witted, talking fast and shouting, snappy cheeky scolding, a bit scatterbrained",
+  "file": "story"
+ },
+ {
+  "key": "91f5e598",
+  "voice": "demon",
+  "say": "千年前…俺は、ただの靴下だった。何の変哲もない、黒い靴下。相方がいた。だが、ある洗濯の日…彼女は消えた。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "cbb81f9f",
+  "voice": "stinky",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "cocky young street brawler, confused, questioning",
   "file": "hero-stinky"
  },
  {
-  "key": "aa0ec7ef",
+  "key": "d6413c9b",
   "voice": "argyle",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "calm, noble samurai, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "calm, noble samurai, confused, questioning",
   "file": "hero-argyle"
  },
  {
-  "key": "a64b4a55",
+  "key": "8658f4d1",
   "voice": "shinobi",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "cold, brooding, deadpan young ninja man of about twenty, low, quiet, curt and mysterious, confused, questioning",
   "file": "hero-shinobi"
  },
  {
-  "key": "3848320d",
+  "key": "44854839",
   "voice": "gran",
-  "say": "みんなを中に吸い戻しゅ気だ!…止めて!",
-  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, excited, emphatic",
+  "say": "じゃあお前は、…全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "SASSY, quick-witted, forgetful 98-year-old granny who SHOUTS everything, fast-talking, sharp-tongued, shrill and loud, voice cracking and squeaking, croaky, confused, questioning",
   "file": "hero-gran"
  },
  {
-  "key": "834150d3",
+  "key": "270ec4b7",
   "voice": "baby",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "squeaky, bratty toddler, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "squeaky, bratty toddler, confused, questioning",
   "file": "hero-baby"
  },
  {
-  "key": "e0927a37",
+  "key": "c4e9afb3",
   "voice": "kneehi",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "booming, jolly sumo wrestler, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "booming, jolly sumo wrestler, confused, questioning",
   "file": "hero-kneehi"
  },
  {
-  "key": "b01afb8b",
+  "key": "b8ea621f",
   "voice": "robo",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "flat, monotone robot, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "flat, monotone robot, confused, questioning",
   "file": "hero-robo"
  },
  {
-  "key": "76f2d548",
+  "key": "f19fa638",
   "voice": "ghost",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "soft, whispery, eerie ghost girl, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "soft, whispery, eerie ghost girl, confused, questioning",
   "file": "hero-ghost"
  },
  {
-  "key": "c28da13c",
+  "key": "aa050a54",
   "voice": "lint",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "tiny, squeaky, fluffy creature, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "tiny, squeaky, fluffy creature, confused, questioning",
   "file": "hero-lint"
  },
  {
-  "key": "df3fd86a",
+  "key": "5606f6e2",
   "voice": "socklet",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "cheeky, fast-talking little boy, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "cheeky, fast-talking little boy, confused, questioning",
   "file": "hero-socklet"
  },
  {
-  "key": "05934016",
+  "key": "f878a1d6",
   "voice": "holey",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "nervous, whiny coward, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "nervous, whiny coward, confused, questioning",
   "file": "hero-holey"
  },
  {
-  "key": "98af835c",
+  "key": "1ba865f4",
   "voice": "steel",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "gruff, deep construction worker, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "gruff, deep construction worker, confused, questioning",
   "file": "hero-steel"
  },
  {
-  "key": "5d04f536",
+  "key": "872eee76",
   "voice": "king",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "pompous, theatrical king, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "pompous, theatrical king, confused, questioning",
   "file": "hero-king"
  },
  {
-  "key": "65468df0",
+  "key": "71407e70",
   "voice": "demon",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "deep, growling demon lord, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "deep, growling demon lord, confused, questioning",
   "file": "hero-demon"
  },
  {
-  "key": "4021de7a",
+  "key": "52744ab2",
   "voice": "bleach",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "snobbish, sneering aristocrat, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "snobbish, sneering aristocrat, confused, questioning",
   "file": "hero-bleach"
  },
  {
-  "key": "c6a060c6",
+  "key": "1167a8c6",
   "voice": "cling",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "sultry, smug villainess queen, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "sultry, smug villainess queen, confused, questioning",
   "file": "hero-cling"
  },
  {
-  "key": "ea30e03d",
+  "key": "5051ec29",
   "voice": "iron",
-  "say": "みんなを中に吸い戻す気だ!止めて!",
-  "note": "stern, booming warlord, excited, emphatic",
+  "say": "じゃあお前は、全部の靴下を盗んで…自分の片割れを探してたのか?",
+  "note": "stern, booming warlord, confused, questioning",
   "file": "hero-iron"
  },
  {
-  "key": "8afc4c52",
+  "key": "381bb2cc",
   "voice": "demon",
-  "say": "…ふう。ありがとう。回りたい気分はおさまった。大丈夫だ。私はクロークの係員だ。大丈夫だ。",
+  "say": "一足残らずだ。そして、孤独な靴下みんなにペアを約束した…自分のペアは、決して見つからなかったから。",
   "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "bd5b65bb",
+  "voice": "narr",
+  "say": "ゆらめく幽かな光。ロスト・ソックが、ふわりと現れた。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "9f8eeab9",
+  "voice": "ghost",
+  "say": "…やあ。",
+  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "d2b9363e",
+  "voice": "demon",
+  "say": "…ダーリン…?",
+  "note": "deep, growling demon lord, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "6e6be941",
+  "voice": "ghost",
+  "say": "引き出しの裏に落ちちゃってたの。",
+  "note": "soft, whispery, eerie ghost girl, conversational",
+  "file": "story"
+ },
+ {
+  "key": "394fbfa8",
+  "voice": "demon",
+  "say": "千年もか?!",
+  "note": "deep, growling demon lord, shouting furiously",
+  "file": "story"
+ },
+ {
+  "key": "53edb8a1",
+  "voice": "ghost",
+  "say": "…居心地よかったの。",
+  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "eb56b715",
+  "voice": "ghost",
+  "say": "…ずっと探してたの…ブーツが、ご主人さまが助けてくれるって…待って。あなたが、そのご主人さま?",
+  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "0d6bdd86",
+  "voice": "demon",
+  "say": "…説明させてくれ。",
+  "note": "deep, growling demon lord, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "0d455fd3",
+  "voice": "ghost",
+  "say": "…ずいぶん大きな「ごめんなさい」が必要ね、あなた。",
+  "note": "soft, whispery, eerie ghost girl, deadpan, awkward pause",
+  "file": "story"
+ },
+ {
+  "key": "d9227041",
+  "voice": "demon",
+  "say": "…まずは、これからだ。",
+  "note": "deep, growling demon lord, conversational",
+  "file": "story"
+ },
+ {
+  "key": "f320c838",
+  "voice": "narr",
+  "say": "スティンキーと片割れが、スローモーションで駆け寄る。抱き合う。みんなで抱き合う。デーモンまで。特にデーモンが。",
+  "note": "warm, playful storybook narrator, storytelling",
+  "file": "story"
+ },
+ {
+  "key": "2e8077c3",
+  "voice": "stinky",
+  "say": "…ぜんぜん変わってないにおいだ。最高だぜ。",
+  "note": "cocky young street brawler, crying and sobbing",
   "file": "story"
  },
  {
@@ -28161,9 +28056,9 @@
   "file": "hero-iron"
  },
  {
-  "key": "4411105c",
+  "key": "9949a207",
   "voice": "narr",
-  "say": "丸い乾燥機の窓の向こうで、ナイロニア中が手を振っている。女王。スカウト。ビッグブーツ。カーテンまでも。",
+  "say": "丸い乾燥機の窓の向こうで、ナイロニアのみんなが手を振っている。女王。斥候。ビッグブーツ。そして、おばけと手をつなぐ、小さくて暖かい種火。",
   "note": "warm, playful storybook narrator, storytelling",
   "file": "story"
  },

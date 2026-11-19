@@ -124,6 +124,10 @@
   },
   {
    "who": "queen",
+   "text": "He has your other half, Stinky Tabi. And Our stockings. We want BOTH back."
+  },
+  {
+   "who": "queen",
    "text": "To reach it, you must defeat his four generals. We shall send Our finest Hosiery with you."
   },
   {
@@ -282,11 +286,11 @@
  "PALACE_AFTER_CH5": [
   {
    "who": "narr",
-   "text": "*THE ROYAL LAUNDRY BALL. Socks and Hosiery dance together. The Demon is running the cloakroom.*"
+   "text": "*THE ROYAL LAUNDRY BALL. Freed socks and Hosiery dance together. In the corner, the little royal tumble dryer hums to itself.*"
   },
   {
    "who": "queen",
-   "text": "For saving both Our worlds, We name you... KNIGHT OF THE ROYAL DRAWER!"
+   "text": "For saving Our kingdom from the Tumble Throne, We name you... KNIGHT OF THE ROYAL DRAWER!"
   },
   {
    "who": "hero",
@@ -297,24 +301,36 @@
    "text": "You get a WASHING. Immediately."
   },
   {
-   "who": "demon",
-   "text": "Welcome to the cloakroom. Lost socks are returned within one thousand years. ...We are working on that."
+   "who": "narr",
+   "text": "*The royal tumble dryer clicks on by itself. Its round window glows red. A familiar face grins out of it.*"
   },
   {
-   "who": "cling",
-   "text": "Love the ball, Nylonia. Shame about the sheen."
+   "who": "demon",
+   "text": "Lovely party. Shame about the music. ...Stinky Tabi! Your other half says HELLO. Well, he says 'MMMF'. I put a peg on his mouth."
+  },
+  {
+   "who": "stinky",
+   "text": "GIVE HIM BACK, YOU OVERGROWN HAIRDRYER!"
+  },
+  {
+   "who": "demon",
+   "text": "I AM A TUMBLE DRYER! HAIRDRYERS ARE COMPLETELY DIFFERENT! ...Enjoy the ball. My demons are coming. MWAHAHAHA!"
   },
   {
    "who": "queen",
-   "text": "...GUARDS."
+   "text": "Scout. Unplug that dryer."
+  },
+  {
+   "who": "fishnet",
+   "text": "It isn't plugged in, Your Majesty."
+  },
+  {
+   "who": "queen",
+   "text": "...Then We shall stand in front of it and look DISAPPOINTED."
   },
   {
    "who": "king",
    "text": "Lovely party! Everybody KNEEL! ...Sorry. The hypnosis wore off. The bossiness did not."
-  },
-  {
-   "who": "demon",
-   "text": "And no more disguises. I promise. *briefly turns into a coat rack* ...Old habits."
   },
   {
    "who": "gran",
@@ -322,7 +338,7 @@
   },
   {
    "who": "fishnet",
-   "text": "Mission complete. ...Fine. It was fun. Tell no one."
+   "text": "Mission NOT complete. ...But it was a good party. Tell no one."
   }
  ],
  "PALACE_AFTER_CH6": [
@@ -350,11 +366,11 @@
  "PALACE_AFTER_CH7": [
   {
    "who": "queen",
-   "text": "The mittens are reunited. The puppets are free. And the cloakroom has finally returned something."
+   "text": "The mittens are reunited. The puppets are free. And Gran has hit a Demon with a handbag."
   },
   {
-   "who": "demon",
-   "text": "Only one thing. But it is a START."
+   "who": "gran",
+   "text": "In my day we didn't have Demons. We had a man called Derek. He was MUCH worse."
   },
   {
    "who": "queen",
@@ -1532,19 +1548,19 @@
  "CH7_END": [
   {
    "who": "mitten",
-   "text": "*deflates with a sad little squeak* ...Nobody ever goes looking for a lost mitten."
+   "text": "*deflates with a sad little squeak* ...The Demon PROMISED. If I froze you all solid, he would find my pair."
   },
   {
    "who": "narr",
-   "text": "*A warm orange glow climbs the mountain. Somebody is huffing and puffing up the path.*"
+   "text": "*A hot orange glow climbs the mountain. The snow hisses. The Dryer Demon floats up the path in a cloud of steam.*"
   },
   {
    "who": "demon",
-   "text": "*panting* Excuse me... is there a GRAND MITTEN up here? I run the palace cloakroom now."
+   "text": "A deal is a deal, Mitten. You LOST. So you get... NOTHING. ...Well. Almost nothing."
   },
   {
    "who": "demon",
-   "text": "Somebody handed this in. It has been in Lost Property for... *checks the tag* ...a thousand years."
+   "text": "I'll show you what you COULD have won. Your pair. A thousand years in my lost-property box. Pretty, isn't it?"
   },
   {
    "who": "narr",
@@ -1552,15 +1568,23 @@
   },
   {
    "who": "mitten",
-   "text": "...My PAIR? You found my PAIR?!"
+   "text": "...My PAIR? He had my PAIR the WHOLE TIME?!"
   },
   {
-   "who": "demon",
-   "text": "Lost things are returned within a thousand years. I TOLD you we were working on it."
+   "who": "gran",
+   "text": "Right. THAT'S quite enough of that."
+  },
+  {
+   "who": "narr",
+   "text": "*THWACK! Gran whacks the Demon on the nose with her handbag. He drops the mitten. It bounds across the snow...*"
   },
   {
    "who": "narr",
    "text": "*The two mittens hug. The snow stops. Somewhere, a ski lift starts working again.*"
+  },
+  {
+   "who": "demon",
+   "text": "OW! My NOSE! ...You will pay for that, old woman! Wait until you meet my BIG friends! MWAHAHA... *achoo*"
   },
   {
    "who": "fishnet",
@@ -1661,6 +1685,14 @@
    "text": "{HERO}'s here now. And I want everybody's socks back!"
   },
   {
+   "who": "stinky",
+   "text": "And give me back my OTHER HALF, you big hot box!"
+  },
+  {
+   "who": "demon",
+   "text": "The stripy one? HAHAHA! He is somewhere VERY safe. Somewhere VERY warm. Somewhere you will NEVER reach!"
+  },
+  {
    "who": "demon",
    "text": "...*long pause*... I am looking for someone."
   },
@@ -1679,44 +1711,28 @@
    "text": "*The Demon's flames flicker down to a tiny, sad pilot light.*"
   },
   {
-   "who": "demon",
-   "text": "A thousand years ago... I was just a sock. A plain black sock. I had a partner. Then, one laundry day... she was gone."
-  },
-  {
-   "who": "hero",
-   "text": "So you've been taking EVERY sock... looking for your pair?"
+   "who": "narr",
+   "text": "*...then ROAR back up! FWOOOSH!*"
   },
   {
    "who": "demon",
-   "text": "Every. Single. One. And none of them are HER."
+   "text": "Did you think a little sock could put out MY fire? A dryer always has ONE MORE CYCLE!"
+  },
+  {
+   "who": "stinky",
+   "text": "Where is my other half?! WHERE IS HE?!"
+  },
+  {
+   "who": "demon",
+   "text": "Somewhere you will never find him! And while you look... I shall unleash ALL my demons! Big ones! Smelly ones! Ones with LACES!"
+  },
+  {
+   "who": "demon",
+   "text": "Enjoy your little throne, socks! TUMBLE... DRY... GOODBYYYYE!"
   },
   {
    "who": "narr",
-   "text": "*A ghostly shimmer. THE LOST SOCK floats in.*"
-  },
-  {
-   "who": "ghost",
-   "text": "...Hi."
-  },
-  {
-   "who": "demon",
-   "text": "...*Darling?*"
-  },
-  {
-   "who": "ghost",
-   "text": "I fell down the back of the drawer."
-  },
-  {
-   "who": "demon",
-   "text": "FOR A THOUSAND YEARS?!"
-  },
-  {
-   "who": "ghost",
-   "text": "...It was cozy."
-  },
-  {
-   "who": "narr",
-   "text": "*Silence. Then everybody cheers! The Throne of Odd Socks bursts into a shower of reunited pairs!*"
+   "text": "*WHOOSH. He's gone, up the chimney in a puff of hot lint. Behind him, the Throne of Odd Socks wobbles... and bursts into a shower of freed socks, all hopping off to find their partners!*"
   },
   {
    "who": "queen",
@@ -1729,6 +1745,14 @@
   {
    "who": "queen",
    "text": "We cried so hard... WE HAVE A RUN!"
+  },
+  {
+   "who": "stinky",
+   "text": "...Every sock found its pair. Every sock except me."
+  },
+  {
+   "who": "fishnet",
+   "text": "Not yet. But you will. I don't make promises, Stinky. ...That was one. Tell no one."
   }
  ],
  "CH8_INTRO": [
@@ -1937,8 +1961,12 @@
    "text": "A BIG BOOT? In Our shoe cupboard? We have been sharing a house with a VILLAIN?"
   },
   {
+   "who": "narr",
+   "text": "*The royal tumble dryer clicks on. The red face grins out of the window. He is wearing a sun hat.*"
+  },
+  {
    "who": "demon",
-   "text": "I knew something was wrong with that cupboard. It always smells of feet. More than usual."
+   "text": "Do you like my new general? The Big Boot works for ME now. I promised him all the socks he can hold. He holds a LOT."
   },
   {
    "who": "queen",
@@ -1946,7 +1974,7 @@
   },
   {
    "who": "demon",
-   "text": "I found it in Lost Property. It is very me."
+   "text": "I am on HOLIDAY. Being evil is very tiring. ...Toodle-oo!"
   },
   {
    "who": "fishnet",
@@ -2119,8 +2147,8 @@
    "text": "Puddle Park. Wet. Cold. Squelchy. We shall stay here, by the fire, and support you emotionally."
   },
   {
-   "who": "demon",
-   "text": "I will dry you off when you get back. Free of charge. Mostly."
+   "who": "gran",
+   "text": "I'll have a hot water bottle ready when you get back. Puddles get into your bones. ...Do socks have bones? Never mind."
   },
   {
    "who": "fishnet",
@@ -2158,11 +2186,11 @@
   },
   {
    "who": "fishnet",
-   "text": "We can dry you at the palace! The Demon has a dryer. He IS a dryer."
+   "text": "We can dry you at the palace. By the FIRE. Never in a dryer. Never again in a dryer."
   },
   {
    "who": "ghost",
-   "text": "...the Boot said if I splash you... he will find my pair... I am sorry... BOOOO... *splosh*"
+   "text": "...the Boot's master promised... if I splash you... he will find my pair... I am sorry... BOOOO... *splosh*"
   }
  ],
  "CH10_MID": [
@@ -2281,12 +2309,12 @@
  ],
  "PALACE_AFTER_CH10": [
   {
-   "who": "demon",
-   "text": "*a pile of dripping socks spins inside him* WHIRRR... Next! WHIRRR... Next!"
+   "who": "narr",
+   "text": "*Forty-two dripping socks hang steaming in front of the royal fire.*"
   },
   {
    "who": "queen",
-   "text": "The Dryer Demon has dried forty-two socks, three ducks and one very surprised guard."
+   "text": "We have dried forty-two socks, three ducks and one very surprised guard. Without a single dryer. Take THAT, Demon."
   },
   {
    "who": "fishnet",
@@ -2468,7 +2496,11 @@
   },
   {
    "who": "demon",
-   "text": "*quietly* ...I was the ORIGINAL odd-sock nightmare, you know. This is just copying."
+   "text": "*crackling out of the royal tumble dryer* The Boot is swapping pairs? Pfff. I was the ORIGINAL odd-sock nightmare. He is just COPYING me!"
+  },
+  {
+   "who": "queen",
+   "text": "*shuts the dryer door with her foot*"
   }
  ],
  "CH12_INTRO": [
@@ -2962,7 +2994,11 @@
   },
   {
    "who": "demon",
-   "text": "...That is why I tried to steal them, long ago. Not my proudest moment. Fine. It was a LITTLE bit proud."
+   "text": "*the royal dryer window glows red* ...The Original Pair. Yes. Bring them to me, Boot... and every sock in every world will be MINE. MWAHAHA..."
+  },
+  {
+   "who": "queen",
+   "text": "*slams the dryer door shut* ...We are getting a NEW dryer."
   },
   {
    "who": "queen",
@@ -3131,8 +3167,8 @@
    "text": "This is my fault. I was her guard. I should have held on. But I have so many holes... she slipped right through."
   },
   {
-   "who": "demon",
-   "text": "It is nobody's fault. Except the Boot. And possibly Kevin."
+   "who": "argyle",
+   "text": "It is nobody's fault but the Boot's. And the Demon who sent him. And possibly Kevin."
   },
   {
    "who": "cling",
@@ -3289,8 +3325,8 @@
    "text": "*The throne is still empty. Someone has put a little sign on it: BACK SOON. — THE QUEEN (PROBABLY).*"
   },
   {
-   "who": "demon",
-   "text": "The guards made the sign. It is very sweet. The spelling is terrible."
+   "who": "gran",
+   "text": "The guards made the sign. It's very sweet. The spelling is terrible. I taught them, you know."
   },
   {
    "who": "argyle",
@@ -3301,8 +3337,8 @@
    "text": "The Trial of the DRYER?"
   },
   {
-   "who": "demon",
-   "text": "...Did somebody say DRYER? *cracks knuckles* I have waited SO long for somebody to say that."
+   "who": "argyle",
+   "text": "My master said the third trial is the hottest. Nobody who took it ever... smelled the same again."
   },
   {
    "who": "fishnet",
@@ -3384,11 +3420,15 @@
   },
   {
    "who": "hero",
-   "text": "Dryer Demon! YOU are the third trial?!"
+   "text": "Dryer Demon! What are YOU doing here?!"
   },
   {
    "who": "demon",
-   "text": "Who else? The Trial of the Dryer must be given by a DRYER! It is in the NAME!"
+   "text": "The Golden Sock opens the Boot's tower. And I want it! ...Also, I have always wanted to be in a dojo. Look at my HEADBAND."
+  },
+  {
+   "who": "argyle",
+   "text": "The Golden Sock belongs to the worthy, Demon. Not to a sweaty laundry cupboard on fire."
   },
   {
    "who": "demon",
@@ -3400,25 +3440,25 @@
   },
   {
    "who": "demon",
-   "text": "NOBODY KNOWS! IT IS MY SECRET TECHNIQUE! ...Do not worry, little hero. I will only use... MEDIUM HEAT."
-  },
-  {
-   "who": "demon",
-   "text": "...Fine. HIGH HEAT. LET US BEGIN!"
+   "text": "NOBODY KNOWS! IT IS MY SECRET TECHNIQUE! ...HIGH HEAT! LET US BEGIN!"
   }
  ],
  "CH17_END": [
   {
    "who": "demon",
-   "text": "*panting, steaming* ...You passed. You are as warm and fluffy as a fresh towel."
+   "text": "*panting, steaming* ...Impossible! Beaten by a sock... in my OWN headband!"
   },
   {
    "who": "narr",
-   "text": "*A golden glow shines from inside the Demon's drum. He reaches in... and pulls out a shining GOLDEN SOCK.*"
+   "text": "*THWUMP. Something golden falls out of the Demon's lint filter and rolls across the floor. A shining GOLDEN SOCK.*"
+  },
+  {
+   "who": "argyle",
+   "text": "The Golden Sock! He STOLE it! It has been in his lint filter... for a THOUSAND YEARS?!"
   },
   {
    "who": "demon",
-   "text": "It has been in my lint filter for a thousand years. I kept meaning to give it back."
+   "text": "Finders keepers! ...Losers weepers. ...I AM THE LOSER, AREN'T I. Fine, KEEP IT! I still have STINKY'S OTHER HALF! MWAHAHA!"
   },
   {
    "who": "argyle",
@@ -3443,8 +3483,8 @@
  ],
  "PALACE_AFTER_CH17": [
   {
-   "who": "demon",
-   "text": "I gave away the Golden Sock. I feel... lighter. Is this what being nice feels like? It is horrible. I LOVE it."
+   "who": "argyle",
+   "text": "The Demon left in such a hurry, he forgot his headband. ...I am keeping it. It is VERY good quality."
   },
   {
    "who": "fishnet",
@@ -3516,7 +3556,7 @@
   },
   {
    "who": "ghost",
-   "text": "...yes... and he blames all socks for leaving him behind... the Boot holds my pair... so I must fight you... BOO..."
+   "text": "...yes... and he blames all socks for leaving him behind... the Boot's master promised he would find my pair... so I must fight you... BOO..."
   }
  ],
  "CH18_BOSS": [
@@ -3593,8 +3633,8 @@
  ],
  "PALACE_AFTER_CH18": [
   {
-   "who": "demon",
-   "text": "I have made a little nest for Kevin. In my lint filter. It is very warm."
+   "who": "gran",
+   "text": "I've made a little nest for Kevin. In my knitting bag. He keeps stealing my wool."
   },
   {
    "who": "robo",
@@ -3910,23 +3950,27 @@
   },
   {
    "who": "narr",
-   "text": "*It is Stinky Tabi's lost sock. The very one Dryer No. 7 swallowed on the first night, at the very start of everything.*"
+   "text": "*It is Stinky Tabi's lost sock! Stinky runs to him in slow motion... arms wide open... and then...*"
+  },
+  {
+   "who": "narr",
+   "text": "*FWOOOSH! A long silver dryer hose crashes through the window and SUCKS the other half straight up into it!*"
   },
   {
    "who": "demon",
-   "text": "*nervously* ...Ah. Yes. That one came out of my back door. It must have landed in a boot."
+   "text": "*echoing down the hose* Thank you for keeping him warm, Boot! I'll take him from here! MWAHAHAHA!"
+  },
+  {
+   "who": "stinky",
+   "text": "NOOO! I was SO close! I could SMELL him!"
   },
   {
    "who": "bigboot",
-   "text": "THAT... WAS INSIDE ME?... ALL THIS TIME?"
+   "text": "HE PROMISED ME. HE SAID IF I KEPT THE STRIPY SOCK SAFE, I WOULD NEVER BE EMPTY AGAIN."
   },
   {
    "who": "bigboot",
    "text": "...SO THAT IS WHY I FELT SO WARM. SO COSY. SO... NOT ALONE."
-  },
-  {
-   "who": "narr",
-   "text": "*Stinky and his other half run at each other in slow motion. They hug. Everyone hugs. Even the Big Boot. ESPECIALLY the Big Boot.*"
   },
   {
    "who": "bigboot",
@@ -3950,15 +3994,15 @@
   },
   {
    "who": "fishnet",
-   "text": "Sir Knight... we did it. We actually did it."
+   "text": "Stinky... we'll get him back. The Demon can't hide forever."
   },
   {
-   "who": "hero",
-   "text": "We did it, Scout. Together. Every last pair."
+   "who": "stinky",
+   "text": "Then let's find that big hot box... and switch him OFF."
   },
   {
    "who": "narr",
-   "text": "*And so the Shoe Wars ended. Socks and shoes became friends. Feet everywhere were warm, dry, and only slightly cheesy.*"
+   "text": "*And so the Shoe Wars ended. Socks and shoes became friends. But somewhere, deep in the dark, a dryer is laughing.*"
   },
   {
    "who": "narr",
@@ -4002,15 +4046,31 @@
  "CH21_INTRO": [
   {
    "who": "narr",
-   "text": "*THE TUMBLE THRONE. A week after the Shoe Wars. The Demon now runs a cloakroom. Business is booming.*"
+   "text": "*THE TUMBLE THRONE. A week after the Shoe Wars. The throne room is empty... except for a note, pinned to the drum.*"
+  },
+  {
+   "who": "fishnet",
+   "text": "*reads* \"GONE HOME. Do not follow. From D.D. P.S. Stinky's other half says hello. P.P.S. He smells TERRIBLE.\""
   },
   {
    "who": "stinky",
-   "text": "*sighs* Do you ever miss the laundromat?"
+   "text": "That's my boy."
+  },
+  {
+   "who": "narr",
+   "text": "*Behind the throne: a small round door. Through its window, far, far away... two burning eyes. And a stripy sock in a birdcage.*"
+  },
+  {
+   "who": "demon",
+   "text": "*muffled, through the glass* Welcome to my back door! The back door of DRYER No. 7. The ONLY way out of Nylonia... and it only opens from OUTSIDE! MWAHAHA!"
   },
   {
    "who": "hero",
-   "text": "The laundromat?"
+   "text": "The way home... and the Demon... are behind the same door."
+  },
+  {
+   "who": "stinky",
+   "text": "*sighs* ...Do you ever miss the laundromat?"
   },
   {
    "who": "stinky",
@@ -4027,30 +4087,6 @@
   {
    "who": "gran",
    "text": "I've been in here so long, I've forgotten what Outside looks like. ...Is it the one with the sky?"
-  },
-  {
-   "who": "hero",
-   "text": "Demon. You've got a door. Open it. We're going home."
-  },
-  {
-   "who": "demon",
-   "text": "*coughs* Ah. Yes. About that. My door only opens from OUTSIDE."
-  },
-  {
-   "who": "hero",
-   "text": "...What."
-  },
-  {
-   "who": "demon",
-   "text": "Someone Outside puts in a coin and presses START. The drum turns, the door clicks, POP, out you go. From in here? Impossible."
-  },
-  {
-   "who": "stinky",
-   "text": "So we're STUCK? FOREVER? With the CURTAIN QUEEN?"
-  },
-  {
-   "who": "queen",
-   "text": "*from somewhere far away* We HEARD that."
   },
   {
    "who": "narr",
@@ -4070,7 +4106,7 @@
   },
   {
    "who": "demon",
-   "text": "The Lint Filter Key went missing years ago. Last seen on the LINT PLAINS. Someone is using it as a BED."
+   "text": "*through the glass* You'll never find them! I gave them to my DEMONS! The Lint Filter Key is on the LINT PLAINS... ...Wait. Why did I tell you that."
   },
   {
    "who": "hero",
@@ -4143,12 +4179,12 @@
    "text": "ONE down, Sir Knight! Three to go!"
   },
   {
-   "who": "demon",
-   "text": "*on a walkie-talkie* Next, the Timer Dial... I lent it to someone for a \"tiny musical emergency\". Oh dear. I lent it to MR. TAPPINGTON."
+   "who": "fishnet",
+   "text": "*checks the brass plate* Next, the Timer Dial. Kevin says the Demon gave it to MR. TAPPINGTON. For a 'tiny musical emergency'."
   },
   {
    "who": "narr",
-   "text": "*Meanwhile, at the bottom of a laundry basket, a single glove ticks something off a list. \"One down,\" it whispers.*"
+   "text": "*Meanwhile, at the bottom of a laundry basket, a single glove answers a tiny phone. \"Yes, Demon. One down,\" it whispers.*"
   }
  ],
  "CH22_INTRO": [
@@ -4514,6 +4550,14 @@
   },
   {
    "who": "lefty",
+   "text": "And the Demon made me a promise. Keep your way home locked up... and he will find my Righty."
+  },
+  {
+   "who": "fishnet",
+   "text": "The Demon promised that to EVERYONE. The Mitten. The Boot. The ghost. He never finds anybody."
+  },
+  {
+   "who": "lefty",
    "text": "*cracks his knuckles* Now. Would you like to fill in a LOST PROPERTY FORM? It is very... very... long."
   }
  ],
@@ -4657,6 +4701,10 @@
    "text": "Your things. The Key, the Dial, the Spark, the Coin. Go home. ...And thank you."
   },
   {
+   "who": "lefty",
+   "text": "And be careful. The Demon is waiting behind that door. He never meant to find my Righty. ...You did."
+  },
+  {
    "who": "hero",
    "text": "Come with us. Both of you."
   },
@@ -4676,15 +4724,11 @@
   },
   {
    "who": "fishnet",
-   "text": "Sir Knight... I'm not coming with you. My place is here. Guarding the Queen. Guarding the holes."
+   "text": "Sir Knight... I'll come as far as the door. After that, my place is here. Guarding the Queen. Guarding the holes."
   },
   {
    "who": "hero",
    "text": "Scout... thank you. For everything."
-  },
-  {
-   "who": "fishnet",
-   "text": "*crying into her bandana* GO! Before I get my HOLES all wet!"
   },
   {
    "who": "hero",
@@ -4700,25 +4744,113 @@
   },
   {
    "who": "narr",
-   "text": "*CLINK. The coin drops. The door clicks open. Warm light pours in from Outside... and the Demon begins to SHAKE.*"
+   "text": "*CLINK. The coin drops. The door clicks open. Hot red light pours out... and the Dryer Demon steps out of his drum.*"
   },
   {
    "who": "demon",
-   "text": "Oh no. Oh no no no. The door is opening... and when the door opens, I... I HAVE to..."
+   "text": "You opened my door for me. How KIND. Now I can roll out into the laundromat... and take EVERY sock in EVERY world!"
   },
   {
    "who": "demon",
-   "text": "I HAVE TO TUMBLE!! IT'S A REFLEX!! I'M SO SORRY!! *his eyes start to spin* TUMBLE... DRY... MEDIUM HEAT!!"
+   "text": "*rattles a little birdcage* And this one stays with ME. Say hello, stripy."
+  },
+  {
+   "who": "narr",
+   "text": "*Inside the cage, Stinky's other half waves. Sadly. Smellily.*"
+  },
+  {
+   "who": "stinky",
+   "text": "...Everybody stand back."
   },
   {
    "who": "hero",
-   "text": "He's going to spin us all back inside! STOP HIM!"
+   "text": "Stinky?"
+  },
+  {
+   "who": "stinky",
+   "text": "He took my other half on laundry night. He's laughed at us all the way across Nylonia. This one's MINE."
+  },
+  {
+   "who": "demon",
+   "text": "YOU? A little stinky sock? Against the DRYER DEMON? TUMBLE... DRY... MAXIMUM HEAT!!"
+  },
+  {
+   "who": "stinky",
+   "text": "Bring it, hot box. I've smelled WORSE than you."
   }
  ],
  "CH27_END": [
   {
+   "who": "narr",
+   "text": "*The Dryer Demon crashes to the floor. His flames flicker... and shrink... down to a tiny, sad pilot light.*"
+  },
+  {
+   "who": "stinky",
+   "text": "That's for my other half. And for Gran's chandelier."
+  },
+  {
+   "who": "gran",
+   "text": "I put myself up there, dear. But thank you."
+  },
+  {
    "who": "demon",
-   "text": "*very dizzy* ...Phew. Thank you. The tumbling has passed. I'm fine. I'm a cloakroom attendant. I'm FINE."
+   "text": "A thousand years ago... I was just a sock. A plain black sock. I had a partner. Then, one laundry day... she was gone."
+  },
+  {
+   "who": "hero",
+   "text": "So you've been taking EVERY sock... looking for your pair?"
+  },
+  {
+   "who": "demon",
+   "text": "Every. Single. One. And I promised every lonely sock its pair... because I could never find MINE."
+  },
+  {
+   "who": "narr",
+   "text": "*A ghostly shimmer. THE LOST SOCK floats in.*"
+  },
+  {
+   "who": "ghost",
+   "text": "...Hi."
+  },
+  {
+   "who": "demon",
+   "text": "...*Darling?*"
+  },
+  {
+   "who": "ghost",
+   "text": "I fell down the back of the drawer."
+  },
+  {
+   "who": "demon",
+   "text": "FOR A THOUSAND YEARS?!"
+  },
+  {
+   "who": "ghost",
+   "text": "...It was cozy."
+  },
+  {
+   "who": "ghost",
+   "text": "...I looked for you everywhere... the Boot said his master would help me... ...wait. YOU are the master?"
+  },
+  {
+   "who": "demon",
+   "text": "...I can explain."
+  },
+  {
+   "who": "ghost",
+   "text": "...you have some VERY big apologies to make, mister."
+  },
+  {
+   "who": "demon",
+   "text": "*opens the birdcage* ...Starting with this one."
+  },
+  {
+   "who": "narr",
+   "text": "*Stinky and his other half run at each other in slow motion. They hug. Everyone hugs. Even the Demon. ESPECIALLY the Demon.*"
+  },
+  {
+   "who": "stinky",
+   "text": "*sniff* ...You smell exactly the same. PERFECT."
   },
   {
    "who": "narr",
@@ -4758,7 +4890,7 @@
   },
   {
    "who": "narr",
-   "text": "*Through the round dryer window, all of Nylonia waves goodbye. The Queen. The Scout. The Big Boot. Even the curtains.*"
+   "text": "*Through the round dryer window, all of Nylonia waves goodbye. The Queen. The Scout. The Big Boot. And a small, warm pilot light, holding hands with a ghost.*"
   },
   {
    "who": "narr",
